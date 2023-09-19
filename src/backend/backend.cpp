@@ -89,6 +89,7 @@ namespace big
 			looped::weapons_c4_limit();
 			looped::weapons_do_persist_weapons();
 			looped::weapons_do_weapon_hotkeys();
+			looped::throw_lifted_vehicle();
 
 			script::get_current()->yield();
 		}

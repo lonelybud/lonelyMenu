@@ -66,5 +66,7 @@ namespace big
 		static void derail_train();
 
 		static void world_spawn_ped();
+
+		static void throw_lifted_vehicle();
 	};
 }

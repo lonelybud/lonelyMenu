@@ -1,5 +1,6 @@
 #include "backend/looped/looped.hpp"
 #include "natives.hpp"
+#include "services/context_menu/context_menu_service.hpp"
 
 #include <gta/enums.hpp>
 
@@ -20,7 +21,7 @@ namespace big
 	void looped::custom_gun_disable_control_action()
 	{
 		bool is_custom_gun_selected = g.weapons.custom_weapon != CustomWeapon::NONE;
-		if (is_custom_gun_selected)
+		if (is_custom_gun_selected || isVehicleLifted)
 		{
 			for (const auto& control : attack_controls)
 				PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(control), true);
