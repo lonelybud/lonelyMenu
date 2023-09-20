@@ -105,6 +105,7 @@ namespace big
 			looped::vehicle_boost_behavior();
 			looped::derail_train();
 			looped::drive_train();
+			looped::throw_lifted_vehicle();
 
 			script::get_current()->yield();
 		}
@@ -176,8 +177,7 @@ namespace big
 
 		while (g_running)
 		{
-			looped::custom_gun_disable_control_action();
-			context_menu_service::disable_control_action_loop();
+			looped::disable_attack_actions();
 
 			script::get_current()->yield();
 		}

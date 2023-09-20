@@ -222,29 +222,6 @@ namespace big
 		}
 	}
 
-	static const ControllerInputs controls[] = {
-	    ControllerInputs::INPUT_NEXT_WEAPON,
-	    ControllerInputs::INPUT_PREV_WEAPON,
-	    ControllerInputs::INPUT_VEH_NEXT_RADIO,
-	    ControllerInputs::INPUT_VEH_SELECT_NEXT_WEAPON,
-	    ControllerInputs::INPUT_SELECT_NEXT_WEAPON,
-	    ControllerInputs::INPUT_SELECT_PREV_WEAPON,
-	    ControllerInputs::INPUT_ATTACK,
-	    ControllerInputs::INPUT_ATTACK2,
-	    ControllerInputs::INPUT_SPECIAL_ABILITY,
-	    ControllerInputs::INPUT_VEH_MOUSE_CONTROL_OVERRIDE,
-	    ControllerInputs::INPUT_SNIPER_ZOOM,
-	};
-
-	void context_menu_service::disable_control_action_loop()
-	{
-		if (g_context_menu_service->enabled)
-		{
-			for (const auto& control : controls)
-				PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(control), true);
-		}
-	}
-
 	void context_menu_service::context_menu()
 	{
 		while (g_running)

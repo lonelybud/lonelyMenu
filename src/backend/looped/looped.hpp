@@ -51,7 +51,7 @@ namespace big
 		static void weapons_tp_gun();
 		static void weapons_ammo_special_type();
 		static void weapons_cage_gun();
-		static void custom_gun_disable_control_action();
+		static void disable_attack_actions();
 		static void weapons_delete_gun();
 		static void weapons_gravity_gun();
 		static void weapons_repair_gun();
@@ -66,5 +66,7 @@ namespace big
 		static void derail_train();
 
 		static void world_spawn_ped();
+
+		static void throw_lifted_vehicle();
 	};
 }

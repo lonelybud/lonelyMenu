@@ -3,11 +3,11 @@
 #include "backend/player_command.hpp"
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
+#include "services/ped_animations/ped_animations_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/entity.hpp"
 #include "util/ped.hpp"
 #include "util/teleport.hpp"
-#include "services/ped_animations/ped_animations_service.hpp"
 
 
 namespace big
@@ -32,6 +32,22 @@ namespace big
 		ImVec2 edge5, edge6, edge7, edge8;
 	};
 
+	inline Entity lifted_vehicle;
+	inline bool isVehicleLifted = false;
+
+	inline bool ejectPlayerFromCar(Entity m_handle, int index)
+	{
+		bool isPlayer = ped::get_player_from_ped(VEHICLE::GET_PED_IN_VEHICLE_SEAT(m_handle, index, 0)) != NULL;
+
+		if (isPlayer)
+		{
+			static player_command* command = dynamic_cast<player_command*>(command::get(rage::consteval_joaat("vehkick")));
+			command->call(ped::get_player_from_ped(VEHICLE::GET_PED_IN_VEHICLE_SEAT(m_handle, index, 0)), {});
+		}
+
+		return isPlayer;
+	}
+
 	class context_menu_service final
 	{
 	private:
@@ -52,7 +68,6 @@ namespace big
 		void get_entity_closest_to_screen_center();
 		void load_shared();
 
-		static void disable_control_action_loop();
 		static void context_menu();
 
 		Entity m_handle;
@@ -130,19 +145,84 @@ namespace big
 		        }},
 		        {"EJECT",
 		            [this] {
-			            if (ped::get_player_from_ped(VEHICLE::GET_PED_IN_VEHICLE_SEAT(m_handle, -1, 0)) != NULL)
-			            {
-				            static player_command* command = dynamic_cast<player_command*>(command::get(rage::consteval_joaat("vehkick")));
-				            command->call(ped::get_player_from_ped(VEHICLE::GET_PED_IN_VEHICLE_SEAT(m_handle, -1, 0)), {});
-			            }
+			            ejectPlayerFromCar(m_handle, -1);
 
 			            TASK::CLEAR_PED_TASKS_IMMEDIATELY(VEHICLE::GET_PED_IN_VEHICLE_SEAT(m_handle, -1, 0));
 			            TASK::CLEAR_PED_TASKS_IMMEDIATELY(m_handle);
 		        }},
 		        {"TP INTO", [this] {
 			         teleport::into_vehicle(m_handle);
-		        }}
-		    }};
+		             }},
+		        {"LIFT UP", [this] {
+			         if (ENTITY::IS_ENTITY_ATTACHED(m_handle) && entity::take_control_of(m_handle))
+			         {
+				         ENTITY::DETACH_ENTITY(m_handle, 0, 0);
+			         }
+			         else if (!big::isVehicleLifted)
+			         {
+				         int passengers = VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(m_handle, 1, 0);
+
+				         if (passengers && ejectPlayerFromCar(m_handle, -1)) // if passengers are there and driver is player then eject driver
+				         {
+					         int playersCount = 1;
+
+					         if (passengers > 1) // if passengers > 1, check if other passengers are players and eject them too
+						         for (int i = 0; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(m_handle); ++i) // get max passengers capacity except driver
+							         if (ejectPlayerFromCar(m_handle, i))
+								         ++playersCount;
+
+					         int passengersWithoutPlayers = passengers - playersCount;
+
+					         for (int i = 0; i < 100 && ((passengers = VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(m_handle, 1, 0)) != passengersWithoutPlayers); i++)
+						         script::get_current()->yield();
+
+					         if (passengers != passengersWithoutPlayers) // if players are not out then do nothing
+						         return;
+				         }
+
+				         if (entity::take_control_of(m_handle))
+				         {
+					         big::lifted_vehicle  = m_handle;
+					         big::isVehicleLifted = true;
+
+					         //  float h1 = ENTITY::GET_ENTITY_HEIGHT_ABOVE_GROUND(self::ped);
+					         //  float h2 = ENTITY::GET_ENTITY_HEIGHT_ABOVE_GROUND(m_handle) / 2.0f;
+
+					         Vector3 vehDimMin, vehDimMax, selfDimMin, selfDimMax;
+
+					         // https://forums.gta5-mods.com/topic/30068/get-dimensions-of-entity-like-cars/2
+					         MISC::GET_MODEL_DIMENSIONS(ENTITY::GET_ENTITY_MODEL(m_handle), &vehDimMin, &vehDimMax);
+					         MISC::GET_MODEL_DIMENSIONS(g_local_player->m_model_info->m_hash, &selfDimMin, &selfDimMax);
+
+					         Vector3 vehLfd = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(m_handle,
+					             vehDimMin.x,
+					             vehDimMax.y,
+					             vehDimMin.z);
+					         Vector3 vehLfu = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(m_handle,
+					             vehDimMin.x,
+					             vehDimMax.y,
+					             vehDimMax.z);
+
+					         Vector3 selfLfd = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(m_handle,
+					             selfDimMin.x,
+					             selfDimMax.y,
+					             selfDimMin.z);
+					         Vector3 selfLfu = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(m_handle,
+					             selfDimMin.x,
+					             selfDimMax.y,
+					             selfDimMax.z);
+
+					         float h1 = (selfLfu.z - selfLfd.z) / 2.f;
+					         float h2 = (vehLfu.z - vehLfd.z) / 2.f;
+
+					         ped::ped_play_animation(self::ped, "lamar_1_int-10", "cs_magenta_dual-10", -5.0, -5.0, -1, 1048635, 0.0, false, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0});
+					         ENTITY::ATTACH_ENTITY_TO_ENTITY(m_handle, self::ped, ENTITY::GET_ENTITY_BONE_INDEX_BY_NAME(self::ped, "BONETAG_HEAD"), h2, 0, 0, 0, 90, 0, 1, 0, 1, 0, 0, 1, 0);
+					         //  ENTITY::ATTACH_ENTITY_TO_ENTITY(m_handle, self::ped, ENTITY::GET_ENTITY_BONE_INDEX_BY_NAME(self::ped, "BONETAG_SPINE_ROOT"), h1 + h2 - 0.1f, 0, 0, 0, 90, 0, 1, 0, 1, 0, 0, 1, 0);
+				         }
+				         else
+					         g_notification_service->push_warning("Toxic", "Failed to take control of vehicle.");
+			         }
+		         }}}};
 
 		s_context_menu ped_menu{ContextEntityType::PED,
 		    0,
