@@ -9,17 +9,14 @@ namespace big
 {
 	void looped::throw_lifted_vehicle()
 	{
-		bool INPUT_AIM_PRESSED    = PAD::IS_CONTROL_JUST_PRESSED(0, (int)ControllerInputs::INPUT_AIM);
-		bool INPUT_ATTACK_PRESSED = PAD::IS_DISABLED_CONTROL_JUST_PRESSED(0, (int)ControllerInputs::INPUT_ATTACK);
-
-		if (!g_gui->is_open() && (INPUT_AIM_PRESSED || INPUT_ATTACK_PRESSED) && isVehicleLifted)
+		if (isVehicleLifted && !g_gui->is_open() && PAD::IS_DISABLED_CONTROL_JUST_PRESSED(0, (int)ControllerInputs::INPUT_ATTACK))
 		{
 			Vector3 location = self::pos;
 
 			Vector3 rot = CAM::GET_GAMEPLAY_CAM_ROT(2);
 			float pitch = math::deg_to_rad(rot.x);      // vertical
 			float yaw   = math::deg_to_rad(rot.z + 90); // horizontal
-			float dist  = INPUT_AIM_PRESSED ? 30.f : 15.f;
+			float dist  = 15.f;
 
 			float h1 = ENTITY::GET_ENTITY_HEIGHT_ABOVE_GROUND(self::ped);
 			float h2 = ENTITY::GET_ENTITY_HEIGHT_ABOVE_GROUND(lifted_vehicle);
