@@ -34,6 +34,7 @@ namespace big
 		static void self();
 		static void animations();
 		static void spawned_vehicles();
+		static void play_audio();
 		static void scenarios();
 		static void spawn_objects();
 		static void ptfx_effects();
