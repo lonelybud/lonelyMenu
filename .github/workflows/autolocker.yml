@@ -16,17 +16,21 @@ jobs:
         id: fetch-workflow-runs
         run: |
           response=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=${{ github.ref_name }}&per_page=2")
-          echo "::set-output name=workflow_runs::$response"
+          echo "response=$response" >> $env:GITHUB_OUTPUT
 
-      - name: Cancel the latest running workflow
-        if: steps.fetch-workflow-runs.outputs.workflow_runs != 'null'
+      - name: log the response
         run: |
-          latest_run_id=$(echo ${{ steps.fetch-workflow-runs.outputs.workflow_runs }} | jq -r '.workflow_runs[] | select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "waiting" or .status == "pending") | .id' | head -n 1)
+          echo $steps.fetch-workflow-runs.outputs.response
+
+      - name: Cancel the latest running or queued workflow on the current branch
+        if: steps.fetch-workflow-runs.outputs.response != 'null'
+        run: |
+          latest_run_id=$(echo ${{ steps.fetch-workflow-runs.outputs.response }} | jq -r '.workflow_runs[] | select(.status == "in_progress" or .status == "queued" or .status == "requested" or .status == "waiting" or .status == "pending") | .id' | head -n 1)
           if [ -n "$latest_run_id" ]; then
             echo "Cancelling workflow run $latest_run_id"
             curl -X POST -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/runs/$latest_run_id/cancel"
           else
-            echo "No running workflows found to cancel."
+            echo "No running or queued workflows found on the current branch to cancel."
           fi
       - name: Autolock PRs that got merged or closed
         uses: actions/github-script@v6
