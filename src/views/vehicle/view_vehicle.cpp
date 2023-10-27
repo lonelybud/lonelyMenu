@@ -171,6 +171,8 @@ namespace big
 						g_vehicle_ammo_special.rocket_lifetime           = ROCKET_LIFETIME;
 					});
 				});
+
+				components::command_checkbox<"forge_model_lsc">();
 			}
 			ImGui::EndGroup();
 		}

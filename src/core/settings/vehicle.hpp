@@ -12,6 +12,7 @@ namespace big
 		bool keep_engine_running = false;
 		bool all_vehs_in_heists  = false;
 		bool veh_boost           = false;
+		bool forge_model_lsc     = false;
 
 		AutoDriveDestination auto_drive_destination = AutoDriveDestination::STOPPED;
 		AutoDriveStyle auto_drive_style             = AutoDriveStyle::LAW_ABIDING;
