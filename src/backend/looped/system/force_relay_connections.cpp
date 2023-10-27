@@ -1,5 +1,6 @@
 #include "backend/looped_command.hpp"
 #include "pointers.hpp"
+#include "core/settings/protections.hpp"
 
 namespace big
 {

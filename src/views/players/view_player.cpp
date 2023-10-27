@@ -10,6 +10,7 @@
 #include "util/globals.hpp"
 #include "views/view.hpp"
 
+#include <network/netConnection.hpp>
 #include <script/globals/GPBD_FM.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
@@ -74,8 +75,11 @@ namespace big
 						    ImGui::Text("Kills On Players: %d", stats.KillsOnPlayers);
 						    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
 
-						    Imgui::Spacing();
-						    if (auto ip = current_player->get_ip_address(); auto port = current_player->get_port(); ip)
+						    ImGui::Spacing();
+						    auto ip   = current_player->get_ip_address();
+						    auto port = current_player->get_port();
+
+						    if (ip)
 						    {
 							    ImGui::Text("IP Address: %d.%d.%d.%d:%d",
 							        ip.value().m_field1,
@@ -93,7 +97,7 @@ namespace big
 								        port)
 								                                .c_str());
 						    }
-						    else
+						    else if (auto net_player_data = current_player->get_net_data())
 						    {
 							    ImGui::Text(net_player_data->m_force_relays ? "IP Address: Hidden" : "IP Address: Unknown");
 							    if (g_protections.force_relay_connections)
@@ -128,7 +132,7 @@ namespace big
 					NETWORK::NETWORK_SHOW_PROFILE_UI((Any*)&gamerHandle);
 				});
 				ver_Space();
-				if (ImGui::button("Copy Name##copyname"))
+				if (components::button("Copy Name##copyname"))
 					ImGui::SetClipboardText(current_player->get_name());
 			}
 			ImGui::EndGroup();
