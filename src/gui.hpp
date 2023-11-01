@@ -40,6 +40,8 @@ namespace big
 
 		void wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+		void open_gui();
+
 	private:
 		void toggle_mouse();
 

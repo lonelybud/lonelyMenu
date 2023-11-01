@@ -6,6 +6,7 @@
 #include "fiber_pool.hpp"
 #include "gta/joaat.hpp"
 #include "gta_util.hpp"
+#include "gui.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "rage/rlSessionByGamerTaskResult.hpp"
@@ -162,6 +163,7 @@ namespace big::session
 
 				g_gui_service->set_selected(tabs::PLAYER);
 				g_player_service->set_selected(player);
+				g_gui->open_gui();
 
 				recent_modders_nm::add_player({name, rockstar_id, true});
 

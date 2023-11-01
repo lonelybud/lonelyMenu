@@ -67,7 +67,10 @@ namespace big
 						if (g_player_service->get_self()->is_host())
 							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
 						else
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr, {});
+						{
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(plyr, {});
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(plyr, {});
+						}
 
 						g_notification_service->push_success("Join Block", std::format("Kicking Player {} ", player_name));
 					}

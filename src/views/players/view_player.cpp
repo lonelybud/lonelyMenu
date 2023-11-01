@@ -141,10 +141,10 @@ namespace big
 					NETWORK::NETWORK_HANDLE_FROM_PLAYER(current_player->id(), (Any*)&gamerHandle, 13);
 					NETWORK::NETWORK_SHOW_PROFILE_UI((Any*)&gamerHandle);
 				});
-				ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+				ImGui::SameLine();
 				if (components::button("Copy Name##copyname"))
 					ImGui::SetClipboardText(current_player->get_name());
-				ImGui::SameLine();
+				ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
 				if (components::button("Block Join"))
 				{
 					if (auto net_data = current_player->get_net_data())
@@ -152,6 +152,13 @@ namespace big
 						auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
 						auto name        = net_data->m_name;
 						recent_modders_nm::add_player({name, rockstar_id, true});
+					}
+					if (g_player_service->get_self()->is_host())
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+					else
+					{
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(current_player, {});
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(current_player, {});
 					}
 				}
 			}
@@ -208,8 +215,8 @@ namespace big
 					{
 						components::player_command_button<"shkick">(current_player);
 						ver_Space();
-						components::player_command_button<"nfkick">(current_player);
 						components::player_command_button<"endkick">(current_player);
+						components::player_command_button<"nfkick">(current_player);
 					}
 
 					if (!current_player->is_host())

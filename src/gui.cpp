@@ -50,6 +50,17 @@ namespace big
 
 	void gui::toggle(bool toggle)
 	{
+		//Persist and restore the cursor position between menu instances.
+		static POINT cursor_coords{};
+		if (g_gui->m_is_open)
+		{
+			GetCursorPos(&cursor_coords);
+		}
+		else if (cursor_coords.x + cursor_coords.y != 0)
+		{
+			SetCursorPos(cursor_coords.x, cursor_coords.y);
+		}
+
 		m_is_open = toggle;
 
 		toggle_mouse();
@@ -218,20 +229,13 @@ namespace big
 	void gui::wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 		if (msg == WM_KEYUP && wparam == g_settings.hotkeys.menu_toggle)
-		{
-			//Persist and restore the cursor position between menu instances.
-			static POINT cursor_coords{};
-			if (g_gui->m_is_open)
-			{
-				GetCursorPos(&cursor_coords);
-			}
-			else if (cursor_coords.x + cursor_coords.y != 0)
-			{
-				SetCursorPos(cursor_coords.x, cursor_coords.y);
-			}
-
 			toggle(!m_is_open);
-		}
+	}
+
+	void gui::open_gui()
+	{
+		if (!m_is_open)
+			toggle(!m_is_open);
 	}
 
 	void gui::toggle_mouse()

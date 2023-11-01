@@ -5,10 +5,12 @@
 #include "file_manager/file.hpp"
 #include "gta/net_game_event.hpp"
 #include "gta_util.hpp"
+#include "gui.hpp"
 #include "hooking.hpp"
 #include "natives.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/custom_chat_buffer.hpp"
+#include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/session.hpp"
 
@@ -40,6 +42,9 @@ inline bool is_kick_instruction(rage::datBitBuffer& buffer)
 
 namespace big
 {
+	static uint8_t last_player_id                    = 0;
+	static int last_player_continuous_messages_count = 0;
+
 	bool get_msg_type(rage::eNetMessage& msgType, rage::datBitBuffer& buffer)
 	{
 		uint32_t pos;
@@ -108,6 +113,24 @@ namespace big
 			{
 				char message[256];
 				buffer.ReadString(message, 256);
+
+				if (last_player_id == player->id())
+				{
+					++last_player_continuous_messages_count;
+
+					// open the player inf who is believed to spam
+					if (last_player_continuous_messages_count == 2 && strlen(message) > 60)
+					{
+						g_gui_service->set_selected(tabs::PLAYER);
+						g_player_service->set_selected(player);
+						g_gui->open_gui();
+					}
+				}
+				else
+				{
+					last_player_id                        = player->id();
+					last_player_continuous_messages_count = 1;
+				}
 
 				if (g_session.log_chat_messages_to_file)
 				{

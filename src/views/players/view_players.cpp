@@ -5,6 +5,7 @@
 #include "pointers.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
+#include "util/strings.hpp"
 #include "views/view.hpp"
 
 #define IMGUI_DEFINE_PLACEMENT_NEW
@@ -15,7 +16,18 @@
 
 namespace big
 {
-	bool has_scrollbar = false;
+	static bool has_scrollbar = false;
+
+	static inline std::multimap<std::string, player_ptr> filter_players(const std::multimap<std::string, player_ptr>& inputMap, const std::string& name)
+	{
+		std::multimap<std::string, player_ptr> filteredMap;
+		std::string lowercaseSearchString = toLowercase(name);
+		for (auto pair : inputMap)
+			if (std::string lowercaseStr = toLowercase(pair.second->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+				filteredMap.insert(pair);
+		return filteredMap;
+	}
+
 	static void player_button(const player_ptr& plyr)
 	{
 		if (plyr == nullptr)
@@ -85,6 +97,9 @@ namespace big
 
 	void view::players()
 	{
+		static std::multimap<std::string, player_ptr> searched_players;
+		static std::string search_player_name;
+
 		// player count does not include ourself that's why +1
 		const auto player_count = g_player_service->players().size() + 1;
 
@@ -114,16 +129,31 @@ namespace big
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, {0.f, 0.f, 0.f, 0.f});
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarBg, {0.f, 0.f, 0.f, 0.f});
 
-			if (ImGui::BeginListBox("##players", {ImGui::GetWindowSize().x - ImGui::GetStyle().WindowPadding.x * 2, window_height}))
+			auto width_of_list = ImGui::GetWindowSize().x - ImGui::GetStyle().WindowPadding.x * 2;
+
+			ImGui::SetNextItemWidth(width_of_list);
+			if (components::input_text_with_hint("###search_player_name", "search name", search_player_name))
+				searched_players.clear();
+
+			if (ImGui::BeginListBox("##players", {width_of_list, window_height}))
 			{
 				ImGui::SetScrollX(0);
 				player_button(g_player_service->get_self());
 
 				if (player_count > 1)
+				{
 					ImGui::Separator();
 
-				for (const auto& [_, player] : g_player_service->players())
-					player_button(player);
+					std::multimap<std::string, player_ptr> temp_objs;
+
+					if (searched_players.size())
+						temp_objs = searched_players;
+					else if (search_player_name.length() > 0)
+						temp_objs = searched_players = filter_players(g_player_service->players(), search_player_name);
+
+					for (const auto& [_, player] : (temp_objs.size() ? temp_objs : g_player_service->players()))
+						player_button(player);
+				}
 
 				ImGui::EndListBox();
 			}
