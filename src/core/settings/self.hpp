@@ -18,7 +18,7 @@ namespace big
 		bool ghost_org        = false;
 		bool unlimited_oxygen = false;
 		bool god_mode         = false;
-		bool clean_player     = false;
+		bool clean_player     = true;
 
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(g_self_t, noclip_aim_speed_multiplier, noclip_speed_multiplier)
 	} g_self{};

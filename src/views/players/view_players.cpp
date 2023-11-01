@@ -151,7 +151,7 @@ namespace big
 					else if (search_player_name.length() > 0)
 						temp_objs = searched_players = filter_players(g_player_service->players(), search_player_name);
 
-					for (const auto& [_, player] : (temp_objs.size() ? temp_objs : g_player_service->players()))
+					for (const auto& [_, player] : (search_player_name.length() > 0 ? temp_objs : g_player_service->players()))
 						player_button(player);
 				}
 

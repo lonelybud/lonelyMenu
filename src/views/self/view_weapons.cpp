@@ -94,7 +94,7 @@ namespace big
 				else if (search_weapon_name.length() > 0)
 					temp_objs = searched_weapons = filter_weapons_map(g_gta_data_service->weapons(), search_weapon_name);
 
-				for (auto& weapon : (temp_objs.size() ? temp_objs : g_gta_data_service->weapons()))
+				for (auto& weapon : (search_weapon_name.length() > 0 ? temp_objs : g_gta_data_service->weapons()))
 				{
 					if (weapon.second.m_display_name != "NULL"
 					    && ImGui::Selectable(weapon.second.m_display_name.c_str(), weapon.second.m_hash == selected_weapon_hash))

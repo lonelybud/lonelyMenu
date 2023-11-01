@@ -65,14 +65,17 @@ namespace big
 					if (recent_modder != recent_modders_nm::recent_modders_list.end() && recent_modder->second.block_join)
 					{
 						if (g_player_service->get_self()->is_host())
+						{
 							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
+							g_notification_service->push_success("Join Blocked", std::format("Kicking Player {} ", player_name));
+						}
 						else
 						{
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(plyr, {});
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(plyr, {});
+							g_notification_service->push_warning("Player Join", std::format("A Blocked player {} has joined. Take your decision", player_name));
+							g_gui_service->set_selected(tabs::PLAYER);
+							g_player_service->set_selected(plyr);
+							g_gui->open_gui();
 						}
-
-						g_notification_service->push_success("Join Block", std::format("Kicking Player {} ", player_name));
 					}
 					else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 					{
