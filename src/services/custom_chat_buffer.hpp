@@ -9,7 +9,7 @@ namespace big
 	public:
 		char buf[4096] = {'\0'};
 
-		void reset_buf()
+		inline void reset_buf()
 		{
 			strcpy(buf, "");
 			len = 0;
@@ -29,8 +29,9 @@ namespace big
 				len += msg_len;
 			else
 			{
-				memmove(buf, buf + msg_len, content_len - msg_len);
-				buf[content_len - msg_len] = '\0';
+				// memmove(buf, buf + msg_len, content_len - msg_len);
+				// buf[content_len - msg_len] = '\0';
+				reset_buf();
 			}
 			strcat(buf, new_msg);
 		}

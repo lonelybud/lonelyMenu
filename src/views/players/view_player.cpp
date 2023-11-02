@@ -163,13 +163,19 @@ namespace big
 						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(current_player, {});
 					}
 				}
+				if (current_player->is_spammer)
+				{
+					ImGui::SameLine();
+					if (components::button("Remove from Spammer"))
+						current_player->is_spammer = false;
+				}
 			}
 			ImGui::EndGroup();
 
 			if (current_player->id() == self::id)
 				return;
 
-			ImGui::SameLine(0, *g_pointers->m_gta.m_resolution_x * 0.2);
+			ImGui::SameLine(0, *g_pointers->m_gta.m_resolution_x * 0.1);
 
 			ImGui::BeginGroup();
 			{
