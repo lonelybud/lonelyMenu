@@ -19,7 +19,7 @@ namespace recent_modders_nm
 	{
 		return big::g_file_manager.get_project_file("blocked_modders.json").get_path();
 	}
-	
+
 	void load_blocked_list();
 	void save_blocked_list();
 
@@ -27,5 +27,21 @@ namespace recent_modders_nm
 	{
 		recent_modders_nm::recent_modders_list[modder.rockstar_id] = modder;
 		save_blocked_list();
+	}
+	inline void toggle_block(uint64_t rockstar_id)
+	{
+		auto& v = recent_modders_nm::recent_modders_list[rockstar_id].block_join;
+		v       = !v;
+		save_blocked_list();
+	}
+	inline bool is_blocked(uint64_t rockstar_id)
+	{
+		auto recent_modder = recent_modders_list.find(rockstar_id);
+		return recent_modder != recent_modders_list.end() && recent_modder->second.block_join;
+	}
+	inline bool does_exist(uint64_t rockstar_id)
+	{
+		auto recent_modder = recent_modders_nm::recent_modders_list.find(rockstar_id);
+		return recent_modder != recent_modders_nm::recent_modders_list.end();
 	}
 }

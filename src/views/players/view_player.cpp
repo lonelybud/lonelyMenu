@@ -25,6 +25,7 @@ inline void ver_Space()
 namespace big
 {
 	static inline big::player_ptr last_selected_player;
+	static uint64_t rockstar_id;
 
 	static void extra_info_button(player_ptr current_player)
 	{
@@ -138,8 +139,14 @@ namespace big
 					strcat(player_tab.name, " [FRIEND]");
 				if (current_player->is_modder)
 					strcat(player_tab.name, " [MOD]");
-			}
 
+				if (auto net_data = current_player->get_net_data())
+				{
+					rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
+					if (recent_modders_nm::is_blocked(rockstar_id))
+						strcat(player_tab.name, " [BLOCKED]");
+				}
+			}
 
 			if (current_player->id() == self::id)
 			{
@@ -165,21 +172,18 @@ namespace big
 					if (components::button("Copy Name##copyname"))
 						ImGui::SetClipboardText(current_player->get_name());
 					ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-					if (components::button("Block Join"))
+					if (bool is_blocked = recent_modders_nm::is_blocked(rockstar_id); components::button(is_blocked ? "Unblock Join" : "Block Join"))
 					{
-						if (auto net_data = current_player->get_net_data())
-						{
-							auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-							auto name        = net_data->m_name;
-							recent_modders_nm::add_player({name, rockstar_id, true});
-						}
-						if (g_player_service->get_self()->is_host())
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+						if (recent_modders_nm::does_exist(rockstar_id))
+							recent_modders_nm::toggle_block(rockstar_id);
 						else
 						{
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(current_player, {});
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(current_player, {});
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(current_player, {});
+							recent_modders_nm::add_player({current_player->get_name(), rockstar_id, true});
+
+							if (g_player_service->get_self()->is_host())
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+							else
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(current_player, {});
 						}
 					}
 				}
@@ -189,6 +193,7 @@ namespace big
 					ver_Space();
 					ImGui::BeginGroup();
 					{
+						components::sub_title("Chat Spammer");
 						if (components::button("Unflag Spammer"))
 							current_player->is_spammer = false;
 					}
@@ -250,15 +255,24 @@ namespace big
 						components::player_command_button<"hostkick">(current_player);
 					else
 					{
-						components::player_command_button<"shkick">(current_player);
-						components::player_command_button<"endkick">(current_player);
-						ver_Space();
-						components::player_command_button<"nfkick">(current_player);
+						ImGui::BeginGroup();
+						{
+							components::player_command_button<"shkick">(current_player);
+							components::player_command_button<"endkick">(current_player);
+							ver_Space();
+							components::player_command_button<"nfkick">(current_player);
+							components::player_command_button<"oomkick">(current_player);
+							if (!current_player->is_host())
+								components::player_command_button<"desync">(current_player);
+						}
+						ImGui::EndGroup();
+						ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+						ImGui::BeginGroup();
+						{
+							components::player_command_button<"multikick">(current_player);
+						}
+						ImGui::EndGroup();
 					}
-					components::player_command_button<"oomkick">(g_player_service->get_selected());
-
-					if (!current_player->is_host())
-						components::player_command_button<"desync">(current_player);
 				}
 				ImGui::EndGroup();
 				ver_Space();

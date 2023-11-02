@@ -180,8 +180,7 @@ namespace big::session
 				player->infractions.insert((int)infraction);
 				g_reactions.modder_detection.process(player);
 
-				auto recent_modder = recent_modders_nm::recent_modders_list.find(rockstar_id);
-				if (recent_modder == recent_modders_nm::recent_modders_list.end())
+				if (!recent_modders_nm::does_exist(rockstar_id))
 					recent_modders_nm::add_player({name, rockstar_id, false});
 			}
 		}

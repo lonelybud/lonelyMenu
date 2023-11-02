@@ -103,9 +103,12 @@ namespace big
 			ImGui::Spacing();
 			ImGui::Text(recent_modders_nm::recent_modders_list[selected_id].name.c_str());
 			ImGui::Text(std::to_string(selected_id).c_str());
-			if (ImGui::Checkbox("Block Join", &recent_modders_nm::recent_modders_list[selected_id].block_join))
+
+			auto block_join = recent_modders_nm::recent_modders_list[selected_id].block_join;
+
+			if (ImGui::Checkbox("Block Join", &block_join))
 			{
-				recent_modders_nm::save_blocked_list();
+				recent_modders_nm::toggle_block(selected_id);
 				searched_blocked_players.clear();
 			}
 		}
