@@ -3,6 +3,7 @@
 #include "core/settings/vehicle.hpp"
 #include "util/delete_entity.hpp"
 #include "util/mobile.hpp"
+#include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -86,6 +87,11 @@ namespace big
 			ImGui::SameLine();
 			components::button("Bring PV", [] {
 				vehicle::bring(mobile::mechanic::get_personal_vehicle(), self::pos, true);
+			});
+			ImGui::SameLine();
+			components::button("TP to last vehicle", [] {
+				if (self::last_veh)
+					teleport::into_vehicle(self::last_veh);
 			});
 		}
 		ImGui::SeparatorText("###General");

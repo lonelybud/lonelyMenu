@@ -3,6 +3,7 @@
 #include "network/Network.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/pathfind.hpp"
+#include "util/session.hpp"
 
 namespace big
 {
@@ -24,6 +25,10 @@ namespace big
 			ImGui::Spacing();
 			components::button("Network Shutdown and Load Most Recent Save", [] {
 				NETWORK::SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE();
+			});
+			ImGui::Spacing();
+			components::button("Leave GTA Online", [] {
+				session::join_type(eSessionType::LEAVE_ONLINE);
 			});
 			ImGui::Spacing();
 			components::button("Remove Black Screen", [] {

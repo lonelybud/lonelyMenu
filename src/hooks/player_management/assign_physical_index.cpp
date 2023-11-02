@@ -64,6 +64,8 @@ namespace big
 
 					if (recent_modder != recent_modders_nm::recent_modders_list.end() && recent_modder->second.block_join)
 					{
+						LOG(WARNING) << "A Blocked player " << player_name << " has joined.";
+
 						if (g_player_service->get_self()->is_host())
 						{
 							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});

@@ -482,6 +482,9 @@ namespace big::vehicle
 
 	void clear_all_peds(Vehicle vehicle)
 	{
+		if (entity::take_control_of(vehicle))
+			VEHICLE::BRING_VEHICLE_TO_HALT(vehicle, 1, 5, true);
+
 		if (auto passengers = VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(vehicle, 1, 0))
 		{
 			eject_player(vehicle, -1); // if driver is player eject it

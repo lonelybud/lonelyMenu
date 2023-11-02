@@ -369,7 +369,7 @@ namespace big
 			else if (searchObjectText.length() > 0)
 				temp_objs = searchedObjectList = filterStrings(objectList, searchObjectText);
 
-			for (auto element : (temp_objs.size() ? temp_objs : objectList))
+			for (auto element : (searchObjectText.length() > 0 ? temp_objs : objectList))
 				if (ImGui::Selectable(element.c_str(), selectedObjectNameOrHash == element))
 					selectedObjectNameOrHash = element;
 

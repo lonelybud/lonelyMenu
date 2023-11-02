@@ -14,6 +14,5 @@ namespace big
 	    {eSessionType::NEW_PUBLIC, "New Public Session"},
 	    {eSessionType::CLOSED_FRIENDS, "Closed Friend Session"},
 	    {eSessionType::INVITE_ONLY, "Invite Only Session"},
-	    {eSessionType::LEAVE_ONLINE, "Leave GTA Online"},
 	};
 }

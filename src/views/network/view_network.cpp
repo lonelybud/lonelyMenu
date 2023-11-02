@@ -96,14 +96,21 @@ namespace big
 					});
 
 				ImGui::PopItemWidth();
+				if (*g_pointers->m_gta.m_is_session_started)
+				{
+					ImGui::Spacing();
+					components::button("Leave GTA Online", [] {
+						session::join_type(eSessionType::LEAVE_ONLINE);
+					});
+				}
 			}
 			ImGui::EndGroup();
 			ver_Space();
 			ImGui::BeginGroup();
 			{
-				components::sub_title("Force Host");
+				components::sub_title("Hosting");
 
-				ImGui::Checkbox("Force Session Host", &g_session.force_session_host);
+				ImGui::Checkbox("Spoof Host Token", &g_session.force_session_host);
 				if (ImGui::IsItemHovered())
 					ImGui::SetTooltip("Join another session to apply changes. The original host of the session must leave or be kicked");
 
@@ -121,6 +128,17 @@ namespace big
 						});
 				if (ImGui::IsItemHovered())
 					ImGui::SetTooltip("This might break freemode missions and interiors. Use with caution");
+
+				ImGui::Spacing();
+				static std::string script_host_player_name = "";
+
+				components::button("Identify Script Host", [] {
+					if (auto launcher = gta_util::find_script_thread(RAGE_JOAAT("freemode")); launcher && launcher->m_net_component)
+						if (auto host = ((CGameScriptHandlerNetComponent*)launcher->m_net_component)->get_host(); host)
+							script_host_player_name = host->get_name();
+				});
+				ImGui::SameLine();
+				ImGui::Text(script_host_player_name.c_str());
 			}
 			ImGui::EndGroup();
 		}

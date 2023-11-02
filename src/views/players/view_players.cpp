@@ -97,7 +97,6 @@ namespace big
 
 	void view::players()
 	{
-		static std::multimap<std::string, player_ptr> searched_players;
 		static std::string search_player_name;
 
 		// player count does not include ourself that's why +1
@@ -132,8 +131,7 @@ namespace big
 			auto width_of_list = ImGui::GetWindowSize().x - ImGui::GetStyle().WindowPadding.x * 2;
 
 			ImGui::SetNextItemWidth(width_of_list);
-			if (components::input_text_with_hint("###search_player_name", "search name", search_player_name))
-				searched_players.clear();
+			components::input_text_with_hint("###search_player_name", "search name", search_player_name);
 
 			if (ImGui::BeginListBox("##players", {width_of_list, window_height}))
 			{
@@ -144,14 +142,11 @@ namespace big
 				{
 					ImGui::Separator();
 
-					std::multimap<std::string, player_ptr> temp_objs;
+					std::multimap<std::string, player_ptr> temp_objs = search_player_name.length() > 0 ?
+					    filter_players(g_player_service->players(), search_player_name) :
+					    g_player_service->players();
 
-					if (searched_players.size())
-						temp_objs = searched_players;
-					else if (search_player_name.length() > 0)
-						temp_objs = searched_players = filter_players(g_player_service->players(), search_player_name);
-
-					for (const auto& [_, player] : (search_player_name.length() > 0 ? temp_objs : g_player_service->players()))
+					for (const auto& [_, player] : temp_objs)
 						player_button(player);
 				}
 

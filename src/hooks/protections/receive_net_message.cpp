@@ -119,7 +119,7 @@ namespace big
 					++last_player_continuous_messages_count;
 
 					// open the player inf who is believed to spam
-					if (last_player_continuous_messages_count == 2 && strlen(message) > 60)
+					if (last_player_continuous_messages_count > 2 && strlen(message) > 75)
 					{
 						g_gui_service->set_selected(tabs::PLAYER);
 						g_player_service->set_selected(player);

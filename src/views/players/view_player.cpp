@@ -9,6 +9,7 @@
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/delete_entity.hpp"
 #include "util/globals.hpp"
+#include "util/scripts.hpp"
 #include "views/view.hpp"
 
 #include <network/netConnection.hpp>
@@ -159,6 +160,7 @@ namespace big
 					{
 						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(current_player, {});
 						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(current_player, {});
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(current_player, {});
 					}
 				}
 			}
@@ -173,13 +175,18 @@ namespace big
 			{
 				ImGui::BeginGroup();
 				{
-					components::sub_title("Teleport");
+					components::sub_title("Teleport / Location");
 
 					components::player_command_button<"playertp">(current_player);
 					ImGui::SameLine();
 					components::player_command_button<"playervehtp">(current_player);
 					ImGui::SameLine();
 					components::player_command_button<"bring">(current_player);
+
+					components::button("Set Waypoint", [current_player] {
+						Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
+						HUD::SET_NEW_WAYPOINT(location.x, location.y);
+					});
 				}
 				ImGui::EndGroup();
 				ver_Space();
@@ -214,10 +221,11 @@ namespace big
 					else
 					{
 						components::player_command_button<"shkick">(current_player);
-						ver_Space();
 						components::player_command_button<"endkick">(current_player);
+						ver_Space();
 						components::player_command_button<"nfkick">(current_player);
 					}
+					components::player_command_button<"oomkick">(g_player_service->get_selected());
 
 					if (!current_player->is_host())
 						components::player_command_button<"desync">(current_player);
@@ -241,6 +249,10 @@ namespace big
 						Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
 						if (veh && ENTITY::IS_ENTITY_A_VEHICLE(veh))
 							vehicle::clear_all_peds(veh);
+					});
+					components::button("Bring Vehicle (only)", [current_player] {
+						Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
+						vehicle::bring(veh, self::pos, false);
 					});
 					ver_Space();
 					components::button("Delete Vehicle", [current_player] {

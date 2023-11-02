@@ -136,7 +136,7 @@ namespace big
 				temp_objs = searchedAnimDictCompactObjs = filterStrings<ptfxEffects::AnimDictCompactObj>(animDictCompactObjs, searchDicText, animDictCompactObjReducer);
 
 			unsigned i = 0;
-			for (auto& dicObj : (temp_objs.size() ? temp_objs : animDictCompactObjs))
+			for (auto& dicObj : (searchDicText.length() > 0 ? temp_objs : animDictCompactObjs))
 			{
 				if (ImGui::Selectable(dicObj.DictionaryName.c_str(), selecDicIndex == i))
 					selecDicIndex = i;

@@ -134,7 +134,7 @@ namespace big
 			else if (searchScenarioText.length() > 0)
 				temp_objs = searchedScenarios = filterStrings(scenarios, searchScenarioText);
 
-			for (auto& scenario : (temp_objs.size() ? temp_objs : scenarios))
+			for (auto& scenario : (searchScenarioText.length() > 0 ? temp_objs : scenarios))
 				if (ImGui::Selectable(scenario.c_str(), selected_scenario == scenario, ImGuiSelectableFlags_AllowDoubleClick))
 				{
 					selected_scenario = scenario;
