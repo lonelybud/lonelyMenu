@@ -26,6 +26,97 @@ namespace big
 {
 	static inline big::player_ptr last_selected_player;
 
+	static void extra_info_button(player_ptr current_player)
+	{
+		components::options_modal(
+		    "Extra Info",
+		    [current_player] {
+			    ImGui::BeginGroup();
+			    if (auto id = current_player->id(); id != -1)
+			    {
+				    auto& stats     = scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[id].PlayerStats;
+				    auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[id].BossGoon;
+
+				    const auto money  = reinterpret_cast<uint64_t&>(stats.Money);
+				    const auto wallet = reinterpret_cast<uint64_t&>(stats.WalletBalance);
+
+				    if (boss_goon.Language >= 0 && boss_goon.Language < 13)
+					    ImGui::Text("Language: %s", languages[boss_goon.Language].name);
+
+				    ImGui::Text("Money In Wallet: %llu", wallet);
+				    ImGui::Text("Money In Bank: %llu", money - wallet);
+				    ImGui::Text("Total Money: %llu", money);
+				    ImGui::Text("Rank: %d (RP %d)", stats.Rank, stats.RP);
+				    ImGui::Text("K/D Ratio: %f", stats.KdRatio);
+				    ImGui::Text("Kills On Players: %d", stats.KillsOnPlayers);
+				    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
+
+				    ImGui::Spacing();
+				    auto ip   = current_player->get_ip_address();
+				    auto port = current_player->get_port();
+
+				    if (ip)
+				    {
+					    ImGui::Text("IP Address: %d.%d.%d.%d:%d",
+					        ip.value().m_field1,
+					        ip.value().m_field2,
+					        ip.value().m_field3,
+					        ip.value().m_field4,
+					        port);
+					    ImGui::SameLine();
+					    if (ImGui::SmallButton("copy##copyip"))
+						    ImGui::SetClipboardText(std::format("{}.{}.{}.{}:{}",
+						        ip.value().m_field1,
+						        ip.value().m_field2,
+						        ip.value().m_field3,
+						        ip.value().m_field4,
+						        port)
+						                                .c_str());
+				    }
+				    else if (auto net_player_data = current_player->get_net_data())
+				    {
+					    ImGui::Text(net_player_data->m_force_relays ? "IP Address: Force Relay" : "IP Address: Unknown");
+
+					    if (g_protections.force_relay_connections)
+						    ImGui::Text("Note - IP addresses cannot be seen when Force Relay Connections is enabled.");
+					    else
+					    {
+						    auto conn_peer = current_player->get_connection_peer();
+						    auto cxn_type  = conn_peer ? conn_peer->m_peer_address.m_connection_type : 0;
+						    netAddress ip;
+
+						    if (cxn_type == 2)
+						    {
+							    ip = conn_peer->m_relay_address.m_relay_address;
+							    ImGui::Text(std::format("Relay IP Address: {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
+							                    .c_str());
+						    }
+						    else if (cxn_type == 3)
+						    {
+							    ip = conn_peer->m_peer_address.m_relay_address;
+							    ImGui::Text(std::format("Peer Relay IP : {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
+							                    .c_str());
+						    }
+						    if (cxn_type == 2 || cxn_type == 3)
+							    if (ImGui::SmallButton("copy##copyip"))
+								    ImGui::SetClipboardText(
+								        std::format("{}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4).c_str());
+					    }
+				    }
+			    }
+			    ImGui::EndGroup();
+
+			    ImGui::Separator();
+
+			    ImGui::Checkbox("Block Explosions", &current_player->block_explosions);
+			    ImGui::Checkbox("Block Clone Creates", &current_player->block_clone_create);
+			    ImGui::Checkbox("Block Clone Syncs", &current_player->block_clone_sync);
+			    ImGui::Checkbox("Block Network Events", &current_player->block_net_events);
+			    ImGui::Checkbox("Log Clones", &current_player->log_clones);
+		    },
+		    false);
+	}
+
 	void view::view_player()
 	{
 		ImGui::Spacing();
@@ -49,152 +140,60 @@ namespace big
 					strcat(player_tab.name, " [MOD]");
 			}
 
-			ImGui::BeginGroup();
-			{
-				ImGui::Checkbox("Spectate", &g_player.spectating);
-				ImGui::Spacing();
-				components::sub_title("Info");
-				components::options_modal(
-				    "Extra Info",
-				    [current_player] {
-					    ImGui::BeginGroup();
-					    if (auto id = current_player->id(); id != -1)
-					    {
-						    auto& stats     = scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[id].PlayerStats;
-						    auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[id].BossGoon;
-
-						    const auto money  = reinterpret_cast<uint64_t&>(stats.Money);
-						    const auto wallet = reinterpret_cast<uint64_t&>(stats.WalletBalance);
-
-						    if (boss_goon.Language >= 0 && boss_goon.Language < 13)
-							    ImGui::Text("Language: %s", languages[boss_goon.Language].name);
-
-						    ImGui::Text("Money In Wallet: %llu", wallet);
-						    ImGui::Text("Money In Bank: %llu", money - wallet);
-						    ImGui::Text("Total Money: %llu", money);
-						    ImGui::Text("Rank: %d (RP %d)", stats.Rank, stats.RP);
-						    ImGui::Text("K/D Ratio: %f", stats.KdRatio);
-						    ImGui::Text("Kills On Players: %d", stats.KillsOnPlayers);
-						    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
-
-						    ImGui::Spacing();
-						    auto ip   = current_player->get_ip_address();
-						    auto port = current_player->get_port();
-
-						    if (ip)
-						    {
-							    ImGui::Text("IP Address: %d.%d.%d.%d:%d",
-							        ip.value().m_field1,
-							        ip.value().m_field2,
-							        ip.value().m_field3,
-							        ip.value().m_field4,
-							        port);
-							    ImGui::SameLine();
-							    if (ImGui::SmallButton("copy##copyip"))
-								    ImGui::SetClipboardText(std::format("{}.{}.{}.{}:{}",
-								        ip.value().m_field1,
-								        ip.value().m_field2,
-								        ip.value().m_field3,
-								        ip.value().m_field4,
-								        port)
-								                                .c_str());
-						    }
-						    else if (auto net_player_data = current_player->get_net_data())
-						    {
-							    ImGui::Text(net_player_data->m_force_relays ? "IP Address: Force Relay" : "IP Address: Unknown");
-
-							    if (g_protections.force_relay_connections)
-								    ImGui::Text("Note - IP addresses cannot be seen when Force Relay Connections is enabled.");
-							    else
-							    {
-								    auto conn_peer = current_player->get_connection_peer();
-								    auto cxn_type  = conn_peer ? conn_peer->m_peer_address.m_connection_type : 0;
-
-								    if (cxn_type == 2)
-								    {
-									    auto ip = conn_peer->m_relay_address.m_relay_address;
-									    ImGui::Text(std::format("Relay IP Address: {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-									                    .c_str());
-								    }
-								    else if (cxn_type == 3)
-								    {
-									    auto ip = conn_peer->m_peer_address.m_relay_address;
-									    ImGui::Text(std::format("Peer Relay IP : {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-									                    .c_str());
-								    }
-							    }
-						    }
-					    }
-					    ImGui::EndGroup();
-
-					    ImGui::Separator();
-
-					    ImGui::Checkbox("Block Explosions", &current_player->block_explosions);
-					    ImGui::Checkbox("Block Clone Creates", &current_player->block_clone_create);
-					    ImGui::Checkbox("Block Clone Syncs", &current_player->block_clone_sync);
-					    ImGui::Checkbox("Block Network Events", &current_player->block_net_events);
-					    ImGui::Checkbox("Log Clones", &current_player->log_clones);
-				    },
-				    false);
-				ImGui::SameLine();
-				components::button("SC Profile", [current_player] {
-					uint64_t gamerHandle[13];
-					NETWORK::NETWORK_HANDLE_FROM_PLAYER(current_player->id(), (Any*)&gamerHandle, 13);
-					NETWORK::NETWORK_SHOW_PROFILE_UI((Any*)&gamerHandle);
-				});
-				ImGui::SameLine();
-				if (components::button("Copy Name##copyname"))
-					ImGui::SetClipboardText(current_player->get_name());
-				ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-				if (components::button("Block Join"))
-				{
-					if (auto net_data = current_player->get_net_data())
-					{
-						auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-						auto name        = net_data->m_name;
-						recent_modders_nm::add_player({name, rockstar_id, true});
-					}
-					if (g_player_service->get_self()->is_host())
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
-					else
-					{
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(current_player, {});
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(current_player, {});
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(current_player, {});
-					}
-				}
-				if (current_player->is_spammer)
-				{
-					ImGui::SameLine();
-					if (components::button("Remove from Spammer"))
-						current_player->is_spammer = false;
-				}
-			}
-			ImGui::EndGroup();
 
 			if (current_player->id() == self::id)
+			{
+				extra_info_button(current_player);
 				return;
-
-			ImGui::SameLine(0, *g_pointers->m_gta.m_resolution_x * 0.1);
+			}
 
 			ImGui::BeginGroup();
 			{
 				ImGui::BeginGroup();
 				{
-					components::sub_title("Teleport / Location");
-
-					components::player_command_button<"playertp">(current_player);
+					ImGui::Checkbox("Spectate", &g_player.spectating);
+					ImGui::Spacing();
+					components::sub_title("Info");
+					extra_info_button(current_player);
 					ImGui::SameLine();
-					components::player_command_button<"playervehtp">(current_player);
-					ImGui::SameLine();
-					components::player_command_button<"bring">(current_player);
-
-					components::button("Set Waypoint", [current_player] {
-						Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
-						HUD::SET_NEW_WAYPOINT(location.x, location.y);
+					components::button("SC Profile", [current_player] {
+						uint64_t gamerHandle[13];
+						NETWORK::NETWORK_HANDLE_FROM_PLAYER(current_player->id(), (Any*)&gamerHandle, 13);
+						NETWORK::NETWORK_SHOW_PROFILE_UI((Any*)&gamerHandle);
 					});
+					ImGui::SameLine();
+					if (components::button("Copy Name##copyname"))
+						ImGui::SetClipboardText(current_player->get_name());
+					ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+					if (components::button("Block Join"))
+					{
+						if (auto net_data = current_player->get_net_data())
+						{
+							auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
+							auto name        = net_data->m_name;
+							recent_modders_nm::add_player({name, rockstar_id, true});
+						}
+						if (g_player_service->get_self()->is_host())
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+						else
+						{
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(current_player, {});
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(current_player, {});
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(current_player, {});
+						}
+					}
 				}
 				ImGui::EndGroup();
+				if (current_player->is_spammer)
+				{
+					ver_Space();
+					ImGui::BeginGroup();
+					{
+						if (components::button("Unflag Spammer"))
+							current_player->is_spammer = false;
+					}
+					ImGui::EndGroup();
+				}
 				ver_Space();
 				ImGui::BeginGroup();
 				{
@@ -217,7 +216,32 @@ namespace big
 					});
 				}
 				ImGui::EndGroup();
-				ver_Space();
+			}
+			ImGui::EndGroup();
+
+			ImGui::SameLine(0, 100);
+
+			ImGui::BeginGroup();
+			{
+				components::sub_title("Teleport / Location");
+
+				components::player_command_button<"playertp">(current_player);
+				ImGui::SameLine();
+				components::player_command_button<"playervehtp">(current_player);
+				ImGui::SameLine();
+				components::player_command_button<"bring">(current_player);
+
+				components::button("Set Waypoint", [current_player] {
+					Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
+					HUD::SET_NEW_WAYPOINT(location.x, location.y);
+				});
+			}
+			ImGui::EndGroup();
+
+			ImGui::SameLine(0, 100);
+
+			ImGui::BeginGroup();
+			{
 				ImGui::BeginGroup();
 				{
 					components::sub_title("Kick");

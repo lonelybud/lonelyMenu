@@ -111,6 +111,9 @@ namespace big
 			case rage::eNetMessage::MsgTextMessage:
 			case rage::eNetMessage::MsgTextMessage2:
 			{
+				if (player->is_spammer)
+					return true;
+
 				char message[256];
 				buffer.ReadString(message, 256);
 
@@ -119,7 +122,7 @@ namespace big
 					++last_player_continuous_messages_count;
 
 					// open the player inf who is believed to spam
-					if (last_player_continuous_messages_count == 2 && strlen(message) > 70)
+					if (last_player_continuous_messages_count == 2 && strlen(message) > 80)
 					{
 						LOG(WARNING) << player->get_name() << " seem to spam chat message.";
 
@@ -135,18 +138,16 @@ namespace big
 					last_player_continuous_messages_count = 1;
 				}
 
-				if (!player->is_spammer)
+				if (g_session.log_chat_messages_to_file)
 				{
-					if (g_session.log_chat_messages_to_file)
-					{
-						std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-						log << player->get_name() << " : " << message << std::endl;
-						log.close();
-					}
-
-					if (g_session.log_chat_messages_to_textbox)
-						g_custom_chat_buffer.append_msg(player->get_name(), message);
+					std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
+					log << player->get_name() << " : " << message << std::endl;
+					log.close();
 				}
+
+				if (g_session.log_chat_messages_to_textbox)
+					g_custom_chat_buffer.append_msg(player->get_name(), message);
+
 
 				if (msgType == rage::eNetMessage::MsgTextMessage)
 				{
