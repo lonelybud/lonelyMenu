@@ -54,9 +54,10 @@ namespace big
 			if (g_notifications.player_join.notify)
 				g_notification_service->push("Player Joined", std::vformat("{} taking slot", std::make_format_args(player_name)));
 
-			if (*g_pointers->m_gta.m_is_session_started)
-				g_fiber_pool->queue_job([id = player->m_player_id, rockstar_id, player_name, host_token] {
-					if (auto plyr = g_player_service->get_by_id(id))
+			g_fiber_pool->queue_job([id = player->m_player_id, rockstar_id, player_name, host_token] {
+				if (auto plyr = g_player_service->get_by_id(id))
+				{
+					if (*g_pointers->m_gta.m_is_session_started)
 					{
 						if (recent_modders_nm::is_blocked(rockstar_id))
 						{
@@ -66,6 +67,7 @@ namespace big
 							{
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
 								g_notification_service->push_success("Join Blocked", std::format("Kicking Player {} ", player_name));
+								return;
 							}
 							else
 							{
@@ -79,11 +81,14 @@ namespace big
 						{
 							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
 							g_notification_service->push_warning("Lock Session", std::format("A player with the name of {} has been denied entry", player_name));
+							return;
 						}
-						else if (is_spoofed_host_token(host_token))
-							session::add_infraction(plyr, Infraction::SPOOFED_HOST_TOKEN);
 					}
-				});
+
+					if (is_spoofed_host_token(host_token))
+						session::add_infraction(plyr, Infraction::SPOOFED_HOST_TOKEN);
+				}
+			});
 		}
 		return result;
 	}
