@@ -19,6 +19,7 @@ namespace big
 	void hooks::network_player_mgr_shutdown(CNetworkPlayerMgr* _this)
 	{
 		g_player_service->do_cleanup();
+		self::spawned_vehicles.clear();
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}
