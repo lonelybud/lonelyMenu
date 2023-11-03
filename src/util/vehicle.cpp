@@ -1,7 +1,6 @@
 #include "vehicle.hpp"
 
 #include "blip.hpp"
-#include "core/data/spawned_vehs.hpp"
 #include "entity.hpp"
 #include "gta/vehicle_values.hpp"
 #include "ped.hpp"
@@ -42,10 +41,8 @@ namespace big::vehicle
 	void set_mp_bitset(Vehicle veh)
 	{
 		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
-		auto networkId = NETWORK::VEH_TO_NET(veh);
-		self::spawned_vehicles.insert(networkId);
 		if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
-			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, TRUE);
+			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(NETWORK::VEH_TO_NET(veh), TRUE);
 		VEHICLE::SET_VEHICLE_IS_STOLEN(veh, FALSE);
 	}
 
@@ -110,12 +107,10 @@ namespace big::vehicle
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);
 
-		if (*g_pointers->m_gta.m_is_session_started)
-		{
-			set_mp_bitset(veh);
-		}
+		self::spawned_vehicles.insert(veh);
 
-		g_spawned_vehicles.push_back(veh);
+		if (*g_pointers->m_gta.m_is_session_started)
+			set_mp_bitset(veh);
 
 		return veh;
 	}

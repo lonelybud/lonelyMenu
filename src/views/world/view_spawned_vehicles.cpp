@@ -1,4 +1,3 @@
-#include "core/data/spawned_vehs.hpp"
 #include "natives.hpp"
 #include "util/delete_entity.hpp"
 #include "util/ped.hpp"
@@ -11,6 +10,7 @@ namespace big
 	{
 		Vehicle veh;
 		const char* player_name;
+		const char* veh_name;
 	};
 
 	void view::spawned_vehicles()
@@ -26,14 +26,19 @@ namespace big
 			g_fiber_pool->queue_job([] {
 				std::vector<veh_details> temp_vehs;
 
-				for (auto veh : g_spawned_vehicles)
+				for (auto veh : self::spawned_vehicles)
 				{
-					veh_details details = {veh, "[No player]"};
-					if (!ENTITY::DOES_ENTITY_EXIST(veh) || ENTITY::IS_ENTITY_DEAD(veh, 0))
-						details.player_name = "[DEAD]";
-					else if (auto player = ped::get_player_from_ped(VEHICLE::GET_PED_IN_VEHICLE_SEAT(veh, -1, 0)))
-						details.player_name = player->get_name();
+					veh_details details = {veh, "[]", "[DEAD]"};
+					if (ENTITY::DOES_ENTITY_EXIST(veh) && !ENTITY::IS_ENTITY_DEAD(veh, 0))
+					{
+						details.veh_name = VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(ENTITY::GET_ENTITY_MODEL(veh));
 
+						auto ped = VEHICLE::GET_PED_IN_VEHICLE_SEAT(veh, -1, 0);
+						if (ped == self::ped)
+							details.player_name = "You";
+						else if (auto player = ped::get_player_from_ped(ped))
+							details.player_name = player->get_name();
+					}
 					temp_vehs.push_back(details);
 				}
 
@@ -42,12 +47,12 @@ namespace big
 		}
 
 		components::button("Delete All", [] {
-			for (auto veh : g_spawned_vehicles)
+			for (auto veh : self::spawned_vehicles)
 				entity::delete_entity(veh);
-			g_spawned_vehicles.clear();
+			self::spawned_vehicles.clear();
 		});
 		ImGui::SameLine();
-		ImGui::Text(std::to_string(g_spawned_vehicles.size()).c_str());
+		ImGui::Text(std::to_string(self::spawned_vehicles.size()).c_str());
 
 		ImGui::BeginChild("ScrollingRegion", {400, 300});
 
@@ -57,6 +62,8 @@ namespace big
 			auto veh          = spawned_veh.veh;
 
 			ImGui::Text(spawned_veh.player_name);
+			ImGui::SameLine();
+			ImGui::Text(spawned_veh.veh_name);
 			ImGui::SameLine();
 
 			ImGui::PushID(i);
@@ -72,7 +79,7 @@ namespace big
 			components::button("Delete", [=] {
 				auto ent = static_cast<Entity>(veh);
 				entity::delete_entity(ent);
-				g_spawned_vehicles.erase(g_spawned_vehicles.begin() + i);
+				self::spawned_vehicles.erase(veh);
 			});
 			ImGui::Spacing();
 

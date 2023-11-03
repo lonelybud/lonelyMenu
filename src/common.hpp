@@ -81,7 +81,7 @@ namespace self
 	inline Vector3 pos;
 	inline Vehicle veh;
 	inline Vehicle last_veh;
-	inline std::unordered_set<int> spawned_vehicles;
+	inline std::unordered_set<Vehicle> spawned_vehicles;
 }
 
 template<size_t N>
