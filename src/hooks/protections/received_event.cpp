@@ -1,5 +1,5 @@
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
-#include "core/settings/reactions.hpp"
 #include "fiber_pool.hpp"
 #include "gta/enums.hpp"
 #include "gta/net_game_event.hpp"
@@ -342,9 +342,7 @@ namespace big
 		{
 			uint32_t player_bitfield = buffer->Read<uint32_t>(32);
 			if (player_bitfield & (1 << target_player->m_player_id))
-			{
-				g_reactions.kick_vote.process(plyr);
-			}
+				g_reactions.kick_vote.process(plyr, false, Infraction::VOTE_KICK, true, true);
 			buffer->Seek(0);
 			break;
 		}
@@ -411,7 +409,7 @@ namespace big
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-				g_reactions.clear_ped_tasks.process(plyr);
+				g_reactions.clear_ped_tasks.process(plyr, false, Infraction::NONE, false);
 				return;
 			}
 
@@ -425,7 +423,7 @@ namespace big
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-				g_reactions.remote_ragdoll.process(plyr);
+				g_reactions.remote_ragdoll.process(plyr, false, Infraction::NONE, false);
 				return;
 			}
 
@@ -444,7 +442,7 @@ namespace big
 
 			if (money >= 2000)
 			{
-				g_reactions.report_cash_spawn.process(plyr);
+				g_reactions.report_cash_spawn.process(plyr, false, Infraction::CASH_SPAWN, true);
 			}
 
 			break;
@@ -453,9 +451,7 @@ namespace big
 		case eNetworkEvents::REPORT_MYSELF_EVENT:
 		{
 			if (auto plyr = g_player_service->get_by_id(source_player->m_player_id))
-				session::add_infraction(plyr, Infraction::TRIGGERED_ANTICHEAT);
-
-			g_reactions.game_anti_cheat_modder_detection.process(plyr);
+				g_reactions.game_anti_cheat_modder_detection.process(plyr, false, Infraction::TRIGGERED_ANTICHEAT, true);
 			break;
 		}
 		case eNetworkEvents::REQUEST_CONTROL_EVENT:
@@ -466,12 +462,12 @@ namespace big
 			{
 				Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle();
 				Vehicle veh              = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-				if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() //If we're in Freemode.
-				    || personal_vehicle == veh              //Or we're in our personal vehicle.
+				if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION()                          //If we're in Freemode.
+				    || personal_vehicle == veh                                       //Or we're in our personal vehicle.
 				    || self::spawned_vehicles.contains(NETWORK::NET_TO_VEH(net_id))) // Or it's a vehicle we spawned.
 				{
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset); // Tell them to get bent.
-					g_reactions.request_control_event.process(plyr);
+					g_reactions.request_control_event.process(plyr, false, Infraction::NONE, false);
 					return;
 				}
 			}
@@ -638,7 +634,7 @@ namespace big
 
 			if (sound_hash == RAGE_JOAAT("Remote_Ring") && plyr)
 			{
-				g_reactions.sound_spam.process(plyr);
+				g_reactions.sound_spam.process(plyr, false, Infraction::NONE, false);
 				return;
 			}
 

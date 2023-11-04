@@ -1,4 +1,6 @@
 #include "backend/player_command.hpp"
+#include "script.hpp"
+#include "services/recent_modders/recent_modders.hpp"
 
 namespace big
 {
@@ -13,9 +15,22 @@ namespace big
 
 		virtual void execute(player_ptr player, const command_arguments& _args, const std::shared_ptr<command_context> ctx) override
 		{
+			player->block_net_events   = true;
+			player->block_clone_sync   = true;
+			player->block_clone_create = true;
+			player->block_explosions   = true;
+			LOGF(WARNING, "{} has been timed out", name);
+
 			dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(player, {});
+			script::get_current()->yield(250ms);
 			dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(player, {});
-			dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(player, {});
+
+			if (auto net_data = player->get_net_data())
+			{
+				auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
+				if (!recent_modders_nm::does_exist(rockstar_id))
+					recent_modders_nm::add_player({player->get_name(), rockstar_id, true});
+			};
 		}
 	};
 

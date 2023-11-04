@@ -1,9 +1,11 @@
+#include "core/data/infractions.hpp"
+#include "core/data/reactions.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/globals.hpp"
 #include "util/misc.hpp"
-#include "util/session.hpp"
 
 #include <entities/CDynamicEntity.hpp>
 #include <script/globals/GPBD_FM.hpp>
@@ -60,7 +62,7 @@ namespace big
 		case rage::eEventNetworkType::CEventNetworkRemovedFromSessionDueToComplaints:
 		{
 			g_notification_service->push_warning("Kicked", "You have been desync kicked.");
-	
+
 			break;
 		}
 		case rage::eEventNetworkType::CEventNetworkEntityDamage:
@@ -111,9 +113,7 @@ namespace big
 					if (auto victim = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index); victim && victim->m_entity_type == 4)
 					{
 						if (is_invincible(player))
-						{
-							session::add_infraction(player, Infraction::ATTACKING_WITH_GODMODE);
-						}
+							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WITH_GODMODE, true);
 
 						if (is_invisible(player))
 						{
@@ -124,18 +124,14 @@ namespace big
 							    || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RUN_OVER_BY_CAR"))
 								break;
 
-							session::add_infraction(player, Infraction::ATTACKING_WITH_INVISIBILITY);
+							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WITH_INVISIBILITY, true);
 						}
 
 						if (is_hidden_from_player_list(player))
-						{
-							session::add_infraction(player, Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST);
-						}
+							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST, true);
 
 						if (is_using_orbital_cannon(player))
-						{
-							session::add_infraction(player, Infraction::SPOOFED_DATA);
-						}
+							g_reactions.modder_detection.process(player, false, Infraction::SPOOFED_DATA, true);
 					}
 				}
 			}

@@ -159,6 +159,15 @@ namespace big
 				ImGui::BeginGroup();
 				{
 					ImGui::Checkbox("Spectate", &g_player.spectating);
+					ImGui::SameLine();
+					if (current_player->is_host())
+					{
+						auto auto_kick_host =
+						    g_player.host_to_auto_kick != nullptr && g_player.host_to_auto_kick->id() == current_player->id();
+						if (ImGui::Checkbox("Kick host when attacked", &auto_kick_host))
+							g_player.host_to_auto_kick = auto_kick_host ? current_player : nullptr;
+					}
+
 					ImGui::Spacing();
 					components::sub_title("Info");
 					extra_info_button(current_player);
@@ -182,8 +191,6 @@ namespace big
 
 							if (g_player_service->get_self()->is_host())
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
-							else
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(current_player, {});
 						}
 					}
 				}
@@ -194,6 +201,11 @@ namespace big
 					ImGui::BeginGroup();
 					{
 						components::sub_title("Chat Spammer");
+						if (ImGui::BeginListBox("##message", ImVec2(350, 100)))
+						{
+							ImGui::TextWrapped(current_player->spam_message.c_str());
+							ImGui::EndListBox();
+						}
 						if (components::button("Unflag Spammer"))
 							current_player->is_spammer = false;
 					}

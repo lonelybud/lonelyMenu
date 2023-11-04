@@ -1,6 +1,8 @@
 #include "backend/command.hpp"
 #include "backend/player_command.hpp"
+#include "core/data/infractions.hpp"
 #include "core/data/packet_types.hpp"
+#include "core/data/reactions.hpp"
 #include "core/settings/session.hpp"
 #include "file_manager/file.hpp"
 #include "gta/net_game_event.hpp"
@@ -42,9 +44,6 @@ inline bool is_kick_instruction(rage::datBitBuffer& buffer)
 
 namespace big
 {
-	static uint8_t last_player_id                    = 0;
-	static int last_player_continuous_messages_count = 0;
-
 	bool get_msg_type(rage::eNetMessage& msgType, rage::datBitBuffer& buffer)
 	{
 		uint32_t pos;
@@ -117,25 +116,12 @@ namespace big
 				char message[256];
 				buffer.ReadString(message, 256);
 
-				if (last_player_id == player->id())
+				if (strlen(message) > 100)
 				{
-					++last_player_continuous_messages_count;
-
-					// open the player inf who is believed to spam
-					if (last_player_continuous_messages_count == 2 && strlen(message) > 80)
-					{
-						LOG(WARNING) << player->get_name() << " seem to spam chat message.";
-
-						player->is_spammer = true;
-						g_gui_service->set_selected(tabs::PLAYER);
-						g_player_service->set_selected(player);
-						g_gui->open_gui();
-					}
-				}
-				else
-				{
-					last_player_id                        = player->id();
-					last_player_continuous_messages_count = 1;
+					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
+					// flag as spammer
+					player->is_spammer   = true;
+					player->spam_message = message;
 				}
 
 				if (g_session.log_chat_messages_to_file)
@@ -147,7 +133,6 @@ namespace big
 
 				if (g_session.log_chat_messages_to_textbox)
 					g_custom_chat_buffer.append_msg(player->get_name(), message);
-
 
 				if (msgType == rage::eNetMessage::MsgTextMessage)
 				{
@@ -173,11 +158,7 @@ namespace big
 				if (player->m_host_migration_rate_limit.process())
 				{
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
-					{
-						session::add_infraction(player, Infraction::TRIED_KICK_PLAYER);
-						g_notification_service->push_error("Protections",
-						    std::vformat("{} tried to OOM kick you!", std::make_format_args(player->get_name())));
-					}
+						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 					return true;
 				}
 				break;
@@ -233,9 +214,7 @@ namespace big
 				{
 					if (player->m_radio_request_rate_limit.exceeded_last_process())
 					{
-						session::add_infraction(player, Infraction::TRIED_KICK_PLAYER);
-						g_notification_service->push_error("Protections",
-						    std::vformat("{} tried to OOM kick you!", std::make_format_args(player->get_name())));
+						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 						player->block_radio_requests = true;
 					}
 					return true;

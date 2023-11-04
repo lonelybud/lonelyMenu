@@ -4,7 +4,6 @@
 #include "settings/esp.hpp"
 #include "settings/notifications.hpp"
 #include "settings/protections.hpp"
-#include "settings/reactions.hpp"
 #include "settings/self.hpp"
 #include "settings/session.hpp"
 #include "settings/session_browser.hpp"
@@ -44,9 +43,8 @@ namespace big
 		g_context_menu_t& context_menu    = g_context_menu;
 		g_esp_t& esp             = g_esp;
 		g_session_browser_t& session_browser = g_session_browser;
-		g_reactions_t& reactions       = g_reactions;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(menu_settings, notifications, protections, self, session, settings, vehicle, window, context_menu, esp, session_browser, reactions)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(menu_settings, notifications, protections, self, session, settings, vehicle, window, context_menu, esp, session_browser)
 	};
 
 	inline auto g_menu_settings = menu_settings();

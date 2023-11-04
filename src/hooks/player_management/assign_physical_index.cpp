@@ -1,8 +1,10 @@
 #include "backend/player_command.hpp"
 #include "core/settings/notifications.hpp"
 #include "core/settings/session.hpp"
+#include "gui.hpp"
 #include "hooking.hpp"
 #include "services/friends/friends_service.hpp"
+#include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
 #include "services/recent_modders/recent_modders.hpp"
 #include "util/notify.hpp"
@@ -39,6 +41,10 @@ namespace big
 				if (g_notifications.player_leave.notify)
 					g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
 			}
+
+			if (g_player.host_to_auto_kick && g_player.host_to_auto_kick->is_valid()
+			    && g_player.host_to_auto_kick->id() == player->m_player_id)
+				g_player.host_to_auto_kick = nullptr;
 
 			return g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 		}
@@ -86,7 +92,7 @@ namespace big
 					}
 
 					if (is_spoofed_host_token(host_token))
-						session::add_infraction(plyr, Infraction::SPOOFED_HOST_TOKEN);
+						g_reactions.modder_detection.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
 				}
 			});
 		}

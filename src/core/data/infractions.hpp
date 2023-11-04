@@ -6,6 +6,7 @@ namespace big
 	// Add new values to the bottom
 	enum class Infraction
 	{
+		NONE,
 		DESYNC_PROTECTION,             // do not use
 		BREAKUP_KICK_DETECTED,         // do not use
 		LOST_CONNECTION_KICK_DETECTED, // do not use
@@ -22,6 +23,14 @@ namespace big
 		INVALID_PLAYER_MODEL,
 		SUPER_JUMP,
 		UNDEAD_OTR,
+		TSE_FREEZE,
+		TSE_SENDER_MISMATCH,
+		PLAYED_YOU_POS,
+		PLAYED_YOU_NEG,
+		GIVE_COLLECTIBLE,
+		CASH_SPAWN,
+		REPORT,
+		VOTE_KICK
 	};
 
 	inline std::unordered_map<Infraction, const char*> infraction_desc = {
@@ -41,5 +50,13 @@ namespace big
 	    {Infraction::INVALID_PLAYER_MODEL, "Had used an invalid player model"},
 	    {Infraction::SUPER_JUMP, "Had used super jump"},
 	    {Infraction::UNDEAD_OTR, "Had used undead OTR"},
+	    {Infraction::TSE_FREEZE, "Tried TSE freeze you"},
+	    {Infraction::TSE_SENDER_MISMATCH, "Sent TSE sender mismatch"},
+	    {Infraction::PLAYED_YOU_POS, "Played with you positive"},
+	    {Infraction::PLAYED_YOU_NEG, "Played with you negative"},
+	    {Infraction::GIVE_COLLECTIBLE, "Tried to give collectible"},
+	    {Infraction::CASH_SPAWN, "Spawning cash"},
+	    {Infraction::REPORT, "Reported you"},
+	    {Infraction::VOTE_KICK, "Trying to vote kick you"},
 	};
 }

@@ -1,4 +1,5 @@
 #include "core/data/region_codes.hpp"
+#include "core/data/session_types.hpp"
 #include "core/settings/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"

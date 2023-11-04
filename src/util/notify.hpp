@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/reactions.hpp"
 #include "gta/enums.hpp"
 #include "natives.hpp"
 #include "network/CNetGamePlayer.hpp"
@@ -7,7 +8,6 @@
 #include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
-#include "core/settings/reactions.hpp"
 
 #include <script/HudColor.hpp>
 
@@ -21,21 +21,20 @@ namespace big::notify
 		HUD::END_TEXT_COMMAND_THEFEED_POST_TICKER(false, false);
 	}
 
-	inline void crash_blocked(CNetGamePlayer* player, const char* crash)
+	inline void crash_blocked(CNetGamePlayer* player, const char* crash_detail)
 	{
-		if (player)
-		{
-			if (g_reactions.crash.notify)
-				g_notification_service->push_error("Protections", std::format("Blocked {} crash from {}", crash, player->get_name()));
+		player_ptr plyr;
 
-			if (g_reactions.crash.log)
-				LOG(WARNING) << "Blocked " << crash << " crash from " << player->get_name() << " ("
-				             << (player->get_net_data() ? player->get_net_data()->m_gamer_handle.m_rockstar_id : 0) << ")";
+		if (player && (plyr = g_player_service->get_by_id(player->m_player_id)))
+		{
+			reaction crash{"Crash", std::format("Blocked {} crash from {}", crash_detail, plyr->get_name()).c_str()};
+			crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
 		}
 		else
 		{
-			if (g_reactions.crash.notify)
-				g_notification_service->push_error("Protections", std::format("Blocked {} crash from unknown player", crash));
+			auto str = std::format("Blocked {} crash from unknown player", crash_detail);
+			LOG(WARNING) << str;
+			g_notification_service->push_error("Protections", str);
 		}
 	}
 

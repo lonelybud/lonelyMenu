@@ -1,24 +1,18 @@
 #pragma once
-#include "core/data/infractions.hpp"
-#include "core/data/session_types.hpp"
-#include "core/settings/reactions.hpp"
+
+#include "core/data/player.hpp"
+#include "core/enums.hpp"
+#include "core/scr_globals.hpp"
 #include "core/settings/session.hpp"
 #include "fiber_pool.hpp"
-#include "gta/joaat.hpp"
-#include "gta_util.hpp"
-#include "gui.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "rage/rlSessionByGamerTaskResult.hpp"
 #include "script.hpp"
 #include "script_function.hpp"
 #include "services/api/api_service.hpp"
-#include "services/gui/gui_service.hpp"
 #include "services/notifications/notification_service.hpp"
-#include "services/players/player_service.hpp"
-#include "services/recent_modders/recent_modders.hpp"
 #include "thread_pool.hpp"
-#include "util/globals.hpp"
 #include "util/misc.hpp"
 
 #include <network/Network.hpp>
@@ -146,43 +140,5 @@ namespace big::session
 			}
 			g_notification_service->push_error("RID Joiner", "Target player is offline?");
 		});
-	}
-
-	inline void add_infraction(player_ptr player, Infraction infraction)
-	{
-		if (auto net_data = player->get_net_data())
-		{
-			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-			auto name        = net_data->m_name;
-
-			if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)
-			{
-				player->block_net_events   = true;
-				player->block_clone_sync   = true;
-				player->block_clone_create = true;
-
-				g_gui_service->set_selected(tabs::PLAYER);
-				g_player_service->set_selected(player);
-				g_gui->open_gui();
-
-				recent_modders_nm::add_player({name, rockstar_id, true});
-
-				if (g_player_service->get_self()->is_host())
-				{
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-					return;
-				}
-			}
-
-			if (!player->infractions.contains((int)infraction))
-			{
-				player->is_modder = true;
-				player->infractions.insert((int)infraction);
-				g_reactions.modder_detection.process(player);
-
-				if (!recent_modders_nm::does_exist(rockstar_id))
-					recent_modders_nm::add_player({name, rockstar_id, false});
-			}
-		}
 	}
 }

@@ -2,9 +2,10 @@
 #include "base/CObject.hpp"
 #include "core/data/syncing_player.hpp"
 #include "core/data/task_types.hpp"
-#include "core/settings/reactions.hpp"
+#include "core/data/reactions.hpp"
 #include "entities/fwEntity.hpp"
 #include "gta/net_object_mgr.hpp"
+#include "gta_util.hpp"
 #include "hooking.hpp"
 #include "netsync/netSyncDataNode.hpp"
 #include "netsync/netSyncTree.hpp"
@@ -84,9 +85,7 @@ namespace big
 			return;
 
 		if (!protection::is_valid_player_model(model))
-		{
-			session::add_infraction(player, Infraction::INVALID_PLAYER_MODEL);
-		}
+			g_reactions.modder_detection.process(player, false, Infraction::INVALID_PLAYER_MODEL, true);
 	}
 
 	// the game function does weird stuff that we don't want
@@ -1373,16 +1372,10 @@ namespace big
 
 				if (sender_plyr)
 				{
-					if (game_state_node->m_super_jump)
-					{
-						session::add_infraction(sender_plyr, Infraction::SUPER_JUMP);
-					}
-
-					if (!game_state_node->m_is_max_armor_and_health_default && game_state_node->m_max_health == 0.0f
-					    && game_state_node->m_player_state == 1)
-					{
-						session::add_infraction(sender_plyr, Infraction::SUPER_JUMP);
-					}
+					if (game_state_node->m_super_jump
+					    || (!game_state_node->m_is_max_armor_and_health_default && game_state_node->m_max_health == 0.0f
+					        && game_state_node->m_player_state == 1))
+						g_reactions.modder_detection.process(sender_plyr, false, Infraction::SUPER_JUMP, true);
 
 					if (game_state_node->m_is_spectating)
 					{
@@ -1427,7 +1420,7 @@ namespace big
 						if (target->id() != sender_plyr->spectating_player)
 						{
 							if (target->id() == self::id)
-								g_reactions.spectate.process(sender_plyr);
+								g_reactions.spectate.process(sender_plyr, false, Infraction::NONE, false);
 
 							sender_plyr->spectating_player = target->id();
 						}
@@ -1500,23 +1493,21 @@ namespace big
 
 				if (sender_plyr)
 				{
+					auto spoofed_data = false;
+
 					if (gamer_node->m_clan_data.m_clan_id == 123456 && gamer_node->m_clan_data.m_clan_id_2 == 123456)
-					{
-						session::add_infraction(sender_plyr, Infraction::SPOOFED_DATA);
-					}
+						spoofed_data = true;
+
 					else if (gamer_node->m_clan_data.m_clan_id > 0 && gamer_node->m_clan_data.m_clan_id_2 > 0)
 					{
 						if (!is_valid_clan_tag(gamer_node->m_clan_data.m_clan_tag, gamer_node->m_clan_data.m_is_system_clan))
-						{
-							session::add_infraction(sender_plyr, Infraction::SPOOFED_DATA);
-						}
-
-						if (gamer_node->m_clan_data.m_is_system_clan
+							spoofed_data = true;
+						else if (gamer_node->m_clan_data.m_is_system_clan
 						    && (!gamer_node->m_clan_data.m_is_clan_open || gamer_node->m_clan_data.m_clan_member_count == 0))
-						{
-							session::add_infraction(sender_plyr, Infraction::SPOOFED_DATA);
-						}
+							spoofed_data = true;
 					}
+					if (spoofed_data)
+						g_reactions.modder_detection.process(sender_plyr, false, Infraction::SPOOFED_DATA, true);
 				}
 				break;
 			}
@@ -1554,6 +1545,7 @@ namespace big
 							}
 						}
 					}
+					// return true;
 				}
 
 				break;

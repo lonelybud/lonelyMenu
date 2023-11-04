@@ -1,4 +1,5 @@
 #include "core/data/menu_event.hpp"
+#include "core/data/player.hpp"
 #include "hooking.hpp"
 #include "pointers.hpp"
 #include "services/players/player_service.hpp"
@@ -20,6 +21,7 @@ namespace big
 	{
 		g_player_service->do_cleanup();
 		self::spawned_vehicles.clear();
+		g_player.host_to_auto_kick = nullptr;
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}
