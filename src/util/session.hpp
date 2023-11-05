@@ -141,4 +141,16 @@ namespace big::session
 			g_notification_service->push_error("RID Joiner", "Target player is offline?");
 		});
 	}
+
+	inline void invite_by_rockstar_id(uint64_t rid)
+	{
+		rage::rlGamerHandle player_handle(rid);
+
+		bool success = g_pointers->m_gta.m_invite_player_by_gamer_handle(g_pointers->m_gta.m_network_config, &player_handle, 1, 0, 0, 0);
+
+		if (!success)
+			return g_notification_service->push_error("Network", "Target player could not be invited, they might be offline?");
+
+		g_notification_service->push_success("Network", "Target player has been invited to your session!");
+	}
 }
