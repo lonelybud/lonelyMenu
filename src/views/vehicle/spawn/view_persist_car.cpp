@@ -2,6 +2,7 @@
 #include "core/data/persist_car.hpp"
 #include "fiber_pool.hpp"
 #include "services/vehicle/persist_car_service.hpp"
+#include "util/strings.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
 
@@ -49,6 +50,9 @@ namespace big
 	inline void save_vehicle_button(char* vehicle_file_name_input, const char* save_folder)
 	{
 		components::button("Save Vehicle", [vehicle_file_name_input, save_folder] {
+			if (!trimString(vehicle_file_name_input).size())
+				return g_notification_service->push_warning("Persist Car", "Filename empty!");
+
 			if (!self::veh)
 				return g_notification_service->push_warning("Persist Car", "You must be in a vehicle. Please enter a vehicle before using load.");
 			save_vehicle(vehicle_file_name_input, save_folder);
