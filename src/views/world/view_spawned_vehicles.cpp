@@ -26,7 +26,7 @@ namespace big
 			g_fiber_pool->queue_job([] {
 				std::vector<veh_details> temp_vehs;
 
-				for (auto veh : self::spawned_vehicles)
+				for (auto& [_, veh] : self::spawned_vehicles)
 				{
 					veh_details details = {veh, "[]", "[DEAD]"};
 					if (ENTITY::DOES_ENTITY_EXIST(veh) && !ENTITY::IS_ENTITY_DEAD(veh, 0))
@@ -47,7 +47,7 @@ namespace big
 		}
 
 		components::button("Delete All", [] {
-			for (auto veh : self::spawned_vehicles)
+			for (auto& [_, veh] : self::spawned_vehicles)
 				entity::delete_entity(veh);
 			self::spawned_vehicles.clear();
 		});
@@ -79,7 +79,7 @@ namespace big
 			components::button("Delete", [=] {
 				auto ent = static_cast<Entity>(veh);
 				entity::delete_entity(ent);
-				self::spawned_vehicles.erase(veh);
+				self::spawned_vehicles.erase(NETWORK::VEH_TO_NET(veh));
 			});
 			ImGui::Spacing();
 

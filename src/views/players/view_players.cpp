@@ -19,16 +19,6 @@ namespace big
 {
 	static bool has_scrollbar = false;
 
-	static inline std::multimap<std::string, player_ptr> filter_players(const std::multimap<std::string, player_ptr>& inputMap, const std::string& name)
-	{
-		std::multimap<std::string, player_ptr> filteredMap;
-		std::string lowercaseSearchString = toLowercase(name);
-		for (auto pair : inputMap)
-			if (std::string lowercaseStr = toLowercase(pair.second->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
-				filteredMap.insert(pair);
-		return filteredMap;
-	}
-
 	static void player_button(const player_ptr& plyr)
 	{
 		if (plyr == nullptr)
@@ -109,8 +99,6 @@ namespace big
 
 	void view::players()
 	{
-		static std::string search_player_name;
-
 		// player count does not include ourself that's why +1
 		const auto player_count = g_player_service->players().size() + 1;
 
@@ -142,8 +130,9 @@ namespace big
 
 			auto width_of_list = ImGui::GetWindowSize().x - ImGui::GetStyle().WindowPadding.x * 2;
 
-			ImGui::SetNextItemWidth(width_of_list);
-			components::input_text_with_hint("###search_player_name", "search name", search_player_name);
+			// static std::string search_player_name;
+			// ImGui::SetNextItemWidth(width_of_list);
+			// components::input_text_with_hint("###search_player_name", "search name", search_player_name);
 
 			if (ImGui::BeginListBox("##players", {width_of_list, window_height}))
 			{
@@ -154,12 +143,15 @@ namespace big
 				{
 					ImGui::Separator();
 
-					std::multimap<std::string, player_ptr> temp_objs = search_player_name.length() > 0 ?
-					    filter_players(g_player_service->players(), search_player_name) :
-					    g_player_service->players();
-
-					for (const auto& [_, player] : temp_objs)
-						player_button(player);
+					for (const auto& [_, player] : g_player_service->players())
+						// if (search_player_name.length())
+						// {
+						// 	std::string lowercaseSearchString = toLowercase(search_player_name);
+						// 	if (std::string lowercaseStr = toLowercase(player->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+						// 		player_button(player);
+						// }
+						// else
+							player_button(player);
 				}
 
 				ImGui::EndListBox();

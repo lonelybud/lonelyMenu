@@ -107,7 +107,7 @@ namespace big::vehicle
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);
 
-		self::spawned_vehicles.insert(veh);
+		self::spawned_vehicles[NETWORK::VEH_TO_NET(veh)] = veh;
 
 		if (*g_pointers->m_gta.m_is_session_started)
 			set_mp_bitset(veh);

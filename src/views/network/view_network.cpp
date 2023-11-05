@@ -3,6 +3,7 @@
 #include "core/settings/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
+#include "services/recent_modders/recent_modders.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
@@ -140,6 +141,18 @@ namespace big
 				});
 				ImGui::SameLine();
 				ImGui::Text(script_host_player_name.c_str());
+
+				if (g_player_service->get_self()->is_host())
+				{
+					ImGui::Spacing();
+					components::button("Kick all blocked players", [] {
+						g_player_service->iterate([](const player_entry& player) {
+							if (auto net_data = player.second->get_net_data();
+							    net_data && recent_modders_nm::is_blocked(net_data->m_gamer_handle.m_rockstar_id))
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second, {});
+						});
+					});
+				}
 			}
 			ImGui::EndGroup();
 		}

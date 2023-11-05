@@ -23,8 +23,27 @@ namespace big
 	{
 		if (player->is_valid())
 		{
-			player->is_modder = is_modder;
-			player->is_toxic  = is_toxic;
+			if (infraction != Infraction::NONE)
+			{
+				if (!player->infractions.contains((int)infraction))
+					player->infractions.insert((int)infraction);
+				// infraction must have been logged/notified before so return. Exception - crash & kick
+				else if (infraction != Infraction::TRIED_CRASH_PLAYER && infraction != Infraction::TRIED_KICK_PLAYER)
+					return;
+			}
+
+			// open player info of attacker
+			if ((!player->ignore_crash && infraction == Infraction::TRIED_CRASH_PLAYER) || infraction == Infraction::TRIED_KICK_PLAYER)
+			{
+				g_gui_service->set_selected(tabs::PLAYER);
+				g_player_service->set_selected(player);
+				g_gui->open_gui();
+			}
+
+			if (is_modder)
+				player->is_modder = true;
+			if (is_toxic)
+				player->is_toxic = true;
 
 			if (log)
 				if (auto net_data = player->get_net_data())
@@ -46,11 +65,7 @@ namespace big
 					auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
 					auto name        = net_data->m_name;
 
-					player->block_net_events   = true;
-					player->block_clone_sync   = true;
-					player->block_clone_create = true;
-					player->block_explosions   = true;
-					LOGF(WARNING, "{} has been timed out", name);
+					player->timeout();
 
 					// block join
 					if (!recent_modders_nm::does_exist(rockstar_id))
@@ -75,11 +90,8 @@ namespace big
 							{
 								// kick current host
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(g_player.host_to_auto_kick, {});
-								// select the target player
-								g_gui_service->set_selected(tabs::PLAYER);
-								g_player_service->set_selected(player);
-								g_gui->open_gui();
-								// try to host kick if possible
+
+								// try to host kick attacker if possible
 								for (int i = 0; i < 30; i++)
 								{
 									script::get_current()->yield(100ms);
@@ -96,9 +108,6 @@ namespace big
 					LOG(WARNING) << str;
 					g_notification_service->push_warning("Protections", str);
 				}
-
-			if (infraction != Infraction::NONE && !player->infractions.contains((int)infraction))
-				player->infractions.insert((int)infraction);
 		}
 	}
 }

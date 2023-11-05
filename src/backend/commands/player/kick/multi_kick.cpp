@@ -17,11 +17,7 @@ namespace big
 		{
 			if (player && player->is_valid())
 			{
-				player->block_net_events   = true;
-				player->block_clone_sync   = true;
-				player->block_clone_create = true;
-				player->block_explosions   = true;
-				LOGF(WARNING, "{} has been timed out", player->get_name());
+				player->timeout();
 
 				dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(player, {});
 				script::get_current()->yield(250ms);

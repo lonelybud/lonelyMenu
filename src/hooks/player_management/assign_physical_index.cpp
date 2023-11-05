@@ -67,17 +67,17 @@ namespace big
 					{
 						if (recent_modders_nm::is_blocked(rockstar_id))
 						{
-							LOG(WARNING) << "A Blocked player " << player_name << " has joined.";
+							LOGF(WARNING, "A Blocked player {} ({}) has joined.", player_name, rockstar_id);
 
 							if (g_player_service->get_self()->is_host())
 							{
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
-								g_notification_service->push_success("Join Blocked", std::format("Kicking Player {} ", player_name));
+								g_notification_service->push_success("Join Blocked", std::format("Player {} kicked", player_name));
 								return;
 							}
 							else
 							{
-								g_notification_service->push_warning("Player Join", std::format("A Blocked player {} has joined. Take your decision", player_name));
+								g_notification_service->push_warning("Join Blocked", std::format("A Blocked player {} has joined.", player_name));
 								g_gui_service->set_selected(tabs::PLAYER);
 								g_player_service->set_selected(plyr);
 								g_gui->open_gui();

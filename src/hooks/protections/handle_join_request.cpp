@@ -16,8 +16,12 @@ namespace big
 			CMsgJoinResponse response{};
 			response.m_status_code = 21;
 			g_pointers->m_gta.m_write_join_response_data(&response, ctx->m_join_response_data, 512, &ctx->m_join_response_size);
-			g_notification_service->push_success("Join Blocked", std::format("Request denied to player {}", player_info->m_name));
-			LOG(WARNING) << "A blocked player " << player_info->m_name << " requested to join. Denied!";
+
+			auto str =
+			    std::format("Join Request denied to player {} ({})", player_info->m_name, player_info->m_gamer_handle.m_rockstar_id);
+			g_notification_service->push_success("Join Blocked", str);
+			LOG(WARNING) << str;
+
 			return false;
 		}
 		else

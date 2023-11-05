@@ -160,11 +160,13 @@ namespace big
 				{
 					ImGui::Checkbox("Spectate", &g_player.spectating);
 					ImGui::SameLine();
+					ImGui::Checkbox("Ignore Crash", &current_player->ignore_crash);
+					ImGui::SameLine();
 					if (current_player->is_host())
 					{
 						auto auto_kick_host =
 						    g_player.host_to_auto_kick != nullptr && g_player.host_to_auto_kick->id() == current_player->id();
-						if (ImGui::Checkbox("Kick host when attacked", &auto_kick_host))
+						if (ImGui::Checkbox("Kick host", &auto_kick_host))
 							g_player.host_to_auto_kick = auto_kick_host ? current_player : nullptr;
 					}
 
