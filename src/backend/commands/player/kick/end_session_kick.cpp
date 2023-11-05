@@ -22,13 +22,11 @@ namespace big
 				return;
 			if (!scripts::force_host(RAGE_JOAAT("freemode")))
 			{
-				const char* str = "Force script host failed!";
-				LOG(WARNING) << str;
-				g_notification_service->push_error("End Session Kick", str);
+				g_notification_service->push_error("End Session Kick", "Force script host failed!", true);
 				return;
 			}
 
-			LOG(VERBOSE) << "End Session Kick > " << player->get_name();
+			g_notification_service->push_success("Kick", std::format("End session kick to {}", player->get_name()), true);
 			g_player_service->m_player_to_use_end_session_kick = player;
 			*scr_globals::gsbd.as<int*>() = (int)(__rdtsc() % 50000) + 6; // making the game trigger the broadcast is a bit difficult and requires a little bit of tampering with the value and some luck
 			script::get_current()->yield(5s);

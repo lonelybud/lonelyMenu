@@ -23,13 +23,13 @@ namespace big
 
 			if (!scripts::force_host(RAGE_JOAAT("freemode")))
 			{
-				const char* str = "Force script host failed!";
-				LOG(WARNING) << str;
-				g_notification_service->push_error("Script Host Kick", str);
+				g_notification_service->push_error("Script Host kick",
+				    std::format("Script Host kick failed on {}", player->get_name()),
+				    true);
 				return;
 			}
 
-			LOG(VERBOSE) << "Script Host Kick > " << player->get_name();
+			g_notification_service->push_success("Kick", std::format("Script Host Kick to {}", player->get_name()), true);
 
 			*scr_globals::gsbd_kicking.at(player->id(), 1).as<bool*>() = true;
 		}

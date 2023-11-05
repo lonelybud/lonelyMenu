@@ -69,30 +69,21 @@ namespace big
 						{
 							plyr->is_spammer = recent_modders_nm::recent_modders_list[rockstar_id].is_spammer;
 
-							LOGF(WARNING, "A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
+							g_notification_service->push_warning("Join Blocked", std::format("A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id), true);
 
 							if (g_player_service->get_self()->is_host())
 							{
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
-								g_notification_service->push_success("Join Blocked", std::format("Player {} kicked", player_name));
 								return;
-							}
-							else
-							{
-								g_notification_service->push_warning("Join Blocked", std::format("A Blocked player {} has joined.", player_name));
-								g_gui_service->set_selected(tabs::PLAYER);
-								g_player_service->set_selected(plyr);
-								g_gui->open_gui();
 							}
 						}
 						else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 						{
 							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
-							g_notification_service->push_warning("Lock Session", std::format("A player with the name of {} has been denied entry", player_name));
+							g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry to locked session.", player_name), true);
 							return;
 						}
 					}
-
 					if (is_spoofed_host_token(host_token))
 						g_reactions.modder_detection.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
 				}

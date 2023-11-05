@@ -26,9 +26,7 @@ namespace big
 			if (auto plyr = g_player_service->get_by_id(id); plyr && !plyr->preventing_join)
 			{
 				plyr->preventing_join = true;
-				auto str = std::format("Trying to prevent {} ({}) from joining..", player_name, rockstar_id);
-				g_notification_service->push_success("Join Blocked", str);
-				LOG(WARNING) << str;
+				g_notification_service->push_success("Join Blocked", std::format("Trying to prevent {} ({}) from joining..", player_name, rockstar_id), true);
 			}
 		}
 

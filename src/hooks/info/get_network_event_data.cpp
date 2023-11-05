@@ -61,8 +61,7 @@ namespace big
 		{
 		case rage::eEventNetworkType::CEventNetworkRemovedFromSessionDueToComplaints:
 		{
-			g_notification_service->push_warning("Kicked", "You have been desync kicked.");
-
+			g_notification_service->push_warning("Kicked", "You have been desync kicked.", true);
 			break;
 		}
 		case rage::eEventNetworkType::CEventNetworkEntityDamage:

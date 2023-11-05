@@ -11,10 +11,10 @@ namespace big
 		{
 			if (auto entry_line = src->get_arg<const char*>(1); !strcmp(entry_line, "CTALERT_F_2"))
 			{
-				if (g_notifications.transaction_rate_limit.log)
-					LOG(WARNING) << "Received transaction rate limit";
 				if (g_notifications.transaction_rate_limit.notify)
-					g_notification_service->push_warning("Transaction Rate Limit", "You're receiving transaction rate limits, whatever you're doing do it less.");
+					g_notification_service->push_warning("Transaction Rate Limit",
+					    "Received transaction rate limit",
+					    g_notifications.transaction_rate_limit.log);
 
 				*scr_globals::transaction_overlimit.as<PBOOL>() = FALSE;
 

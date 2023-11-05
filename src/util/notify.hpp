@@ -27,15 +27,11 @@ namespace big::notify
 
 		if (player && (plyr = g_player_service->get_by_id(player->m_player_id)))
 		{
-			reaction crash{"Crash", std::format("Blocked {} crash from {}", crash_detail, plyr->get_name()).c_str()};
+			reaction crash{"Crash", std::format("X: Blocked {} crash from {}", crash_detail, plyr->get_name()).c_str()};
 			crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
 		}
 		else
-		{
-			auto str = std::format("Blocked {} crash from unknown player", crash_detail);
-			LOG(WARNING) << str;
-			g_notification_service->push_error("Protections", str);
-		}
+			g_notification_service->push_error("Protections", std::format("X: Blocked {} crash from unknown player", crash_detail), true);
 	}
 
 	// Shows a busy spinner till the value at the address equals the value passed or if timeout is hit

@@ -21,8 +21,13 @@ namespace big
 
 	void reaction::process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool is_toxic)
 	{
-		if (player->is_valid())
+		rage::rlGamerInfo* net_data;
+
+		if (player && player->is_valid() && (net_data = player->get_net_data()))
 		{
+			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
+			auto name        = net_data->m_name;
+
 			if (infraction != Infraction::NONE)
 			{
 				if (!player->infractions.contains((int)infraction))
@@ -45,26 +50,11 @@ namespace big
 			if (is_toxic)
 				player->is_toxic = true;
 
-			if (log)
-				if (auto net_data = player->get_net_data())
-					LOG(WARNING) << std::format("Received {} from {} ({})",
-					    m_event_name,
-					    net_data->m_name,
-					    net_data->m_gamer_handle.m_rockstar_id);
-
 			if (notify)
-			{
-				char notification[500]{}; // I don't like using sprintf but there isn't an alternative afaik
-				snprintf(notification, sizeof(notification), m_notify_message, player->get_name());
-				g_notification_service->push_warning("Protections", notification);
-			}
+				g_notification_service->push_warning("Protections", std::vformat(m_notify_message, std::make_format_args(name)), log);
 
 			if (kick_player)
-				if (auto net_data = player->get_net_data())
 				{
-					auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-					auto name        = net_data->m_name;
-
 					player->timeout();
 
 					// block join
@@ -85,8 +75,7 @@ namespace big
 					else
 						g_fiber_pool->queue_job([player] {
 							if (g_session.force_session_host && g_player.host_to_auto_kick != nullptr
-							    && g_player.host_to_auto_kick->is_valid()
-							    && g_player.host_to_auto_kick != g_player_service->get_self())
+						    && g_player.host_to_auto_kick->is_valid() && g_player.host_to_auto_kick != g_player_service->get_self())
 							{
 								// kick current host
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(g_player.host_to_auto_kick, {});
@@ -103,10 +92,6 @@ namespace big
 								}
 							}
 						});
-
-					auto str = std::format("Kicking player {}", net_data->m_name);
-					LOG(WARNING) << str;
-					g_notification_service->push_warning("Protections", str);
 				}
 		}
 	}

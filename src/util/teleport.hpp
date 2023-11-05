@@ -30,12 +30,12 @@ namespace big::teleport
 			return g_notification_service->push_warning("Teleport", "Session has not started");
 
 		if (!player->is_valid())
-			return;
+			return g_notification_service->push_warning("Teleport", "Player not valid");
 
 		Ped ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(player->id());
 
 		if (check_if_player_dead(ped))
-			return;
+			return g_notification_service->push_warning("Teleport", "Player dead");
 
 		if (PED::IS_PED_IN_ANY_VEHICLE(ped, false) || PLAYER::IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(player->id()))
 		{
@@ -46,7 +46,7 @@ namespace big::teleport
 			entity::load_ground_at_3dcoord(vecVehicleLocation);
 
 			if (check_if_player_dead(ped))
-				return;
+				return g_notification_service->push_warning("Teleport", "Player dead");
 
 			if (ENTITY::DOES_ENTITY_EXIST(veh) && entity::take_control_of(veh))
 			{
@@ -73,7 +73,7 @@ namespace big::teleport
 		if (player->is_valid())
 		{
 			if (check_if_player_dead(ped))
-				return;
+				return g_notification_service->push_warning("Teleport", "Player dead");
 
 			auto obj_id                      = player->get_ped()->m_net_object->m_object_id;
 			auto veh_id                      = g_pointers->m_gta.m_handle_to_ptr(hnd)->m_net_object->m_object_id;
@@ -102,6 +102,8 @@ namespace big::teleport
 		}
 
 		entity::delete_entity(hnd);
+
+		g_notification_service->push_success("Teleport", "Operation Completed");
 	}
 
 	inline void into_vehicle(Vehicle veh)

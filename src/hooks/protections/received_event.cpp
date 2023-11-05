@@ -539,8 +539,7 @@ namespace big
 
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
-				g_notification_service->push_warning("Protections",
-				    std::vformat("{} tried to remove a weapon.", std::make_format_args(source_player->get_name())));
+				g_reactions.remove_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::REMOVE_WEAPON, true);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -554,8 +553,7 @@ namespace big
 
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
-				g_notification_service->push_warning("Protections",
-				    std::vformat("{} tried to remove all weapons.", std::make_format_args(source_player->get_name())));
+				g_reactions.remove_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::REMOVE_WEAPON, true);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}

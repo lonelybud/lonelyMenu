@@ -199,7 +199,7 @@ namespace big
 
 				if (reason == KickReason::VOTED_OUT)
 				{
-					g_notification_service->push_warning("Protections", "You have been kicked by the host");
+					g_notification_service->push_warning("Protections", "You have been kicked by the host", true);
 					return true;
 				}
 

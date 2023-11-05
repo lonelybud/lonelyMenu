@@ -51,12 +51,12 @@ namespace big
 		if (auto net_data = plyr->get_net_data())
 			is_blocked = recent_modders_nm::is_blocked(net_data->m_gamer_handle.m_rockstar_id);
 
-		if (is_blocked)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f));
+		if (plyr->is_modder)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.1f, 0.1f, 1.f));
 		else if (plyr->is_spammer)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.67f, 0.f, 1.f));
-		else if (plyr->is_modder)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.1f, 0.1f, 1.f));
+		else if (is_blocked)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f));
 		else if (plyr->is_toxic)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f));
 
@@ -123,7 +123,7 @@ namespace big
 			has_scrollbar = window_height + window_pos > (float)*g_pointers->m_gta.m_resolution_y - 10.f;
 
 			// basically whichever is smaller, the max available screenspace or the calculated window_height
-			window_height = has_scrollbar ? (float)*g_pointers->m_gta.m_resolution_y - (window_pos + 40.f) : window_height;
+			window_height = has_scrollbar ? (float)*g_pointers->m_gta.m_resolution_y - (window_pos + 40.f + 25) : window_height;
 
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, {0.f, 0.f, 0.f, 0.f});
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarBg, {0.f, 0.f, 0.f, 0.f});
@@ -134,7 +134,7 @@ namespace big
 			ImGui::SetNextItemWidth(width_of_list);
 			components::input_text_with_hint("###search_player_name", "search name", search_player_name);
 
-			if (ImGui::BeginListBox("##players", {width_of_list, window_height - 25}))
+			if (ImGui::BeginListBox("##players", {width_of_list, window_height}))
 			{
 				ImGui::SetScrollX(0);
 				player_button(g_player_service->get_self());

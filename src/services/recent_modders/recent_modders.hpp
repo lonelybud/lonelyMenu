@@ -18,7 +18,7 @@ namespace recent_modders_nm
 
 	inline std::filesystem::path getSavedFilePath()
 	{
-		return big::g_file_manager.get_project_file("blocked_modders.json").get_path();
+		return big::g_file_manager.get_project_file("blocked_players.json").get_path();
 	}
 
 	void load_blocked_list();

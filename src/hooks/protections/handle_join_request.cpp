@@ -17,10 +17,9 @@ namespace big
 			response.m_status_code = 21;
 			g_pointers->m_gta.m_write_join_response_data(&response, ctx->m_join_response_data, 512, &ctx->m_join_response_size);
 
-			auto str =
-			    std::format("Join Request denied to player {} ({})", player_info->m_name, player_info->m_gamer_handle.m_rockstar_id);
-			g_notification_service->push_success("Join Blocked", str);
-			LOG(WARNING) << str;
+			g_notification_service->push_success("Join Blocked",
+			    std::format("Join Request denied to player {} ({})", player_info->m_name, player_info->m_gamer_handle.m_rockstar_id),
+			    true);
 
 			return false;
 		}
