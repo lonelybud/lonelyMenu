@@ -9,9 +9,10 @@ namespace recent_modders_nm
 		std::string name;
 		uint64_t rockstar_id;
 		bool block_join = true;
+		bool is_spammer;
 	};
 
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(recent_modder, name, rockstar_id);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(recent_modder, name, rockstar_id, is_spammer);
 
 	extern std::map<uint64_t, recent_modder> recent_modders_list;
 
@@ -25,13 +26,18 @@ namespace recent_modders_nm
 
 	inline void add_player(recent_modder modder)
 	{
-		recent_modders_nm::recent_modders_list[modder.rockstar_id] = modder;
+		recent_modders_list[modder.rockstar_id] = modder;
 		save_blocked_list();
 	}
 	inline void toggle_block(uint64_t rockstar_id)
 	{
-		auto& v = recent_modders_nm::recent_modders_list[rockstar_id].block_join;
+		auto& v = recent_modders_list[rockstar_id].block_join;
 		v       = !v;
+		save_blocked_list();
+	}
+	inline void set_spammer(uint64_t rockstar_id, bool v)
+	{
+		recent_modders_list[rockstar_id].is_spammer = v;
 		save_blocked_list();
 	}
 	inline bool is_blocked(uint64_t rockstar_id)
@@ -41,7 +47,7 @@ namespace recent_modders_nm
 	}
 	inline bool does_exist(uint64_t rockstar_id)
 	{
-		auto recent_modder = recent_modders_nm::recent_modders_list.find(rockstar_id);
-		return recent_modder != recent_modders_nm::recent_modders_list.end();
+		auto recent_modder = recent_modders_list.find(rockstar_id);
+		return recent_modder != recent_modders_list.end();
 	}
 }

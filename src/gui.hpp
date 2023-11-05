@@ -13,6 +13,8 @@ namespace big
 		gui& operator=(const gui&)     = delete;
 		gui& operator=(gui&&) noexcept = delete;
 
+		bool open_on_next_tick = false;
+
 		bool is_open();
 		void toggle(bool toggle);
 
@@ -39,8 +41,6 @@ namespace big
 		static void script_func();
 
 		void wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-		void open_gui();
 
 	private:
 		void toggle_mouse();

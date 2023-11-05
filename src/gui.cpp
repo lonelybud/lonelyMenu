@@ -143,6 +143,12 @@ namespace big
 			view::root(); // frame bg
 			pop_theme_colors();
 		}
+
+		if (open_on_next_tick)
+		{
+			open_on_next_tick = false;
+			toggle(true);
+		}
 	}
 
 	void gui::save_default_style()
@@ -229,12 +235,6 @@ namespace big
 	void gui::wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 		if (msg == WM_KEYUP && wparam == g_settings.hotkeys.menu_toggle)
-			toggle(!m_is_open);
-	}
-
-	void gui::open_gui()
-	{
-		if (!m_is_open)
 			toggle(!m_is_open);
 	}
 

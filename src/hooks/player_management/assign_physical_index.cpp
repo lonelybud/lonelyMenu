@@ -67,7 +67,9 @@ namespace big
 					{
 						if (recent_modders_nm::is_blocked(rockstar_id))
 						{
-							LOGF(WARNING, "A Blocked player {} ({}) has joined.", player_name, rockstar_id);
+							plyr->is_spammer = recent_modders_nm::recent_modders_list[rockstar_id].is_spammer;
+
+							LOGF(WARNING, "A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
 
 							if (g_player_service->get_self()->is_host())
 							{

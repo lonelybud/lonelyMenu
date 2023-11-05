@@ -130,11 +130,11 @@ namespace big
 
 			auto width_of_list = ImGui::GetWindowSize().x - ImGui::GetStyle().WindowPadding.x * 2;
 
-			// static std::string search_player_name;
-			// ImGui::SetNextItemWidth(width_of_list);
-			// components::input_text_with_hint("###search_player_name", "search name", search_player_name);
+			static std::string search_player_name;
+			ImGui::SetNextItemWidth(width_of_list);
+			components::input_text_with_hint("###search_player_name", "search name", search_player_name);
 
-			if (ImGui::BeginListBox("##players", {width_of_list, window_height}))
+			if (ImGui::BeginListBox("##players", {width_of_list, window_height - 25}))
 			{
 				ImGui::SetScrollX(0);
 				player_button(g_player_service->get_self());
@@ -144,13 +144,13 @@ namespace big
 					ImGui::Separator();
 
 					for (const auto& [_, player] : g_player_service->players())
-						// if (search_player_name.length())
-						// {
-						// 	std::string lowercaseSearchString = toLowercase(search_player_name);
-						// 	if (std::string lowercaseStr = toLowercase(player->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
-						// 		player_button(player);
-						// }
-						// else
+						if (search_player_name.length())
+						{
+							std::string lowercaseSearchString = toLowercase(search_player_name);
+							if (std::string lowercaseStr = toLowercase(player->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+								player_button(player);
+						}
+						else
 							player_button(player);
 				}
 

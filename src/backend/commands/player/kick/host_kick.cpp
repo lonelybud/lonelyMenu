@@ -8,7 +8,7 @@ namespace big
 	{
 		using player_command::player_command;
 
-		virtual CommandAccessLevel get_access_level() override 
+		virtual CommandAccessLevel get_access_level() override
 		{
 			return CommandAccessLevel::TOXIC;
 		}
@@ -22,8 +22,8 @@ namespace big
 				g_notification_service->push_error("Host kick", "Host kick failed");
 				return;
 			}
-
-            NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
+			LOG(VERBOSE) << "Host Kick > " << player->get_name();
+			NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
 		}
 	};
 

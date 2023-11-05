@@ -18,6 +18,9 @@ namespace big
 		{
 			if (!player)
 				return;
+
+			LOG(VERBOSE) << "Null Function Kick > " << player->get_name();
+
 			const size_t arg_count  = 15;
 			int64_t args[arg_count] = {(int64_t)eRemoteEvent::InteriorControl, (int64_t)self::id, (int64_t)(int)-1};
 

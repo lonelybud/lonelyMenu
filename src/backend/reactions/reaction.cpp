@@ -37,7 +37,7 @@ namespace big
 			{
 				g_gui_service->set_selected(tabs::PLAYER);
 				g_player_service->set_selected(player);
-				g_gui->open_gui();
+				g_gui->open_on_next_tick = true;
 			}
 
 			if (is_modder)
@@ -69,7 +69,7 @@ namespace big
 
 					// block join
 					if (!recent_modders_nm::does_exist(rockstar_id))
-						recent_modders_nm::add_player({name, rockstar_id, true});
+						recent_modders_nm::add_player({name, rockstar_id, true, player->is_spammer});
 
 					if (g_player_service->get_self()->is_host())
 					{

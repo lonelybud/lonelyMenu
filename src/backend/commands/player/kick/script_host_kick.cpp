@@ -2,8 +2,8 @@
 #include "core/scr_globals.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
-#include "util/scripts.hpp"
 #include "services/notifications/notification_service.hpp"
+#include "util/scripts.hpp"
 
 namespace big
 {
@@ -20,11 +20,16 @@ namespace big
 		{
 			if (!player)
 				return;
+
 			if (!scripts::force_host(RAGE_JOAAT("freemode")))
 			{
-				g_notification_service->push_error("Kick", "Force script host failed!");
+				const char* str = "Force script host failed!";
+				LOG(WARNING) << str;
+				g_notification_service->push_error("Script Host Kick", str);
 				return;
 			}
+
+			LOG(VERBOSE) << "Script Host Kick > " << player->get_name();
 
 			*scr_globals::gsbd_kicking.at(player->id(), 1).as<bool*>() = true;
 		}

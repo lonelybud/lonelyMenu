@@ -23,10 +23,13 @@ namespace big
 		static char player_name[64];
 		static uint64_t selected_id;
 		static std::string search_blocked_player_name;
+		static bool save_as_spammer;
 		std::map<uint64_t, recent_modders_nm::recent_modder> searched_blocked_players;
 
 		ImGui::SetNextItemWidth(300);
 		components::input_text("Player Name", player_name, sizeof(player_name));
+		ImGui::Checkbox("Save as spammer", &save_as_spammer);
+		ImGui::Spacing();
 		components::button("Add to block list", [] {
 			g_thread_pool->push([] {
 				uint64_t rockstar_id;
@@ -34,7 +37,9 @@ namespace big
 				if (!g_api_service->get_rid_from_username(player_name, rockstar_id))
 					g_notification_service->push_error("New Player Entry", "User could not be found.");
 				else
-					recent_modders_nm::add_player({player_name, rockstar_id, true});
+					recent_modders_nm::add_player({player_name, rockstar_id, true, save_as_spammer});
+
+				save_as_spammer = false;
 			});
 		});
 		ImGui::Spacing();
@@ -105,12 +110,15 @@ namespace big
 			ImGui::Text(std::to_string(selected_id).c_str());
 
 			auto block_join = recent_modders_nm::recent_modders_list[selected_id].block_join;
+			auto is_spammer = recent_modders_nm::recent_modders_list[selected_id].is_spammer;
 
 			if (ImGui::Checkbox("Block Join", &block_join))
 			{
 				recent_modders_nm::toggle_block(selected_id);
 				searched_blocked_players.clear();
 			}
+			if (ImGui::Checkbox("Is Spammer", &is_spammer))
+				recent_modders_nm::set_spammer(selected_id, is_spammer);
 		}
 	}
 }

@@ -22,6 +22,9 @@ namespace big
 		{
 			if (!player)
 				return;
+
+			LOG(VERBOSE) << "OOM Kick > " << player->get_name();
+
 			packet msg{};
 
 			msg.write_message(rage::eNetMessage::MsgRadioStationSyncRequest);

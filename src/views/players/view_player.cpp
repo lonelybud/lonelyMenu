@@ -183,13 +183,13 @@ namespace big
 					if (components::button("Copy Name##copyname"))
 						ImGui::SetClipboardText(current_player->get_name());
 					ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-					if (bool is_blocked = recent_modders_nm::is_blocked(rockstar_id); components::button(is_blocked ? "Unblock Join" : "Block Join"))
+					if (bool is_blocked = recent_modders_nm::is_blocked(rockstar_id); components::button(is_blocked ? "Un-block Join" : "Block Join"))
 					{
 						if (recent_modders_nm::does_exist(rockstar_id))
 							recent_modders_nm::toggle_block(rockstar_id);
 						else
 						{
-							recent_modders_nm::add_player({current_player->get_name(), rockstar_id, true});
+							recent_modders_nm::add_player({current_player->get_name(), rockstar_id, true, current_player->is_spammer});
 
 							if (g_player_service->get_self()->is_host())
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
@@ -197,22 +197,26 @@ namespace big
 					}
 				}
 				ImGui::EndGroup();
-				if (current_player->is_spammer)
+				ver_Space();
+				ImGui::BeginGroup();
 				{
-					ver_Space();
-					ImGui::BeginGroup();
-					{
-						components::sub_title("Chat Spammer");
+					components::sub_title("Chat Spammer");
+					if (current_player->is_spammer)
 						if (ImGui::BeginListBox("##message", ImVec2(350, 100)))
 						{
 							ImGui::TextWrapped(current_player->spam_message.c_str());
 							ImGui::EndListBox();
 						}
-						if (components::button("Unflag Spammer"))
-							current_player->is_spammer = false;
+					if (components::button(current_player->is_spammer ? "Un-flag Spammer" : "Flag Spammer"))
+					{
+						current_player->is_spammer = !current_player->is_spammer;
+						if (recent_modders_nm::does_exist(rockstar_id))
+							recent_modders_nm::set_spammer(rockstar_id, current_player->is_spammer);
 					}
-					ImGui::EndGroup();
 				}
+				ImGui::EndGroup();
+
+
 				ver_Space();
 				ImGui::BeginGroup();
 				{
