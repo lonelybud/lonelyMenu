@@ -54,45 +54,45 @@ namespace big
 				g_notification_service->push_warning("Protections", std::vformat(m_notify_message, std::make_format_args(name)), log);
 
 			if (kick_player)
+			{
+				player->timeout();
+
+				// block join
+				if (!recent_modders_nm::does_exist(rockstar_id))
+					recent_modders_nm::add_player({name, rockstar_id, true, player->is_spammer});
+
+				if (g_player_service->get_self()->is_host())
 				{
-					player->timeout();
-
-					// block join
-					if (!recent_modders_nm::does_exist(rockstar_id))
-						recent_modders_nm::add_player({name, rockstar_id, true, player->is_spammer});
-
-					if (g_player_service->get_self()->is_host())
-					{
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-						return;
-					}
-					else if (!is_modder)
-					{
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(player, {});
-						return;
-					}
-					// become host
-					else
-						g_fiber_pool->queue_job([player] {
-							if (g_session.force_session_host && g_player.host_to_auto_kick != nullptr
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+					return;
+				}
+				else if (!is_modder)
+				{
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(player, {});
+					return;
+				}
+				// become host
+				else
+					g_fiber_pool->queue_job([player] {
+						if (g_session.force_session_host && g_player.host_to_auto_kick != nullptr
 						    && g_player.host_to_auto_kick->is_valid() && g_player.host_to_auto_kick != g_player_service->get_self())
-							{
-								// kick current host
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(g_player.host_to_auto_kick, {});
+						{
+							// kick current host
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(g_player.host_to_auto_kick, {});
 
-								// try to host kick attacker if possible
-								for (int i = 0; i < 30; i++)
+							// try to host kick attacker if possible
+							for (int i = 0; i < 30; i++)
+							{
+								script::get_current()->yield(100ms);
+								if (g_player_service->get_self()->is_host())
 								{
-									script::get_current()->yield(100ms);
-									if (g_player_service->get_self()->is_host())
-									{
-										dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-										return;
-									}
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+									return;
 								}
 							}
-						});
-				}
+						}
+					});
+			}
 		}
 	}
 }

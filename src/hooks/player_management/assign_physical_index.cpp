@@ -69,13 +69,19 @@ namespace big
 						{
 							plyr->is_spammer = recent_modders_nm::recent_modders_list[rockstar_id].is_spammer;
 
-							g_notification_service->push_warning("Join Blocked", std::format("A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id), true);
+							auto str = std::format("A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
 
 							if (g_player_service->get_self()->is_host())
 							{
+								LOG(WARNING) << str;
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
 								return;
 							}
+
+							if (plyr->is_spammer)
+								LOG(WARNING) << str;
+							else
+								g_notification_service->push_warning("Carefull", str, true);
 						}
 						else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 						{
@@ -86,6 +92,8 @@ namespace big
 					}
 					if (is_spoofed_host_token(host_token))
 						g_reactions.modder_detection.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
+
+					LOGF(INFO, "{} checked.", player_name);
 				}
 			});
 		}

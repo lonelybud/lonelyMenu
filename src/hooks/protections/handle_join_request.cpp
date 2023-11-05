@@ -17,9 +17,17 @@ namespace big
 			response.m_status_code = 21;
 			g_pointers->m_gta.m_write_join_response_data(&response, ctx->m_join_response_data, 512, &ctx->m_join_response_size);
 
-			g_notification_service->push_success("Join Blocked",
-			    std::format("Join Request denied to player {} ({})", player_info->m_name, player_info->m_gamer_handle.m_rockstar_id),
-			    true);
+			auto is_spammer = recent_modders_nm::recent_modders_list[player_info->m_gamer_handle.m_rockstar_id].is_spammer;
+
+			auto str = std::format("Join Request denied to {} {} ({})",
+			    is_spammer ? "Spammer" : "Player",
+			    player_info->m_name,
+			    player_info->m_gamer_handle.m_rockstar_id);
+
+			if (is_spammer)
+				LOG(WARNING) << str;
+			else
+				g_notification_service->push_success("Join Blocked", str, true);
 
 			return false;
 		}

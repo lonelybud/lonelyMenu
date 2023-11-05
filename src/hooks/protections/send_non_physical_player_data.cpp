@@ -26,7 +26,15 @@ namespace big
 			if (auto plyr = g_player_service->get_by_id(id); plyr && !plyr->preventing_join)
 			{
 				plyr->preventing_join = true;
-				g_notification_service->push_success("Join Blocked", std::format("Trying to prevent {} ({}) from joining..", player_name, rockstar_id), true);
+
+				auto is_spammer = recent_modders_nm::recent_modders_list[rockstar_id].is_spammer;
+
+				auto str = std::format("Preventing {} {} ({}) from joining...", is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
+
+				if (is_spammer)
+					LOG(WARNING) << str;
+				else
+					g_notification_service->push_success("Preventing Join", str, true);
 			}
 		}
 
