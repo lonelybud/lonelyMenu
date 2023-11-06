@@ -3,7 +3,7 @@
 #include "core/settings/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
-#include "services/recent_modders/recent_modders.hpp"
+#include "services/bad_players/bad_players.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
@@ -31,18 +31,37 @@ namespace big
 
 				ImGui::InputScalar("##inputrid", ImGuiDataType_U64, &rid);
 				ImGui::SameLine();
-				components::button("Join by RID", [] {
+				components::button("Join##RID", [] {
 					session::join_by_rockstar_id(rid);
+				});
+				ImGui::SameLine();
+				components::button("Invite##RID", [] {
+					session::invite_by_rockstar_id(rid);
 				});
 
 				components::input_text_with_hint("##usernameinput", "Input Username", username, sizeof(username));
 				ImGui::SameLine();
-				if (components::button("Join by Username"))
+				if (components::button("Join##Username"))
 					session::join_by_username(username);
+				ImGui::SameLine();
+				if (components::button("Invite##Username"))
+					g_thread_pool->push([] {
+						uint64_t rockstar_id;
+
+						if (!g_api_service->get_rid_from_username(username, rockstar_id))
+							g_notification_service->push_error("Player Invite", "User could not be found.");
+						else
+						{
+							rid = rockstar_id;
+							g_fiber_pool->queue_job([rockstar_id] {
+								session::invite_by_rockstar_id(rockstar_id);
+							});
+						}
+					});
 
 				components::input_text_with_hint("##sessioninfoinput", "Session Info", base64, sizeof(base64));
 				ImGui::SameLine();
-				components::button("Join Session Info", [] {
+				components::button("Join##Session", [] {
 					rage::rlSessionInfo info;
 					if (g_pointers->m_gta.m_decode_session_info(&info, base64, nullptr))
 						session::join_session(info);
@@ -147,8 +166,7 @@ namespace big
 					ImGui::Spacing();
 					components::button("Kick all blocked players", [] {
 						g_player_service->iterate([](const player_entry& player) {
-							if (auto net_data = player.second->get_net_data();
-							    net_data && recent_modders_nm::is_blocked(net_data->m_gamer_handle.m_rockstar_id))
+							if (player.second->is_blocked)
 								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second, {});
 						});
 					});

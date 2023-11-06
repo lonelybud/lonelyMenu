@@ -3,6 +3,7 @@
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "services/notifications/notification_service.hpp"
 
 #include <network/Network.hpp>
 
@@ -22,7 +23,7 @@ namespace big
 			if (!player)
 				return;
 
-			LOG(VERBOSE) << "Desync Kick > " << player->get_name();
+			g_notification_service->push_success("Kick", std::format("Desync kick to {}", player->get_name()), true);
 
 			if (auto net_data = player->get_net_data(); net_data && gta_util::get_network()->m_game_session_ptr->is_host())
 			{

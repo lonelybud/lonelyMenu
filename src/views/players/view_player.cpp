@@ -4,8 +4,8 @@
 #include "core/settings/protections.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
-#include "services/recent_modders/recent_modders.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/delete_entity.hpp"
 #include "util/globals.hpp"
@@ -139,13 +139,8 @@ namespace big
 					strcat(player_tab.name, " [FRIEND]");
 				if (current_player->is_modder)
 					strcat(player_tab.name, " [MOD]");
-
-				if (auto net_data = current_player->get_net_data())
-				{
-					rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-					if (recent_modders_nm::is_blocked(rockstar_id))
-						strcat(player_tab.name, " [BLOCKED]");
-				}
+				if (current_player->is_blocked)
+					strcat(player_tab.name, " [BLOCKED]");
 			}
 
 			if (current_player->id() == self::id)
@@ -159,13 +154,12 @@ namespace big
 				ImGui::BeginGroup();
 				{
 					ImGui::Checkbox("Spectate", &g_player.spectating);
-					ImGui::SameLine();
-					ImGui::Checkbox("Ignore Crash", &current_player->ignore_crash);
-					ImGui::SameLine();
 					if (current_player->is_host())
 					{
 						auto auto_kick_host =
 						    g_player.host_to_auto_kick != nullptr && g_player.host_to_auto_kick->id() == current_player->id();
+
+						ImGui::SameLine();
 						if (ImGui::Checkbox("Kick host", &auto_kick_host))
 							g_player.host_to_auto_kick = auto_kick_host ? current_player : nullptr;
 					}
@@ -183,18 +177,15 @@ namespace big
 					if (components::button("Copy Name##copyname"))
 						ImGui::SetClipboardText(current_player->get_name());
 					ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-					if (bool is_blocked = recent_modders_nm::is_blocked(rockstar_id); components::button(is_blocked ? "Un-block Join" : "Block Join"))
-					{
-						if (recent_modders_nm::does_exist(rockstar_id))
-							recent_modders_nm::toggle_block(rockstar_id);
+					components::button(current_player->is_blocked ? "Un-Block" : "Block", [current_player] {
+						if (bad_players_nm::does_exist(rockstar_id))
+							bad_players_nm::toggle_block(rockstar_id, current_player->is_blocked = !current_player->is_blocked);
 						else
 						{
-							recent_modders_nm::add_player({current_player->get_name(), rockstar_id, true, current_player->is_spammer});
-
-							if (g_player_service->get_self()->is_host())
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+							current_player->is_blocked = true;
+							bad_players_nm::add_player({current_player->get_name(), rockstar_id, true, current_player->is_spammer});
 						}
-					}
+					});
 				}
 				ImGui::EndGroup();
 				ver_Space();
@@ -207,16 +198,45 @@ namespace big
 							ImGui::TextWrapped(current_player->spam_message.c_str());
 							ImGui::EndListBox();
 						}
-					if (components::button(current_player->is_spammer ? "Un-flag Spammer" : "Flag Spammer"))
-					{
+					components::button(current_player->is_spammer ? "Un-flag Spammer" : "Flag Spammer", [] {
 						current_player->is_spammer = !current_player->is_spammer;
-						if (recent_modders_nm::does_exist(rockstar_id))
-							recent_modders_nm::set_spammer(rockstar_id, current_player->is_spammer);
-					}
+						if (bad_players_nm::does_exist(rockstar_id))
+							bad_players_nm::set_spammer(rockstar_id, current_player->is_spammer);
+					});
 				}
 				ImGui::EndGroup();
+				ver_Space();
+				if (!current_player->infractions.empty())
+				{
+					ImGui::BeginGroup();
+					components::sub_title("Infractions");
+					for (int infraction : current_player->infractions)
+						ImGui::BulletText(infraction_desc[(Infraction)infraction]);
+					ImGui::EndGroup();
+				}
+			}
+			ImGui::EndGroup();
 
+			ImGui::SameLine(0, 50);
 
+			ImGui::BeginGroup();
+			{
+				ImGui::BeginGroup();
+				{
+					components::sub_title("Teleport / Location");
+
+					components::player_command_button<"playertp">(current_player);
+					ImGui::SameLine();
+					components::player_command_button<"playervehtp">(current_player);
+					ImGui::SameLine();
+					components::player_command_button<"bring">(current_player);
+
+					components::button("Set Waypoint", [current_player] {
+						Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
+						HUD::SET_NEW_WAYPOINT(location.x, location.y);
+					});
+				}
+				ImGui::EndGroup();
 				ver_Space();
 				ImGui::BeginGroup();
 				{
@@ -242,26 +262,7 @@ namespace big
 			}
 			ImGui::EndGroup();
 
-			ImGui::SameLine(0, 100);
-
-			ImGui::BeginGroup();
-			{
-				components::sub_title("Teleport / Location");
-
-				components::player_command_button<"playertp">(current_player);
-				ImGui::SameLine();
-				components::player_command_button<"playervehtp">(current_player);
-				ImGui::SameLine();
-				components::player_command_button<"bring">(current_player);
-
-				components::button("Set Waypoint", [current_player] {
-					Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
-					HUD::SET_NEW_WAYPOINT(location.x, location.y);
-				});
-			}
-			ImGui::EndGroup();
-
-			ImGui::SameLine(0, 100);
+			ImGui::SameLine(0, 50);
 
 			ImGui::BeginGroup();
 			{
@@ -273,15 +274,25 @@ namespace big
 						components::player_command_button<"hostkick">(current_player);
 					else
 					{
+						components::button("!! multikick the host !!", [] {
+							for (auto& plyr : g_player_service->players())
+								if (plyr.second->is_host())
+								{
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(plyr.second, {});
+									return;
+								}
+						});
+						ImGui::Spacing();
 						ImGui::BeginGroup();
 						{
 							components::player_command_button<"shkick">(current_player);
 							components::player_command_button<"endkick">(current_player);
-							ver_Space();
 							components::player_command_button<"nfkick">(current_player);
 							components::player_command_button<"oomkick">(current_player);
-							if (!current_player->is_host())
-								components::player_command_button<"desync">(current_player);
+							// if (!current_player->is_host()) {
+							// 	ImGui::SameLine();
+							// 	components::player_command_button<"desync">(current_player);
+							// }
 						}
 						ImGui::EndGroup();
 						ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());

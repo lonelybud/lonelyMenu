@@ -1,6 +1,6 @@
 #include "backend/player_command.hpp"
 #include "script.hpp"
-#include "services/recent_modders/recent_modders.hpp"
+#include "services/bad_players/bad_players.hpp"
 
 namespace big
 {
@@ -22,14 +22,18 @@ namespace big
 				if (auto net_data = player->get_net_data())
 				{
 					auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-					if (!recent_modders_nm::does_exist(rockstar_id))
-						recent_modders_nm::add_player({net_data->m_name, rockstar_id, true, player->is_spammer});
+					auto name        = net_data->m_name;
+
+					if (!player->is_blocked)
+					{
+						player->is_blocked = true;
+						bad_players_nm::add_player({name, rockstar_id, true, player->is_spammer});
+					}
 				};
 
-				dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(player, {});
-				script::get_current()->yield();
 				dynamic_cast<player_command*>(command::get(RAGE_JOAAT("endkick")))->call(player, {});
 				dynamic_cast<player_command*>(command::get(RAGE_JOAAT("nfkick")))->call(player, {});
+				dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(player, {});
 			}
 		}
 	};

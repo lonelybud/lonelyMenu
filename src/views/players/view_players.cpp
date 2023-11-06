@@ -5,7 +5,6 @@
 #include "pointers.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
-#include "services/recent_modders/recent_modders.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
 
@@ -46,16 +45,11 @@ namespace big
 		const ImRect icons_box(icons_pos, icons_pos + icons_size);
 		ImGui::PopFont();
 
-		bool is_blocked;
-
-		if (auto net_data = plyr->get_net_data())
-			is_blocked = recent_modders_nm::is_blocked(net_data->m_gamer_handle.m_rockstar_id);
-
 		if (plyr->is_modder)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.1f, 0.1f, 1.f));
 		else if (plyr->is_spammer)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.67f, 0.f, 1.f));
-		else if (is_blocked)
+		else if (plyr->is_blocked)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f));
 		else if (plyr->is_toxic)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f));
@@ -88,7 +82,7 @@ namespace big
 		if (selected_player)
 			ImGui::PopStyleColor();
 
-		if (is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_toxic)
+		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_toxic)
 			ImGui::PopStyleColor();
 
 		// render icons on top of the player button

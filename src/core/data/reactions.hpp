@@ -55,5 +55,6 @@ namespace big
 
 		// not shown in UI settings
 		reaction remove_weapon{"Remove Weapon", "Blocked remove weapon from {}"};
+		reaction spoofed_host_token{"Spoofed Host token", "{} has spoofed their host token."};
 	} g_reactions{};
 }

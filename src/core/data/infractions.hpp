@@ -45,7 +45,7 @@ namespace big
 	    {Infraction::BLAME_EXPLOSION_DETECTED, "Tried to blame someone for their explosion"},
 	    {Infraction::ATTACKING_WITH_GODMODE, "Attacked someone while using godmode"},
 	    {Infraction::ATTACKING_WITH_INVISIBILITY, "Attacked someone while being invisible"},
-	    {Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST, "Attacked someone while being hidden from the player list"},
+	    {Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST, "Attacked someone while hidden in player list"},
 	    {Infraction::SPOOFED_DATA, "Had spoofed data"},
 	    {Infraction::SPOOFED_HOST_TOKEN, "Had spoofed their host token"},
 	    {Infraction::INVALID_PLAYER_MODEL, "Had used an invalid player model"},

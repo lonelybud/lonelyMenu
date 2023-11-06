@@ -3,10 +3,10 @@
 #include "core/settings/session.hpp"
 #include "gui.hpp"
 #include "hooking.hpp"
+#include "services/bad_players/bad_players.hpp"
 #include "services/friends/friends_service.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
-#include "services/recent_modders/recent_modders.hpp"
 #include "util/notify.hpp"
 #include "util/session.hpp"
 
@@ -65,9 +65,10 @@ namespace big
 				{
 					if (*g_pointers->m_gta.m_is_session_started)
 					{
-						if (recent_modders_nm::is_blocked(rockstar_id))
+						if (bad_players_nm::is_blocked(rockstar_id))
 						{
-							plyr->is_spammer = recent_modders_nm::recent_modders_list[rockstar_id].is_spammer;
+							plyr->is_blocked = true;
+							plyr->is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;
 
 							auto str = std::format("A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
 
@@ -91,9 +92,7 @@ namespace big
 						}
 					}
 					if (is_spoofed_host_token(host_token))
-						g_reactions.modder_detection.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
-
-					LOGF(INFO, "{} checked.", player_name);
+						g_reactions.spoofed_host_token.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
 				}
 			});
 		}

@@ -15,7 +15,7 @@ namespace big
 
 		constexpr float alpha = 1.f;
 
-		ImGui::SetNextWindowPos({(300.f + 110.f) * g_window.gui_scale, 100.f * g_window.gui_scale}, ImGuiCond_Always);
+		ImGui::SetNextWindowPos({(300.f + 115.f) * g_window.gui_scale, 100.f * g_window.gui_scale}, ImGuiCond_Always);
 		ImGui::SetNextWindowSize({0.f, 0.f});
 		ImGui::SetNextWindowSizeConstraints({300.f, 100.f},
 		    {(float)*g_pointers->m_gta.m_resolution_x - 270.f, (float)*g_pointers->m_gta.m_resolution_y - 110.f});

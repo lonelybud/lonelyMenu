@@ -27,7 +27,7 @@ namespace big
 
 		NETWORK,
 		SESSION_BROWSER,
-		RECENT_MODDERS,
+		BAD_PLAYERS,
 		CHAT,
 
 		SETTINGS,
@@ -101,7 +101,7 @@ namespace big
 		            view::network,
 		            {
 		                {tabs::SESSION_BROWSER, {"Session Browser", view::session_browser}},
-		                {tabs::RECENT_MODDERS, {"Recent Modders", view::recent_modders}},
+		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
 		                {tabs::CHAT, {"Chat", view::chat}},
 		            },
 		        },

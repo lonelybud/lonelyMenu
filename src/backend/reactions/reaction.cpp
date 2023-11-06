@@ -7,8 +7,8 @@
 #include "fiber_pool.hpp"
 #include "gui.hpp"
 #include "script.hpp"
+#include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
-#include "services/recent_modders/recent_modders.hpp"
 #include "util/notify.hpp"
 
 namespace big
@@ -37,62 +37,71 @@ namespace big
 					return;
 			}
 
+			if (notify)
+				g_notification_service->push_warning("Protections", std::vformat(m_notify_message, std::make_format_args(name)), log);
+
 			// open player info of attacker
-			if ((!player->ignore_crash && infraction == Infraction::TRIED_CRASH_PLAYER) || infraction == Infraction::TRIED_KICK_PLAYER)
+			if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)
 			{
 				g_gui_service->set_selected(tabs::PLAYER);
 				g_player_service->set_selected(player);
-				g_gui->open_on_next_tick = true;
 			}
-
-			if (is_modder)
-				player->is_modder = true;
-			if (is_toxic)
-				player->is_toxic = true;
-
-			if (notify)
-				g_notification_service->push_warning("Protections", std::vformat(m_notify_message, std::make_format_args(name)), log);
 
 			if (kick_player)
 			{
 				player->timeout();
 
 				// block join
-				if (!recent_modders_nm::does_exist(rockstar_id))
-					recent_modders_nm::add_player({name, rockstar_id, true, player->is_spammer});
-
-				if (g_player_service->get_self()->is_host())
+				if (!player->is_blocked)
 				{
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-					return;
+					bad_players_nm::add_player({name, rockstar_id, true, player->is_spammer});
+					player->is_blocked = true;
 				}
-				else if (!is_modder)
-				{
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(player, {});
-					return;
-				}
-				// become host
-				else
-					g_fiber_pool->queue_job([player] {
-						if (g_session.force_session_host && g_player.host_to_auto_kick != nullptr
-						    && g_player.host_to_auto_kick->is_valid() && g_player.host_to_auto_kick != g_player_service->get_self())
-						{
-							// kick current host
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(g_player.host_to_auto_kick, {});
 
-							// try to host kick attacker if possible
-							for (int i = 0; i < 30; i++)
+				if (is_modder)
+				{
+					if (g_player_service->get_self()->is_host())
+					{
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+						return;
+					}
+					else
+						g_fiber_pool->queue_job([player, name] {
+							// // man this is heavy!
+							// dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(player, {});
+
+							// try to become host
+							if (g_session.force_session_host && g_player.host_to_auto_kick != nullptr
+							    && g_player.host_to_auto_kick->is_valid())
 							{
-								script::get_current()->yield(100ms);
-								if (g_player_service->get_self()->is_host())
+								g_notification_service->push_success("Auto kicking host", std::format(".... to tackle {}", name), true);
+
+								// kick current host
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(g_player.host_to_auto_kick, {});
+
+								// try to host kick attacker if possible
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+								for (int i = 0; i < 19; i++)
 								{
 									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-									return;
+									script::get_current()->yield(50ms);
 								}
 							}
-						}
-					});
+						});
+				}
+				else
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(player, {});
 			}
+
+			if (is_modder)
+			{
+				player->is_modder = true;
+
+				if (!bad_players_nm::does_exist(rockstar_id))
+					bad_players_nm::add_player({name, rockstar_id, false, player->is_spammer});
+			}
+			else if (is_toxic)
+				player->is_toxic = true;
 		}
 	}
 }

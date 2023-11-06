@@ -40,7 +40,7 @@ namespace big
 		static void network();
 		static void session_browser();
 		static void casino();
-		static void recent_modders();
+		static void bad_players();
 		static void chat();
 		static void vehicle();
 		static void lsc();

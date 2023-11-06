@@ -80,10 +80,10 @@ namespace big
 
 		bool is_modder = false;
 		std::unordered_set<int> infractions;
-		bool is_spammer = false;
+		bool is_blocked         = false;
+		bool is_spammer         = false;
 		std::string spam_message;
 		bool is_toxic        = false;
-		bool ignore_crash    = false;
 		bool preventing_join = false;
 
 		std::optional<uint32_t> player_time_value;

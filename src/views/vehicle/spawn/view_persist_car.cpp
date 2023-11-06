@@ -57,6 +57,16 @@ namespace big
 				return g_notification_service->push_warning("Persist Car", "You must be in a vehicle. Please enter a vehicle before using load.");
 			save_vehicle(vehicle_file_name_input, save_folder);
 		});
+		ImGui::SameLine();
+		components::button("Populate Name", [vehicle_file_name_input] {
+			if (self::veh)
+			{
+				auto model = ENTITY::GET_ENTITY_MODEL(self::veh);
+				auto name = std::format("{} {}", toLowercase(VEHICLE::GET_MAKE_NAME_FROM_VEHICLE_MODEL(model)), toLowercase(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(model)));
+				
+				strcpy(vehicle_file_name_input, name.c_str());
+			}
+		});
 	}
 
 	void view::persist_car(bool spawn_at_waypoint)

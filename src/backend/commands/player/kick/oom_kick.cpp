@@ -1,9 +1,6 @@
 #include "backend/player_command.hpp"
-// #include "core/scr_globals.hpp"
-// #include "natives.hpp"
 #include "packet.hpp"
-// #include "pointers.hpp"
-// #include "util/scripts.hpp"
+#include "services/notifications/notification_service.hpp"
 
 #include <network/snSession.hpp>
 
@@ -23,7 +20,7 @@ namespace big
 			if (!player)
 				return;
 
-			LOG(VERBOSE) << "OOM Kick > " << player->get_name();
+			g_notification_service->push_success("Kick", std::format("OOM kick to {}", player->get_name()), true);
 
 			packet msg{};
 
