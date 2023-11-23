@@ -1,6 +1,6 @@
 #include "backend/looped/looped.hpp"
 #include "core/scr_globals.hpp"
-#include "core/settings/session.hpp"
+#include "core/data/session.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 

@@ -1,5 +1,5 @@
-#include "core/settings/notifications.hpp"
 #include "core/data/reactions.hpp"
+#include "core/settings/notifications.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -79,20 +79,9 @@ namespace big
 
 		ImGui::Separator();
 
-		components::title("Notifications");
-		components::sub_title("GTA Threads");
-
-		draw_pair_option("Terminate", g_notifications.gta_thread_kill);
-		draw_pair_option("Start", g_notifications.gta_thread_start);
-
 		components::sub_title("Network Player Manager");
 
 		draw_pair_option("Player Join", g_notifications.player_join);
 		draw_pair_option("Player Leave", g_notifications.player_leave);
-
-		components::sub_title("Other");
-
-		draw_pair_option("Transaction Error / Rate Limit", g_notifications.transaction_rate_limit);
 	}
-
 }

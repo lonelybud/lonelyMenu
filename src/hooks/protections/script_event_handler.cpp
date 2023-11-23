@@ -1,12 +1,13 @@
 #include "backend/player_command.hpp"
-#include "core/settings/protections.hpp"
 #include "core/data/reactions.hpp"
+#include "core/scr_globals.hpp"
+#include "core/settings/protections.hpp"
 #include "gta/net_game_event.hpp"
 #include "gta/script_handler.hpp"
 #include "gta_util.hpp"
 #include "hooking.hpp"
+#include "natives.hpp"
 #include "util/math.hpp"
-#include "util/session.hpp"
 
 #include <network/CNetGamePlayer.hpp>
 #include <network/Network.hpp>

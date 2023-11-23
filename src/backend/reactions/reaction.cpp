@@ -3,7 +3,7 @@
 #include "backend/player_command.hpp"
 #include "core/data/infractions.hpp"
 #include "core/data/network.hpp"
-#include "core/settings/session.hpp"
+#include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gui.hpp"
 #include "script.hpp"

@@ -1,5 +1,4 @@
 #pragma once
-#include "esp/view_esp.hpp"
 #include "gui/components/components.hpp"
 
 //Percentage of window space
@@ -21,8 +20,6 @@ namespace big
 	public:
 		static void active_view();
 		static void debug();
-		static void esp_settings();
-		static void outfit_editor();
 		static void gui_settings();
 		static void reaction_settings();
 		static void protection_settings();
@@ -31,29 +28,13 @@ namespace big
 		static void notifications();
 		static void root();
 		static void self();
-		static void animations();
-		static void spawned_vehicles();
-		static void scenarios();
-		static void spawn_objects();
-		static void ptfx_effects();
 		static void network();
-		static void session_browser();
-		static void casino();
 		static void bad_players();
-		static void chat();
 		static void vehicle();
-		static void lsc();
-		static void spawn_vehicle();
-		static void pv();
-		static void persist_car();
-		static void teleport();
-		static void custom_teleport();
 		static void view_player();
 		static void players();
 		static void weapons();
-		static void context_menu();
 		static void gta_data();
-		static void world();
 		static void gta_cache();
 	};
 }

@@ -1,28 +1,21 @@
 #include "backend/backend.hpp"
 #include "byte_patch_manager.hpp"
+#include "core/settings.hpp"
 #include "fiber_pool.hpp"
 #include "gui.hpp"
 #include "hooking.hpp"
-#include "http_client/http_client.hpp"
 #include "logger/exception_handler.hpp"
 #include "native_hooks/native_hooks.hpp"
 #include "pointers.hpp"
 #include "renderer.hpp"
 #include "script_mgr.hpp"
-#include "services/context_menu/context_menu_service.hpp"
-#include "services/custom_text/custom_text_service.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
-#include "services/matchmaking/matchmaking_service.hpp"
-#include "services/mobile/mobile_service.hpp"
 #include "services/notifications/notification_service.hpp"
-#include "services/pickups/pickup_service.hpp"
 #include "services/players/player_service.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
-#include "services/tunables/tunables_service.hpp"
 #include "thread_pool.hpp"
 #include "version.hpp"
-#include "core/settings.hpp"
 
 BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 {
@@ -75,29 +68,17 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto hooking_instance = std::make_unique<hooking>();
 			    LOG(INFO) << "Hooking initialized.";
 
-			    auto context_menu_service_instance      = std::make_unique<context_menu_service>();
-			    auto custom_text_service_instance       = std::make_unique<custom_text_service>();
-			    auto mobile_service_instance            = std::make_unique<mobile_service>();
-			    auto notification_service_instance      = std::make_unique<notification_service>();
-			    auto pickup_service_instance            = std::make_unique<pickup_service>();
-			    auto player_service_instance            = std::make_unique<player_service>();
-			    auto gta_data_service_instance          = std::make_unique<gta_data_service>();
-			    auto gui_service_instance               = std::make_unique<gui_service>();
-			    auto script_patcher_service_instance    = std::make_unique<script_patcher_service>();
-			    auto matchmaking_service_instance       = std::make_unique<matchmaking_service>();
-			    auto tunables_service_instance          = std::make_unique<tunables_service>();
+			    auto notification_service_instance   = std::make_unique<notification_service>();
+			    auto player_service_instance         = std::make_unique<player_service>();
+			    auto gta_data_service_instance       = std::make_unique<gta_data_service>();
+			    auto gui_service_instance            = std::make_unique<gui_service>();
+			    auto script_patcher_service_instance = std::make_unique<script_patcher_service>();
 			    LOG(INFO) << "Registered service instances...";
 
 			    g_script_mgr.add_script(std::make_unique<script>(&gui::script_func, "GUI", false));
 
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::loop, "Backend Loop", false));
-			    g_script_mgr.add_script(std::make_unique<script>(&backend::vehicles_loop, "Vehicle"));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::misc_loop, "Miscellaneous"));
-			    g_script_mgr.add_script(std::make_unique<script>(&backend::remote_loop, "Remote"));
-			    g_script_mgr.add_script(std::make_unique<script>(&backend::disable_control_action_loop, "Disable Controls"));
-				g_script_mgr.add_script(std::make_unique<script>(&backend::world_loop, "World"));
-			    g_script_mgr.add_script(std::make_unique<script>(&context_menu_service::context_menu, "Context Menu"));
-			    g_script_mgr.add_script(std::make_unique<script>(&backend::tunables_script, "Tunables"));
 
 			    LOG(INFO) << "Scripts registered.";
 
@@ -126,27 +107,14 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    thread_pool_instance->destroy();
 			    LOG(INFO) << "Destroyed thread pool.";
 
-			    tunables_service_instance.reset();
-			    LOG(INFO) << "Tunables Service reset.";
-			    matchmaking_service_instance.reset();
-			    LOG(INFO) << "Matchmaking Service reset.";
 			    script_patcher_service_instance.reset();
 			    LOG(INFO) << "Script Patcher Service reset.";
 			    gui_service_instance.reset();
 			    LOG(INFO) << "Gui Service reset.";
 			    gta_data_service_instance.reset();
 			    LOG(INFO) << "GTA Data Service reset.";
-			    mobile_service_instance.reset();
-			    LOG(INFO) << "Mobile Service reset.";
 			    player_service_instance.reset();
 			    LOG(INFO) << "Player Service reset.";
-			    pickup_service_instance.reset();
-			    LOG(INFO) << "Pickup Service reset.";
-			    custom_text_service_instance.reset();
-			    LOG(INFO) << "Custom Text Service reset.";
-			    context_menu_service_instance.reset();
-			    LOG(INFO) << "Context Service reset.";
-
 			    LOG(INFO) << "Services uninitialized.";
 
 			    hooking_instance.reset();

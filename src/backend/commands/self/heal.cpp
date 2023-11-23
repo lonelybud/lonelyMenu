@@ -1,5 +1,6 @@
 #include "backend/command.hpp"
 #include "natives.hpp"
+#include "util/ped.hpp"
 
 namespace big
 {
@@ -9,8 +10,9 @@ namespace big
 
 		virtual void execute(const command_arguments&, const std::shared_ptr<command_context> ctx) override
 		{
-			ENTITY::SET_ENTITY_HEALTH(self::ped, PED::GET_PED_MAX_HEALTH(self::ped), 0);
-			PED::SET_PED_ARMOUR(self::ped, PLAYER::GET_PLAYER_MAX_ARMOUR(self::id));
+			auto ped = ped::get_self_ped();
+			ENTITY::SET_ENTITY_HEALTH(ped, PED::GET_PED_MAX_HEALTH(ped), 0);
+			PED::SET_PED_ARMOUR(ped, PLAYER::GET_PLAYER_MAX_ARMOUR(self::id));
 		}
 	};
 

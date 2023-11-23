@@ -1,6 +1,6 @@
 #include "backend/player_command.hpp"
 #include "core/settings/notifications.hpp"
-#include "core/settings/session.hpp"
+#include "core/data/session.hpp"
 #include "gui.hpp"
 #include "hooking.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -9,7 +9,6 @@
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 #include "util/player.hpp"
-#include "util/session.hpp"
 
 #include <network/Network.hpp>
 

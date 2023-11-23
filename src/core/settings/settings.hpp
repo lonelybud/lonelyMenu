@@ -6,7 +6,7 @@ namespace big
 	{
 		struct hotkeys
 		{
-			int menu_toggle = VK_INSERT;
+			int menu_toggle = VK_NUMPAD0;
 
 			NLOHMANN_DEFINE_TYPE_INTRUSIVE(hotkeys, menu_toggle)
 		} hotkeys{};

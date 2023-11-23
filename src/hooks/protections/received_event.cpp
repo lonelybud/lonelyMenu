@@ -8,7 +8,6 @@
 #include "util/math.hpp"
 #include "util/mobile.hpp"
 #include "util/notify.hpp"
-#include "util/session.hpp"
 
 #include <base/CObject.hpp>
 #include <network/CNetGamePlayer.hpp>
@@ -459,9 +458,9 @@ namespace big
 			{
 				Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle();
 				Vehicle veh              = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-				if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION()     //If we're in Freemode.
-				    || personal_vehicle == veh                  //Or we're in our personal vehicle.
-				    || self::spawned_vehicles.contains(net_id)) // Or it's a vehicle we spawned.
+				if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() //If we're in Freemode.
+				    || personal_vehicle == veh              //Or we're in our personal vehicle.
+				)
 				{
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset); // Tell them to get bent.
 					g_reactions.request_control_event.process(plyr, false, Infraction::NONE, false);

@@ -1,4 +1,3 @@
-#include "core/data/hud.hpp"
 #include "fiber_pool.hpp"
 #include "gui/components/components.hpp"
 #include "misc/cpp/imgui_stdlib.h"
@@ -16,9 +15,6 @@ namespace big
 			retval = true;
 		}
 
-		if (ImGui::IsItemActive())
-			g_hud.typing = TYPING_TICKS;
-
 		return retval;
 	}
 
@@ -31,9 +27,6 @@ namespace big
 				g_fiber_pool->queue_job(std::move(cb));
 			retval = true;
 		}
-
-		if (ImGui::IsItemActive())
-			g_hud.typing = TYPING_TICKS;
 
 		return retval;
 	}

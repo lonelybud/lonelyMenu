@@ -16,7 +16,7 @@ namespace big
 		if (bad_players_nm::is_blocked(rockstar_id))
 		{
 			CMsgJoinResponse response{};
-			response.m_status_code = 21;
+			response.m_status_code = 1;
 			g_pointers->m_gta.m_write_join_response_data(&response, ctx->m_join_response_data, 512, &ctx->m_join_response_size);
 
 			auto is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;

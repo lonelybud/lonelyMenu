@@ -3,7 +3,7 @@
 #include "core/data/infractions.hpp"
 #include "core/data/packet_types.hpp"
 #include "core/data/reactions.hpp"
-#include "core/settings/session.hpp"
+#include "core/data/session.hpp"
 #include "file_manager/file.hpp"
 #include "gta/net_game_event.hpp"
 #include "gta_util.hpp"
@@ -12,10 +12,9 @@
 #include "natives.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/bad_players/bad_players.hpp"
-#include "services/custom_chat_buffer.hpp"
 #include "services/gui/gui_service.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
-#include "util/session.hpp"
 
 #include <network/Network.hpp>
 #include <network/netTime.hpp>
@@ -134,30 +133,6 @@ namespace big
 					player->spam_message = message;
 					bad_players_nm::add_player(player, false, true);
 				}
-
-				if (g_session.log_chat_messages_to_file)
-				{
-					std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-					log << player->get_name() << " : " << message << std::endl;
-					log.close();
-				}
-
-				if (g_session.log_chat_messages_to_textbox)
-					g_custom_chat_buffer.append_msg(player->get_name(), message);
-
-				if (msgType == rage::eNetMessage::MsgTextMessage && g_pointers->m_gta.m_chat_data && player->get_net_data())
-				{
-					rage::rlGamerHandle temp{};
-					gamer_handle_deserialize(temp, buffer);
-					bool is_team = buffer.Read<bool>(1);
-
-					g_pointers->m_gta.m_handle_chat_message(*g_pointers->m_gta.m_chat_data,
-					    nullptr,
-					    &player->get_net_data()->m_gamer_handle,
-					    message,
-					    is_team);
-					return true;
-				}
 				break;
 			}
 			case rage::eNetMessage::MsgScriptMigrateHost:
@@ -167,33 +142,6 @@ namespace big
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
 						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 					return true;
-				}
-				break;
-			}
-			case rage::eNetMessage::MsgScriptHostRequest:
-			{
-				CGameScriptId script;
-				script_id_deserialize(script, buffer);
-
-				if (script.m_hash == RAGE_JOAAT("freemode") && g_session.force_script_host)
-					return true;
-
-				break;
-			}
-			case rage::eNetMessage::MsgNetTimeSync:
-			{
-				int action         = buffer.Read<int>(2);
-				uint32_t counter   = buffer.Read<uint32_t>(32);
-				uint32_t token     = buffer.Read<uint32_t>(32);
-				uint32_t timestamp = buffer.Read<uint32_t>(32);
-				uint32_t time_diff = (*g_pointers->m_gta.m_network_time)->m_time_offset + frame->m_timestamp;
-
-				if (action == 0)
-				{
-					player->player_time_value = timestamp;
-					player->player_time_value_received_time = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
-					if (!player->time_difference || time_diff > player->time_difference.value())
-						player->time_difference = time_diff;
 				}
 				break;
 			}

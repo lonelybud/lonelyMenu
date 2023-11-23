@@ -1,13 +1,11 @@
+#include "core/data/infractions.hpp"
 #include "core/data/language_codes.hpp"
-#include "core/data/player.hpp"
 #include "core/scr_globals.hpp"
 #include "core/settings/protections.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
-#include "services/vehicle/persist_car_service.hpp"
-#include "util/delete_entity.hpp"
 #include "util/globals.hpp"
 #include "util/scripts.hpp"
 #include "views/view.hpp"
@@ -127,19 +125,9 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
-			ImGui::Checkbox("Spectate", &g_player.spectating);
-
-			ImGui::Spacing();
-
 			components::sub_title("Info");
 
 			extra_info_button(current_player);
-			ImGui::SameLine();
-			components::button("SC Profile", [current_player] {
-				uint64_t gamerHandle[13];
-				NETWORK::NETWORK_HANDLE_FROM_PLAYER(current_player->id(), (Any*)&gamerHandle, 13);
-				NETWORK::NETWORK_SHOW_PROFILE_UI((Any*)&gamerHandle);
-			});
 			ImGui::SameLine();
 			if (components::button("Copy Name##copyname"))
 				ImGui::SetClipboardText(current_player->get_name());
@@ -191,52 +179,9 @@ namespace big
 		{
 			components::sub_title("Teleport / Location");
 
-			components::player_command_button<"playertp">(current_player);
-			ImGui::SameLine();
-			components::player_command_button<"playervehtp">(current_player);
-			ImGui::SameLine();
-			components::player_command_button<"bring">(current_player);
-
 			components::button("Set Waypoint", [current_player] {
 				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
 				HUD::SET_NEW_WAYPOINT(location.x, location.y);
-			});
-		}
-		ImGui::EndGroup();
-	}
-
-	static inline void render_misc(player_ptr current_player)
-	{
-		ImGui::BeginGroup();
-		{
-			components::sub_title("Misc");
-
-			components::player_command_button<"clearwanted">(current_player);
-			ImGui::Spacing();
-			components::player_command_button<"givehealth">(current_player);
-			ImGui::SameLine();
-			components::player_command_button<"givearmor">(current_player);
-			ImGui::SameLine();
-			components::player_command_button<"giveammo">(current_player);
-
-			ver_Space();
-
-			components::player_command_button<"copyoutfit">(current_player);
-
-			ver_Space();
-
-			components::button("Copy Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
-					persist_car_service::clone_ped_car(veh);
-			});
-			ImGui::SameLine();
-			components::button("Save Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
-				{
-					auto currentTime = std::chrono::system_clock::now().time_since_epoch();
-					auto millis      = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
-					persist_car_service::save_vehicle(veh, std::to_string(millis).append(".json"), "");
-				}
 			});
 		}
 		ImGui::EndGroup();
@@ -252,74 +197,10 @@ namespace big
 				components::player_command_button<"hostkick">(current_player);
 			else
 			{
-				components::button("!! multikick the host !!", [] {
-					for (auto& plyr : g_player_service->players())
-						if (plyr.second->is_host() && plyr.second->id() != self::id)
-						{
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(plyr.second, {});
-							return;
-						}
-				});
-
-				ImGui::Spacing();
-
-				ImGui::BeginGroup();
-				{
-					components::player_command_button<"shkick">(current_player);
-					components::player_command_button<"endkick">(current_player);
-					components::player_command_button<"nfkick">(current_player);
-					components::player_command_button<"oomkick">(current_player);
-					// if (!current_player->is_host()) {
-					// 	ImGui::SameLine();
-					// 	components::player_command_button<"desync">(current_player);
-					// }
-				}
-				ImGui::EndGroup();
-				ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-				ImGui::BeginGroup();
-				{
-					components::player_command_button<"multikick">(current_player);
-				}
-				ImGui::EndGroup();
+				components::player_command_button<"shkick">(current_player);
+				if (!current_player->is_host())
+					components::player_command_button<"desync">(current_player);
 			}
-		}
-		ImGui::EndGroup();
-	}
-
-	static inline void render_toxic(player_ptr current_player)
-	{
-		ImGui::BeginGroup();
-		{
-			components::sub_title("Toxic");
-
-			// ImGui::BeginDisabled(globals::get_interior_from_player(current_player->id()) != 0);
-			components::player_command_button<"kill">(current_player, {});
-
-			components::player_command_button<"vehkick">(current_player, {});
-
-			components::button("Stop Vehicle", [current_player] {
-				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
-				if (veh && ENTITY::IS_ENTITY_A_VEHICLE(veh) && entity::take_control_of(veh))
-					VEHICLE::BRING_VEHICLE_TO_HALT(veh, 1, 5, true);
-			});
-
-			components::button("Empty Vehicle", [current_player] {
-				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
-				if (veh && ENTITY::IS_ENTITY_A_VEHICLE(veh))
-					vehicle::clear_all_peds(veh);
-			});
-
-			components::button("Bring Vehicle (only)", [current_player] {
-				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
-				vehicle::bring(veh, self::pos, false);
-			});
-
-			ver_Space();
-
-			components::button("Delete Vehicle", [current_player] {
-				Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false);
-				entity::delete_entity(veh);
-			});
 		}
 		ImGui::EndGroup();
 	}
@@ -392,20 +273,12 @@ namespace big
 			ImGui::BeginGroup();
 			{
 				render_tel_loc(current_player);
-
-				ver_Space();
-
-				render_misc(current_player);
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine(0, 50);
 			ImGui::BeginGroup();
 			{
 				render_kick(current_player);
-
-				ver_Space();
-
-				render_toxic(current_player);
 			}
 			ImGui::EndGroup();
 		}

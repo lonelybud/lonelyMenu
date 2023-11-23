@@ -1,10 +1,11 @@
 #include "base/CBaseModelInfo.hpp"
 #include "base/CObject.hpp"
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "core/data/task_types.hpp"
-#include "core/data/reactions.hpp"
 #include "entities/fwEntity.hpp"
 #include "gta/net_object_mgr.hpp"
+#include "gta/pools.hpp"
 #include "gta_util.hpp"
 #include "hooking.hpp"
 #include "netsync/netSyncDataNode.hpp"
@@ -67,12 +68,12 @@
 #include "services/gta_data/gta_data_service.hpp"
 #include "util/model_info.hpp"
 #include "util/notify.hpp"
-#include "util/pools.hpp"
 #include "util/protection.hpp"
-#include "util/session.hpp"
 #include "util/sync_trees.hpp"
 #include "vehicle/CTrainConfig.hpp"
 #include "vehicle/CVehicleModelInfo.hpp"
+
+#include <network/Network.hpp>
 
 namespace big
 {
@@ -1169,6 +1170,9 @@ namespace big
 
 	bool check_node(rage::netSyncNodeBase* node, CNetGamePlayer* sender, rage::netObject* object)
 	{
+		if (!(sender && sender->is_valid()))
+			return false;
+
 		if (node->IsParentNode())
 		{
 			for (auto child = node->m_first_child; child; child = child->m_next_sibling)
@@ -1550,7 +1554,7 @@ namespace big
 							}
 						}
 					}
-					else if (veh_creation_model != std::nullopt) 
+					else if (veh_creation_model != std::nullopt)
 					{
 						// object hasn't been created yet, but we have the model hash from the creation node
 						if (auto model_info = model_info::get_vehicle_model(veh_creation_model.value()))

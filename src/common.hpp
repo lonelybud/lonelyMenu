@@ -76,12 +76,7 @@ namespace big
 
 namespace self
 {
-	inline Ped ped;
 	inline Player id;
-	inline Vector3 pos;
-	inline Vehicle veh;
-	inline Vehicle last_veh;
-	inline std::map<int, Vehicle> spawned_vehicles;
 }
 
 template<size_t N>

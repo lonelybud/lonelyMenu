@@ -1,8 +1,8 @@
 #include "core/data/network.hpp"
-#include "core/data/vehicle.hpp"
+#include "core/data/self.hpp"
+#include "core/data/session.hpp"
 #include "hooking.hpp"
 #include "services/players/player_service.hpp"
-#include "services/vehicle_preview/vehicle_preview.hpp"
 
 #include <network/CNetworkPlayerMgr.hpp>
 
@@ -24,14 +24,13 @@ namespace big
 		LOG(INFO) << "CNetworkPlayerMgr#shutdown got called, we're probably leaving our session.";
 
 		g_player_service->do_cleanup();
-		self::spawned_vehicles.clear();
 		g_network.auto_kick_host_when_attacked = false;
 
-		if (g_vehicle.preview_vehicle)
-		{
-			g_vehicle.preview_vehicle = false;
-			g_vehicle_preview.reset();
-		}
+		g_self.unlimited_oxygen = false;
+		g_self.clean_player     = false;
+
+		g_session.force_session_host = false;
+		g_session.lock_session       = false;
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}
