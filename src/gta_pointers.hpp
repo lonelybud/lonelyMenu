@@ -147,8 +147,6 @@ namespace big
 
 		functions::queue_packet m_queue_packet;
 
-		functions::request_control m_request_control;
-
 		functions::get_connection_peer m_get_connection_peer;
 
 		PVOID m_prepare_metric_for_sending;

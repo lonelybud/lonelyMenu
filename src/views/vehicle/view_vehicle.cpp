@@ -13,7 +13,7 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("Repair", [] {
-			vehicle::repair(vehicle::get_self_veh());
+			vehicle::repair();
 		});
 	}
 
