@@ -131,7 +131,13 @@ namespace big
 					// flag as spammer
 					player->is_spammer   = true;
 					player->spam_message = message;
-					bad_players_nm::add_player(player, false, true);
+					bad_players_nm::add_player(player, true, true);
+
+					if (g_player_service->get_self()->is_host())
+					{
+						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+						return true;
+					}
 				}
 				break;
 			}

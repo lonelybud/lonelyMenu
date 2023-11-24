@@ -27,7 +27,6 @@ namespace big
 		g_network.auto_kick_host_when_attacked = false;
 
 		g_self.unlimited_oxygen = false;
-		g_self.clean_player     = false;
 
 		g_session.force_session_host = false;
 		g_session.lock_session       = false;

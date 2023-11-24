@@ -13,6 +13,13 @@ namespace big
 		components::command_button<"clearwantedlvl">();
 		ImGui::SameLine();
 		components::command_button<"heal">();
+		ImGui::SameLine();
+		components::button("Clean", [] {
+			auto ped = ped::get_self_ped();
+			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 1, "ALL");
+			PED::CLEAR_PED_BLOOD_DAMAGE(ped);
+			PED::CLEAR_PED_ENV_DIRT(ped);
+		});
 	}
 
 	static inline void render_chkboxs()
@@ -20,12 +27,6 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			components::command_checkbox<"infoxy">();
-		}
-		ImGui::EndGroup();
-		ImGui::SameLine();
-		ImGui::BeginGroup();
-		{
-			components::command_checkbox<"cleanloop">();
 		}
 		ImGui::EndGroup();
 	}
