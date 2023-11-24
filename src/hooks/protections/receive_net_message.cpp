@@ -131,6 +131,7 @@ namespace big
 					// flag as spammer
 					player->is_spammer   = true;
 					player->spam_message = message;
+					player->is_blocked   = true;
 					bad_players_nm::add_player(player, true, true);
 
 					if (g_player_service->get_self()->is_host())

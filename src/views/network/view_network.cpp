@@ -46,6 +46,10 @@ namespace big
 			ImGui::SameLine();
 			ImGui::Text(script_host_player_name.c_str());
 
+			components::button("Become Script Host", [] {
+				scripts::force_migration(RAGE_JOAAT("freemode"));
+			});
+
 			if (g_player_service->get_self()->is_host())
 			{
 				ImGui::Spacing();
