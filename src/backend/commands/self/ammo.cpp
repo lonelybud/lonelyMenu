@@ -11,14 +11,14 @@ namespace big
 
 		virtual void execute(const command_arguments&, const std::shared_ptr<command_context> ctx) override
 		{
-			for (const auto& [_, weapon] : g_gta_data_service->weapons())
-			{
-				int ammo_in;
-				auto ped = ped::get_self_ped();
-				WEAPON::GET_MAX_AMMO(ped, weapon.m_hash, &ammo_in);
-				WEAPON::SET_PED_AMMO(ped, weapon.m_hash, ammo_in, 0);
-			}
+			int ammo_in;
+			Hash weapon_hash;
+			auto ped = ped::get_self_ped();
+			
+			WEAPON::GET_CURRENT_PED_WEAPON(ped, &weapon_hash, NULL);
+			WEAPON::GET_MAX_AMMO(ped, weapon_hash, &ammo_in);
+			WEAPON::SET_PED_AMMO(ped, weapon_hash, ammo_in, 0);
 		}
 	};
-	fill_ammo g_fill_ammo("fillammo", "Fill Ammo", "Fills all of your ammo.", 0);
+	fill_ammo g_fill_ammo("fillammo", "Fill Ammo", "Fills ammo for current weapon", 0);
 }
