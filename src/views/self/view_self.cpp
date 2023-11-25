@@ -36,6 +36,7 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			components::command_checkbox<"infoxy">();
+			components::command_checkbox<"godmode">();
 		}
 		ImGui::EndGroup();
 	}

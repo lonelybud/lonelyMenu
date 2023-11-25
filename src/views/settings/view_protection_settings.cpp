@@ -34,22 +34,19 @@ namespace big
 		ImGui::Checkbox("Vehicle Kick", &g_protections.script_events.vehicle_kick);
 		ImGui::Checkbox("Wanted Level", &g_protections.script_events.clear_wanted_level);
 		ImGui::EndGroup();
+		
 		ImGui::SameLine();
 
 		ImGui::BeginGroup();
-		ImGui::Checkbox("Block RID Joining", &g_protections.rid_join);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("This will block anyone trying to join, kick or crash you with your Rockstar ID, including your friends");
 		ImGui::Checkbox("Receive Pickup", &g_protections.receive_pickup);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("This prevents the collection of pickups such as unwanted money bags\nNote: Normal pickups are also no longer possible to collect with this enabled");
-		components::command_checkbox<"forcerelays">();
 		ImGui::EndGroup();
 
 		ImGui::SeparatorText("Options");
 		ImGui::BeginGroup();
 		if (ImGui::Button("Disable All Protections"))
-			for (size_t i = (size_t)&g_protections; i <= (size_t) & (g_protections.force_relay_connections); i++)
+			for (size_t i = (size_t)&g_protections; i <= (size_t) & (g_protections.receive_pickup); i++)
 				*(bool*)i = false;
 		ImGui::SameLine();
 		if (ImGui::Button("Reset Protections"))

@@ -80,31 +80,26 @@ namespace big
 					    {
 						    ImGui::Text(net_player_data->m_force_relays ? "IP Address: Force Relay" : "IP Address: Unknown");
 
-						    if (g_protections.force_relay_connections)
-							    ImGui::Text("Note - IP addresses cannot be seen when Force Relay Connections is enabled.");
-						    else
-						    {
-							    auto conn_peer = current_player->get_connection_peer();
-							    auto cxn_type  = conn_peer ? conn_peer->m_peer_address.m_connection_type : 0;
-							    netAddress ip;
+						    auto conn_peer = current_player->get_connection_peer();
+						    auto cxn_type  = conn_peer ? conn_peer->m_peer_address.m_connection_type : 0;
+						    netAddress ip;
 
-							    if (cxn_type == 2)
-							    {
-								    ip = conn_peer->m_relay_address.m_relay_address;
-								    ImGui::Text(std::format("Relay IP Address: {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-								                    .c_str());
-							    }
-							    else if (cxn_type == 3)
-							    {
-								    ip = conn_peer->m_peer_address.m_relay_address;
-								    ImGui::Text(std::format("Peer Relay IP : {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-								                    .c_str());
-							    }
-							    if (cxn_type == 2 || cxn_type == 3)
-								    if (ImGui::SmallButton("copy##copyip"))
-									    ImGui::SetClipboardText(std::format("{}{}.{}.{}.{}", ip_viewer_link, ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-									                                .c_str());
+						    if (cxn_type == 2)
+						    {
+							    ip = conn_peer->m_relay_address.m_relay_address;
+							    ImGui::Text(std::format("Relay IP Address: {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
+							                    .c_str());
 						    }
+						    else if (cxn_type == 3)
+						    {
+							    ip = conn_peer->m_peer_address.m_relay_address;
+							    ImGui::Text(std::format("Peer Relay IP : {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
+							                    .c_str());
+						    }
+						    if (cxn_type == 2 || cxn_type == 3)
+							    if (ImGui::SmallButton("copy##copyip"))
+								    ImGui::SetClipboardText(std::format("{}{}.{}.{}.{}", ip_viewer_link, ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
+								                                .c_str());
 					    }
 				    }
 				    ImGui::EndGroup();
