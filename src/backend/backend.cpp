@@ -27,9 +27,8 @@ namespace big
 			looped::system_spoofing();
 
 			for (auto command : g_looped_commands)
-				if (*g_pointers->m_gta.m_is_session_started && (globals::get_interior_from_player(self::id) == 0))
-					if (command->is_enabled())
-						command->on_tick();
+				if (command->is_enabled())
+					command->on_tick();
 
 			script::get_current()->yield();
 		}
