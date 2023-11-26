@@ -5,6 +5,7 @@
 #include "gta/enums.hpp"
 #include "gta/fwddec.hpp"
 #include "gta/script_thread.hpp"
+#include "gta/json_serializer.hpp"
 #include "vmt_hook.hpp"
 #include "vtable_hook.hpp"
 
@@ -81,7 +82,7 @@ namespace big
 		// info
 
 		static rage::CEventNetwork* get_network_event_data(int64_t unk, rage::CEventNetwork* net_event);
-		static bool prepare_metric_for_sending(rage::datBitBuffer* bit_buffer, int unk, int time, rage::rlMetric* metric);
+		static bool prepare_metric_for_sending(rage::json_serializer* bit_buffer, int unk, int time, rage::rlMetric* metric);
 
 		// protections
 
