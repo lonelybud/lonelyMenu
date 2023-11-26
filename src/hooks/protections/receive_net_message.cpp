@@ -16,7 +16,6 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
-#include <network/Network.hpp>
 #include <network/netTime.hpp>
 
 static inline void gamer_handle_deserialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)

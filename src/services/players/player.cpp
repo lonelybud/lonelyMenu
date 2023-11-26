@@ -4,7 +4,6 @@
 #include "network/CNetGamePlayer.hpp"
 #include "services/friends/friends_service.hpp"
 
-#include <network/Network.hpp>
 #include <network/RemoteGamerInfoMsg.hpp>
 
 namespace big

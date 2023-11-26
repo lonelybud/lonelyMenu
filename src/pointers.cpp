@@ -411,15 +411,6 @@ namespace big
                 g_pointers->m_gta.m_script_vm = ptr.add(1).rip().as<functions::script_vm>();
             }
         },
-        // Generate UUID
-        {
-            "GU",
-            "E8 ? ? ? ? 84 C0 74 0C 48 8B 44 24 ? 48 89 03",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_generate_uuid = ptr.add(1).rip().as<functions::generate_uuid>();
-            }
-        },
         // Host Token
         {
             "HT",

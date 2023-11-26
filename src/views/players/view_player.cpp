@@ -97,9 +97,12 @@ namespace big
 							                    .c_str());
 						    }
 						    if (cxn_type == 2 || cxn_type == 3)
+						    {
+							    ImGui::SameLine();
 							    if (ImGui::SmallButton("copy##copyip"))
 								    ImGui::SetClipboardText(std::format("{}{}.{}.{}.{}", ip_viewer_link, ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
 								                                .c_str());
+						    }
 					    }
 				    }
 				    ImGui::EndGroup();
@@ -111,6 +114,16 @@ namespace big
 				    ImGui::Checkbox("Block Clone Syncs", &current_player->block_clone_sync);
 				    ImGui::Checkbox("Block Network Events", &current_player->block_net_events);
 				    ImGui::Checkbox("Log Clones", &current_player->log_clones);
+
+				    ImGui::Separator();
+
+				    if (auto net_data = current_player->get_net_data())
+				    {
+					    ImGui::Text(std::format("Host token: {}", net_data->m_host_token).c_str());
+					    ImGui::SameLine();
+					    if (ImGui::SmallButton("copy##copyHtoken"))
+						    ImGui::SetClipboardText(std::format("{}", net_data->m_host_token).c_str());
+				    }
 			    }
 		    },
 		    false);

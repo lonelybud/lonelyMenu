@@ -73,8 +73,6 @@
 #include "vehicle/CTrainConfig.hpp"
 #include "vehicle/CVehicleModelInfo.hpp"
 
-#include <network/Network.hpp>
-
 namespace big
 {
 	inline void check_player_model(player_ptr player, uint32_t model)

@@ -1,6 +1,5 @@
 #include "gui/components/components.hpp"
 #include "natives.hpp"
-#include "network/Network.hpp"
 
 namespace big
 {
@@ -9,6 +8,12 @@ namespace big
 		if (ImGui::BeginTabItem("Misc"))
 		{
 			static bool imGui_demo = false;
+
+			ImGui::Spacing();
+
+			components::button("Skip Cutscene", [] {
+				CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
+			});
 
 			ImGui::Spacing();
 

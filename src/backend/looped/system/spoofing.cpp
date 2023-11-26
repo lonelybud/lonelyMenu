@@ -1,25 +1,41 @@
 #include "backend/looped/looped.hpp"
-#include "core/scr_globals.hpp"
 #include "core/data/session.hpp"
+#include "core/scr_globals.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 
 #include <network/CCommunications.hpp>
-#include <network/Network.hpp>
 #include <script/globals/GPBD_FM.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
 {
-	static bool bLastForceHost = false;
+	static uint64_t original_token    = 0;
+	static uint64_t custom_host_token = 0;
+
 	void looped::system_spoofing()
 	{
-		if (bLastForceHost != g_session.force_session_host && gta_util::get_network()->m_game_session_state == 0)
-		{
-			uint64_t host_token;
-			g_pointers->m_gta.m_generate_uuid(&host_token);
+		if(!original_token && *g_pointers->m_gta.m_host_token)
+			original_token = *g_pointers->m_gta.m_host_token;
 
-			host_token = g_session.force_session_host ? (rand() % 10000) : host_token;
+		if (custom_host_token != g_session.custom_host_token && gta_util::get_network()->m_game_session_state == 0)
+		{
+			custom_host_token = g_session.custom_host_token;
+
+			uint64_t host_token;
+
+			LOG(VERBOSE) << "Last host token: " << *g_pointers->m_gta.m_host_token;
+
+			if (custom_host_token)
+			{
+				host_token = custom_host_token + 1;
+				LOG(VERBOSE) << "Using custom host token: " << host_token;
+			}
+			else
+			{
+				host_token = original_token;
+				LOG(VERBOSE) << "Using original host token: " << host_token;
+			}
 
 			*g_pointers->m_gta.m_host_token = host_token;
 
@@ -32,8 +48,6 @@ namespace big
 
 			if (g_local_player && g_local_player->m_player_info)
 				g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
-
-			bLastForceHost = g_session.force_session_host;
 		}
 	}
 }

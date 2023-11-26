@@ -43,8 +43,6 @@ namespace big
 
 	static inline void render_other_options1()
 	{
-		components::command_button<"skipcutscene">();
-		ImGui::SameLine();
 		components::command_button<"fillsnacks">();
 	}
 

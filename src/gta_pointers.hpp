@@ -136,7 +136,6 @@ namespace big
 		PVOID m_init_native_tables;
 		functions::script_vm m_script_vm;
 
-		functions::generate_uuid m_generate_uuid;
 		uint64_t* m_host_token;
 		rage::rlGamerInfo* m_profile_gamer_info;     // per profile gamer info
 		rage::rlGamerInfo* m_player_info_gamer_info; // the gamer info that is applied to CPlayerInfo

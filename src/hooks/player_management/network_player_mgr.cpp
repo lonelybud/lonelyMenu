@@ -1,4 +1,3 @@
-#include "core/data/network.hpp"
 #include "core/data/self.hpp"
 #include "core/data/session.hpp"
 #include "hooking.hpp"
@@ -24,13 +23,12 @@ namespace big
 		LOG(INFO) << "CNetworkPlayerMgr#shutdown got called, we're probably leaving our session.";
 
 		g_player_service->do_cleanup();
-		g_network.auto_kick_host_when_attacked = false;
 
 		g_self.unlimited_oxygen = false;
 		g_self.god_mode         = false;
 
-		g_session.force_session_host = false;
-		g_session.lock_session       = false;
+		g_session.custom_host_token     = 0;
+		g_session.lock_session          = false;
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}

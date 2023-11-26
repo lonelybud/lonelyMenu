@@ -5,8 +5,6 @@
 #include "script.hpp"
 #include "services/players/player_service.hpp"
 
-#include <network/Network.hpp>
-
 namespace big
 {
 	void looped::system_desync_kick_protection()

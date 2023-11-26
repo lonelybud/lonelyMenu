@@ -5,8 +5,6 @@
 #include "pointers.hpp"
 #include "services/notifications/notification_service.hpp"
 
-#include <network/Network.hpp>
-
 namespace big
 {
 	class complaint_kick : player_command

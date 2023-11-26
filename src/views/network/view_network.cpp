@@ -1,4 +1,3 @@
-#include "core/data/network.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
@@ -27,13 +26,8 @@ namespace big
 		{
 			components::sub_title("Hosting");
 
-			ImGui::Checkbox("Spoof Host Token", &g_session.force_session_host);
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("Join another session to apply changes. The original host of the session must leave or be kicked");
-
-			ImGui::Checkbox("Auto kick host (defence)", &g_network.auto_kick_host_when_attacked);
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("This will try to auto kick host when someone try to crash/kick you.");
+			ImGui::SetNextItemWidth(150);
+			ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.custom_host_token);
 
 			ImGui::Spacing();
 

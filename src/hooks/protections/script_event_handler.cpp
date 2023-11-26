@@ -10,7 +10,6 @@
 #include "util/math.hpp"
 
 #include <network/CNetGamePlayer.hpp>
-#include <network/Network.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
 
