@@ -1,6 +1,7 @@
 #include "backend/looped_command.hpp"
 #include "core/data/vehicle.hpp"
-#include "util/ped.hpp"
+#include "core/enums.hpp"
+#include "natives.hpp"
 
 namespace big
 {
@@ -35,7 +36,7 @@ namespace big
 			{
 				if (auto vehicle = g_local_player->m_vehicle)
 				{
-					if (const auto is_not_in_vehicle = !PED::GET_PED_CONFIG_FLAG(ped::get_self_ped(), 62, false))
+					if (const auto is_not_in_vehicle = !PED::GET_PED_CONFIG_FLAG(self::ped, 62, false))
 					{
 						restore_original_vehicle_data(vehicle);
 						return;

@@ -1,5 +1,7 @@
 #include "core/data/self.hpp"
 #include "core/data/session.hpp"
+#include "core/data/vehicle.hpp"
+#include "core/data/weapons.hpp"
 #include "hooking.hpp"
 #include "services/players/player_service.hpp"
 
@@ -26,6 +28,11 @@ namespace big
 
 		g_self.unlimited_oxygen = false;
 		g_self.god_mode         = false;
+
+		g_vehicle.god_mode  = false;
+		g_vehicle.veh_boost = false;
+
+		g_weapons.aimbot.enable = false;
 
 		g_session.lock_session = false;
 		g_session.next_host_list.list.clear();

@@ -7,19 +7,12 @@
 
 namespace big::vehicle
 {
-	inline Vehicle get_self_veh()
-	{
-		return PED::GET_VEHICLE_PED_IS_IN(ped::get_self_ped(), false);
-	}
-
 	inline void repair()
 	{
-		auto veh = get_self_veh();
-
-		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
+		if (!ENTITY::IS_ENTITY_A_VEHICLE(self::veh))
 			return;
 
-		VEHICLE::SET_VEHICLE_FIXED(veh);
-		VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
+		VEHICLE::SET_VEHICLE_FIXED(self::veh);
+		VEHICLE::SET_VEHICLE_DIRT_LEVEL(self::veh, 0.f);
 	}
 }

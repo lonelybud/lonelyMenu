@@ -76,7 +76,10 @@ namespace big
 
 namespace self
 {
+	inline Ped ped;
 	inline Player id;
+	inline Vector3 pos;
+	inline Vehicle veh;
 }
 
 template<size_t N>

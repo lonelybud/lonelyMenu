@@ -4,7 +4,6 @@
 #include "rage/joaat.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gta_data/weapon_item.hpp"
-#include "util/ped.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
 
@@ -20,7 +19,7 @@ namespace big
 		ImGui::Spacing();
 
 		components::button("Give Parachute", [] {
-			WEAPON::GIVE_DELAYED_WEAPON_TO_PED(ped::get_self_ped(), GADGET_PARACHUTE, 0, true);
+			WEAPON::GIVE_DELAYED_WEAPON_TO_PED(self::ped, GADGET_PARACHUTE, 0, true);
 		});
 	}
 

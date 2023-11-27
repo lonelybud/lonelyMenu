@@ -20,6 +20,8 @@ namespace big
 	static inline void render_general()
 	{
 		components::command_checkbox<"vehgodmode">();
+
+		components::command_checkbox<"veh_boost">();
 	}
 
 	void view::vehicle()

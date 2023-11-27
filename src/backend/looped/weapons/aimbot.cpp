@@ -29,12 +29,10 @@ namespace big
 					if (!ENTITY::IS_ENTITY_DEAD(ped, 0)) // Tracetype is always 17. LOS check
 					{
 						Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, false);
-						auto self_ped          = ped::get_self_ped();
-						auto self_pos          = ped::get_self_pos(self_ped);
 
-						if (SYSTEM::VDIST2(self_pos.x,
-						        self_pos.y,
-						        self_pos.z,
+						if (SYSTEM::VDIST2(self::pos.x,
+						        self::pos.y,
+						        self::pos.z,
 						        world_position.x,
 						        world_position.y,
 						        world_position.z)
@@ -51,7 +49,7 @@ namespace big
 						else if (is_player)
 							continue;
 
-						if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self_ped, ped, 17))
+						if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ped, 17))
 							continue;
 
 						// Jump to here to handle instead of continue statements

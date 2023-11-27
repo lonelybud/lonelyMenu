@@ -1,7 +1,6 @@
 #include "core/scr_globals.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
-#include "util/ped.hpp"
 #include "util/pools.hpp"
 #include "views/view.hpp"
 
@@ -16,7 +15,7 @@ namespace big
 		components::command_button<"heal">();
 		ImGui::SameLine();
 		components::button("Clean", [] {
-			auto ped = ped::get_self_ped();
+			auto ped = self::ped;
 
 			PED::CLEAR_PED_BLOOD_DAMAGE(ped);
 			PED::CLEAR_PED_ENV_DIRT(ped);
@@ -50,19 +49,17 @@ namespace big
 	static inline void render_other_options2()
 	{
 		components::button("Clear tasks", [] {
-			TASK::CLEAR_PED_TASKS(ped::get_self_ped());
+			TASK::CLEAR_PED_TASKS(self::ped);
 		});
 		ImGui::SameLine();
 		components::button("Clear Attachments", [] {
-			auto ped = ped::get_self_ped(); 
-
 			for (auto obj : pools::get_all_props())
 			{
 				auto object = g_pointers->m_gta.m_ptr_to_handle(obj);
 				if (!object)
 					break;
 
-				if (!ENTITY::IS_ENTITY_ATTACHED_TO_ENTITY(ped, object))
+				if (!ENTITY::IS_ENTITY_ATTACHED_TO_ENTITY(self::ped, object))
 					continue;
 
 				ENTITY::DELETE_ENTITY(&object);
