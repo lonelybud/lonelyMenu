@@ -1,9 +1,9 @@
 #include "native_hooks.hpp"
 
 #include "all_scripts.hpp"
-#include "carmod_shop.hpp"
 #include "crossmap.hpp"
 #include "gta_util.hpp"
+#include "shop_controller.hpp"
 
 #include <script/scrProgram.hpp>
 #include <script/scrProgramTable.hpp>
@@ -107,6 +107,7 @@ namespace big
 		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING); // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
 
 		add_native_detour(RAGE_JOAAT("shop_controller"), 0x34616828CD07F1A1, all_scripts::RETURN_FALSE); // prevent exploit reports
+		add_native_detour(RAGE_JOAAT("shop_controller"), 0xDC38CC1E35B6A5D7, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)
