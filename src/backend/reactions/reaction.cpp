@@ -77,7 +77,7 @@ namespace big
 				}
 
 				if (g_player_service->get_self()->is_host())
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
 			}
 		}
 	}

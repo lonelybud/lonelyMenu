@@ -151,7 +151,7 @@ namespace big
 					bad_players_nm::add_player({current_player->get_name(), rockstar_id, true, current_player->is_spammer});
 
 				if (current_player->is_blocked && g_player_service->get_self()->is_host())
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player, {});
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(current_player);
 			});
 			ImGui::SameLine();
 			if (components::button(current_player->is_modder ? "Un-flag Modder" : "Flag Modder"))

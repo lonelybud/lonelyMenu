@@ -1,5 +1,6 @@
 #include "backend/looped_command.hpp"
 #include "core/data/self.hpp"
+#include "core/enums.hpp"
 #include "natives.hpp"
 
 namespace big

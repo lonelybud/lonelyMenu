@@ -47,6 +47,9 @@ namespace big
 
 		g_player_service->player_join(player);
 
+		if (host_token < g_session.smallest_host_token)
+			g_session.smallest_host_token = host_token;
+
 		if (net_player_data)
 		{
 			if (g_notifications.player_join.log)
@@ -67,7 +70,7 @@ namespace big
 								if (g_player_service->get_self()->is_host())
 								{
 									LOG(WARNING) << str;
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 									return;
 								}
 
@@ -78,7 +81,7 @@ namespace big
 							}
 							else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 							{
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 								g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry to locked session.", player_name), true);
 								return;
 							}

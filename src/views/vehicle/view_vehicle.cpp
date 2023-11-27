@@ -17,10 +17,19 @@ namespace big
 		});
 	}
 
+	static inline void render_general()
+	{
+		components::command_checkbox<"vehgodmode">();
+	}
+
 	void view::vehicle()
 	{
 		ImGui::Spacing();
 
 		render_first_block();
+
+		ImGui::SeparatorText("###General");
+
+		render_general();
 	}
 }

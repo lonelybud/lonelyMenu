@@ -8,7 +8,7 @@ namespace big
 	{
 		using command::command;
 
-		virtual void execute(const command_arguments&, const std::shared_ptr<command_context> ctx) override
+		virtual void execute() override
 		{
 			auto ped = ped::get_self_ped();
 			ENTITY::SET_ENTITY_HEALTH(ped, PED::GET_PED_MAX_HEALTH(ped), 0);
@@ -16,5 +16,5 @@ namespace big
 		}
 	};
 
-	heal g_heal("heal", "Heal", "Restores full health and armor", 0);
+	heal g_heal("heal", "Heal", "Restores full health and armor");
 }

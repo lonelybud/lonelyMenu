@@ -23,7 +23,9 @@ namespace big
 
 			ImGui::Spacing();
 
-			components::command_button<"fastquit">();
+			components::button("Rage Quit", [] {
+				exit(0);
+			});
 
 			ImGui::Spacing();
 

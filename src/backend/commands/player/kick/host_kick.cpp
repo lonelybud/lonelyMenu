@@ -4,23 +4,14 @@
 #include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
 
-
 namespace big
 {
 	class host_kick : player_command
 	{
 		using player_command::player_command;
 
-		virtual CommandAccessLevel get_access_level() override
+		virtual void execute(player_ptr player) override
 		{
-			return CommandAccessLevel::TOXIC;
-		}
-
-		virtual void execute(player_ptr player, const command_arguments& _args, const std::shared_ptr<command_context> ctx) override
-		{
-			if (!player)
-				return;
-
 			if (!g_player_service->get_self()->is_host())
 			{
 				g_notification_service->push_error("Host kick", std::format("Host kick failed on {}", player->get_name()), true);
@@ -36,5 +27,5 @@ namespace big
 		}
 	};
 
-	host_kick g_host_kick("hostkick", "Host Kick", "Host kick that only works when host", 0, false);
+	host_kick g_host_kick("hostkick", "Host Kick", "Host kick that only works when host");
 }

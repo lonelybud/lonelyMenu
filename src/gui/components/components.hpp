@@ -1,7 +1,5 @@
 #pragma once
 #include "backend/command.hpp"
-#include "backend/float_command.hpp"
-#include "backend/int_command.hpp"
 #include "backend/looped_command.hpp"
 #include "backend/player_command.hpp"
 #include "fiber_pool.hpp"
@@ -47,12 +45,11 @@ namespace big
 				return ImGui::Text("INVALID COMMAND");
 
 			if (ImGui::Button(label_override.value_or(command->get_label()).data()))
-			{
-				command_arguments _args(args);
-				command->call(_args);
-			}
+				command->call();
+
 			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
+				if (auto desc = command->get_description(); desc.length())
+					ImGui::SetTooltip(desc.c_str());
 		}
 
 		template<template_str cmd_str, ImVec2 size = ImVec2(0, 0), ImVec4 color = ImVec4(0.24f, 0.23f, 0.29f, 1.00f)>
@@ -63,9 +60,10 @@ namespace big
 				return ImGui::Text("INVALID COMMAND");
 
 			if (ImGui::Button(label_override.value_or(command->get_label()).data()))
-				command->call(player, args);
+				command->call(player);
 			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
+				if (auto desc = command->get_description(); desc.length())
+					ImGui::SetTooltip(desc.c_str());
 		}
 
 		template<template_str cmd_str>
@@ -82,57 +80,10 @@ namespace big
 			if (updated = ImGui::Checkbox(label_override.value_or(command->get_label()).data(), &command->is_enabled()))
 				command->refresh();
 			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
+				if (auto desc = command->get_description(); desc.length())
+					ImGui::SetTooltip(desc.c_str());
 
 			return updated;
-		}
-
-		template<template_str cmd_str>
-		static void command_int_slider(std::optional<const std::string_view> label_override = std::nullopt)
-		{
-			static int_command* command = (int_command*)command::get(rage::consteval_joaat(cmd_str.value));
-			if (command == nullptr)
-				return ImGui::Text("INVALID COMMAND");
-
-			ImGui::SliderInt(label_override.value_or(command->get_label()).data(),
-			    &command->get_value(),
-			    command->get_lower_bound(),
-			    command->get_upper_bound());
-
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
-		}
-
-		template<template_str cmd_str>
-		static void command_float_slider(std::optional<const std::string_view> label_override = std::nullopt)
-		{
-			static float_command* command = (float_command*)command::get(rage::consteval_joaat(cmd_str.value));
-			if (command == nullptr)
-				return ImGui::Text("INVALID COMMAND");
-
-			ImGui::SliderFloat(label_override.value_or(command->get_label()).data(),
-			    &command->get_value(),
-			    command->get_lower_bound(),
-			    command->get_upper_bound());
-
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
-		}
-
-		template<template_str cmd_str>
-		static void command_float_input(std::optional<const std::string_view> label_override = std::nullopt)
-		{
-			static float_command* command = (float_command*)command::get(rage::consteval_joaat(cmd_str.value));
-			if (command == nullptr)
-				return ImGui::Text("INVALID COMMAND");
-
-			ImGui::InputFloat(label_override.value_or(command->get_label()).data(),
-			    &command->get_value(),
-			    command->get_lower_bound(),
-			    command->get_upper_bound());
-
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip(command->get_description().c_str());
 		}
 
 		template<ImVec2 size = ImVec2(0, 0), ImVec4 color = ImVec4(0.24f, 0.23f, 0.29f, 1.00f)>

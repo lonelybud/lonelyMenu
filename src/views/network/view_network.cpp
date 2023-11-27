@@ -26,6 +26,11 @@ namespace big
 		{
 			components::sub_title("Hosting");
 
+			ImGui::Text(std::format("Smallest Host token: {}", g_session.smallest_host_token).c_str());
+			ImGui::SameLine();
+			if (ImGui::SmallButton("copy##copyHtoken"))
+				ImGui::SetClipboardText(std::format("{}", g_session.smallest_host_token).c_str());
+
 			ImGui::SetNextItemWidth(150);
 			ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.custom_host_token);
 
@@ -50,7 +55,7 @@ namespace big
 				components::button("Kick all blocked players", [] {
 					g_player_service->iterate([](const player_entry& player) {
 						if (player.second->is_blocked)
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second, {});
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second);
 					});
 				});
 			}
