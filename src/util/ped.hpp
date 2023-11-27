@@ -11,6 +11,10 @@ namespace big::ped
 	{
 		return PLAYER::PLAYER_PED_ID();
 	}
+	inline Vector3 get_self_pos(Ped ped)
+	{
+		return ENTITY::GET_ENTITY_COORDS(ped ? ped : get_self_ped(), 0);
+	}
 
 	inline player_ptr get_player_from_ped(Ped ped)
 	{

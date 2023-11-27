@@ -170,6 +170,10 @@ namespace big
 		const char* m_game_version;
 		const char* m_online_version;
 
+		GenericPool** m_ped_pool;
+		GenericPool** m_prop_pool;
+		VehiclePool*** m_vehicle_pool;
+
 		PVOID m_model_spawn_bypass;
 
 		functions::get_host_array_handler_by_index m_get_host_array_handler_by_index;

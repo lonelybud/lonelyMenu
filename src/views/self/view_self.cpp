@@ -2,6 +2,7 @@
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "util/ped.hpp"
+#include "util/pools.hpp"
 #include "views/view.hpp"
 
 #include <script/globals/GPBD_FM_3.hpp>
@@ -50,6 +51,22 @@ namespace big
 	{
 		components::button("Clear tasks", [] {
 			TASK::CLEAR_PED_TASKS(ped::get_self_ped());
+		});
+		ImGui::SameLine();
+		components::button("Clear Attachments", [] {
+			auto ped = ped::get_self_ped(); 
+
+			for (auto obj : pools::get_all_props())
+			{
+				auto object = g_pointers->m_gta.m_ptr_to_handle(obj);
+				if (!object)
+					break;
+
+				if (!ENTITY::IS_ENTITY_ATTACHED_TO_ENTITY(ped, object))
+					continue;
+
+				ENTITY::DELETE_ENTITY(&object);
+			}
 		});
 	}
 

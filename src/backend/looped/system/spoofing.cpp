@@ -10,32 +10,24 @@
 
 namespace big
 {
-	static uint64_t original_token    = 0;
-	static uint64_t custom_host_token = 0;
+	static uint64_t host_token = 0;
 
 	void looped::system_spoofing()
 	{
-		if(!original_token && *g_pointers->m_gta.m_host_token)
-			original_token = *g_pointers->m_gta.m_host_token;
+		if (!g_session.orig_host_token && *g_pointers->m_gta.m_host_token)
+			g_session.orig_host_token = host_token = g_session.host_token = g_session.smallest_host_token =
+			    *g_pointers->m_gta.m_host_token;
 
-		if (custom_host_token != g_session.custom_host_token && gta_util::get_network()->m_game_session_state == 0)
+		if (host_token != g_session.host_token && gta_util::get_network()->m_game_session_state == 0)
 		{
-			custom_host_token = g_session.custom_host_token;
-
-			uint64_t host_token;
+			host_token = g_session.host_token;
 
 			LOG(VERBOSE) << "Last host token: " << *g_pointers->m_gta.m_host_token;
 
-			if (custom_host_token)
-			{
-				host_token = custom_host_token + 1;
-				LOG(VERBOSE) << "Using custom host token: " << host_token;
-			}
-			else
-			{
-				host_token = original_token;
+			if (host_token == g_session.orig_host_token)
 				LOG(VERBOSE) << "Using original host token: " << host_token;
-			}
+			else
+				LOG(VERBOSE) << "Using custom host token: " << host_token;
 
 			*g_pointers->m_gta.m_host_token = host_token;
 

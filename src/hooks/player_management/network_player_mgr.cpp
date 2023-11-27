@@ -27,8 +27,8 @@ namespace big
 		g_self.unlimited_oxygen = false;
 		g_self.god_mode         = false;
 
-		g_session.custom_host_token     = 0;
-		g_session.lock_session          = false;
+		g_session.lock_session = false;
+		g_session.next_host_list.list.clear();
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}

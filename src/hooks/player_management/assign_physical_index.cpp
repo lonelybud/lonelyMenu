@@ -31,6 +31,7 @@ namespace big
 		if (new_index == static_cast<uint8_t>(-1))
 		{
 			g_player_service->player_leave(player);
+			g_session.next_host_list.delete_plyr(player->m_player_id);
 
 			if (net_player_data)
 			{
@@ -47,8 +48,12 @@ namespace big
 
 		g_player_service->player_join(player);
 
+		g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
 		if (host_token < g_session.smallest_host_token)
-			g_session.smallest_host_token = host_token;
+		{
+			g_session.smallest_host_token       = host_token;
+			g_session.smallest_host_token_owner = player_name;
+		}
 
 		if (net_player_data)
 		{
@@ -78,6 +83,8 @@ namespace big
 									LOG(WARNING) << str;
 								else
 									g_notification_service->push_warning("Carefull", str, true);
+
+								return;
 							}
 							else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 							{
@@ -92,7 +99,7 @@ namespace big
 					}
 				});
 			else
-				LOG(INFO) << "Player joined async job skipped for player " << player_name;
+				LOG(INFO) << "g_fiber_pool->queue_job skipped for you";
 		}
 
 		return result;

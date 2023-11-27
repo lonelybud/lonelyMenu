@@ -26,13 +26,10 @@ namespace big
 		{
 			components::sub_title("Hosting");
 
-			ImGui::Text(std::format("Smallest Host token: {}", g_session.smallest_host_token).c_str());
-			ImGui::SameLine();
-			if (ImGui::SmallButton("copy##copyHtoken"))
-				ImGui::SetClipboardText(std::format("{}", g_session.smallest_host_token).c_str());
-
 			ImGui::SetNextItemWidth(150);
-			ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.custom_host_token);
+			ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.host_token);
+			if (components::button("Restore Host token"))
+				g_session.host_token = g_session.orig_host_token;
 
 			ImGui::Spacing();
 
@@ -63,6 +60,29 @@ namespace big
 		ImGui::EndGroup();
 	}
 
+	static inline void render_host_list()
+	{
+		ImGui::BeginGroup();
+		{
+			components::sub_title("Smallest Host token");
+
+			ImGui::Text(std::format("Token: {}", g_session.smallest_host_token).c_str());
+			ImGui::SameLine();
+			if (ImGui::SmallButton("copy##copyToken"))
+				ImGui::SetClipboardText(std::format("{}", g_session.smallest_host_token).c_str());
+
+			ImGui::Text(std::format("Owner: {}", g_session.smallest_host_token_owner).c_str());
+
+			ImGui::Spacing();
+
+			components::sub_title("Next Host");
+
+			for (auto& pair : g_session.next_host_list.list)
+				ImGui::Text(pair.second.name.c_str());
+		}
+		ImGui::EndGroup();
+	}
+
 	void view::network()
 	{
 		ImGui::BeginGroup();
@@ -74,6 +94,12 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			render_hosting();
+		}
+		ImGui::EndGroup();
+		ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+		ImGui::BeginGroup();
+		{
+			render_host_list();
 		}
 		ImGui::EndGroup();
 	}
