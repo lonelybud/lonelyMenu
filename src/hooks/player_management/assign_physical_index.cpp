@@ -24,14 +24,15 @@ namespace big
 	{
 		const auto* net_player_data = player->get_net_data();
 
-		auto rockstar_id = net_player_data ? net_player_data->m_gamer_handle.m_rockstar_id : 0;
-		auto player_name = net_player_data ? net_player_data->m_name : "";
-		auto host_token  = net_player_data ? net_player_data->m_host_token : 0;
+		auto rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
+		auto player_name = net_player_data->m_name;
+		auto host_token  = net_player_data->m_host_token;
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
 			g_player_service->player_leave(player);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
+			g_session.next_host_list.filter_current_host();
 
 			if (net_player_data)
 			{
@@ -49,6 +50,7 @@ namespace big
 		g_player_service->player_join(player);
 
 		g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
+		g_session.next_host_list.filter_current_host();
 		if (host_token < g_session.smallest_host_token)
 		{
 			g_session.smallest_host_token       = host_token;

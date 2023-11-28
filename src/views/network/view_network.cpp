@@ -65,10 +65,16 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			components::sub_title("Smallest Host token");
+			ImGui::SameLine();
+			if (ImGui::SmallButton("reset##resetsmallToken"))
+			{
+				g_session.smallest_host_token       = g_session.orig_host_token;
+				g_session.smallest_host_token_owner = "";
+			}
 
 			ImGui::Text(std::format("Token: {}", g_session.smallest_host_token).c_str());
 			ImGui::SameLine();
-			if (ImGui::SmallButton("copy##copyToken"))
+			if (ImGui::SmallButton("copy##copysmallToken"))
 				ImGui::SetClipboardText(std::format("{}", g_session.smallest_host_token).c_str());
 
 			ImGui::Text(std::format("Owner: {}", g_session.smallest_host_token_owner).c_str());

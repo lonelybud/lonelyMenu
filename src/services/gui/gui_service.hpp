@@ -18,6 +18,7 @@ namespace big
 		REACTION_SETTINGS,
 		PROTECTION_SETTINGS,
 		DEBUG,
+		PV,
 
 		PLAYER
 	};
@@ -51,6 +52,9 @@ namespace big
 		        {
 		            "Vehicle",
 		            view::vehicle,
+		            {
+		                {tabs::PV, {"Personal Vehicles", view::pv}},
+		            },
 		        },
 		    },
 		    {

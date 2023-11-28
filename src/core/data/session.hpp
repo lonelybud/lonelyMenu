@@ -1,4 +1,5 @@
 #pragma once
+#include "services/players/player_service.hpp"
 
 namespace big
 {
@@ -32,6 +33,16 @@ namespace big
 			});
 
 			list.erase(it, list.end());
+		}
+
+		void filter_current_host()
+		{
+			for (const auto& [_, plyr] : g_player_service->players())
+				if (plyr->is_host())
+				{
+					delete_plyr(plyr->id());
+					return;
+				}
 		}
 	};
 

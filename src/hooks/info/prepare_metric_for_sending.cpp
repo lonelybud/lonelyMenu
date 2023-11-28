@@ -53,7 +53,7 @@ namespace big
 
 		if (is_bad_metric)
 		{
-			LOG(WARNING) << "BAD METRIC: " << metric->get_name() << "; DATA: " << serializer->get_string();
+			LOG(WARNING) << "BAD METRIC: " << metric->get_name(); //  << "; DATA: " << serializer->get_string();
 
 			return false;
 		}

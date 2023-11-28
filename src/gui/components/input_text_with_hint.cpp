@@ -1,3 +1,4 @@
+#include "core/data/hud.hpp"
 #include "fiber_pool.hpp"
 #include "gui/components/components.hpp"
 #include "misc/cpp/imgui_stdlib.h"
@@ -11,6 +12,8 @@ namespace big
 		if (returned = ImGui::InputTextWithHint(label.data(), hint.data(), buf, buf_size, flag); returned && cb)
 			g_fiber_pool->queue_job(std::move(cb));
 
+		if (ImGui::IsItemActive())
+			g_hud.typing = TYPING_TICKS;
 		return returned;
 	}
 
@@ -20,6 +23,8 @@ namespace big
 		if (returned = ImGui::InputTextWithHint(label.data(), hint.data(), &buf, flag); returned && cb)
 			g_fiber_pool->queue_job(std::move(cb));
 
+		if (ImGui::IsItemActive())
+			g_hud.typing = TYPING_TICKS;
 		return returned;
 	}
 }

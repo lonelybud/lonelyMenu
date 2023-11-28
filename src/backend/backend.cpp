@@ -41,6 +41,7 @@ namespace big
 		while (g_running)
 		{
 			looped::hud_transition_state();
+			looped::hud_disable_input();
 
 			script::get_current()->yield();
 		}

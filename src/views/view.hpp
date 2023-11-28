@@ -36,5 +36,6 @@ namespace big
 		static void weapons();
 		static void gta_data();
 		static void gta_cache();
+		static void pv();
 	};
 }

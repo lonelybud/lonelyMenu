@@ -65,6 +65,10 @@ namespace big
 				ENTITY::DELETE_ENTITY(&object);
 			}
 		});
+		ImGui::SameLine();
+		components::button("Force passive mode (30 secs)", [] {
+			*scr_globals::passive.as<PBOOL>() = TRUE;
+		});
 	}
 
 	void view::self()

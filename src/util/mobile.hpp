@@ -44,5 +44,27 @@ namespace big::mobile
 		{
 			return *scr_globals::freemode_global.at(299).as<Vehicle*>();
 		}
+
+		inline void summon_vehicle_by_index(int veh_idx)
+		{
+			if (*scr_globals::freemode_global.at(985).as<int*>() != -1)
+			{
+				g_notification_service->push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
+				return;
+			}
+
+			script::get_current()->yield(100ms);
+
+			*scr_globals::freemode_global.at(928).as<int*>() = 1; // tell freemode to spawn our vehicle
+			*scr_globals::freemode_global.at(988).as<int*>() = 0; // required
+			*scr_globals::freemode_global.at(985).as<int*>() = veh_idx;
+
+			script::get_current()->yield(100ms);
+
+			// blocking call till vehicle is delivered
+			int *address = scr_globals::freemode_global.at(985).as<int*>(), value = -1;
+			for (size_t i = 0; *address != value && i < 100; i++)
+				script::get_current()->yield(100ms);
+		}
 	}
 }
