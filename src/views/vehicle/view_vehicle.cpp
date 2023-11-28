@@ -22,6 +22,8 @@ namespace big
 		components::command_checkbox<"vehgodmode">();
 
 		components::command_checkbox<"veh_boost">();
+
+		components::command_checkbox<"seatbelt">();
 	}
 
 	void view::vehicle()

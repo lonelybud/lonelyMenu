@@ -31,6 +31,7 @@ namespace big
 
 		g_vehicle.god_mode  = false;
 		g_vehicle.veh_boost = false;
+		g_vehicle.seatbelt  = false;
 
 		g_weapons.aimbot.enable = false;
 

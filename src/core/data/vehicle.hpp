@@ -6,5 +6,6 @@ namespace big
 	{
 		bool god_mode;
 		bool veh_boost;
+		bool seatbelt;
 	} g_vehicle{};
 }
