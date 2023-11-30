@@ -4,6 +4,7 @@
 #include "hooking.hpp"
 #include "memory/all.hpp"
 #include "rage/atSingleton.hpp"
+#include "rage/gameSkeleton.hpp"
 #include "sc_pointers_layout_info.hpp"
 #include "security/RageSecurity.hpp"
 
@@ -528,15 +529,6 @@ namespace big
                 g_pointers->m_gta.m_task_ambient_clips = ptr.as<PVOID>();
             }
         },
-        // Sync Network Time
-        {
-            "SNT",
-            "E8 ? ? ? ? 8B 43 5C",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_sync_network_time = ptr.add(1).rip().as<functions::sync_network_time>();
-            }
-        },
         // Queue Dependency
         {
             "QD",
@@ -848,13 +840,22 @@ namespace big
                 g_pointers->m_gta.m_activate_special_ability_patch = ptr.as<PVOID>();
             }
         },
-        // Game Skeleton Update
+        // Game Skeleton
         {
-            "GSU",
-            "40 53 48 83 EC 20 48 8B 81 40 01",
+            "GS",
+            "48 8D 0D ? ? ? ? BA ? ? ? ? 74 05 BA ? ? ? ? E8 ? ? ? ? E8 ? ? ? ? C6 05 ? ? ? ? ? 48 8D 0D ? ? ? ? BA ? ? ? ? 84 DB 75 05 BA ? ? ? ? E8 ? ? ? ? 48 8B CD C6 05 ? ? ? ? ? E8 ? ? ? ? 84",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_game_skeleton_update = ptr.as<PVOID>();
+                g_pointers->m_gta.m_game_skeleton = ptr.add(3).rip().as<rage::game_skeleton*>();
+            }
+        },
+        // Nullsub
+        {
+            "NS",
+            "C3",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_nullsub = ptr.as<void(*)()>();
             }
         }
         >(); // don't leave a trailing comma at the end
@@ -869,27 +870,6 @@ namespace big
 		// clang-format off
 
         constexpr auto batch_and_hash = memory::make_batch<
-        // Presence Data
-        // Update instructions: Scan 48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 40 41 8B E9 and xref it to get to the vtable. Xref the vtable and generate a new signature
-        {
-            "PD",
-            "48 8D 05 ? ? ? ? 48 8B D9 48 89 01 48 83 C1 08 E8 ? ? ? ? 33 C0",
-            [](memory::handle ptr)
-            {
-                auto presence_data_vft             = ptr.add(3).rip().as<PVOID*>();
-                g_pointers->m_sc.m_update_presence_attribute_int    = (functions::update_presence_attribute_int)presence_data_vft[1];
-                g_pointers->m_sc.m_update_presence_attribute_string = (functions::update_presence_attribute_string)presence_data_vft[3];
-            }
-        },
-        // Start Get Presence Attributes
-        {
-            "SGPA",
-            "48 8B C4 48 89 58 08 48 89 68 10 48 89 70 18 48 89 78 20 41 54 41 56 41 57 48 83 EC 40 33 DB 49",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_sc.m_start_get_presence_attributes = ptr.as<functions::start_get_presence_attributes>();
-            }
-        },
         // Read Attribute Patch
         {
             "RAP",

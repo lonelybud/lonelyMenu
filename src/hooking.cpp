@@ -74,8 +74,6 @@ namespace big
 		detour_hook_helper::add<hooks::render_entity>("RE", g_pointers->m_gta.m_render_entity);
 		detour_hook_helper::add<hooks::render_big_ped>("RBP", g_pointers->m_gta.m_render_big_ped);
 
-		detour_hook_helper::add<hooks::game_skeleton_update>("GSU", g_pointers->m_gta.m_game_skeleton_update);
-
 		g_hooking = this;
 	}
 

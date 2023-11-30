@@ -28,6 +28,7 @@ namespace rage
 	class RageSecurity;
 	class netTime;
 	class rlGamerInfo;
+	struct game_skeleton;
 }
 
 template<typename T>
@@ -61,6 +62,8 @@ namespace big
 		CPedFactory** m_ped_factory;
 		CNetworkPlayerMgr** m_network_player_mgr;
 		CNetworkObjectMgr** m_network_object_mgr;
+		rage::game_skeleton* m_game_skeleton;
+		void (*m_nullsub)();
 
 		functions::ptr_to_handle m_ptr_to_handle;
 		functions::handle_to_ptr m_handle_to_ptr;
@@ -157,8 +160,6 @@ namespace big
 		PVOID m_serialize_take_off_ped_variation_task;
 		PVOID m_serialize_parachute_task;
 
-		functions::sync_network_time m_sync_network_time;
-
 		functions::send_packet m_send_packet;
 
 		PVOID m_fragment_physics_crash_2;
@@ -199,8 +200,6 @@ namespace big
 		rage::atArray<CTrainConfig>* m_train_config_array;
 
 		PVOID m_activate_special_ability_patch;
-
-		PVOID m_game_skeleton_update;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

@@ -4,8 +4,8 @@
 #include "detour_hook.hpp"
 #include "gta/enums.hpp"
 #include "gta/fwddec.hpp"
-#include "gta/script_thread.hpp"
 #include "gta/json_serializer.hpp"
+#include "gta/script_thread.hpp"
 #include "vmt_hook.hpp"
 #include "vtable_hook.hpp"
 
@@ -111,10 +111,9 @@ namespace big
 		// misc
 
 		static int nt_query_virtual_memory(void* _this, HANDLE handle, PVOID base_addr, int info_class, MEMORY_BASIC_INFORMATION* info, int size, size_t* return_len);
-		static int queue_dependency(void* a1, int a2, void* dependency);
+		static int queue_dependency(void* a1, int a2, int64_t dependency);
 		static bool http_start_request(void* request, const char* uri);
 		static int netfilter_handle_message(__int64 filter, char* message, int flags);
-		static void game_skeleton_update(__int64 skeleton, int type);
 	};
 
 	class minhook_keepalive
