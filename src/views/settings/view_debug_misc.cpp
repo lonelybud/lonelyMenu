@@ -1,5 +1,7 @@
 #include "gui/components/components.hpp"
 #include "natives.hpp"
+#include "util/local_player.hpp"
+#include "util/lua_script.cpp"
 
 namespace big
 {
@@ -14,17 +16,35 @@ namespace big
 			components::button("Skip Cutscene", [] {
 				CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 			});
-
-			ImGui::Spacing();
-
+			ImGui::SameLine();
 			components::button("Network Bail", [] {
 				NETWORK::NETWORK_BAIL(16, 0, 0);
 			});
-
-			ImGui::Spacing();
-
+			ImGui::SameLine();
 			components::button("Rage Quit", [] {
 				exit(0);
+			});
+
+			components::button("Unlock Bunker Research (Temp.)", [] {
+				auto MPX = local_player::get_mp_prefix();
+
+				for (int i = 0; i < 64; ++i)
+				{
+					for (int j = 0; j < 3; ++j)
+						lua_script::stats::set_bool_masked(MPX + "DLCGUNPSTAT_BOOL" + std::to_string(j), true, i);
+
+					for (int j = 0; j < 6; ++j)
+						lua_script::stats::set_bool_masked(MPX + "GUNTATPSTAT_BOOL" + std::to_string(j), true, i);
+				}
+			});
+			ImGui::SameLine();
+			components::button("Unlock Bunker Research (Temp.) 2", [] {
+				auto MPX          = local_player::get_mp_prefix();
+				const int bitSize = 8;
+
+				for (int j = 0; j < 64 / bitSize; ++j)
+					for (int i = 0; i < 13; ++i)
+						lua_script::stats::set_masked_int(MPX + "GUNRPSTAT_INT" + std::to_string(i), -1, j * bitSize, bitSize);
 			});
 
 			ImGui::Spacing();

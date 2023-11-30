@@ -49,7 +49,7 @@ namespace big
 	static inline void render_other_options2()
 	{
 		components::button("Clear tasks", [] {
-			TASK::CLEAR_PED_TASKS(self::ped);
+			TASK::CLEAR_PED_TASKS_IMMEDIATELY(self::ped);
 		});
 		ImGui::SameLine();
 		components::button("Clear Attachments", [] {
