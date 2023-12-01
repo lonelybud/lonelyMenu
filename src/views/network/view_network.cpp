@@ -16,6 +16,8 @@ namespace big
 			ImGui::BeginDisabled(!g_player_service->get_self()->is_host());
 			ImGui::Checkbox("Lock Session", &g_session.lock_session);
 			ImGui::EndDisabled();
+
+			components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 		}
 		ImGui::EndGroup();
 	}

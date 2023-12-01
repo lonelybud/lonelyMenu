@@ -61,6 +61,10 @@ namespace big::functions
 	using ptr_to_handle = Entity (*)(void*);
 	using handle_to_ptr = rage::CDynamicEntity* (*)(Entity);
 
+	using get_gameplay_cam_coords = Vector3 (*)();
+
+	using get_screen_coords_for_world_coords = bool (*)(float* world_coords, float* out_x, float* out_y);
+
 	// Bitbuffer read/write START
 	using read_bitbuf_dword  = bool (*)(rage::datBitBuffer* buffer, PVOID read, int bits);
 	using read_bitbuf_string = bool (*)(rage::datBitBuffer* buffer, char* read, int bits);

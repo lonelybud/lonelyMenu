@@ -19,6 +19,7 @@ namespace big
 		PROTECTION_SETTINGS,
 		DEBUG,
 		PV,
+		ESP_SETTINGS,
 
 		PLAYER
 	};
@@ -73,6 +74,7 @@ namespace big
 		            "Settings",
 		            nullptr,
 		            {
+		                {tabs::ESP_SETTINGS, {"ESP", view::esp_settings}},
 		                {tabs::GTA_CACHE_SETTINGS, {"GTA Cache", view::gta_cache}},
 		                {tabs::GUI_SETTINGS, {"GUI", view::gui_settings}},
 		                {tabs::REACTION_SETTINGS, {"Reactions", view::reaction_settings}},

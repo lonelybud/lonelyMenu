@@ -38,7 +38,12 @@ namespace big
 			}
 
 			if (infraction == Infraction::TRIED_CRASH_PLAYER)
+			{
 				++player->crash_count;
+
+				if (player->crash_count > 20)
+					kick_player = true;
+			}
 
 			auto str = std::vformat(m_notify_message, std::make_format_args(name));
 

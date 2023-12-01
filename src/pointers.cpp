@@ -271,6 +271,24 @@ namespace big
                 g_pointers->m_gta.m_friend_registry = ptr.add(2).rip().as<FriendRegistry*>();
             }
         },
+        // GET_SCREEN_COORDS_FROM_WORLD_COORDS
+        {
+            "GSCFWC",
+            "E8 ? ? ? ? 84 C0 74 19 F3 0F 10 44 24",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_screen_coords_for_world_coords = ptr.add(1).rip().as<functions::get_screen_coords_for_world_coords>();
+            }
+        },
+        // GET_GAMEPLAY_CAM_COORDS
+        {
+            "GGCC",
+            "8B 90 ? ? ? ? 89 13",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_gameplay_cam_coords = ptr.sub(0xE).as<functions::get_gameplay_cam_coords>();
+            }
+        },
         // Receive Net Message
         {
             "RNM",

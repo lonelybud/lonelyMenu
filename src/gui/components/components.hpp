@@ -33,7 +33,7 @@ namespace big
 		static void selectable(const std::string_view, bool, std::function<void()>);
 		static void selectable(const std::string_view, bool, ImGuiSelectableFlags, std::function<void()>);
 
-		static bool script_patch_checkbox(const std::string_view text, bool* option, const std::string_view tooltip = "");
+		static bool script_patch_checkbox(const std::string_view text, bool* option);
 
 		static void options_modal(const std::string_view element_name, std::function<void()> render_elements, bool sameline = true, std::string custom_button_name = "Options");
 

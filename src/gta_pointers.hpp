@@ -83,10 +83,14 @@ namespace big
 
 		FriendRegistry* m_friend_registry;
 
+		functions::get_screen_coords_for_world_coords m_get_screen_coords_for_world_coords;
+
 		HashTable<CBaseModelInfo*>* m_model_table;
 
 		PVOID m_network_player_mgr_init;
 		PVOID m_network_player_mgr_shutdown;
+
+		functions::get_gameplay_cam_coords m_get_gameplay_cam_coords;
 
 		// Bitbuffer Read/Write START
 		functions::read_bitbuf_dword m_read_bitbuf_dword;

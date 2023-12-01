@@ -2,6 +2,7 @@
 #include "natives.hpp"
 #include "util/local_player.hpp"
 #include "util/lua_script.cpp"
+#include "util/pools.hpp"
 
 namespace big
 {
@@ -17,6 +18,20 @@ namespace big
 				CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 			});
 			ImGui::SameLine();
+			components::button("Clear Attachments", [] {
+				for (auto obj : pools::get_all_props())
+				{
+					auto object = g_pointers->m_gta.m_ptr_to_handle(obj);
+					if (!object)
+						break;
+
+					if (!ENTITY::IS_ENTITY_ATTACHED_TO_ENTITY(self::ped, object))
+						continue;
+
+					ENTITY::DELETE_ENTITY(&object);
+				}
+			});
+
 			components::button("Network Bail", [] {
 				NETWORK::NETWORK_BAIL(16, 0, 0);
 			});

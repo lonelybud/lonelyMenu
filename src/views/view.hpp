@@ -1,4 +1,5 @@
 #pragma once
+#include "esp/view_esp.hpp"
 #include "gui/components/components.hpp"
 
 //Percentage of window space
@@ -20,6 +21,7 @@ namespace big
 	public:
 		static void active_view();
 		static void debug();
+		static void esp_settings();
 		static void gui_settings();
 		static void reaction_settings();
 		static void protection_settings();
