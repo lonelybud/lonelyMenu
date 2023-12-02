@@ -1,4 +1,5 @@
 #pragma once
+#include "memory/byte_patch.hpp"
 #include "memory/fwddec.hpp"
 
 namespace big

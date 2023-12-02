@@ -3,7 +3,6 @@
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/notifications/notification_service.hpp"
-#include "services/vehicle_preview/vehicle_preview.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -105,23 +104,10 @@ namespace big
 
 						if (veh == 0)
 							g_notification_service->push_error("Vehicle", "Unable to spawn vehicle");
-						else
-						{
-							if (spawn_maxed)
-								vehicle::max_vehicle(veh);
-							if (g_vehicle.spawn_inside)
-								vehicle::teleport_into_vehicle(veh);
-						}
-
-						g_vehicle_preview.clear();
-						ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+						else if (spawn_maxed)
+							vehicle::max_vehicle(veh);
 					});
 					ImGui::PopID();
-
-					if (g_vehicle_preview.is_camera_prepared && !ImGui::IsAnyItemHovered())
-						g_vehicle_preview.clear();
-					else if (g_vehicle.preview_vehicle && ImGui::IsItemHovered())
-						g_vehicle_preview.preview_veh(vehicle.m_hash);
 				}
 			}
 			else
@@ -138,27 +124,18 @@ namespace big
 
 		ImGui::RadioButton("New", &spawn_vehicle_type, 0);
 		ImGui::SameLine();
-		ImGui::RadioButton("Personal", &spawn_vehicle_type, 1);
-		ImGui::SameLine();
-		ImGui::RadioButton("Persistent", &spawn_vehicle_type, 2);
+		ImGui::RadioButton("Persistent", &spawn_vehicle_type, 1);
 
 		ImGui::Spacing();
 
 		ImGui::Checkbox("Spawn at waypoint", &g_vehicle.spawn_at_waypoint);
-		ImGui::SameLine();
-		ImGui::Checkbox("Spawn Inside", &g_vehicle.spawn_inside);
-		ImGui::SameLine();
-		if (ImGui::Checkbox("Preview", &g_vehicle.preview_vehicle))
-			if (!g_vehicle.preview_vehicle)
-				g_vehicle_preview.clear();
 
 		ImGui::Spacing();
 
 		switch (spawn_vehicle_type)
 		{
 		case 0: render_spawn_new_vehicle(); break;
-		case 1: view::pv(); break;
-		case 2: view::persist_car(); break;
+		case 1: view::persist_car(); break;
 		}
 	}
 }

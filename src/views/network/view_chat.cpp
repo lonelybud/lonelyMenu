@@ -13,7 +13,6 @@ namespace big
 		static bool is_team;
 		static char msg[256];
 
-		ImGui::Checkbox("Log Messages (to file)", &g_session.log_chat_messages_to_file);
 		ImGui::Checkbox("Log Messages (to textbox)", &g_session.log_chat_messages_to_textbox);
 
 		ImGui::Spacing();

@@ -20,10 +20,6 @@ namespace big
 		police::m_max_wanted_level_2 =
 		    memory::byte_patch::make(g_pointers->m_gta.m_max_wanted_level.add(14).rip().as<uint32_t*>(), 0).get();
 
-		// Skip matchmaking session validity checks
-		memory::byte_patch::make(g_pointers->m_gta.m_is_matchmaking_session_valid.as<void*>(), std::to_array({0xB0, 0x01, 0xC3}))
-		    ->apply(); // has no observable side effects
-
 		// Bypass netarray buffer cache when enabled
 		broadcast_net_array::m_patch =
 		    memory::byte_patch::make(g_pointers->m_gta.m_broadcast_patch.as<uint8_t*>(), 0xEB).get();
@@ -36,10 +32,6 @@ namespace big
 		std::vector<byte> bytes = {0xFF, 0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90}; // far jump opcode + a nop opcode
 		*(void**)(bytes.data() + 6) = sound_overload_detour;
 		memory::byte_patch::make(g_pointers->m_gta.m_sound_overload_detour.add(13).as<void*>(), bytes)->apply();
-
-		// Disable collision when enabled
-		vehicle::disable_collisions::m_patch =
-		    memory::byte_patch::make(g_pointers->m_gta.m_disable_collision.sub(2).as<uint8_t*>(), 0xEB).get();
 
 		// Crash Trigger
 		memory::byte_patch::make(g_pointers->m_gta.m_crash_trigger.add(4).as<uint8_t*>(), 0x00)->apply();

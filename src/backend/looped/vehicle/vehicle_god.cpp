@@ -1,8 +1,7 @@
-#include "backend/looped/looped.hpp"
 #include "backend/looped_command.hpp"
 #include "core/data/vehicle.hpp"
+#include "core/enums.hpp"
 #include "natives.hpp"
-#include "util/mobile.hpp"
 
 namespace big
 {
@@ -14,8 +13,8 @@ namespace big
 
 		struct orig_veh_data
 		{
-			uint8_t m_deform_god   = 0;
-			uint32_t m_damage_bits = 0;
+			uint8_t m_deform_god;
+			uint32_t m_damage_bits;
 		};
 
 		std::unordered_map<CVehicle*, orig_veh_data> m_orig_veh_datas;
@@ -62,6 +61,5 @@ namespace big
 		}
 	};
 
-	vehicle_godmode
-	    g_vehicle_godmode("vehgodmode", "God Mode", "Prevents your vehicle from taking any form of damage", g_vehicle.god_mode);
+	vehicle_godmode g_vehicle_godmode("vehgodmode", "God Mode", "", g_vehicle.god_mode);
 }

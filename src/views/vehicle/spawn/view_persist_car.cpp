@@ -9,19 +9,9 @@
 
 namespace big
 {
-	static std::string persist_vehicle_sub_folder = "";
+	static std::string persist_vehicle_sub_folder, selected_vehicle_file;
 
-	static void save_vehicle(char* vehicle_file_name_input, const char* folder_name)
-	{
-		if (ENTITY::DOES_ENTITY_EXIST(self::veh))
-		{
-			const auto vehicle_file_name = std::string(vehicle_file_name_input).append(".json");
-			persist_car_service::save_vehicle(self::veh, vehicle_file_name, folder_name);
-			ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
-		}
-	}
-
-	static void load_vehicle(std::string& selected_vehicle_file)
+	static void load_vehicle()
 	{
 		if (!selected_vehicle_file.empty())
 		{
@@ -51,14 +41,20 @@ namespace big
 			if (!self::veh)
 				return g_notification_service->push_warning("Persist Car", "You must be in a vehicle. Please enter a vehicle before using load.");
 
-			save_vehicle(vehicle_file_name_input, save_folder);
+			if (ENTITY::DOES_ENTITY_EXIST(self::veh))
+			{
+				const auto vehicle_file_name = std::string(vehicle_file_name_input).append(".json");
+				persist_car_service::save_vehicle(self::veh, vehicle_file_name, save_folder);
+				ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
+			}
 		});
 		ImGui::SameLine();
 		components::button("Populate Name", [vehicle_file_name_input] {
 			if (self::veh)
 			{
 				auto model = ENTITY::GET_ENTITY_MODEL(self::veh);
-				auto name = std::format("{} {}", toLowercase(VEHICLE::GET_MAKE_NAME_FROM_VEHICLE_MODEL(model)), toLowercase(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(model)));
+				auto t = HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(model));
+				auto name = std::format("{} {}", toLowercase(VEHICLE::GET_MAKE_NAME_FROM_VEHICLE_MODEL(model)), toLowercase(t));
 
 				strcpy(vehicle_file_name_input, name.c_str());
 			}
@@ -67,10 +63,7 @@ namespace big
 
 	void view::persist_car()
 	{
-		static std::string selected_vehicle_file;
-
-		const auto vehicle_folders = persist_car_service::list_sub_folders();
-		const auto vehicle_files   = persist_car_service::list_files(persist_vehicle_sub_folder);
+		static std::vector<std::string> vehicle_folders, vehicle_files;
 		static std::string file_name_to_delete{};
 
 		if (!file_name_to_delete.empty())
@@ -97,6 +90,11 @@ namespace big
 
 			ImGui::EndPopup();
 		}
+
+		components::button("Refresh List", [vehicle_file_name_input] {
+			vehicle_folders = persist_car_service::list_sub_folders();
+			vehicle_files   = persist_car_service::list_files(persist_vehicle_sub_folder);
+		});
 
 		ImGui::SetNextItemWidth(300.f);
 		auto folder_display = persist_vehicle_sub_folder.empty() ? "Root" : persist_vehicle_sub_folder.c_str();
@@ -138,15 +136,9 @@ namespace big
 					{
 						selected_vehicle_file = pair;
 						g_fiber_pool->queue_job([] {
-							load_vehicle(selected_vehicle_file);
+							load_vehicle();
 						});
-						g_vehicle_preview.clear();
 					}
-
-					if (g_vehicle_preview.is_camera_prepared && !ImGui::IsAnyItemHovered())
-						g_vehicle_preview.clear();
-					else if (g_vehicle.preview_vehicle && ImGui::IsItemHovered())
-						g_vehicle_preview.preview_persisted_veh(pair, persist_vehicle_sub_folder);
 
 					ImGui::SameLine();
 					ImGui::PushID(file_name);

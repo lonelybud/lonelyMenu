@@ -13,12 +13,15 @@
 
 namespace big::notify
 {
-	inline void above_map(std::string_view text)
+	inline void crash_blocked(player_ptr plyr, const char* crash_detail)
 	{
-		HUD::SET_TEXT_OUTLINE();
-		HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("STRING");
-		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text.data());
-		HUD::END_TEXT_COMMAND_THEFEED_POST_TICKER(false, false);
+		if (plyr)
+		{
+			reaction crash{"Crash", std::format("X: Blocked {} crash from {}", crash_detail, plyr->get_name()).c_str()};
+			crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
+		}
+		else
+			g_notification_service->push_error("Protections", std::format("X: Blocked {} crash from unknown player", crash_detail), true);
 	}
 
 	inline void draw_chat(const char* msg, const char* player_name, bool is_team)
@@ -46,47 +49,6 @@ namespace big::notify
 
 		GRAPHICS::DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleform, 255, 255, 255, 255, 0);
 
-		// fix broken scaleforms, when chat alrdy opened
-		if (const auto chat_data = *g_pointers->m_gta.m_chat_data; chat_data && (chat_data->m_chat_open || chat_data->m_timer_two))
-			HUD::CLOSE_MP_TEXT_CHAT();
-	}
-
-
-	inline void crash_blocked(player_ptr plyr, const char* crash_detail)
-	{
-		if (plyr)
-		{
-			reaction crash{"Crash", std::format("X: Blocked {} crash from {}", crash_detail, plyr->get_name()).c_str()};
-			crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
-		}
-		else
-			g_notification_service->push_error("Protections", std::format("X: Blocked {} crash from unknown player", crash_detail), true);
-	}
-
-	// Shows a busy spinner till the value at the address equals the value passed or if timeout is hit
-	inline void busy_spinner(std::string_view text, int* address, int value, int timeout = 15)
-	{
-		HUD::BEGIN_TEXT_COMMAND_BUSYSPINNER_ON("STRING");
-		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text.data());
-		HUD::END_TEXT_COMMAND_BUSYSPINNER_ON(3);
-
-		for (size_t i = 0; *address != value && i < (size_t)timeout * 100; i++)
-			script::get_current()->yield(10ms);
-
-		HUD::BUSYSPINNER_OFF();
-	}
-
-	inline void show_subtitle(std::string_view text, int ms = 2000)
-	{
-		HUD::BEGIN_TEXT_COMMAND_PRINT("STRING");
-		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text.data());
-		HUD::END_TEXT_COMMAND_PRINT(ms, 1);
-	}
-
-	inline void display_help_text(std::string_view text)
-	{
-		HUD::BEGIN_TEXT_COMMAND_DISPLAY_HELP("STRING");
-		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text.data());
-		HUD::END_TEXT_COMMAND_DISPLAY_HELP(0, 0, 1, -1);
+		HUD::CLOSE_MP_TEXT_CHAT();
 	}
 }

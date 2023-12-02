@@ -18,22 +18,16 @@ namespace big
 			g_notification_service->push_warning("Persist Car", "Tried to save a vehicle which does not exist");
 			return;
 		}
-
 		const auto file = check_vehicle_folder(folder_name).get_file(file_name);
-
 		std::ofstream file_stream(file.get_path(), std::ios::out | std::ios::trunc);
-
 		file_stream << get_vehicle_json(vehicle).dump(4);
-
 		file_stream.close();
 	}
 
 	nlohmann::json persist_car_service::load_vehicle_json(std::string_view file_name, std::string folder_name)
 	{
 		const auto file = check_vehicle_folder(folder_name).get_file(file_name);
-
 		std::ifstream file_stream(file.get_path());
-
 		nlohmann::json vehicle_json;
 
 		try
@@ -58,12 +52,8 @@ namespace big
 
 	void persist_car_service::delete_vehicle(std::string_view file_name, std::string folder_name)
 	{
-		const auto file = check_vehicle_folder(folder_name).get_file(file_name);
-
-		if (file.exists())
-		{
+		if (const auto file = check_vehicle_folder(folder_name).get_file(file_name); file.exists())
 			std::filesystem::remove(file.get_path());
-		}
 	}
 
 	std::vector<std::string> persist_car_service::list_files(std::string folder_name)

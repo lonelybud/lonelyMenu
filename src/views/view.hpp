@@ -31,14 +31,7 @@ namespace big
 		static void notifications();
 		static void root();
 		static void self();
-		static void animations();
-		static void spawned_vehicles();
-		static void scenarios();
-		static void spawn_objects();
-		static void ptfx_effects();
 		static void network();
-		static void session_browser();
-		static void casino();
 		static void bad_players();
 		static void chat();
 		static void vehicle();
@@ -47,13 +40,10 @@ namespace big
 		static void pv();
 		static void persist_car();
 		static void teleport();
-		static void custom_teleport();
 		static void view_player();
 		static void players();
 		static void weapons();
-		static void context_menu();
 		static void gta_data();
-		static void world();
 		static void gta_cache();
 	};
 }

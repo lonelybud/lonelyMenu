@@ -1,5 +1,5 @@
 #include "backend/looped_command.hpp"
-#include "core/settings/self.hpp"
+#include "core/data/self.hpp"
 #include "natives.hpp"
 
 #include <ped/CPedIntelligence.hpp>

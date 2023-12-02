@@ -80,7 +80,6 @@ namespace self
 	inline Player id;
 	inline Vector3 pos;
 	inline Vehicle veh;
-	inline Vehicle last_veh;
 	inline std::map<int, Vehicle> spawned_vehicles;
 }
 

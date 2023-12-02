@@ -1,15 +1,15 @@
 #include "backend/player_command.hpp"
-#include "core/settings/protections.hpp"
 #include "core/data/reactions.hpp"
+#include "core/scr_globals.hpp"
+#include "core/settings/protections.hpp"
 #include "gta/net_game_event.hpp"
 #include "gta/script_handler.hpp"
 #include "gta_util.hpp"
 #include "hooking.hpp"
+#include "natives.hpp"
 #include "util/math.hpp"
-#include "util/session.hpp"
 
 #include <network/CNetGamePlayer.hpp>
-#include <network/Network.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
 
@@ -59,6 +59,10 @@ namespace big
 
 		switch (hash)
 		{
+		case eRemoteEvent::Bounty:
+			if (args[2] == self::id)
+				g_reactions.bounty.process(plyr, false, Infraction::BOUNTY, false, true);
+			break;
 		case eRemoteEvent::CeoKick:
 			if (player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
 			{

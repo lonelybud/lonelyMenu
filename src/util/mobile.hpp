@@ -1,5 +1,4 @@
 #pragma once
-#include "core/data/vehicle.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
 #include "globals.hpp"
@@ -15,20 +14,6 @@
 
 namespace big::mobile
 {
-	namespace util
-	{
-		int get_current_personal_vehicle(); // forward declare
-		inline void despawn_current_personal_vehicle()
-		{
-			misc::clear_bits(scr_globals::vehicle_global.at(get_current_personal_vehicle(), 142).at(103).as<int*>(), eVehicleFlags::TRIGGER_SPAWN_TOGGLE);
-		}
-
-		inline int get_current_personal_vehicle()
-		{
-			return *scr_globals::stats.at(0, 5568).at(681).at(2).as<int*>();
-		}
-	}
-
 	namespace mors_mutual
 	{
 		inline bool fix_index(int veh_idx, bool spawn_veh = false)
@@ -36,14 +21,8 @@ namespace big::mobile
 			bool can_be_fixed = misc::has_bits_set(scr_globals::vehicle_global.at(veh_idx, 142).at(103).as<int*>(), eVehicleFlags::DESTROYED | eVehicleFlags::HAS_INSURANCE);
 
 			if (can_be_fixed)
-			{
 				misc::clear_bits(scr_globals::vehicle_global.at(veh_idx, 142).at(103).as<int*>(), eVehicleFlags::DESTROYED | eVehicleFlags::IMPOUNDED | eVehicleFlags::UNK2);
 
-				if (spawn_veh)
-				{
-					misc::set_bits(scr_globals::vehicle_global.at(veh_idx, 142).at(103).as<int*>(), eVehicleFlags::TRIGGER_SPAWN_TOGGLE | eVehicleFlags::SPAWN_AT_MORS_MUTUAL);
-				}
-			}
 			return can_be_fixed;
 		}
 
@@ -59,7 +38,6 @@ namespace big::mobile
 			return fixed_count;
 		}
 	}
-
 	namespace mechanic
 	{
 		inline Vehicle get_personal_vehicle()
@@ -70,17 +48,12 @@ namespace big::mobile
 		inline void summon_vehicle_by_index(int veh_idx)
 		{
 			if (*scr_globals::freemode_global.at(985).as<int*>() != -1)
-				return g_notification_service->push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
-
-			// despawn current veh
-			util::despawn_current_personal_vehicle();
-			mors_mutual::fix_index(veh_idx);
+			{
+				g_notification_service->push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
+				return;
+			}
 
 			script::get_current()->yield(100ms);
-
-			// only do this when spawn inside is enabled otherwise the vehicle will spawn relatively far away from players
-			if (g_vehicle.spawn_inside)
-				*scr_globals::freemode_global.at(942).as<int*>() = 1; // disable vehicle node distance check
 
 			*scr_globals::freemode_global.at(928).as<int*>() = 1; // tell freemode to spawn our vehicle
 			*scr_globals::freemode_global.at(988).as<int*>() = 0; // required
@@ -88,21 +61,10 @@ namespace big::mobile
 
 			script::get_current()->yield(100ms);
 
-			GtaThread* freemode_thread = gta_util::find_script_thread(RAGE_JOAAT("freemode"));
-			if (freemode_thread)
-			{
-				// regex to find this shit easily
-				// \(func_\d{3}\(&\(uParam0->f_\d{3}\), \d+000, 0\) \|\| func
-				// or if you prefer a string "VD_FAIL4"
-				// or if you really prefer an image https://i.imgur.com/K8vMILe.png
-				*scr_locals::fm_mobile::mobile.set(freemode_thread).at(176).as<int*>() = 0; // spawn vehicle instantly
-			}
-
 			// blocking call till vehicle is delivered
-			notify::busy_spinner("Delivering vehicle...", scr_globals::freemode_global.at(985).as<int*>(), -1);
-
-			if (g_vehicle.spawn_inside)
-				vehicle::bring(get_personal_vehicle(), self::pos, true);
+			int *address = scr_globals::freemode_global.at(985).as<int*>(), value = -1;
+			for (size_t i = 0; *address != value && i < 100; i++)
+				script::get_current()->yield(100ms);
 		}
 	}
 }

@@ -21,26 +21,6 @@ namespace big
 		m_swapchain_hook.hook(hooks::swapchain_present_index, &hooks::swapchain_present);
 		m_swapchain_hook.hook(hooks::swapchain_resizebuffers_index, &hooks::swapchain_resizebuffers);
 
-		m_sync_data_reader_hook.hook(1, &hooks::sync_reader_serialize_dword);
-		m_sync_data_reader_hook.hook(2, &hooks::sync_reader_serialize_word);
-		m_sync_data_reader_hook.hook(3, &hooks::sync_reader_serialize_byte);
-		m_sync_data_reader_hook.hook(4, &hooks::sync_reader_serialize_int32);
-		m_sync_data_reader_hook.hook(5, &hooks::sync_reader_serialize_int16);
-		m_sync_data_reader_hook.hook(6, &hooks::sync_reader_serialize_signed_byte);
-		m_sync_data_reader_hook.hook(7, &hooks::sync_reader_serialize_bool);
-		m_sync_data_reader_hook.hook(9, &hooks::sync_reader_serialize_int32);
-		m_sync_data_reader_hook.hook(10, &hooks::sync_reader_serialize_int16);
-		m_sync_data_reader_hook.hook(11, &hooks::sync_reader_serialize_signed_byte);
-		m_sync_data_reader_hook.hook(13, &hooks::sync_reader_serialize_dword);
-		m_sync_data_reader_hook.hook(14, &hooks::sync_reader_serialize_word);
-		m_sync_data_reader_hook.hook(15, &hooks::sync_reader_serialize_byte);
-		m_sync_data_reader_hook.hook(16, &hooks::sync_reader_serialize_signed_float);
-		m_sync_data_reader_hook.hook(17, &hooks::sync_reader_serialize_float);
-		m_sync_data_reader_hook.hook(18, &hooks::sync_reader_serialize_net_id);
-		m_sync_data_reader_hook.hook(19, &hooks::sync_reader_serialize_vec3);
-		m_sync_data_reader_hook.hook(21, &hooks::sync_reader_serialize_vec3_signed);
-		m_sync_data_reader_hook.hook(23, &hooks::sync_reader_serialize_array);
-
 		// The only instances in that vector at this point should only be the "lazy" hooks
 		// aka the ones that still don't have their m_target assigned
 		for (auto& detour_hook_helper : m_detour_hook_helpers)
@@ -50,12 +30,6 @@ namespace big
 
 		detour_hook_helper::add<hooks::run_script_threads>("SH", g_pointers->m_gta.m_run_script_threads);
 
-		detour_hook_helper::add<hooks::get_label_text>("GLT", g_pointers->m_gta.m_get_label_text);
-
-		detour_hook_helper::add<hooks::write_player_game_state_data_node>("WPGSDN", g_pointers->m_gta.m_write_player_game_state_data_node);
-
-		detour_hook_helper::add<hooks::gta_thread_start>("GTS", g_pointers->m_gta.m_gta_thread_start);
-		detour_hook_helper::add<hooks::gta_thread_kill>("GTK", g_pointers->m_gta.m_gta_thread_kill);
 		detour_hook_helper::add<hooks::init_native_tables>("INT", g_pointers->m_gta.m_init_native_tables);
 		detour_hook_helper::add<hooks::script_vm>("SVM", g_pointers->m_gta.m_script_vm);
 
@@ -73,32 +47,17 @@ namespace big
 		detour_hook_helper::add<hooks::can_apply_data>("CAD", g_pointers->m_gta.m_can_apply_data);
 
 		detour_hook_helper::add<hooks::get_network_event_data>("GNED", g_pointers->m_gta.m_get_network_event_data);
-		detour_hook_helper::add<hooks::write_player_gamer_data_node>("WPGDN", g_pointers->m_gta.m_write_player_gamer_data_node);
 
 		detour_hook_helper::add<hooks::invalid_mods_crash_detour>("IMCD", g_pointers->m_gta.m_invalid_mods_crash_detour);
 		detour_hook_helper::add<hooks::invalid_decal>("IDC", g_pointers->m_gta.m_invalid_decal_crash);
 		detour_hook_helper::add<hooks::task_parachute_object>("TPO", g_pointers->m_gta.m_task_parachute_object);
 		detour_hook_helper::add<hooks::task_ambient_clips>("TAC", g_pointers->m_gta.m_task_ambient_clips);
 
-		detour_hook_helper::add<hooks::update_presence_attribute_int>("UPAI", g_pointers->m_sc.m_update_presence_attribute_int);
-		detour_hook_helper::add<hooks::update_presence_attribute_string>("UPAS", g_pointers->m_sc.m_update_presence_attribute_string);
-
 		detour_hook_helper::add<hooks::handle_join_request>("HJR", g_pointers->m_gta.m_handle_join_request);
-
-		detour_hook_helper::add<hooks::sort_session_details>("SSD", g_pointers->m_gta.m_sort_session_details);
 
 		detour_hook_helper::add<hooks::send_chat_message>("SCM", g_pointers->m_gta.m_send_chat_message);
 
-		detour_hook_helper::add<hooks::process_matchmaking_find_response>("PMFR", g_pointers->m_gta.m_process_matchmaking_find_response);
-		detour_hook_helper::add<hooks::serialize_player_data_msg>("SJPD", g_pointers->m_gta.m_serialize_player_data_msg);
-
-		detour_hook_helper::add<hooks::serialize_join_request_message>("SJRM", g_pointers->m_gta.m_serialize_join_request_message);
-
-		detour_hook_helper::add<hooks::start_matchmaking_find_sessions>("SMFS", g_pointers->m_gta.m_start_matchmaking_find_sessions);
-
 		detour_hook_helper::add<hooks::broadcast_net_array>("BNA", g_pointers->m_gta.m_broadcast_net_array);
-
-		detour_hook_helper::add<hooks::send_session_matchmaking_attributes>("SSMA", g_pointers->m_gta.m_send_session_matchmaking_attributes);
 
 		detour_hook_helper::add<hooks::serialize_take_off_ped_variation_task>("STOPVT", g_pointers->m_gta.m_serialize_take_off_ped_variation_task);
 		detour_hook_helper::add<hooks::serialize_parachute_task>("SPT", g_pointers->m_gta.m_serialize_parachute_task);
@@ -113,37 +72,11 @@ namespace big
 
 		detour_hook_helper::add<hooks::receive_pickup>("RPI", g_pointers->m_gta.m_receive_pickup);
 
-		detour_hook_helper::add<hooks::write_player_camera_data_node>("WPCDN", g_pointers->m_gta.m_write_player_camera_data_node);
-
-		detour_hook_helper::add<hooks::send_player_card_stats>("SPCS", g_pointers->m_gta.m_send_player_card_stats);
-		detour_hook_helper::add<hooks::serialize_stats>("SS", g_pointers->m_gta.m_serialize_stats);
-
-		detour_hook_helper::add<hooks::write_player_creation_data_node>("WPCDN", g_pointers->m_gta.m_write_player_creation_data_node);
-		detour_hook_helper::add<hooks::write_player_appearance_data_node>("WPADN", g_pointers->m_gta.m_write_player_appearance_data_node);
-
-		detour_hook_helper::add<hooks::get_model_info>("GMI", g_pointers->m_gta.m_get_model_info);
-
-		detour_hook_helper::add<hooks::task_jump_constructor>("TJC", g_pointers->m_gta.m_taskjump_constructor);
-
-		detour_hook_helper::add<hooks::write_vehicle_proximity_migration_data_node>("WVPMDN", g_pointers->m_gta.m_write_vehicle_proximity_migration_data_node);
-
-		detour_hook_helper::add<hooks::netfilter_handle_message>("NHM", g_pointers->m_gta.m_netfilter_handle_message);
-
-		detour_hook_helper::add<hooks::log_error_message_box>("E0MBH", g_pointers->m_gta.m_error_message_box);
-
-		detour_hook_helper::add<hooks::send_non_physical_player_data>("SNPPD", g_pointers->m_gta.m_send_non_physical_player_data);
-
-		detour_hook_helper::add<hooks::update_timecycle_keyframe_data>("UTCKD", g_pointers->m_gta.m_timecycle_keyframe_override);
-
 		detour_hook_helper::add<hooks::allocate_memory_reliable>("AMR", g_pointers->m_gta.m_allocate_memory_reliable);
 
 		detour_hook_helper::add<hooks::render_ped>("RP", g_pointers->m_gta.m_render_ped);
 		detour_hook_helper::add<hooks::render_entity>("RE", g_pointers->m_gta.m_render_entity);
 		detour_hook_helper::add<hooks::render_big_ped>("RBP", g_pointers->m_gta.m_render_big_ped);
-
-		detour_hook_helper::add<hooks::read_bits_single>("RBS", g_pointers->m_gta.m_read_bits_single);
-
-		detour_hook_helper::add<hooks::game_skeleton_update>("GSU", g_pointers->m_gta.m_game_skeleton_update);
 
 		g_hooking = this;
 	}

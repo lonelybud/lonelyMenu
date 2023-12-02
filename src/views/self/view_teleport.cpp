@@ -9,10 +9,26 @@ namespace big
 		ImGui::Spacing();
 
 		components::command_button<"waypointtp">({}, "Waypoint");
-		ImGui::SameLine();
-		components::command_button<"objectivetp">({}, "Objective");
 
-		ImGui::SeparatorText("Movement");
+		ImGui::SeparatorText("Direction");
+
+		ImGui::Spacing();
+
+		static float increment = 1;
+		ImGui::SetNextItemWidth(100);
+		ImGui::InputFloat("Teleport forward distance", &increment);
+		ImGui::SameLine();
+		components::button("Tel. Horizontal", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, increment, 0);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+		ImGui::SameLine();
+		components::button("Tel. Vertical", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, 0, increment);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+
+		ImGui::SeparatorText("Coordinates");
 
 		ImGui::Spacing();
 

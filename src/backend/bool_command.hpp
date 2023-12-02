@@ -1,20 +1,26 @@
 #pragma once
 #include "command.hpp"
+#include "fiber_pool.hpp"
 
 namespace big
 {
+	class bool_command;
+
+	inline std::vector<bool_command*> g_bool_commands;
+
 	class bool_command : public command
 	{
-		bool m_last_enabled = false;
-
 	protected:
 		bool& m_toggle;
-		bool m_show_notify;
-		virtual void execute(const command_arguments& args, const std::shared_ptr<command_context> ctx = std::make_shared<default_command_context>()) override;
-		virtual std::optional<command_arguments> parse_args(const std::vector<std::string>& args, const std::shared_ptr<command_context> ctx = std::make_shared<default_command_context>()) override;
 
 	public:
-		bool_command(const std::string& name, const std::string& label, const std::string& description, bool& toggle, bool show_notify = true);
+		bool_command(const std::string& name, const std::string& label, const std::string& description, bool& toggle) :
+		    command(name, label, description),
+		    m_toggle(toggle)
+		{
+			g_bool_commands.push_back(this);
+		}
+
 		inline bool& is_enabled()
 		{
 			return m_toggle;
@@ -22,11 +28,12 @@ namespace big
 
 		virtual void on_enable(){};
 		virtual void on_disable(){};
-		virtual void refresh();
 
-		virtual void enable();
-		virtual void disable();
+		virtual void refresh()
+		{
+			g_fiber_pool->queue_job([this] {
+				m_toggle ? on_enable() : on_disable();
+			});
+		}
 	};
-
-	inline std::vector<bool_command*> g_bool_commands;
 }

@@ -16,15 +16,6 @@ namespace big
 		ImFont* font_small     = nullptr;
 		ImFont* font_icon      = nullptr;
 
-		struct ingame_overlay_indicators
-		{
-			bool show_player_godmode  = true;
-			bool show_vehicle_godmode = true;
-			bool show_ammo            = true;
-
-			NLOHMANN_DEFINE_TYPE_INTRUSIVE(ingame_overlay_indicators, show_player_godmode, show_vehicle_godmode, show_ammo)
-		} ingame_overlay_indicators{};
-
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(g_window_t, background_color, text_color, button_color, frame_color, gui_scale, ingame_overlay_indicators)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(g_window_t, background_color, text_color, button_color, frame_color, gui_scale)
 	} g_window{};
 }

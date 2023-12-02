@@ -2,14 +2,9 @@
 
 #include "all_scripts.hpp"
 #include "am_launcher.hpp"
-#include "carmod_shop.hpp"
-#include "creator.hpp"
 #include "crossmap.hpp"
 #include "freemode.hpp"
 #include "gta_util.hpp"
-#include "network_session_host.hpp"
-#include "shop_controller.hpp"
-#include "tunables.hpp"
 
 #include <script/scrProgram.hpp>
 #include <script/scrProgramTable.hpp>
@@ -108,44 +103,15 @@ namespace big
 	{
 		add_native_detour(0x1CA59E306ECB80A5, all_scripts::NETWORK_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
 		add_native_detour(0xD1110739EEADB592, all_scripts::NETWORK_TRY_TO_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
-		add_native_detour(0x158C16F5E4CF41F8, all_scripts::RETURN_TRUE); // bypass casino country restrictions
-		add_native_detour(0xE679E3E06E363892, all_scripts::NETWORK_OVERRIDE_CLOCK_TIME);
-		add_native_detour(0x6B76DC1F3AE6E6A3, all_scripts::SET_ENTITY_HEALTH);
-		add_native_detour(0x697157CED63F18D4, all_scripts::APPLY_DAMAGE_TO_PED);
 		add_native_detour(0x40EB1EFD921822BC, all_scripts::DO_NOTHING); // SECURITY::REGISTER_SCRIPT_VARIABLE
 		add_native_detour(0x340A36A700E99699, all_scripts::DO_NOTHING); // SECURITY::UNREGISTER_SCRIPT_VARIABLE
 		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING); // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
 
 		add_native_detour(RAGE_JOAAT("shop_controller"), 0x34616828CD07F1A1, all_scripts::RETURN_FALSE); // prevent exploit reports
-		add_native_detour(RAGE_JOAAT("shop_controller"), 0xDC38CC1E35B6A5D7, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
-
-		add_native_detour(RAGE_JOAAT("carmod_shop"), 0x767FBC2AC802EF3D, carmod_shop::STAT_GET_INT);
-		add_native_detour(RAGE_JOAAT("carmod_shop"), 0xB3271D7AB655B441, carmod_shop::STAT_SET_INT);
 
 		add_native_detour(RAGE_JOAAT("freemode"), 0x2C83A9DA6BFFC4F9, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("freemode"), 0x5E9564D8246B909A, freemode::IS_PLAYER_PLAYING);
-		add_native_detour(RAGE_JOAAT("freemode"), 0x5D10B3795F3FC886, freemode::NETWORK_HAS_RECEIVED_HOST_BROADCAST_DATA);
-
-		add_native_detour(RAGE_JOAAT("fmmc_launcher"), 0x5D10B3795F3FC886, freemode::NETWORK_HAS_RECEIVED_HOST_BROADCAST_DATA);
-		add_native_detour(RAGE_JOAAT("maintransition"), 0x6F3D4ED9BEE4E61D, network::NETWORK_SESSION_HOST);
 
 		add_native_detour(RAGE_JOAAT("am_launcher"), 0xB8BA7F44DF1575E1, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
-		add_native_detour(RAGE_JOAAT("am_launcher"), 0x5D10B3795F3FC886, freemode::NETWORK_HAS_RECEIVED_HOST_BROADCAST_DATA);
-
-		add_native_detour(RAGE_JOAAT("fm_race_creator"), 0x2C83A9DA6BFFC4F9, creator::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("fm_capture_creator"), 0x2C83A9DA6BFFC4F9, creator::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("fm_deathmatch_creator"), 0x2C83A9DA6BFFC4F9, creator::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("fm_lts_creator"), 0x2C83A9DA6BFFC4F9, creator::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-
-		add_native_detour(RAGE_JOAAT("fm_race_creator"), 0x9F47B058362C84B5, creator::GET_ENTITY_MODEL);
-		add_native_detour(RAGE_JOAAT("fm_capture_creator"), 0x9F47B058362C84B5, creator::GET_ENTITY_MODEL);
-		add_native_detour(RAGE_JOAAT("fm_deathmatch_creator"), 0x9F47B058362C84B5, creator::GET_ENTITY_MODEL);
-		add_native_detour(RAGE_JOAAT("fm_lts_creator"), 0x9F47B058362C84B5, creator::GET_ENTITY_MODEL);
-
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x4EDE34FBADD967A6, tunables::WAIT);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x40FCE03E50E8DBE8, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x697F508861875B42, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x972BC203BBC4C4D5, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)

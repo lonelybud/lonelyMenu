@@ -1,151 +1,35 @@
-#include "core/data/vehicle.hpp"
-#include "fiber_pool.hpp"
-#include "natives.hpp"
-#include "services/gta_data/gta_data_service.hpp"
 #include "services/mobile/mobile_service.hpp"
-#include "services/notifications/notification_service.hpp"
-#include "services/vehicle_preview/vehicle_preview.hpp"
-#include "util/vehicle.hpp"
+#include "util/mobile.hpp"
 #include "views/view.hpp"
 
 namespace big
 {
 	void view::pv()
 	{
-		ImGui::SetWindowSize({0.f, (float)*g_pointers->m_gta.m_resolution_y}, ImGuiCond_Always);
+		static bool delivering_veh;
 
-		static int selected_class = -1;
-		const auto& class_arr     = g_gta_data_service->vehicle_classes();
+		if (delivering_veh && components::button("Reset delivering state"))
+			delivering_veh = false;
 
-		ImGui::SetNextItemWidth(300.f);
-		if (ImGui::BeginCombo("Vehicle Class", selected_class == -1 ? "All" : class_arr[selected_class].c_str()))
-		{
-			if (ImGui::Selectable("All", selected_class == -1))
-			{
-				selected_class = -1;
-			}
+		components::button("Refresh", [] {
+			g_mobile_service->register_vehicles();
+		});
 
-			for (int i = 0; i < class_arr.size(); i++)
-			{
-				if (ImGui::Selectable(class_arr[i].c_str(), selected_class == i))
-				{
-					selected_class = i;
-				}
-
-				if (selected_class == i)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}
-
-		ImGui::SetNextItemWidth(300.f);
-		std::string garage_display = g_vehicle.garage.empty() ? "All" : g_vehicle.garage;
-		if (ImGui::BeginCombo("Garage", garage_display.c_str()))
-		{
-			if (ImGui::Selectable("All", g_vehicle.garage.empty()))
-			{
-				g_vehicle.garage.clear();
-			}
-			for (auto garage : g_mobile_service->garages())
-			{
-				if (ImGui::Selectable(garage.c_str(), garage == g_vehicle.garage))
-				{
-					g_vehicle.garage = garage;
-				}
-				if (garage == g_vehicle.garage)
-				{
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-
-			ImGui::EndCombo();
-		}
-
-		static char search[64];
-
-		ImGui::SetNextItemWidth(300.f);
-		components::input_text_with_hint("Model Name", "Search", search, sizeof(search), ImGuiInputTextFlags_None);
-
-		g_mobile_service->refresh_personal_vehicles();
-
-		auto num_of_rows = 0;
-
-		std::set<int> indexes_to_use;
-
-		if (!g_mobile_service->personal_vehicles().empty())
-		{
-			std::string lower_search = search;
-			std::transform(lower_search.begin(), lower_search.end(), lower_search.begin(), tolower);
-
-			for (const auto& it : g_mobile_service->personal_vehicles())
-			{
-				const auto& label        = it.first;
-				const auto& personal_veh = it.second;
-				const auto& item         = g_gta_data_service->vehicle_by_hash(personal_veh->get_hash());
-
-				std::string vehicle_class        = item.m_vehicle_class;
-				std::string display_name         = label;
-				std::string display_manufacturer = item.m_display_manufacturer;
-				std::transform(display_name.begin(), display_name.end(), display_name.begin(), ::tolower);
-				std::transform(display_manufacturer.begin(), display_manufacturer.end(), display_manufacturer.begin(), ::tolower);
-
-				if ((selected_class == -1 || class_arr[selected_class] == vehicle_class)
-				    && (display_name.find(lower_search) != std::string::npos || display_manufacturer.find(lower_search) != std::string::npos))
-				{
-					if (personal_veh->is_blacklisted_vehicle() || !personal_veh->is_in_selected_garage())
-					{
-						continue;
-					}
-					indexes_to_use.insert(personal_veh->get_id());
-				}
-			}
-			num_of_rows = indexes_to_use.size();
-		}
-		else
-		{
-			num_of_rows = 2;
-		}
-
-		static const auto over_30 = (30 * ImGui::GetTextLineHeightWithSpacing() + 2);
-		const auto box_height = num_of_rows <= 30 ? (num_of_rows * ImGui::GetTextLineHeightWithSpacing() + 2) : over_30;
-		if (ImGui::BeginListBox("###personal_veh_list", {300, box_height}))
+		if (!delivering_veh && ImGui::BeginListBox("###personal_veh_list", {200, 300}))
 		{
 			if (g_mobile_service->personal_vehicles().empty())
-			{
 				ImGui::Text("No personal vehicles found, \nare you online?");
-			}
 			else
-			{
-				std::string lower_search = search;
-				std::transform(lower_search.begin(), lower_search.end(), lower_search.begin(), tolower);
-
 				for (const auto& it : g_mobile_service->personal_vehicles())
 				{
 					const auto& personal_veh = it.second;
-
-					if (indexes_to_use.contains(personal_veh->get_id()))
-					{
-						const auto& label = it.first;
-
-						ImGui::PushID('v' << 24 & personal_veh->get_id());
-						components::selectable(label, false, [&personal_veh] {
-							strcpy(search, "");
+					if (!personal_veh->is_blacklisted_vehicle())
+						components::selectable(it.first, false, [&personal_veh] {
+							delivering_veh = true;
 							personal_veh->summon();
-
-							g_vehicle_preview.clear();
+							delivering_veh = false;
 						});
-						ImGui::PopID();
-
-						if (g_vehicle_preview.is_camera_prepared && !ImGui::IsAnyItemHovered())
-							g_vehicle_preview.clear();
-						else if (g_vehicle.preview_vehicle && ImGui::IsItemHovered())
-							g_vehicle_preview.preview_personal_veh(personal_veh);
-					}
 				}
-			}
 
 			ImGui::EndListBox();
 		}

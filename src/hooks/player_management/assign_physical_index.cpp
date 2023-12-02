@@ -1,6 +1,6 @@
 #include "backend/player_command.hpp"
+#include "core/data/session.hpp"
 #include "core/settings/notifications.hpp"
-#include "core/settings/session.hpp"
 #include "gui.hpp"
 #include "hooking.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -9,9 +9,6 @@
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 #include "util/player.hpp"
-#include "util/session.hpp"
-
-#include <network/Network.hpp>
 
 namespace big
 {
@@ -27,13 +24,15 @@ namespace big
 	{
 		const auto* net_player_data = player->get_net_data();
 
-		auto rockstar_id = net_player_data ? net_player_data->m_gamer_handle.m_rockstar_id : 0;
-		auto player_name = net_player_data ? net_player_data->m_name : "";
-		auto host_token  = net_player_data ? net_player_data->m_host_token : 0;
+		auto rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
+		auto player_name = net_player_data->m_name;
+		auto host_token  = net_player_data->m_host_token;
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
 			g_player_service->player_leave(player);
+			g_session.next_host_list.delete_plyr(player->m_player_id);
+			g_session.next_host_list.filter_current_host();
 
 			if (net_player_data)
 			{
@@ -49,6 +48,14 @@ namespace big
 		const auto result = g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 
 		g_player_service->player_join(player);
+
+		g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
+		g_session.next_host_list.filter_current_host();
+		if (host_token < g_session.smallest_host_token)
+		{
+			g_session.smallest_host_token       = host_token;
+			g_session.smallest_host_token_owner = player_name;
+		}
 
 		if (net_player_data)
 		{
@@ -70,7 +77,7 @@ namespace big
 								if (g_player_service->get_self()->is_host())
 								{
 									LOG(WARNING) << str;
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 									return;
 								}
 
@@ -78,10 +85,12 @@ namespace big
 									LOG(WARNING) << str;
 								else
 									g_notification_service->push_warning("Carefull", str, true);
+
+								return;
 							}
 							else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
 							{
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr, {});
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 								g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry to locked session.", player_name), true);
 								return;
 							}
@@ -92,7 +101,7 @@ namespace big
 					}
 				});
 			else
-				LOG(INFO) << "Player joined async job skipped for player " << player_name;
+				LOG(INFO) << "g_fiber_pool->queue_job skipped for you";
 		}
 
 		return result;

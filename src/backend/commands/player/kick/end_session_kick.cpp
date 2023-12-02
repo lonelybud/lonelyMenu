@@ -11,12 +11,7 @@ namespace big
 	{
 		using player_command::player_command;
 
-		virtual CommandAccessLevel get_access_level() override
-		{
-			return CommandAccessLevel::TOXIC;
-		}
-
-		virtual void execute(player_ptr player, const command_arguments& _args, const std::shared_ptr<command_context> ctx) override
+		virtual void execute(player_ptr player) override
 		{
 			if (!player)
 				return;
@@ -34,5 +29,5 @@ namespace big
 		}
 	};
 
-	end_session_kick g_end_session_kick("endkick", "End Session Kick", "This may take around 10 seconds to kick the player", 0, false);
+	end_session_kick g_end_session_kick("endkick", "End Session Kick", "This may take around 10 seconds to kick the player");
 }

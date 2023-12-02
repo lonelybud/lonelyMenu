@@ -10,12 +10,7 @@ namespace big
 	{
 		using player_command::player_command;
 
-		virtual CommandAccessLevel get_access_level() override
-		{
-			return CommandAccessLevel::TOXIC;
-		}
-
-		virtual void execute(player_ptr player, const command_arguments& _args, const std::shared_ptr<command_context> ctx) override
+		virtual void execute(player_ptr player) override
 		{
 			if (!player)
 				return;
@@ -27,12 +22,11 @@ namespace big
 			msg.write_message(rage::eNetMessage::MsgRadioStationSyncRequest);
 			auto msg_id = player->get_session_player()->m_msg_id;
 
-			for (int j = 0; j < 2000; j++)
-			{
+			// for (int j = 0; j < 2000; j++)
+			for (int j = 0; j < 200; j++)
 				msg.send(msg_id);
-			}
 		}
 	};
 
-	oom_kick g_oom_kick("oomkick", "OOM Kick", "Causes the player to be kicked with an alert. This kick has a high chance of backfiring in its current state", 0, false);
+	oom_kick g_oom_kick("oomkick", "OOM Kick", "sends 200 msgs. Kick with alert. Chance of backfiring in its curr. state");
 }

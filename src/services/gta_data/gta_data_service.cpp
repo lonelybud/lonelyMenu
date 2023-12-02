@@ -10,7 +10,6 @@
 #include "util/misc.hpp"
 #include "util/model_info.hpp"
 #include "util/protection.hpp"
-#include "util/session.hpp"
 #include "util/vehicle.hpp"
 #include "yim_fipackfile.hpp"
 

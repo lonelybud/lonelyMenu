@@ -2,8 +2,7 @@
 
 #include "backend/player_command.hpp"
 #include "core/data/infractions.hpp"
-#include "core/data/network.hpp"
-#include "core/settings/session.hpp"
+#include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gui.hpp"
 #include "script.hpp"
@@ -39,7 +38,12 @@ namespace big
 			}
 
 			if (infraction == Infraction::TRIED_CRASH_PLAYER)
+			{
 				++player->crash_count;
+
+				if (player->crash_count > 20)
+					kick_player = true;
+			}
 
 			auto str = std::vformat(m_notify_message, std::make_format_args(name));
 
@@ -77,44 +81,8 @@ namespace big
 					bad_players_nm::add_player({name, rockstar_id, true, player->is_spammer});
 				}
 
-				if (is_modder)
-				{
-					if (g_player_service->get_self()->is_host())
-					{
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-						return;
-					}
-					else
-						g_fiber_pool->queue_job([player, name] {
-							// // man this is heavy!
-							// dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(player, {});
-
-							// try to become host
-							if (g_session.force_session_host && g_network.auto_kick_host_when_attacked)
-							{
-								g_notification_service->push_success("Auto kicking host", std::format(".. to tackle {}", name), true);
-
-								// kick current host
-								for (auto& plyr : g_player_service->players())
-									if (plyr.second->is_host())
-									{
-										if (plyr.second->id() != self::id)
-											dynamic_cast<player_command*>(command::get(RAGE_JOAAT("multikick")))->call(plyr.second, {});
-										return;
-									}
-
-								// try to host kick attacker if possible
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-								for (int i = 0; i < 19; i++)
-								{
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player, {});
-									script::get_current()->yield(50ms);
-								}
-							}
-						});
-				}
-				else
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("oomkick")))->call(player, {});
+				if (g_player_service->get_self()->is_host())
+					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
 			}
 		}
 	}

@@ -1,9 +1,8 @@
+#include "core/scr_globals.hpp"
 #include "gta/net_array.hpp"
 #include "hooking.hpp"
-#include "script_global.hpp"
-#include "script_local.hpp"
+#include "network/CNetGamePlayer.hpp"
 #include "services/players/player_service.hpp"
-#include "util/scripts.hpp"
 
 #include <script/globals/GlobalPlayerBD.hpp>
 
@@ -19,7 +18,7 @@ namespace big
 		bool need_to_use_end_session_kick = g_player_service->m_player_to_use_end_session_kick
 		    && target->m_player_id == g_player_service->m_player_to_use_end_session_kick->get()->id()
 		    && _this->m_array == scr_globals::gsbd.as<void*>();
-	
+
 		if (need_to_use_end_session_kick)
 		{
 			orig_gsbd                          = *scr_globals::gsbd.as<int*>();

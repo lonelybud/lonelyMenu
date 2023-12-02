@@ -58,22 +58,14 @@ namespace big::functions
 
 	using trigger_script_event = void (*)(int event_group, int64_t* args, int arg_count, int player_bits);
 
-
 	using increment_stat_event = bool (*)(uint64_t net_event_struct, int64_t sender, int64_t a3);
 
 	using ptr_to_handle = Entity (*)(void*);
 	using handle_to_ptr = rage::CDynamicEntity* (*)(Entity);
 
-	using set_gravity_level					= void(*)(int level);
-
-	using check_chat_profanity              = int(__int64 chat_type, const char* input, const char** output);
-	using write_player_game_state_data_node = bool (*)(rage::netObject* plr, CPlayerGameStateDataNode* node);
-
 	using get_gameplay_cam_coords = Vector3 (*)();
 
 	using get_screen_coords_for_world_coords = bool (*)(float* world_coords, float* out_x, float* out_y);
-
-	using give_pickup_rewards = void (*)(int players, uint32_t hash);
 
 	// Bitbuffer read/write START
 	using read_bitbuf_dword  = bool (*)(rage::datBitBuffer* buffer, PVOID read, int bits);
@@ -93,15 +85,9 @@ namespace big::functions
 	// Received Event Signatures END
 
 	//Sync signatures START
-	using get_sync_type_info = const char* (*)(uint16_t sync_type, char a2);
-
 	using get_sync_tree_for_type = rage::netSyncTree* (*)(CNetworkObjectMgr* mgr, uint16_t sync_type);
 
 	using get_net_object = rage::netObject* (*)(CNetworkObjectMgr* mgr, int16_t id, bool can_delete_be_pending);
-
-	using get_net_object_for_player = rage::netObject* (*)(CNetworkObjectMgr*, int16_t, CNetGamePlayer*, bool);
-
-	using read_bitbuffer_into_sync_tree = void (*)(rage::netSyncTree* tree, uint64_t flag, uint32_t flag2, rage::datBitBuffer* buffer, uint64_t netLogStub);
 	//Sync signatures END
 
 	using reset_network_complaints = void (*)(CNetComplaintMgr* mgr);
@@ -114,17 +100,7 @@ namespace big::functions
 	using fipackfile_unmount       = bool (*)(const char* mount_point);
 	using fipackfile_close_archive = void (*)(rage::fiDevice* this_);
 
-	using get_gamer_online_state = bool (*)(int profile_index, rage::rlGamerHandle* handles, uint32_t count, int* online_state, rage::rlTaskStatus* status);
-	using start_get_session_by_gamer_handle = bool (*)(int profile_index, rage::rlGamerHandle* handles, int count, rage::rlSessionByGamerTaskResult* result, int unk, bool* success, rage::rlTaskStatus* state);
-	using start_matchmaking_find_sessions = bool (*)(int profile_index, int available_slots, NetworkGameFilterMatchmakingComponent* m_filter, unsigned int max_sessions, rage::rlSessionInfo* result_sessions, int* result_session_count, rage::rlTaskStatus* state);
 	using start_get_presence_attributes = bool (*)(int profile_index, rage::rlScHandle* handle, int num_handles, rage::rlQueryPresenceAttributesContext** contexts, int count, rage::rlScTaskStatus* state);
-	using join_session_by_info = bool (*)(Network* network, rage::rlSessionInfo* info, int unk, int flags, rage::rlGamerHandle* handles, int handlecount);
-
-	using invite_player_by_gamer_handle = bool(*)(uint64_t config, rage::rlGamerHandle* handle, int unk1, int unk2, int unk3, int unk4);
-	using add_friend_by_gamer_handle	= void(*)(rage::rlGamerHandle* handle, const char* unk);
-	using show_profile_by_gamer_handle	= void(*)(rage::rlGamerHandle* handle);
-
-	using generate_uuid = bool (*)(uint64_t* uuid);
 
 	using get_vehicle_gadget_array_size = int (*)(eVehicleGadgetType type);
 
@@ -132,71 +108,19 @@ namespace big::functions
 
 	using queue_packet = bool (*)(rage::netConnectionManager* mgr, int msg_id, void* data, int size, int flags, void* unk);
 
-	using generate_uuid = bool (*)(uint64_t* uuid);
-
-	using send_chat_message = bool (*)(int64_t* send_chat_ptr, rage::rlGamerInfo* gamer_info, char* message, bool is_team);
-
-	using send_network_damage = void (*)(rage::CEntity* source, rage::CEntity* target, rage::fvector3* position, int hit_component, bool override_default_damage, int weapon_type, float override_damage, int tire_index, int suspension_index, int flags, uint32_t action_result_hash, int16_t action_result_id, int action_unk, bool hit_weapon, bool hit_weapon_ammo_attachment, bool silenced, bool unk, rage::fvector3* impact_direction);
-	using request_ragdoll = void (*)(uint16_t object_id);
-	using request_control = void (*)(rage::netObject* net_object);
-
 	using get_connection_peer = rage::netConnectionPeer* (*)(rage::netConnectionManager* manager, int peer_id);
-	using send_remove_gamer_cmd = void (*)(rage::netConnectionManager* net_connection_mgr, rage::netPeerAddress* adde, int connection_id, rage::snMsgRemoveGamersFromSessionCmd* cmd, int flags);
-	using handle_remove_gamer_cmd = void* (*)(rage::snSession* session, rage::snPlayer* origin, rage::snMsgRemoveGamersFromSessionCmd* cmd);
 
 	using script_vm = rage::eThreadState (*)(uint64_t* stack, int64_t** scr_globals, rage::scrProgram* program, rage::scrThreadContext* ctx);
 
-	using encode_session_info = bool (*)(rage::rlSessionInfo* info, char* buffer, int buffer_size, int* bytes_written);
-	using decode_session_info = bool (*)(rage::rlSessionInfo* out_info, char* buffer, int* bytes_read);
-	using decode_peer_info    = bool (*)(rage::rlGamerInfoBase* info, char* buffer, int* bytes_read);
-
-	using load_cloud_file          = void (*)(sCloudFile** out_cloud_file, char* buffer, int size, const char* reason);
-	using set_as_active_cloud_file = void (*)(datafile_commands::SveFileObject* object, sCloudFile** file);
-	using save_json_data = char* (*)(datafile_commands::SveFileObject* object, int* out_length, const char* reason);
-
-	using sync_network_time = bool (*)(rage::netConnectionManager* mgr, rage::netPeerAddress* addr, int connection_id, rage::netTimeSyncMsg* msg, int flags);
 	using send_packet = bool (*)(rage::netConnectionManager* mgr, rage::netPeerAddress* adde, int connection_id, void* data, int size, int flags);
-	using connect_to_peer = bool (*)(rage::netConnectionManager* mgr, rage::rlGamerInfoBase* gamer_info, rage::snConnectToPeerTaskData* data, rage::snConnectToPeerTaskResult* result, rage::rlTaskStatus* status);
 
-	using clear_ped_tasks_network = void (*)(CPed* ped, bool immediately);
-
-	using get_next_carriage      = void* (*)(void* carriage);
 	using get_entity_attached_to = rage::CDynamicEntity* (*)(rage::CDynamicEntity* entity);
 
-	using migrate_object = void (*)(CNetGamePlayer* player, rage::netObject* object, int type);
-
-	using handle_chat_message = void (*)(void* chat_data, void*, rage::rlGamerHandle* handle, const char* text, bool is_team);
-
-	using update_language = void (*)(bool);
-
 	using get_host_array_handler_by_index = rage::netArrayHandlerBase* (*)(CGameScriptHandlerNetComponent* component, int index);
-
-	using get_title_caption_error_message_box = const wchar_t* (*)(rage::joaat_t joaated_error_code);
-
-	using update_presence_attribute_int = void (*)(void* presence_data, int profile_index, char* attr, uint64_t value);
-	using update_presence_attribute_string = void (*)(void* presence_data, int profile_index, char* attr, char* value);
 
 	using connection_manager_try_free_memory = void (*)(rage::netConnectionManager* mgr);
 	using remove_message_from_queue          = void (*)(rage::netMessageQueue* queue, rage::netQueuedMessage* message);
 	using remove_message_from_unacked_reliables = void (*)(void* list, uint16_t* unk);
 
 	using remove_reference = void (*)(rage::fwRefAwareBase* object, void* reference);
-
-	using activate_special_ability = void (*)(CVehicle* vehicle, int special_ability_type);
-	using set_wanted_level = void (*)(CNetGamePlayer* player, int wanted_level, int unk, std::uint8_t unk_player_id);
-
-	using check_event_queue          = bool (*)(rage::netEventMgr* mgr, bool free);
-	using get_new_pool_item          = void* (*)(GenericPool* pool);
-	using construct_door_break_event = CDoorBreakEvent* (*)(CDoorBreakEvent* _this);
-	using queue_network_event        = void (*)(rage::netEventMgr* mgr, rage::netGameEvent* event);
-
-	using delete_ped     = bool (*)(CPed* ped);
-	using delete_vehicle = bool (*)(CVehicle* veh);
-	using delete_object  = bool (*)(CObject* object, bool unk);
-
-	using decal_manager_remove = void(*)(PVOID manager, rage::fwEntity*, DWORD a3, DWORD64 a4, DWORD ignore_bitset);
-
-	using remove_player_from_sender_list = bool(*)(void* list, uint64_t* rockstar_id);
-
-	using get_ped_bone = bool(*)(CPed* ped_ptr, rage::fvector4& output, PedBones bone);
 }

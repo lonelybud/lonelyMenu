@@ -10,28 +10,16 @@ namespace big
 		SELF,
 		WEAPONS,
 		TELEPORT,
-		CUSTOM_TELEPORT,
 		OUTFIT_EDITOR,
-		ANIMATIONS,
-		SCENARIOS,
-		CASINO,
-		PTFX_EFFECTS,
 
 		VEHICLE,
 		LSC,
 		SPAWN_VEHICLE,
-
-		WORLD,
-		SPAWNED_VEHICLES,
-		SPAWN_OBJECTS,
-
+		PV,
 		NETWORK,
-		SESSION_BROWSER,
 		BAD_PLAYERS,
 		CHAT,
-
 		SETTINGS,
-		CONTEXT_MENU_SETTINGS,
 		ESP_SETTINGS,
 		GTA_CACHE_SETTINGS,
 		GUI_SETTINGS,
@@ -63,11 +51,8 @@ namespace big
 		            view::self,
 		            {
 		                {tabs::WEAPONS, {"Weapons", view::weapons}},
-		                {tabs::TELEPORT, {"Teleport", view::teleport, {{tabs::CUSTOM_TELEPORT, {"Custom Teleport", view::custom_teleport}}}}},
+		                {tabs::TELEPORT, {"Teleport", view::teleport}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
-		                {tabs::ANIMATIONS, {"Animations", view::animations}},
-		                {tabs::SCENARIOS, {"Scenarios", view::scenarios}},
-		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
 		            },
 		        },
 		    },
@@ -79,18 +64,7 @@ namespace big
 		            {
 		                {tabs::LSC, {"LSC", view::lsc}},
 		                {tabs::SPAWN_VEHICLE, {"Spawn Vehicle", view::spawn_vehicle}},
-		            },
-		        },
-		    },
-		    {
-		        tabs::WORLD,
-		        {
-		            "World",
-		            view::world,
-		            {
-		                {tabs::CASINO, {"Casino", view::casino}},
-		                {tabs::SPAWNED_VEHICLES, {"Spawned Vehicles", view::spawned_vehicles}},
-		                {tabs::SPAWN_OBJECTS, {"Spawn Objects", view::spawn_objects}},
+		                {tabs::PV, {"Personal Vehicles", view::pv}},
 		            },
 		        },
 		    },
@@ -100,7 +74,6 @@ namespace big
 		            "Network",
 		            view::network,
 		            {
-		                {tabs::SESSION_BROWSER, {"Session Browser", view::session_browser}},
 		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
 		                {tabs::CHAT, {"Chat", view::chat}},
 		            },

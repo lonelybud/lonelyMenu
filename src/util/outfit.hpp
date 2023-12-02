@@ -1,5 +1,5 @@
 #pragma once
-#include "core/scr_globals.hpp"
+#include "natives.hpp"
 
 namespace big::outfit
 {
@@ -15,67 +15,117 @@ namespace big::outfit
 
 	struct components_t
 	{
-		std::vector<outfit_t> items = {{0, "HEAD"},
-		    {1, "BERD"},
-		    {2, "HAIR"},
-		    {3, "UPPR"},
-		    {4, "LOWR"},
-		    {5, "HAND"},
-		    {6, "FEET"},
-		    {7, "TEEF"},
-		    {8, "ACCS"},
-		    {9, "TASK"},
-		    {10, "DECL"},
-		    {11, "JBIB"}};
+		std::vector<outfit_t> items = {
+		    // {0, "Face"},
+		    {1, "Mask"},
+		    // {2, "Hair"},
+		    {3, "Torso"},
+		    {4, "Leg"},
+		    // {5, "Parachute / bag"},
+		    {6, "Shoes"},
+		    {7, "Accessory"},
+		    {8, "Undershirt"},
+		    // {9, "Kevlar"},
+		    {10, "Badge"},
+		    {11, "Torso 2"},
+		};
 	};
 
 	struct props_t
 	{
-		std::vector<outfit_t> items = {{0, "HEAD"},
-		    {1, "GLASSES"},
-		    {2, "EARS"},
-		    {6, "WATCH"},
-		    {7, "WRIST"}};
+		std::vector<outfit_t> items = {
+		    {0, "Hats"},
+		    {1, "Glasses"},
+		    {2, "Ears"},
+		    {6, "Watches"},
+		    {7, "Bracelets"},
+		};
 	};
 
-	inline void check_bounds_drawable(outfit_t* item)
+	bool get_item(const std::vector<outfit_t>& items, int id)
 	{
-		if(item->drawable_id > item->drawable_id_max)
-			item->drawable_id = item->drawable_id_max;
-		if(item->drawable_id < -1)
-			item->drawable_id = -1;
+		return std::find_if(items.begin(), items.end(), [id](const outfit_t& item) {
+			return item.id == id;
+		});
 	}
 
-	inline void check_bounds_texture(outfit_t* item)
+	inline void apply_outfit(nlohmann::json j)
 	{
-		if(item->texture_id > item->texture_id_max)
-			item->texture_id = item->texture_id_max;
-		if(item->texture_id < -1)
-			item->texture_id = -1;
+		outfit::components_t components;
+		outfit::props_t props;
+
+		for (auto& item : j["components"].items())
+		{
+			std::stringstream ss(item.key());
+			int id = 0;
+			ss >> id;
+
+			if (auto it = outfit::get_item(components, id); it != components.end())
+			{
+				it->drawable_id = item.value()["drawable_id"];
+				it->texture_id  = item.value()["texture_id"];
+			}
+		}
+		for (auto& item : j["props"].items())
+		{
+			std::stringstream ss(item.key());
+			int id = 0;
+			ss >> id;
+
+			if (auto it = outfit::get_item(props, id); it != props.end())
+			{
+				it->drawable_id = item.value()["drawable_id"];
+				it->texture_id  = item.value()["texture_id"];
+			}
+		}
+
+		set_self_comps_props(components, props);
 	}
 
-	inline char* get_slot_name_address(int slot)
+	inline void save_outfit(std::string filename)
 	{
-		return scr_globals::stats.at(0, 5568).at(681).at(2460).at(slot, 8).as<char*>();
-	}
+		outfit::components_t components;
+		outfit::props_t props;
+		auto model = ENTITY::GET_ENTITY_MODEL(self::ped);
 
-	inline int* get_component_drawable_id_address(int slot, int id)
-	{
-		return scr_globals::stats.at(0, 5568).at(681).at(1336).at(slot, 13).at(id, 1).as<int*>();
-	}
+		for (auto& item : components.items)
+		{
+			item.drawable_id = PED::GET_PED_DRAWABLE_VARIATION(self::ped, item.id);
+			item.texture_id  = PED::GET_PED_TEXTURE_VARIATION(self::ped, item.id);
+		}
 
-	inline int* get_component_texture_id_address(int slot, int id)
-	{
-		return scr_globals::stats.at(0, 5568).at(681).at(1610).at(slot, 13).at(id, 1).as<int*>();
-	}
+		for (auto& item : props.items)
+		{
+			item.drawable_id = PED::GET_PED_PROP_INDEX(self::ped, item.id, 1);
+			item.texture_id  = PED::GET_PED_PROP_TEXTURE_INDEX(self::ped, item.id);
+		}
 
-	inline int* get_prop_drawable_id_address(int slot, int id)
-	{
-		return scr_globals::stats.at(0, 5568).at(681).at(1884).at(slot, 10).at(id, 1).as<int*>();
-	}
+		nlohmann::json j;
+		nlohmann::json j_components;
+		nlohmann::json j_props;
 
-	inline int* get_prop_texture_id_address(int slot, int id)
-	{
-		return scr_globals::stats.at(0, 5568).at(681).at(2095).at(slot, 10).at(id, 1).as<int*>();
+		for (auto& item : components.items)
+		{
+			nlohmann::json tmp;
+			tmp["drawable_id"]                    = item.drawable_id;
+			tmp["texture_id"]                     = item.texture_id;
+			j_components[std::to_string(item.id)] = tmp;
+		}
+
+		for (auto& item : props.items)
+		{
+			nlohmann::json tmp;
+			tmp["drawable_id"]               = item.drawable_id;
+			tmp["texture_id"]                = item.texture_id;
+			j_props[std::to_string(item.id)] = tmp;
+		}
+
+		j["components"] = j_components;
+		j["props"]      = j_props;
+		j["model"]      = model;
+
+		static folder saved_outfit_path = g_file_manager.get_project_folder("saved_outfits");
+		std::ofstream o(saved_outfit_path.get_file(filename).get_path());
+		o << std::setw(4) << j << std::endl;
 	}
 }

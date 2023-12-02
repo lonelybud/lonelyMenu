@@ -1,6 +1,6 @@
 # YimMenu
 
-![](https://img.shields.io/badge/current_status-detected-red)
+![](https://img.shields.io/badge/current_status-unkown-red)
 
 refer to original readme [here](https://github.com/YimMenu/YimMenu#readme)
 

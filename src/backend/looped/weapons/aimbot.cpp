@@ -3,6 +3,7 @@
 #include "gta/enums.hpp"
 #include "natives.hpp"
 #include "util/entity.hpp"
+#include "util/ped.hpp"
 
 #include <imgui.h>
 
@@ -20,30 +21,40 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			float local_fov_change = fov;
-			for (auto ped : entity::get_entities(false, true))
+			if (PAD::GET_DISABLED_CONTROL_NORMAL(0, (int)ControllerInputs::INPUT_AIM))
 			{
-				if (!ENTITY::IS_ENTITY_DEAD(ped, 0)) // Tracetype is always 17. LOS check
-				{
-					int type               = PED::GET_PED_TYPE(ped); // for police check, cop types are 6, swat is 27
-					Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, false);
+				float local_fov_change = fov;
 
-					if (SYSTEM::VDIST2(self::pos.x,
-					        self::pos.y,
-					        self::pos.z,
-					        world_position.x,
-					        world_position.y,
-					        world_position.z)
-					    > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
-						continue; // If the entity is further than our preset distance then just skip it
-
-					if (PED::IS_PED_A_PLAYER(ped)) // check if its a player
+				for (auto ped : entity::get_entities(false, true))
+					if (!ENTITY::IS_ENTITY_DEAD(ped, 0)) // Tracetype is always 17. LOS check
 					{
+						Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, false);
+
+						if (SYSTEM::VDIST2(self::pos.x,
+						        self::pos.y,
+						        self::pos.z,
+						        world_position.x,
+						        world_position.y,
+						        world_position.z)
+						    > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
+							continue; // If the entity is further than our preset distance then just skip it
+
+						auto is_player = PED::IS_PED_A_PLAYER(ped);
+
+						if (g_weapons.aimbot.player)
+						{
+							if (!is_player)
+								continue;
+						}
+						else if (is_player)
+							continue;
+
 						if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ped, 17))
 							continue;
 
 						// Jump to here to handle instead of continue statements
 						aim_lock = ENTITY::GET_WORLD_POSITION_OF_ENTITY_BONE(ped, PED::GET_PED_BONE_INDEX(ped, 0x796E));
+
 						if ((aim_lock.x != 0) && (aim_lock.y != 0) && (aim_lock.z != 0)) // Ensure none of the coords are = to 0
 						{
 							Vector2 screen_dim, movement;
@@ -96,11 +107,7 @@ namespace big
 							}
 						}
 					}
-				}
-			}
 
-			if (PAD::GET_DISABLED_CONTROL_NORMAL(0, (int)ControllerInputs::INPUT_AIM))
-			{
 				static bool update_time_now = true;
 				static std::chrono::system_clock::time_point current_time;
 
