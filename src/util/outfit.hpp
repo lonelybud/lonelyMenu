@@ -42,17 +42,43 @@ namespace big::outfit
 		};
 	};
 
-	bool get_item(const std::vector<outfit_t>& items, int id)
+	inline int get_item_index(const std::vector<outfit_t>& items, int id)
 	{
-		return std::find_if(items.begin(), items.end(), [id](const outfit_t& item) {
+		auto it = std::find_if(items.begin(), items.end(), [id](const outfit_t& item) {
 			return item.id == id;
 		});
+
+		if (it != items.end())
+			return std::distance(items.begin(), it);
+
+		return -1;
+	}
+
+	inline void set_self_comps_props(outfit::components_t& components, outfit::props_t& props, Ped target = 0)
+	{
+		for (auto item : components.items)
+		{
+			auto draw    = target ? PED::GET_PED_DRAWABLE_VARIATION(target, item.id) : item.drawable_id;
+			auto texture = target ? PED::GET_PED_TEXTURE_VARIATION(target, item.id) : item.texture_id;
+
+			PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+		}
+
+		PED::CLEAR_ALL_PED_PROPS(self::ped, 0);
+
+		for (auto& item : props.items)
+		{
+			auto draw    = target ? PED::GET_PED_PROP_INDEX(target, item.id, 1) : item.drawable_id;
+			auto texture = target ? PED::GET_PED_PROP_TEXTURE_INDEX(target, item.id) : item.texture_id;
+
+			PED::SET_PED_PROP_INDEX(self::ped, item.id, draw, texture, TRUE, 1);
+		}
 	}
 
 	inline void apply_outfit(nlohmann::json j)
 	{
-		outfit::components_t components;
-		outfit::props_t props;
+		components_t components;
+		props_t props;
 
 		for (auto& item : j["components"].items())
 		{
@@ -60,10 +86,10 @@ namespace big::outfit
 			int id = 0;
 			ss >> id;
 
-			if (auto it = outfit::get_item(components, id); it != components.end())
+			if (auto index = get_item_index(components.items, id); index != -1)
 			{
-				it->drawable_id = item.value()["drawable_id"];
-				it->texture_id  = item.value()["texture_id"];
+				components.items[index].drawable_id = item.value()["drawable_id"];
+				components.items[index].texture_id  = item.value()["texture_id"];
 			}
 		}
 		for (auto& item : j["props"].items())
@@ -72,10 +98,10 @@ namespace big::outfit
 			int id = 0;
 			ss >> id;
 
-			if (auto it = outfit::get_item(props, id); it != props.end())
+			if (auto index = get_item_index(props.items, id); index != -1)
 			{
-				it->drawable_id = item.value()["drawable_id"];
-				it->texture_id  = item.value()["texture_id"];
+				props.items[index].drawable_id = item.value()["drawable_id"];
+				props.items[index].texture_id  = item.value()["texture_id"];
 			}
 		}
 

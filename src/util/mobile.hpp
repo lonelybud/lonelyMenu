@@ -53,6 +53,12 @@ namespace big::mobile
 				return;
 			}
 
+			if (auto veh = get_personal_vehicle(); (veh && ENTITY::IS_ENTITY_A_VEHICLE(veh)))
+			{
+				g_notification_service->push_warning("Vehicle", "PV already exists.");
+				return;
+			}
+
 			script::get_current()->yield(100ms);
 
 			*scr_globals::freemode_global.at(928).as<int*>() = 1; // tell freemode to spawn our vehicle

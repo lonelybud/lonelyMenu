@@ -2,6 +2,7 @@
 #include "entity.hpp"
 #include "gta/enums.hpp"
 #include "natives.hpp"
+#include "services/notifications/notification_service.hpp"
 
 namespace big::blip
 {

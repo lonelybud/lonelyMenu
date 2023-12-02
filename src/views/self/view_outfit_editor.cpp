@@ -35,12 +35,12 @@ namespace big
 				return;
 			}
 
-			outfit_service::save_outfit(str + ".json");
+			outfit::save_outfit(str + ".json");
 		});
 
 		ImGui::Spacing();
 
-		components::button("Apply Selected", [saved_outfits] {
+		components::button("Apply Selected", [] {
 			if (selected_file.size())
 			{
 				auto filePath = get_folder().get_file(selected_file).get_path();
@@ -50,14 +50,14 @@ namespace big
 					std::ifstream i(filePath);
 					nlohmann::json j;
 					i >> j;
-					outfit_service::apply_outfit(j);
+					outfit::apply_outfit(j);
 				}
 				else
 					g_notification_service->push_warning("Apply Outfit Failed", "File does not exist.");
 			}
 		});
 		ImGui::SameLine();
-		components::button("Delete Selected", [saved_outfits] {
+		components::button("Delete Selected", [] {
 			if (selected_file.size())
 			{
 				auto filePath = get_folder().get_file(selected_file).get_path();

@@ -1,6 +1,8 @@
 #pragma once
+#include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player.hpp"
+#include "util/outfit.hpp"
 
 namespace big
 {
@@ -20,27 +22,6 @@ namespace big
 		return "";
 	}
 
-	inline void set_self_comps_props(outfit::components_t& components, outfit::props_t& props)
-	{
-		for (auto item : components.items)
-		{
-			auto draw    = PED::GET_PED_DRAWABLE_VARIATION(target, item.id);
-			auto texture = PED::GET_PED_TEXTURE_VARIATION(target, item.id);
-
-			PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
-		}
-
-		PED::CLEAR_ALL_PED_PROPS(self::ped, 0);
-
-		for (auto& item : props.items)
-		{
-			auto draw    = PED::GET_PED_PROP_INDEX(target, item.id, 1);
-			auto texture = PED::GET_PED_PROP_TEXTURE_INDEX(target, item.id);
-
-			PED::SET_PED_PROP_INDEX(self::ped, item.id, draw, texture, TRUE, 1);
-		}
-	}
-
 	inline void steal_player_outfit(big::player_ptr plyr)
 	{
 		if (plyr->is_valid())
@@ -56,7 +37,7 @@ namespace big
 			outfit::components_t components;
 			outfit::props_t props;
 
-			set_self_comps_props(components, props);
+			set_self_comps_props(components, props, target);
 		}
 	}
 }

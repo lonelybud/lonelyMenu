@@ -1,7 +1,9 @@
 #include "entity.hpp"
 
 #include "gta_util.hpp"
+#include "natives.hpp"
 #include "pools.hpp"
+#include "script.hpp"
 
 namespace big::entity
 {

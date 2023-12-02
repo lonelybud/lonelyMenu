@@ -40,6 +40,14 @@ namespace big
 				}
 			});
 
+			components::button("CLEAR_PED_TASKS", [] {
+				TASK::CLEAR_PED_TASKS(self::ped);
+			});
+			ImGui::SameLine();
+			components::button("CLEAR_PED_TASKS_IMMEDIATELY", [] {
+				TASK::CLEAR_PED_TASKS_IMMEDIATELY(self::ped);
+			});
+
 			components::button("Network Bail", [] {
 				NETWORK::NETWORK_BAIL(16, 0, 0);
 			});

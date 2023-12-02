@@ -1,6 +1,7 @@
 #include "core/data/lsc_types.hpp"
 #include "fiber_pool.hpp"
 #include "natives.hpp"
+#include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle_helper/vehicle_helper.hpp"
 #include "util/vehicle.hpp"

@@ -1,5 +1,7 @@
 #pragma once
 #include "entity.hpp"
+#include "gta/enums.hpp"
+#include "natives.hpp"
 
 namespace big::vehicle
 {
@@ -19,6 +21,8 @@ namespace big::vehicle
 		VEHICLE::SET_VEHICLE_FIXED(self::veh);
 		VEHICLE::SET_VEHICLE_DIRT_LEVEL(self::veh, 0.f);
 	}
+
+	Vector3 get_spawn_location(Hash hash, Ped ped = self::ped);
 
 	Vehicle spawn(Hash hash, Vector3 location, float heading = 0, bool is_networked = true, bool script_veh = false);
 

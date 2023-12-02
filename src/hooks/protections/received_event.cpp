@@ -8,7 +8,6 @@
 #include "util/math.hpp"
 #include "util/mobile.hpp"
 #include "util/notify.hpp"
-#include "util/session.hpp"
 
 #include <base/CObject.hpp>
 #include <network/CNetGamePlayer.hpp>

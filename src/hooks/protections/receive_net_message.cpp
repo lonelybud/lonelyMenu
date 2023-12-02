@@ -12,6 +12,7 @@
 #include "natives.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/bad_players/bad_players.hpp"
+#include "services/custom_chat_buffer.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"

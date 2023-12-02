@@ -1,9 +1,24 @@
 #include "vehicle.hpp"
 
 #include "gta/vehicle_values.hpp"
+#include "script.hpp"
 
 namespace big::vehicle
 {
+	Vector3 get_spawn_location(Hash hash, Ped ped)
+	{
+		for (int i = 0; !STREAMING::HAS_MODEL_LOADED(hash) && i < 100; i++)
+		{
+			STREAMING::REQUEST_MODEL(hash);
+			script::get_current()->yield();
+		}
+
+		Vector3 min, max, result;
+		MISC::GET_MODEL_DIMENSIONS(hash, &min, &max);
+
+		return ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.f, (max - min).y, 0.f);
+	}
+
 	static inline void set_mp_bitset(Vehicle veh)
 	{
 		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
@@ -35,9 +50,7 @@ namespace big::vehicle
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);
 
 		if (*g_pointers->m_gta.m_is_session_started)
-			set_mp_bitset(veh, net_id);
-
-		ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+			set_mp_bitset(veh);
 
 		return veh;
 	}

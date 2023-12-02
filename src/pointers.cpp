@@ -430,6 +430,24 @@ namespace big
                 g_pointers->m_gta.m_invalid_mods_crash_detour = ptr.add(1).rip().as<PVOID>();
             }
         },
+        // Send Chat Ptr
+        {
+            "SCP",
+            "83 7E 1C 01 48 8B 3D",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_send_chat_ptr = ptr.add(7).rip().as<int64_t**>();
+            }
+        },
+        // Send Chat Message
+        {
+            "SCM",
+            "48 83 EC 20 48 8B F1 48 8B CA 41 8A E9",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_send_chat_message = ptr.sub(21).as<functions::send_chat_message>();
+            }
+        },
         // Script VM
         {
             "VM",

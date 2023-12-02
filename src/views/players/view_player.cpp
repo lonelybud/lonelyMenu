@@ -6,7 +6,9 @@
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
+#include "services/vehicle/persist_car_service.hpp"
 #include "util/globals.hpp"
+#include "util/player.hpp"
 #include "util/scripts.hpp"
 #include "views/view.hpp"
 
@@ -204,8 +206,10 @@ namespace big
 		{
 			components::sub_title("Misc");
 
-			components::player_command_button<"copyoutfit">(current_player);
-
+			components::button("Copy outfit", [current_player] {
+				steal_player_outfit(current_player);
+			});
+			
 			ver_Space();
 
 			components::button("Copy Vehicle", [current_player] {

@@ -2,7 +2,7 @@
 #include "core/data/vehicle.hpp"
 #include "fiber_pool.hpp"
 #include "services/vehicle/persist_car_service.hpp"
-#include "services/vehicle_preview/vehicle_preview.hpp"
+#include "util/blip.hpp"
 #include "util/strings.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
@@ -17,16 +17,15 @@ namespace big
 		{
 			std::optional<Vector3> waypoint_location;
 			if (g_vehicle.spawn_at_waypoint)
-				waypoint_location = vehicle::get_waypoint_location();
+				waypoint_location = blip::get_waypoint_location();
 
-			const auto vehicle = persist_car_service::load_vehicle(selected_vehicle_file, persist_vehicle_sub_folder, waypoint_location);
+			auto vehicle = persist_car_service::load_vehicle(selected_vehicle_file, persist_vehicle_sub_folder, waypoint_location);
 
 			if (!vehicle)
 				g_notification_service->push_warning("Persist Car", "Vehicle failed to spawn, there is most likely too many spawned vehicles in the area");
-			else if (g_vehicle.spawn_inside)
-				teleport::into_vehicle(vehicle);
 
 			selected_vehicle_file.clear();
+			ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
 		}
 		else
 			g_notification_service->push_warning("Persist Car", "Select a file first");
@@ -91,7 +90,7 @@ namespace big
 			ImGui::EndPopup();
 		}
 
-		components::button("Refresh List", [vehicle_file_name_input] {
+		components::button("Refresh List", [] {
 			vehicle_folders = persist_car_service::list_sub_folders();
 			vehicle_files   = persist_car_service::list_files(persist_vehicle_sub_folder);
 		});

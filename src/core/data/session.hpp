@@ -46,17 +46,19 @@ namespace big
 		}
 	};
 
-	inline struct g_session_t
+	struct g_session_t
 	{
-		uint64_t smallest_host_token;
-		std::string smallest_host_token_owner;
+		uint64_t smallest_host_token          = 0;
+		std::string smallest_host_token_owner = "";
 		next_host_list next_host_list;
 
-		uint64_t orig_host_token;
-		uint64_t host_token;
-		bool lock_session;
+		uint64_t orig_host_token = 0;
+		uint64_t host_token      = 0;
+		bool lock_session        = false;
 
 		bool log_chat_messages_to_textbox = true;
-		bool decloak_players;
-	} g_session{};
+		bool decloak_players              = false;
+	};
+
+	inline g_session_t g_session{};
 }

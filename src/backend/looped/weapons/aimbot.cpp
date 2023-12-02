@@ -3,7 +3,6 @@
 #include "gta/enums.hpp"
 #include "natives.hpp"
 #include "util/entity.hpp"
-#include "util/ped.hpp"
 
 #include <imgui.h>
 

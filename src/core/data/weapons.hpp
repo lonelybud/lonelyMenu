@@ -2,13 +2,15 @@
 
 namespace big
 {
-	inline struct g_weapons_t
+	struct g_weapons_t
 	{
 		struct aimbot
 		{
-			bool enable;
-			bool player;
+			bool enable    = false;
+			bool player    = false;
 			float distance = 1000.f;
 		} aimbot{};
-	} g_weapons{};
+	};
+
+	inline g_weapons_t g_weapons{};
 }

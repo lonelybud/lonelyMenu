@@ -43,13 +43,6 @@ namespace big
 	static inline void render_other_options1()
 	{
 		components::command_button<"fillsnacks">();
-	}
-
-	static inline void render_other_options2()
-	{
-		components::button("Clear tasks", [] {
-			TASK::CLEAR_PED_TASKS_IMMEDIATELY(self::ped);
-		});
 		ImGui::SameLine();
 		components::button("Force passive mode (30 secs)", [] {
 			*scr_globals::passive.as<PBOOL>() = TRUE;
@@ -71,9 +64,5 @@ namespace big
 		ImGui::SeparatorText("###otherOptions1");
 
 		render_other_options1();
-
-		ImGui::SeparatorText("###otherOptions2");
-
-		render_other_options2();
 	}
 }

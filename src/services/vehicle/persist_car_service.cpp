@@ -6,7 +6,6 @@
 #include "services/notifications/notification_service.hpp"
 #include "util/misc.hpp"
 #include "util/vehicle.hpp"
-#include "util/world_model.hpp"
 #include "vehicle/CVehicle.hpp"
 
 namespace big

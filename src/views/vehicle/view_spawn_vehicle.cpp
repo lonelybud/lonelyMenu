@@ -3,6 +3,7 @@
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/notifications/notification_service.hpp"
+#include "util/blip.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -13,6 +14,7 @@ namespace big
 		static bool spawn_maxed;
 
 		ImGui::Checkbox("Spawn Maxed", &spawn_maxed);
+		ImGui::Spacing();
 
 		static int selected_class = -1;
 		const auto& class_arr     = g_gta_data_service->vehicle_classes();
@@ -95,8 +97,13 @@ namespace big
 						Vector3 spawn_location;
 						std::optional<Vector3> waypoint_location;
 
-						if (g_vehicle.spawn_at_waypoint && (waypoint_location = vehicle::get_waypoint_location()).has_value())
-							spawn_location = waypoint_location.value();
+						if (g_vehicle.spawn_at_waypoint)
+						{
+							if (auto waypoint_location = blip::get_waypoint_location(); waypoint_location.has_value())
+								spawn_location = waypoint_location.value();
+							else
+								return;
+						}
 						else
 							spawn_location = vehicle::get_spawn_location(vehicle.m_hash);
 
@@ -106,6 +113,8 @@ namespace big
 							g_notification_service->push_error("Vehicle", "Unable to spawn vehicle");
 						else if (spawn_maxed)
 							vehicle::max_vehicle(veh);
+
+						ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 					});
 					ImGui::PopID();
 				}

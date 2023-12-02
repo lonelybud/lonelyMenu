@@ -17,8 +17,7 @@ namespace big
 			ImGui::Checkbox("Lock Session", &g_session.lock_session);
 			ImGui::EndDisabled();
 
-			components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players, "Reveals players that are off the radar");
-
+			components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 		}
 		ImGui::EndGroup();
 	}

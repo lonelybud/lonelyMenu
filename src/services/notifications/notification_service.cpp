@@ -23,28 +23,28 @@ namespace big
 	{
 		this->push({NotificationType::INFO, title, message, std::chrono::system_clock::now(), 5000.f, 1.f});
 		if (log)
-			LOG(INFO) title << " : " << message;
+			LOG(INFO) << title << " : " << message;
 	}
 
 	void notification_service::push_warning(const std::string& title, const std::string& message, bool log)
 	{
 		this->push({NotificationType::WARNING, title, message, std::chrono::system_clock::now(), 7000.f, 1.f});
 		if (log)
-			LOG(WARNING) title << " : " << message;
+			LOG(WARNING) << title << " : " << message;
 	}
 
 	void notification_service::push_error(const std::string& title, const std::string& message, bool log)
 	{
 		this->push({NotificationType::DANGER, title, message, std::chrono::system_clock::now(), 7000.f, 1.f});
 		if (log)
-			LOG(FATAL) title << " : " << message;
+			LOG(FATAL) << title << " : " << message;
 	}
 
 	void notification_service::push_success(const std::string& title, const std::string& message, bool log)
 	{
 		this->push({NotificationType::SUCCESS, title, message, std::chrono::system_clock::now(), 7000.f, 1.f});
 		if (log)
-			LOG(INFO) title << " : " << message;
+			LOG(INFO) << title << " : " << message;
 	}
 
 	std::vector<notification> notification_service::get()

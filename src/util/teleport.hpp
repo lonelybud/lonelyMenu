@@ -6,12 +6,12 @@
 
 namespace big::teleport
 {
-	inline void to_coords(Vector3 location, bool load_ground = false)
+	inline bool to_coords(Vector3 location, bool load_ground = false)
 	{
 		if (load_ground && !entity::load_ground_at_3dcoord(location))
 		{
 			g_notification_service->push_warning("Teleport", "Unable to load ground");
-			return;
+			return false;
 		}
 
 		auto yaw   = ENTITY::GET_ENTITY_HEADING(self::ped);
@@ -26,6 +26,8 @@ namespace big::teleport
 			CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(pitch, 1.f);
 			CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(roll);
 		}
+
+		return true;
 	}
 
 	inline bool to_waypoint()
@@ -33,7 +35,7 @@ namespace big::teleport
 		std::optional<Vector3> waypoint_location = blip::get_waypoint_location();
 
 		if (waypoint_location.has_value())
-			return to_coords(location);
+			return to_coords(waypoint_location.value());
 
 		return false;
 	}
