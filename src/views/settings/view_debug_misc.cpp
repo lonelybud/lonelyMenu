@@ -14,6 +14,10 @@ namespace big
 
 			ImGui::Spacing();
 
+			components::button("Die", [] {
+				ENTITY::SET_ENTITY_HEALTH(self::ped, 0, 0);
+			});
+
 			components::button("Skip Cutscene", [] {
 				CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 			});
@@ -60,6 +64,20 @@ namespace big
 				for (int j = 0; j < 64 / bitSize; ++j)
 					for (int i = 0; i < 13; ++i)
 						lua_script::stats::set_masked_int(MPX + "GUNRPSTAT_INT" + std::to_string(i), -1, j * bitSize, bitSize);
+			});
+
+			static float increment = 1;
+			ImGui::SetNextItemWidth(100);
+			ImGui::InputFloat("Teleport forward distance", &increment);
+
+			components::button("Teleport Horizontal", [] {
+				auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, increment, 0);
+				PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+			});
+			ImGui::SameLine();
+			components::button("Teleport Vertical", [] {
+				auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, 0, increment);
+				PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
 			});
 
 			ImGui::Spacing();

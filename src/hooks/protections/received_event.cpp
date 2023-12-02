@@ -464,7 +464,6 @@ namespace big
 				{
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset); // Tell them to get bent.
 					g_reactions.request_control_event.process(plyr, false, Infraction::NONE, false);
-					LOG(WARNING) << "Reason: " << !NETWORK::NETWORK_IS_ACTIVITY_SESSION() << " or " << (personal_vehicle == veh);
 					return;
 				}
 			}

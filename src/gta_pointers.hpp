@@ -42,7 +42,7 @@ namespace big
 	{
 		memory::handle m_max_wanted_level;
 
-		memory::handle m_is_matchmaking_session_valid;
+		memory::handle m_broadcast_patch;
 
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
@@ -86,6 +86,8 @@ namespace big
 		functions::get_screen_coords_for_world_coords m_get_screen_coords_for_world_coords;
 
 		HashTable<CBaseModelInfo*>* m_model_table;
+
+		functions::trigger_script_event m_trigger_script_event;
 
 		PVOID m_network_player_mgr_init;
 		PVOID m_network_player_mgr_shutdown;
@@ -154,6 +156,8 @@ namespace big
 		functions::queue_packet m_queue_packet;
 
 		functions::get_connection_peer m_get_connection_peer;
+
+		PVOID m_broadcast_net_array;
 
 		PVOID m_prepare_metric_for_sending;
 

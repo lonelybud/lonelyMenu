@@ -54,6 +54,7 @@ namespace big
 
 		void set_selected(player_ptr plyr);
 
+		std::optional<player_ptr> m_player_to_use_end_session_kick = std::nullopt;
 		std::optional<player_ptr> m_player_to_use_complaint_kick   = std::nullopt;
 	};
 

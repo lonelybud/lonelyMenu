@@ -2,6 +2,7 @@
 #include "core/data/session.hpp"
 #include "core/data/vehicle.hpp"
 #include "core/data/weapons.hpp"
+#include "core/settings/esp.hpp"
 #include "hooking.hpp"
 #include "services/players/player_service.hpp"
 
@@ -37,6 +38,10 @@ namespace big
 
 		g_session.lock_session = false;
 		g_session.next_host_list.list.clear();
+
+		g_esp.enabled             = false;
+		g_esp.show_player         = true;
+		g_esp.show_gs_cache_boxes = false;
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}

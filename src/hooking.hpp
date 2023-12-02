@@ -114,6 +114,10 @@ namespace big
 		static int queue_dependency(void* a1, int a2, int64_t dependency);
 		static bool http_start_request(void* request, const char* uri);
 		static int netfilter_handle_message(__int64 filter, char* message, int flags);
+
+		// toxic
+
+		static unsigned int broadcast_net_array(rage::netArrayHandlerBase* _this, CNetGamePlayer* target, rage::datBitBuffer* bit_buffer, uint16_t counter, uint32_t* elem_start, bool silent);
 	};
 
 	class minhook_keepalive

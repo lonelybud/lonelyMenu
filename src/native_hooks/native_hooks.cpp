@@ -1,10 +1,10 @@
 #include "native_hooks.hpp"
 
 #include "all_scripts.hpp"
+#include "am_launcher.hpp"
 #include "crossmap.hpp"
 #include "freemode.hpp"
 #include "gta_util.hpp"
-#include "shop_controller.hpp"
 
 #include <script/scrProgram.hpp>
 #include <script/scrProgramTable.hpp>
@@ -108,10 +108,10 @@ namespace big
 		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING); // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
 
 		add_native_detour(RAGE_JOAAT("shop_controller"), 0x34616828CD07F1A1, all_scripts::RETURN_FALSE); // prevent exploit reports
-		add_native_detour(RAGE_JOAAT("shop_controller"), 0xDC38CC1E35B6A5D7, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
 
 		add_native_detour(RAGE_JOAAT("freemode"), 0x2C83A9DA6BFFC4F9, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("freemode"), 0x5E9564D8246B909A, freemode::IS_PLAYER_PLAYING);
+
+		add_native_detour(RAGE_JOAAT("am_launcher"), 0xB8BA7F44DF1575E1, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)

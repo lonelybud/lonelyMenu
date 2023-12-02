@@ -209,6 +209,10 @@ namespace big
 			else
 			{
 				components::player_command_button<"shkick">(current_player);
+				components::player_command_button<"endkick">(current_player);
+				components::player_command_button<"nfkick">(current_player);
+				components::player_command_button<"oomkick">(current_player);
+
 				if (!current_player->is_host())
 					components::player_command_button<"desync">(current_player);
 			}

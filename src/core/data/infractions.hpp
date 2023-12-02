@@ -26,7 +26,8 @@ namespace big
 		CASH_SPAWN,
 		REPORT,
 		VOTE_KICK,
-		REMOVE_WEAPON
+		REMOVE_WEAPON,
+		BOUNTY
 	};
 
 	inline std::unordered_map<Infraction, const char*> infraction_desc = {
@@ -50,5 +51,6 @@ namespace big
 	    {Infraction::REPORT, "Reported you"},
 	    {Infraction::VOTE_KICK, "Trying to vote kick you"},
 	    {Infraction::REMOVE_WEAPON, "Tried to remove weapon"},
+	    {Infraction::BOUNTY, "Set bounty on you"},
 	};
 }

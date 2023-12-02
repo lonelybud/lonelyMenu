@@ -30,6 +30,8 @@ namespace big::scripts
 				if (!launcher->m_stack || !launcher->m_net_component)
 					return false;
 			}
+
+			LOG(INFO) << "Force Script host migration to you.";
 		}
 
 		return true;

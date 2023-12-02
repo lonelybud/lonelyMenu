@@ -58,6 +58,8 @@ namespace big
 		detour_hook_helper::add<hooks::serialize_take_off_ped_variation_task>("STOPVT", g_pointers->m_gta.m_serialize_take_off_ped_variation_task);
 		detour_hook_helper::add<hooks::serialize_parachute_task>("SPT", g_pointers->m_gta.m_serialize_parachute_task);
 
+		detour_hook_helper::add<hooks::broadcast_net_array>("BNA", g_pointers->m_gta.m_broadcast_net_array);
+
 		detour_hook_helper::add<hooks::queue_dependency>("QD", g_pointers->m_gta.m_queue_dependency);
 		detour_hook_helper::add<hooks::prepare_metric_for_sending>("PMFS", g_pointers->m_gta.m_prepare_metric_for_sending);
 		detour_hook_helper::add<hooks::http_start_request>("HSR", g_pointers->m_gta.m_http_start_request);

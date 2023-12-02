@@ -48,8 +48,6 @@ namespace big
 
 	inline struct g_session
 	{
-		bool decloak_players;
-
 		uint64_t smallest_host_token;
 		std::string smallest_host_token_owner;
 		next_host_list next_host_list;

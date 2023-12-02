@@ -21,6 +21,7 @@ namespace big
 		reaction game_anti_cheat_modder_detection{"Anti-Cheat Modder Detection", "{} is detected as a modder by anti-cheat!"};
 		reaction modder_detection{"Modder Detection", "{} is detected as a modder!"};
 
+		reaction bounty{"Bounty", "Received Bounty from {}"};
 		reaction ceo_kick{"CEO Kick", "Blocked CEO Kick from {}"};
 		reaction ceo_money{"CEO Money", "Blocked CEO Money from {}"};
 		reaction clear_wanted_level{"Clear Wanted Level", "Blocked Clear Wanted Level from {}"};

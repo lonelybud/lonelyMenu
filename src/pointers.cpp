@@ -109,6 +109,15 @@ namespace big
                 g_pointers->m_gta.m_swapchain = ptr.add(3).rip().as<IDXGISwapChain**>();
             }
         },
+        // Trigger Script Event
+        {
+            "TSE",
+            "45 8B F0 41 8B F9 48 8B EA",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_trigger_script_event = ptr.sub(0x1C).as<decltype(gta_pointers::m_trigger_script_event)>();
+            }
+        },
         // Received Event Hook
         {
             "REH",
@@ -502,6 +511,15 @@ namespace big
                 g_pointers->m_gta.m_get_connection_peer = ptr.as<functions::get_connection_peer>();
             }
         },
+        // Broadcast Net Array
+        {
+            "BNA",
+            "48 89 5C 24 ? 48 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 40 48 8B 05 ? ? ? ? 66 44 89 4C 24",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_broadcast_net_array = ptr.as<PVOID>();
+            }
+        },
         // Serialize Take Off Ped Variation Task
         {
             "STOPVT",
@@ -632,7 +650,7 @@ namespace big
         // Prop Pool
         {
             "PRP",
-            "48 8B 0D ? ? ? ? 49 8B D0 E8 ? ? ? ? 39 03 EB 19 41 80 78 ? ? 75 15 48 8B 0D ? ? ? ? 49 8B D0 E8 ? ? ? ? 39 43 04",
+            "48 8B 05 ? ? ? ? 0F B7 50 10 48 8B 05",
             [](memory::handle ptr)
 		    {
 			    g_pointers->m_gta.m_prop_pool = ptr.add(3).rip().as<GenericPool**>();
@@ -757,13 +775,13 @@ namespace big
                 g_pointers->m_gta.m_max_wanted_level = ptr;
             }
         },
-        // Is Matchmaking Session Valid
+        // Broadcast Net Array Patch
         {
-            "IMSV",
-            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC 20 45 0F",
+            "BP",
+            "74 73 FF 90 ? ? ? ? 8B D5 4C 8B 00 48 8B C8 41 FF 50 30",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_is_matchmaking_session_valid = ptr;
+                g_pointers->m_gta.m_broadcast_patch = ptr;
             }
         },
         // Creator Warp Cheat Triggered Patch
@@ -870,7 +888,7 @@ namespace big
         // Nullsub
         {
             "NS",
-            "C3",
+            "90 C3",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_nullsub = ptr.as<void(*)()>();

@@ -59,6 +59,10 @@ namespace big
 
 		switch (hash)
 		{
+		case eRemoteEvent::Bounty:
+			if (args[2] == self::id)
+				g_reactions.bounty.process(plyr, false, Infraction::BOUNTY, false, true);
+			break;
 		case eRemoteEvent::CeoKick:
 			if (player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
 			{

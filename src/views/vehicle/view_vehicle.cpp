@@ -35,5 +35,24 @@ namespace big
 		ImGui::SeparatorText("###General");
 
 		render_general();
+
+		components::sub_title("set/get weapon capacity");
+
+		static int weapon_index, capacity;
+
+		ImGui::SetNextItemWidth(100);
+		ImGui::InputInt("Weapon Index", &weapon_index);
+		ImGui::SameLine();
+		components::button("Get ammo capacity", [] {
+			auto c = VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index);
+			LOG(INFO) << "VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO = " << c;
+		});
+
+		ImGui::SetNextItemWidth(100);
+		ImGui::InputInt("Capacity", &capacity);
+		ImGui::SameLine();
+		components::button("Set ammo capacity", [] {
+			VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index, capacity);
+		});
 	}
 }
