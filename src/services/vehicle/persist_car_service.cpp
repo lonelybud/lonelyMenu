@@ -79,9 +79,17 @@ namespace big
 		return folders;
 	}
 
-	Vehicle persist_car_service::clone_ped_car(Vehicle vehicle)
+	void persist_car_service::clone_ped_car(Vehicle vehicle)
 	{
-		return spawn_vehicle_full(get_vehicle_json(vehicle));
+		auto veh = spawn_vehicle_full(get_vehicle_json(vehicle));
+
+		if (veh == 0)
+			g_notification_service->push_error("Clone Player Car", std::format("Unable to clone {}", ENTITY::GET_ENTITY_MODEL(vehicle)), true);
+		else
+		{
+			g_notification_service->push_success("Clone Player Car", std::format("Cloned {}", ENTITY::GET_ENTITY_MODEL(vehicle)), true);
+			ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+		}
 	}
 
 	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, bool is_networked)

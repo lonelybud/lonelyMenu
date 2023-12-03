@@ -11,7 +11,7 @@ namespace big
 		static std::vector<std::string> list_files(std::string folder_name = "");
 		static std::vector<std::string> list_sub_folders();
 
-		static Vehicle clone_ped_car(Vehicle vehicle);
+		static void clone_ped_car(Vehicle vehicle);
 		static void save_vehicle(Vehicle vehicle, std::string_view file_name, std::string folder_name);
 		static nlohmann::json load_vehicle_json(std::string_view file_name, std::string folder_name);
 		static Vehicle load_vehicle(std::string_view file_name, std::string folder_name = "", const std::optional<Vector3>& = std::nullopt);

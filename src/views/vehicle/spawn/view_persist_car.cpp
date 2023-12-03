@@ -1,6 +1,7 @@
 #include "core/data/hud.hpp"
 #include "core/data/vehicle.hpp"
 #include "fiber_pool.hpp"
+#include "services/gta_data/gta_data_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/blip.hpp"
 #include "util/strings.hpp"
@@ -21,11 +22,15 @@ namespace big
 
 			auto vehicle = persist_car_service::load_vehicle(selected_vehicle_file, persist_vehicle_sub_folder, waypoint_location);
 
-			if (!vehicle)
-				g_notification_service->push_warning("Persist Car", "Vehicle failed to spawn, there is most likely too many spawned vehicles in the area");
+			if (vehicle == 0)
+				g_notification_service->push_error("Persist Car", std::format("Unable to spawn {}", selected_vehicle_file), true);
+			else
+			{
+				g_notification_service->push_success("Persist Car", std::format("Spawned {}", selected_vehicle_file), true);
+				ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
+			}
 
 			selected_vehicle_file.clear();
-			ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
 		}
 		else
 			g_notification_service->push_warning("Persist Car", "Select a file first");
@@ -52,10 +57,17 @@ namespace big
 			if (self::veh)
 			{
 				auto model = ENTITY::GET_ENTITY_MODEL(self::veh);
-				auto t = HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(model));
-				auto name = std::format("{} {}", toLowercase(VEHICLE::GET_MAKE_NAME_FROM_VEHICLE_MODEL(model)), toLowercase(t));
+				for (auto& pair : g_gta_data_service->vehicles())
+					if (model == pair.second.m_hash)
+					{
+						auto name = std::format("{} {} {}",
+						    pair.second.m_vehicle_class,
+						    pair.second.m_display_manufacturer,
+						    pair.second.m_display_name);
 
-				strcpy(vehicle_file_name_input, name.c_str());
+						strcpy(vehicle_file_name_input, name.c_str());
+						return;
+					}
 			}
 		});
 	}

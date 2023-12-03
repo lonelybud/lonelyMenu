@@ -101,7 +101,7 @@ namespace big
 			LOG(WARNING) << "BAD METRIC: " << metric->get_name();
 
 			std::ofstream log(g_file_manager.get_project_file("./bad-metrics.log").get_path(), std::ios::app);
-			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << yim_serializer.get_string();
+			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << yim_serializer.get_string() << std::endl;
 			log.close();
 
 			if (strcmp(metric->get_name(), "MM") == 0)
