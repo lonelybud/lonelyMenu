@@ -35,7 +35,7 @@ namespace big::teleport
 		std::optional<Vector3> waypoint_location = blip::get_waypoint_location();
 
 		if (waypoint_location.has_value())
-			return to_coords(waypoint_location.value());
+			return to_coords(waypoint_location.value(), true);
 
 		return false;
 	}

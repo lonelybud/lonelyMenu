@@ -8,7 +8,9 @@ namespace big
 		ImGui::SeparatorText("Blips:");
 		ImGui::Spacing();
 
-		components::command_button<"waypointtp">({}, "Waypoint");
+		components::button("Waypoint", [] {
+			teleport::to_waypoint();
+		});
 
 		ImGui::SeparatorText("Direction");
 
