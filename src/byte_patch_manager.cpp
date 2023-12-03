@@ -4,7 +4,6 @@
 #include "hooking.hpp"
 #include "memory/byte_patch.hpp"
 #include "pointers.hpp"
-#include "util/police.hpp"
 #include "util/vehicle.hpp"
 
 extern "C" void sound_overload_detour();
@@ -14,12 +13,6 @@ namespace big
 {
 	static void init()
 	{
-		// Restore max wanted level after menu unload
-		police::m_max_wanted_level =
-		    memory::byte_patch::make(g_pointers->m_gta.m_max_wanted_level.add(5).rip().as<uint32_t*>(), 0).get();
-		police::m_max_wanted_level_2 =
-		    memory::byte_patch::make(g_pointers->m_gta.m_max_wanted_level.add(14).rip().as<uint32_t*>(), 0).get();
-
 		// Bypass netarray buffer cache when enabled
 		broadcast_net_array::m_patch =
 		    memory::byte_patch::make(g_pointers->m_gta.m_broadcast_patch.as<uint8_t*>(), 0xEB).get();

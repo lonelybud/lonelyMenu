@@ -40,8 +40,6 @@ namespace big
 #pragma pack(push, 1)
 	struct gta_pointers
 	{
-		memory::handle m_max_wanted_level;
-
 		memory::handle m_broadcast_patch;
 
 		memory::handle m_creator_warp_cheat_triggered_patch;

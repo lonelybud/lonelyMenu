@@ -784,15 +784,6 @@ namespace big
                 g_pointers->m_gta.m_train_config_array = ptr.add(3).rip().as<rage::atArray<CTrainConfig>*>();
             }
         },
-        // Max Wanted Level
-        {
-            "MWL",
-            "8B 43 6C 89 05",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_max_wanted_level = ptr;
-            }
-        },
         // Broadcast Net Array Patch
         {
             "BP",
