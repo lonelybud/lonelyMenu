@@ -26,14 +26,6 @@ namespace big
 		components::button("Repair", [] {
 			vehicle::repair();
 		});
-		ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
-		components::button("SET_ENTITY_AS_NO_LONGER_NEEDED", [] {
-			if (ENTITY::DOES_ENTITY_EXIST(self::veh))
-			{
-				TASK::CLEAR_PED_TASKS_IMMEDIATELY(self::ped);
-				ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&self::veh);
-			}
-		});
 	}
 
 	static inline void render_fun_feats()

@@ -3,6 +3,7 @@
 #include "base/CObject.hpp"
 #include "gta/vehicle_values.hpp"
 #include "pointers.hpp"
+#include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/misc.hpp"
 #include "util/vehicle.hpp"
@@ -98,6 +99,8 @@ namespace big
 		Vector3 spawn_location = spawn_coords.has_value() ? spawn_coords.value() : vehicle::get_spawn_location(vehicle_hash);
 
 		const auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0, is_networked);
+
+		script::get_current()->yield();
 
 		VEHICLE::SET_VEHICLE_MOD_KIT(vehicle, 0);
 

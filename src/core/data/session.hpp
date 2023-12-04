@@ -58,6 +58,12 @@ namespace big
 
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;
+
+		struct custom_time
+		{
+			bool override_time = false;
+			int hour{}, minute{}, second{};
+		} custom_time;
 	};
 
 	inline g_session_t g_session{};

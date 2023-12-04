@@ -39,6 +39,7 @@ namespace big
 		g_session.next_host_list.list          = g_session_temp.next_host_list.list;
 		g_session.log_chat_messages_to_textbox = g_session_temp.log_chat_messages_to_textbox;
 		g_session.decloak_players              = g_session_temp.decloak_players;
+		g_session.custom_time                  = g_session_temp.custom_time;
 
 		g_esp_t g_esp_temp;
 		g_esp.enabled             = g_esp_temp.enabled;
