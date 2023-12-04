@@ -1,4 +1,8 @@
 #pragma once
+#include "file_manager.hpp"
+
+constexpr int chat_buffer_size         = 4096;
+constexpr int chat_buffer_content_size = sizeof(chat_buffer_size) - 1;
 
 namespace big
 {
@@ -7,7 +11,7 @@ namespace big
 		int len = 0;
 
 	public:
-		char buf[4096] = {'\0'};
+		char buf[chat_buffer_size] = {'\0'};
 
 		inline void reset_buf()
 		{
@@ -21,18 +25,21 @@ namespace big
 			std::string formatted_str = std::format("{} : {}\n", player_name, msg);
 			strcpy(new_msg, formatted_str.c_str());
 
-			auto msg_len              = strlen(new_msg);
-			constexpr int content_len = sizeof(buf) - 1;
-			size_t availableSpace     = content_len - len;
+			auto msg_len          = strlen(new_msg);
+			size_t availableSpace = chat_buffer_content_size - len;
 
-			if (availableSpace >= msg_len)
-				len += msg_len;
-			else
+			if (availableSpace < msg_len)
 			{
-				// memmove(buf, buf + msg_len, content_len - msg_len);
-				// buf[content_len - msg_len] = '\0';
+				LOG(WARNING) << "Chat buffer overflow: Flushing buffer to disk..";
+
+				std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
+				log << buf << std::endl;
+				log.close();
+
 				reset_buf();
 			}
+
+			len += msg_len;
 			strcat(buf, new_msg);
 		}
 	};
