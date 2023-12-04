@@ -2,7 +2,7 @@
 #include "file_manager.hpp"
 
 constexpr int chat_buffer_size         = 4096;
-constexpr int chat_buffer_content_size = sizeof(chat_buffer_size) - 1;
+constexpr int chat_buffer_content_size = chat_buffer_size - 1;
 
 namespace big
 {
