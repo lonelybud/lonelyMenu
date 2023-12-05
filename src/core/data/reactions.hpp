@@ -9,7 +9,8 @@ namespace big
 		reaction network_bail{"Network Bail", "Blocked Network Bail from {}"};
 		reaction null_function_kick{"Null Function Kick", "Blocked Null Function Kick from {}"};
 		reaction kick_vote{"Kick Vote", "{} is voting to kick you!"};
-		reaction oom_kick{"OOM Kick", "Blocked OOM Kick from {}"};
+		reaction oom_kick{"OOM Kick", "Blocked OOM Kick (from radio requests) from {}"};
+		reaction oom_kick2{"OOM Kick", "Blocked OOM Kick (from host migr. requests) from {}"};
 		reaction crash{"Crash", "Blocked Crash from {}"};
 		reaction stand_user_crash{"Crash", "Blocked Stand User Crash from {}"};
 		reaction report{"Report", "Blocked Report from {}"};

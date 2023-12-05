@@ -40,4 +40,14 @@ namespace big
 			set_self_comps_props(components, props, target);
 		}
 	}
+
+	inline player_ptr get_player_from_ped(Ped ped)
+	{
+		for (auto& p : g_player_service->players())
+			if (p.second->get_ped())
+				if (p.second->get_ped() == g_pointers->m_gta.m_handle_to_ptr(ped))
+					return p.second;
+
+		return nullptr;
+	}
 }

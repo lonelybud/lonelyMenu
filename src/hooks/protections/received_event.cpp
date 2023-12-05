@@ -26,290 +26,6 @@ namespace big
 			id.m_instance_id = buffer.Read<int32_t>(8);
 	}
 
-	void scan_weapon_damage_event(CNetGamePlayer* player, rage::datBitBuffer* buffer)
-	{
-		uint8_t damageType;
-		uint32_t weaponType; // weaponHash
-
-		bool overrideDefaultDamage;
-		bool hitEntityWeapon;
-		bool hitWeaponAmmoAttachment;
-		bool silenced;
-
-		uint32_t damageFlags;
-		bool hasActionResult;
-
-		uint32_t actionResultName;
-		uint16_t actionResultId;
-		uint32_t f104;
-
-		uint32_t weaponDamage;
-		bool isNetTargetPos;
-
-		rage::fvector3 localPos;
-
-		bool f112;
-
-		uint32_t damageTime;
-		bool willKill;
-		uint32_t f120;
-		bool hasVehicleData;
-
-		uint16_t f112_1;
-
-		uint16_t parentGlobalId; // Source entity?
-		uint16_t hitGlobalId;    // Target entity?
-
-		uint8_t tyreIndex;
-		uint8_t suspensionIndex;
-		uint8_t hitComponent;
-
-		bool f133;
-		bool hasImpactDir;
-
-		rage::fvector3 impactDir;
-
-		damageType = buffer->Read<uint8_t>(2);
-		weaponType = buffer->Read<uint32_t>(32);
-
-		overrideDefaultDamage   = buffer->Read<uint8_t>(1);
-		hitEntityWeapon         = buffer->Read<uint8_t>(1);
-		hitWeaponAmmoAttachment = buffer->Read<uint8_t>(1);
-		silenced                = buffer->Read<uint8_t>(1);
-
-		damageFlags = buffer->Read<uint32_t>(24);
-		// (damageFlags >> 1) & 1
-		hasActionResult = buffer->Read<uint8_t>(1);
-
-		if (hasActionResult)
-		{
-			actionResultName = buffer->Read<uint32_t>(32);
-			actionResultId   = buffer->Read<uint16_t>(16);
-			f104
-				= buffer->Read<uint32_t>(32);
-		}
-
-		if (overrideDefaultDamage)
-		{
-			weaponDamage = buffer->Read<uint32_t>(17);
-		}
-		else
-		{
-			weaponDamage = 0;
-		}
-
-		bool _f92 = buffer->Read<uint8_t>(1);
-
-		if (_f92)
-		{
-			buffer->Read<uint8_t>(4);
-		}
-
-		isNetTargetPos = buffer->Read<uint8_t>(1);
-
-		if (isNetTargetPos)
-		{
-			localPos.x = buffer->ReadSignedFloat(16, 55.f); // divisor: 0x425C0000
-			localPos.y = buffer->ReadSignedFloat(16, 55.f);
-			localPos.z = buffer->ReadSignedFloat(16, 55.f);
-		}
-
-		if (damageType == 3)
-		{
-			damageTime = buffer->Read<uint32_t>(32);
-			willKill   = buffer->Read<uint8_t>(1);
-
-			if (hasActionResult)
-			{
-				hitGlobalId = buffer->Read<uint16_t>(13);
-			}
-			else
-			{
-				hitGlobalId = 0;
-			}
-
-			f112 = buffer->Read<uint8_t>(1);
-
-			if (!f112)
-			{
-				f112_1 = buffer->Read<uint16_t>(11);
-			}
-			else
-			{
-				f112_1 = buffer->Read<uint16_t>(16);
-			}
-		}
-		else
-		{
-			parentGlobalId = buffer->Read<uint16_t>(13); // +118
-			hitGlobalId    = buffer->Read<uint16_t>(13); // +120
-		}
-
-		if (damageType < 2)
-		{
-			localPos.x = buffer->ReadSignedFloat(16, 55.f); // divisor: 0x425C0000
-			localPos.y = buffer->ReadSignedFloat(16, 55.f);
-			localPos.z = buffer->ReadSignedFloat(16, 55.f);
-
-			if (damageType == 1)
-			{
-				hasVehicleData = buffer->Read<uint8_t>(1);
-
-				if (hasVehicleData)
-				{
-					tyreIndex       = buffer->Read<uint8_t>(4); // +122
-					suspensionIndex = buffer->Read<uint8_t>(4); // +123
-				}
-			}
-		}
-		else
-		{
-			hitComponent = buffer->Read<uint8_t>(5); // +108
-		}
-
-		f133         = buffer->Read<uint8_t>(1);
-		hasImpactDir = buffer->Read<uint8_t>(1);
-
-		if (hasImpactDir)
-		{
-			impactDir.x = buffer->ReadSignedFloat(16, 6.2831854820251f); // divisor: 0x40C90FDB
-			impactDir.y = buffer->ReadSignedFloat(16, 6.2831854820251f);
-			impactDir.z = buffer->ReadSignedFloat(16, 6.2831854820251f);
-		}
-
-		buffer->Seek(0);
-
-		// LOG(INFO) << localPos.x << " " << localPos.y << " " << localPos.z << ". " << math::distance_between_vectors(localPos, *g_local_player->m_navigation->get_position()) << " " << (g_local_player->m_net_object->m_object_id == hitGlobalId ? "TRUE" : "FALSE") << " " << damageType << " " << damageFlags;
-
-		if (damageType == 3 && (damageFlags & (1 << 1)) == 0)
-			hitGlobalId = g_local_player ? g_local_player->m_net_object->m_object_id : 0;
-	}
-
-	void scan_explosion_event(CNetGamePlayer* player, rage::datBitBuffer* buffer)
-	{
-		uint16_t f186;
-		uint16_t f208;
-		int ownerNetId;
-		uint16_t f214;
-		eExplosionTag explosionType;
-		float damageScale;
-
-		float posX;
-		float posY;
-		float posZ;
-
-		bool f242;
-		uint16_t f104;
-		float cameraShake;
-
-		bool isAudible;
-		bool f189;
-		bool isInvisible;
-		bool f126;
-		bool f241;
-		bool f243;
-
-		uint16_t f210;
-
-		float unkX;
-		float unkY;
-		float unkZ;
-
-		bool f190;
-		bool f191;
-
-		uint32_t f164;
-
-		float posX224;
-		float posY224;
-		float posZ224;
-
-		bool f240;
-		uint16_t f218;
-		bool f216;
-
-		// clang-format off
-
-		f186 = buffer->Read<uint16_t>(16);
-		f208 = buffer->Read<uint16_t>(13);
-		ownerNetId  = buffer->Read<uint16_t>(13);
-		f214        = buffer->Read<uint16_t>(13);               // 1604+
-		explosionType = (eExplosionTag)buffer->ReadSigned<int>(8);// 1604+ bit size
-		damageScale = buffer->Read<int>(8) / 255.0f;
-
-		posX        = buffer->ReadSignedFloat(22, 27648.0f);
-		posY        = buffer->ReadSignedFloat(22, 27648.0f);
-		posZ        = buffer->ReadFloat(22, 4416.0f) - 1700.0f;
-
-		f242        = buffer->Read<uint8_t>(1);
-		f104        = buffer->Read<uint16_t>(16);
-		cameraShake = buffer->Read<int>(8) / 127.0f;
-
-		isAudible   = buffer->Read<uint8_t>(1);
-		f189        = buffer->Read<uint8_t>(1);
-		isInvisible = buffer->Read<uint8_t>(1);
-		f126        = buffer->Read<uint8_t>(1);
-		f241        = buffer->Read<uint8_t>(1);
-		f243        = buffer->Read<uint8_t>(1);// 1604+
-
-		f210        = buffer->Read<uint16_t>(13);
-
-		unkX        = buffer->ReadSignedFloat(16, 1.1f);
-		unkY        = buffer->ReadSignedFloat(16, 1.1f);
-		unkZ        = buffer->ReadSignedFloat(16, 1.1f);
-
-		f190     	= buffer->Read<uint8_t>(1);
-		f191        = buffer->Read<uint8_t>(1);
-		f164        = buffer->Read<uint32_t>(32);
-
-		if (f242)
-		{
-			posX224 = buffer->ReadSignedFloat(31, 27648.0f);
-			posY224 = buffer->ReadSignedFloat(31, 27648.0f);
-			posZ224 = buffer->ReadFloat(31, 4416.0f) - 1700.0f;
-		}
-		else
-		{
-			posX224 = 0;
-			posY224 = 0;
-			posZ224 = 0;
-		}
-
-		auto f168 = buffer->Read<uint32_t>(32);// >= 1868: f_168
-
-
-		f240 = buffer->Read<uint8_t>(1);
-		if (f240)
-		{
-			f218 = buffer->Read<uint16_t>(16);
-
-			if (f191)
-			{
-				f216 = buffer->Read<uint8_t>(8);
-			}
-		}
-
-		buffer->Seek(0);
-
-		auto object = g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, ownerNetId, true);
-		auto entity = object ? object->GetGameObject() : nullptr;
-
-		auto offset_object = g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, f210, true);
-
-		if (f208 == 0 && entity && entity->m_entity_type == 4 && reinterpret_cast<CPed*>(entity)->m_player_info
-			&& player->m_player_info->m_ped && player->m_player_info->m_ped->m_net_object
-			&& ownerNetId != player->m_player_info->m_ped->m_net_object->m_object_id && !offset_object)
-		{
-			g_notification_service->push_error("Warning!",
-				std::vformat("{} blamed {} for explosion",
-					std::make_format_args(player->get_name(),
-						reinterpret_cast<CPed*>(entity)->m_player_info->m_net_player_data.m_name)));
-			return;
-		}
-
-		// clang-format on
-	}
-
 	void hooks::received_event(rage::netEventMgr* event_manager, CNetGamePlayer* source_player, CNetGamePlayer* target_player, uint16_t event_id, int event_index, int event_handled_bitset, int buffer_size, rage::datBitBuffer* buffer)
 	{
 		if (event_id > 91u)
@@ -557,6 +273,19 @@ namespace big
 			buffer->Seek(0);
 			break;
 		}
+		case eNetworkEvents::GIVE_WEAPON_EVENT:
+		{
+			int net_id = buffer->Read<int>(13);
+
+			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
+				LOG(WARNING) << std::format("Received GIVE_WEAPON_EVENT from {} to {} {}",
+				    source_player->get_name(),
+				    target_player->get_name(),
+				    NETWORK::NETWORK_IS_ACTIVITY_SESSION() ? "in activity" : "in freemode");
+
+			buffer->Seek(0);
+			break;
+		}
 		case eNetworkEvents::GIVE_CONTROL_EVENT:
 		{
 			uint32_t timestamp                = buffer->Read<uint32_t>(32);
@@ -642,12 +371,6 @@ namespace big
 				return;
 			}
 
-			scan_explosion_event(source_player, buffer);
-			break;
-		}
-		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
-		{
-			scan_weapon_damage_event(source_player, buffer);
 			break;
 		}
 		default: break;

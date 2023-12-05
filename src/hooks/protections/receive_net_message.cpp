@@ -1,6 +1,7 @@
 #include "backend/command.hpp"
 #include "backend/player_command.hpp"
 #include "core/data/infractions.hpp"
+#include "core/data/kick_reasons.hpp"
 #include "core/data/packet_types.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
@@ -151,7 +152,7 @@ namespace big
 				if (player->m_host_migration_rate_limit.process())
 				{
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
-						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
+						g_reactions.oom_kick2.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 					return true;
 				}
 				break;
@@ -160,14 +161,16 @@ namespace big
 			{
 				KickReason reason = buffer.Read<KickReason>(3);
 
+				if (auto itr = kick_reasons.find(reason); itr != kick_reasons.end())
+					g_notification_service->push_warning("Kick Player Message",
+					    std::format("Received \"{}\" from {} ({})", itr->second, player->get_name(), player->is_host() ? "host" : "non-host"),
+					    true);
+
 				if (!player->is_host())
 					return true;
 
 				if (reason == KickReason::VOTED_OUT)
-				{
-					g_notification_service->push_warning("Protections", "You have been kicked by the host", true);
 					return true;
-				}
 
 				break;
 			}
