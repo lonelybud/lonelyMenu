@@ -8,5 +8,6 @@ namespace big
 		bool veh_boost         = false;
 		bool seatbelt          = false;
 		bool spawn_at_waypoint = false;
+		bool force_rocket      = false;
 	} g_vehicle{};
 }

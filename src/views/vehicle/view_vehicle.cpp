@@ -123,6 +123,8 @@ namespace big
 
 		components::command_checkbox<"seatbelt">();
 
+		components::command_checkbox<"rocketability">();
+
 		components::sub_title("set/get weapon capacity");
 
 		static int weapon_index, capacity;
