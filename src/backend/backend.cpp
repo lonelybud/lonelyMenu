@@ -12,9 +12,6 @@ namespace big
 {
 	void backend::loop()
 	{
-		for (auto& command : g_bool_commands)
-			command->refresh();
-
 		register_script_patches();
 
 		bad_players_nm::load_blocked_list();
