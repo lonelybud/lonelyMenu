@@ -18,8 +18,7 @@ namespace big
 
 		while (g_running)
 		{
-			looped::system_self_globals();
-			looped::system_update_pointers();
+			looped::update_globals();
 			looped::system_desync_kick_protection();
 			looped::system_spoofing();
 

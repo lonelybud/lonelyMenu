@@ -9,7 +9,7 @@
 
 namespace big
 {
-	void looped::system_self_globals()
+	void looped::update_globals()
 	{
 		static bool last_dead = false;
 
@@ -19,8 +19,11 @@ namespace big
 		else
 			self::id = (*g_pointers->m_gta.m_network_player_mgr)->m_local_net_player->m_player_id;
 
-		auto state = gta_util::get_network()->m_game_session_state;
-		if (state == 0 || state > 4)
+		g_local_player = gta_util::get_local_ped();
+
+		auto m_game_session_state = gta_util::get_network()->m_game_session_state;
+
+		if (m_game_session_state == 0 || m_game_session_state > 4)
 		{
 			self::ped = PLAYER::PLAYER_PED_ID();
 
@@ -34,7 +37,7 @@ namespace big
 			else
 				self::veh = 0;
 
-			if (ENTITY::IS_ENTITY_DEAD(self::ped, 0))
+			if (g_local_player && g_local_player->m_player_info->m_game_state == eGameState::Died)
 			{
 				if (!last_dead)
 				{

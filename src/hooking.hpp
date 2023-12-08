@@ -119,6 +119,10 @@ namespace big
 		// toxic
 
 		static unsigned int broadcast_net_array(rage::netArrayHandlerBase* _this, CNetGamePlayer* target, rage::datBitBuffer* bit_buffer, uint16_t counter, uint32_t* elem_start, bool silent);
+
+		// spoofing
+
+		static void write_player_game_state_data_node(rage::netObject* player, CPlayerGameStateDataNode* node);
 	};
 
 	class minhook_keepalive

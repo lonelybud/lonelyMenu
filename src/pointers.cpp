@@ -226,6 +226,15 @@ namespace big
                 g_pointers->m_gta.m_write_bitbuf_array = ptr.add(1).rip().as<decltype(gta_pointers::m_write_bitbuf_array)>();
             }
         },
+        // Write Player Game State Data Node
+        {
+            "WPGSDN",
+            "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC 30 0F B7 81",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_write_player_game_state_data_node = ptr.as<functions::write_player_game_state_data_node>();
+            }
+        },
         // Ptr To Handle
         {
             "PTH",

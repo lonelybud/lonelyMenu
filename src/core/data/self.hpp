@@ -6,5 +6,6 @@ namespace big
 	{
 		bool unlimited_oxygen = false;
 		bool god_mode         = false;
+		bool no_ragdoll       = false;
 	} g_self{};
 }

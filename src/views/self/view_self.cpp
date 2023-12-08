@@ -36,6 +36,7 @@ namespace big
 		{
 			components::command_checkbox<"infoxy">();
 			components::command_checkbox<"godmode">();
+			components::command_checkbox<"noragdoll">();
 		}
 		ImGui::EndGroup();
 	}

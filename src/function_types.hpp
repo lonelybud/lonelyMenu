@@ -63,6 +63,8 @@ namespace big::functions
 	using ptr_to_handle = Entity (*)(void*);
 	using handle_to_ptr = rage::CDynamicEntity* (*)(Entity);
 
+	using write_player_game_state_data_node = bool (*)(rage::netObject* plr, CPlayerGameStateDataNode* node);
+
 	using get_gameplay_cam_coords = Vector3 (*)();
 
 	using get_screen_coords_for_world_coords = bool (*)(float* world_coords, float* out_x, float* out_y);

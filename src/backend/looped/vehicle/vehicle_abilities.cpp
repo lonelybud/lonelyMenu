@@ -66,7 +66,9 @@ namespace big
 
 			if (m_vehicle != curr_veh)
 			{
-				reset_defaults();
+				if (m_vehicle)
+					reset_defaults();
+
 				setup(curr_veh);
 			}
 

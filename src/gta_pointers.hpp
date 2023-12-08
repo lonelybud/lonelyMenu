@@ -79,6 +79,8 @@ namespace big
 		int* m_resolution_x;
 		int* m_resolution_y;
 
+		functions::write_player_game_state_data_node m_write_player_game_state_data_node;
+
 		FriendRegistry* m_friend_registry;
 
 		functions::get_screen_coords_for_world_coords m_get_screen_coords_for_world_coords;
