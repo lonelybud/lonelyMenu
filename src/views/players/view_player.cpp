@@ -209,7 +209,7 @@ namespace big
 			components::button("Copy outfit", [current_player] {
 				steal_player_outfit(current_player);
 			});
-			
+
 			ver_Space();
 
 			components::button("Copy Vehicle", [current_player] {
@@ -237,16 +237,18 @@ namespace big
 
 			if (g_player_service->get_self()->is_host())
 				components::player_command_button<"hostkick">(current_player);
-			else
-			{
-				components::player_command_button<"shkick">(current_player);
-				components::player_command_button<"endkick">(current_player);
-				components::player_command_button<"nfkick">(current_player);
-				components::player_command_button<"oomkick">(current_player);
 
-				if (!current_player->is_host())
-					components::player_command_button<"desync">(current_player);
-			}
+			ImGui::Spacing();
+
+			components::player_command_button<"shkick">(current_player);
+			components::player_command_button<"endkick">(current_player);
+			components::player_command_button<"nfkick">(current_player);
+			components::player_command_button<"oomkick">(current_player);
+
+			ImGui::Spacing();
+
+			if (!current_player->is_host())
+				components::player_command_button<"hostkick">(current_player);
 		}
 		ImGui::EndGroup();
 	}

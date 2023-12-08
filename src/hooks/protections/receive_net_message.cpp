@@ -155,6 +155,25 @@ namespace big
 						g_reactions.oom_kick2.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 					return true;
 				}
+				LOG(INFO) << "Received MsgScriptMigrateHost from " << player->get_name();
+
+				break;
+			}
+			case rage::eNetMessage::MsgScriptHostRequest:
+			{
+				CGameScriptId script;
+				script_id_deserialize(script, buffer);
+
+				if (g_session.force_script_host)
+					switch (script.m_hash)
+					{
+					case RAGE_JOAAT("freemode"):
+					case RAGE_JOAAT("fmmc_launcher"):
+					case RAGE_JOAAT("am_launcher"): return true;
+					}
+
+				LOG(INFO) << "Received MsgScriptHostRequest from " << player->get_name();
+
 				break;
 			}
 			case rage::eNetMessage::MsgKickPlayer:

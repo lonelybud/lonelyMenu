@@ -11,7 +11,7 @@ namespace big
 
 		virtual void execute(player_ptr player) override
 		{
-			if (!scripts::force_migration(RAGE_JOAAT("freemode")))
+			if (!scripts::force_migration("freemode", RAGE_JOAAT("freemode")))
 			{
 				g_notification_service->push_error("Script Host kick",
 				    std::format("Script Host kick failed on {}", player->get_name()),

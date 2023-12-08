@@ -12,6 +12,7 @@ namespace big
 
 			if (bad_script_hashes.contains(rage::joaat(name)))
 			{
+				LOG(WARNING) << "Blocked bad script from starting -> " << name;
 				src->set_return_value<int>(0);
 				return;
 			}

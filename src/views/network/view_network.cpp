@@ -51,7 +51,7 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
-			components::sub_title("Hosting");
+			components::sub_title("Session Host");
 
 			ImGui::SetNextItemWidth(150);
 			ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.host_token);
@@ -59,19 +59,6 @@ namespace big
 				g_session.host_token = g_session.orig_host_token;
 
 			ImGui::Spacing();
-
-			static std::string script_host_player_name = "";
-			components::button("Identify Script Host", [] {
-				if (auto launcher = gta_util::find_script_thread(RAGE_JOAAT("freemode")); launcher && launcher->m_net_component)
-					if (auto host = ((CGameScriptHandlerNetComponent*)launcher->m_net_component)->get_host(); host)
-						script_host_player_name = host->get_name();
-			});
-			ImGui::SameLine();
-			ImGui::Text(script_host_player_name.c_str());
-
-			components::button("Become Script Host", [] {
-				scripts::force_migration(RAGE_JOAAT("freemode"));
-			});
 
 			if (g_player_service->get_self()->is_host())
 			{
@@ -83,6 +70,31 @@ namespace big
 					});
 				});
 			}
+
+			ImGui::Spacing();
+
+			components::sub_title("Script Hosts");
+
+			static std::string freemode_sh_name, fmmc_launcher_sh_name, am_launcher_sh_name;
+
+			components::button("Identify all Script Hosts", [] {
+				scripts::get_host_name(RAGE_JOAAT("freemode"), freemode_sh_name);
+				scripts::get_host_name(RAGE_JOAAT("fmmc_launcher"), fmmc_launcher_sh_name);
+				scripts::get_host_name(RAGE_JOAAT("am_launcher"), am_launcher_sh_name);
+			});
+
+			ImGui::Text(std::format("freemode : {}", freemode_sh_name).c_str());
+			ImGui::Text(std::format("fmmc_launcher : {}", fmmc_launcher_sh_name).c_str());
+			ImGui::Text(std::format("am_launcher : {}", am_launcher_sh_name).c_str());
+
+			ImGui::Spacing();
+
+			components::button(g_session.force_script_host ? "UnForce scripts host" : "Force scripts host", [] {
+				g_session.force_script_host = !g_session.force_script_host;
+				scripts::force_migration("freemode", RAGE_JOAAT("freemode"), g_session.force_script_host);
+				scripts::force_migration("fmmc_launcher", RAGE_JOAAT("fmmc_launcher"), g_session.force_script_host);
+				scripts::force_migration("am_launcher", RAGE_JOAAT("am_launcher"), g_session.force_script_host);
+			});
 		}
 		ImGui::EndGroup();
 	}

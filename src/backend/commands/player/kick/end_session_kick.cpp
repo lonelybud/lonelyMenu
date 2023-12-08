@@ -2,6 +2,7 @@
 #include "core/scr_globals.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/scripts.hpp"
 
@@ -15,7 +16,7 @@ namespace big
 		{
 			if (!player)
 				return;
-			if (!scripts::force_migration(RAGE_JOAAT("freemode")))
+			if (!scripts::force_migration("freemode", RAGE_JOAAT("freemode")))
 			{
 				g_notification_service->push_error("End Session Kick", "Force script host failed!", true);
 				return;
