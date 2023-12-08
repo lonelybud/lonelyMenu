@@ -54,6 +54,10 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
+      - name: Delete latest release
+        uses: liudonghua123/delete-release-action@v1
+        with:
+          release_name: "latest"
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
@@ -67,7 +71,7 @@ jobs:
       - name: Github Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Release [${{ needs.build.outputs.short_sha }}]
+          name: latest
           tag_name: release-${{ needs.build.outputs.short_sha }}
           body: |
             **This release has been built by Github Actions**
