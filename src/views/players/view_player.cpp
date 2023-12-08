@@ -248,7 +248,7 @@ namespace big
 			ImGui::Spacing();
 
 			if (!current_player->is_host())
-				components::player_command_button<"hostkick">(current_player);
+				components::player_command_button<"desync">(current_player);
 		}
 		ImGui::EndGroup();
 	}

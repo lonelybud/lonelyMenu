@@ -133,13 +133,14 @@ namespace big
 					player->is_spammer   = true;
 					player->spam_message = message;
 					player->is_blocked   = true;
-					bad_players_nm::add_player(player, true, true);
 
-					if (g_player_service->get_self()->is_host())
-					{
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
-						return true;
-					}
+					g_fiber_pool->queue_job([player] {
+						bad_players_nm::add_player(player, true, true);
+						if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
+					});
+
+					return true;
 				}
 
 				if (g_session.log_chat_messages_to_textbox)

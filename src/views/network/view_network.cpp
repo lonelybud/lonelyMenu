@@ -42,6 +42,8 @@ namespace big
 			ImGui::Checkbox("Lock Session", &g_session.lock_session);
 			ImGui::EndDisabled();
 
+			ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
+
 			components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 		}
 		ImGui::EndGroup();

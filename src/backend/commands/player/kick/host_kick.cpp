@@ -18,8 +18,8 @@ namespace big
 				return;
 			}
 
-			if ((player->infractions.contains((int)Infraction::TRIED_KICK_PLAYER) || player->infractions.contains((int)Infraction::TRIED_CRASH_PLAYER))
-			    && !player->is_blocked)
+			if (!player->is_blocked
+			    && (player->infractions.contains((int)Infraction::TRIED_KICK_PLAYER) || player->infractions.contains((int)Infraction::TRIED_CRASH_PLAYER)))
 				bad_players_nm::add_player(player, true, player->is_spammer);
 
 			g_notification_service->push_success("Kick", std::format("Host kick to {}", player->get_name()), true);
