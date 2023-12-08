@@ -89,8 +89,9 @@ namespace big
 
 			ImGui::Spacing();
 
-			components::button(g_session.force_script_host ? "UnForce scripts host" : "Force scripts host", [] {
-				g_session.force_script_host = !g_session.force_script_host;
+			ImGui::Checkbox("Force Script Host", &g_session.force_script_host);
+
+			components::button("Migrate scripts host", [] {
 				scripts::force_migration("freemode", RAGE_JOAAT("freemode"), g_session.force_script_host);
 				scripts::force_migration("fmmc_launcher", RAGE_JOAAT("fmmc_launcher"), g_session.force_script_host);
 				scripts::force_migration("am_launcher", RAGE_JOAAT("am_launcher"), g_session.force_script_host);
