@@ -16,6 +16,7 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
+#include "services/tunables/tunables_service.hpp"
 #include "thread_pool.hpp"
 #include "version.hpp"
 
@@ -121,13 +122,14 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto gta_data_service_instance       = std::make_unique<gta_data_service>();
 			    auto gui_service_instance            = std::make_unique<gui_service>();
 			    auto script_patcher_service_instance = std::make_unique<script_patcher_service>();
+			    auto tunables_service_instance       = std::make_unique<tunables_service>();
 			    LOG(INFO) << "Registered service instances...";
 
 			    g_script_mgr.add_script(std::make_unique<script>(&gui::script_func, "GUI", false));
 
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::loop, "Backend Loop", false));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::misc_loop, "Miscellaneous"));
-
+			    g_script_mgr.add_script(std::make_unique<script>(&backend::tunables_script, "Tunables"));
 			    LOG(INFO) << "Scripts registered.";
 
 			    g_hooking->enable();
@@ -155,6 +157,8 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    thread_pool_instance->destroy();
 			    LOG(INFO) << "Destroyed thread pool.";
 
+			    tunables_service_instance.reset();
+			    LOG(INFO) << "Tunables Service reset.";
 			    script_patcher_service_instance.reset();
 			    LOG(INFO) << "Script Patcher Service reset.";
 			    gui_service_instance.reset();

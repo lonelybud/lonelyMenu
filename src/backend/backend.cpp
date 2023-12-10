@@ -6,6 +6,7 @@
 #include "script.hpp"
 #include "script_patches.hpp"
 #include "services/bad_players/bad_players.hpp"
+#include "services/tunables/tunables_service.hpp"
 #include "thread_pool.hpp"
 #include "util/globals.hpp"
 #include "util/lua_script.cpp"
@@ -53,5 +54,10 @@ namespace big
 
 			script::get_current()->yield();
 		}
+	}
+
+	void backend::tunables_script()
+	{
+		g_tunables_service->run_script();
 	}
 }
