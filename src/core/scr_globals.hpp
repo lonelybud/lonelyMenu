@@ -16,6 +16,8 @@ namespace big::scr_globals
 	static inline const script_global transaction_overlimit(20483);
 	static inline const script_global passive(1574582);
 	static inline const script_global pickups(2765084);
+
+	static inline const script_global reset_clothing(103377); // freemode 75, &iLocal_.*, 2\);
 }
 
 namespace big::scr_locals

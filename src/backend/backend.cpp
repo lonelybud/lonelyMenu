@@ -40,6 +40,7 @@ namespace big
 		while (g_running)
 		{
 			looped::hud_disable_input();
+			looped::self_persist_outfit();
 
 			if (g_debug.fm_mission_controller_cart_grab)
 			{
