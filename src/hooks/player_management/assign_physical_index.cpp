@@ -81,9 +81,7 @@ namespace big
 									return;
 								}
 
-								if (plyr->is_spammer)
-									LOG(WARNING) << str;
-								else
+								if (!plyr->is_spammer)
 									g_notification_service->push_warning("Carefull", str, true);
 
 								return;

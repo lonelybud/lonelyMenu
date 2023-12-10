@@ -20,13 +20,33 @@ namespace big
 		ImGui::SetNextItemWidth(100);
 		ImGui::InputFloat("Teleport forward distance", &increment);
 		ImGui::SameLine();
-		components::button("Tel. Horizontal", [] {
+		components::button("Forward", [] {
 			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, increment, 0);
 			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
 		});
 		ImGui::SameLine();
-		components::button("Tel. Vertical", [] {
+		components::button("Backward", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, -increment, 0);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+		ImGui::SameLine();
+		components::button("Left", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, -increment, 0, 0);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+		ImGui::SameLine();
+		components::button("Right", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, increment, 0, 0);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+
+		components::button("Up", [] {
 			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, 0, increment);
+			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+		});
+		ImGui::SameLine();
+		components::button("Down", [] {
+			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, 0, 0, -increment);
 			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
 		});
 

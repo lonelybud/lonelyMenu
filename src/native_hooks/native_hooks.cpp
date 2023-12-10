@@ -5,6 +5,7 @@
 #include "crossmap.hpp"
 #include "freemode.hpp"
 #include "gta_util.hpp"
+#include "shop_controller.hpp"
 
 #include <script/scrProgram.hpp>
 #include <script/scrProgramTable.hpp>
@@ -103,13 +104,16 @@ namespace big
 	{
 		add_native_detour(0x1CA59E306ECB80A5, all_scripts::NETWORK_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
 		add_native_detour(0xD1110739EEADB592, all_scripts::NETWORK_TRY_TO_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
-		add_native_detour(0x40EB1EFD921822BC, all_scripts::DO_NOTHING); // SECURITY::REGISTER_SCRIPT_VARIABLE
-		add_native_detour(0x340A36A700E99699, all_scripts::DO_NOTHING); // SECURITY::UNREGISTER_SCRIPT_VARIABLE
-		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING); // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
+		add_native_detour(0x158C16F5E4CF41F8, all_scripts::RETURN_TRUE); // bypass casino country restrictions
+		add_native_detour(0x40EB1EFD921822BC, all_scripts::DO_NOTHING);  // SECURITY::REGISTER_SCRIPT_VARIABLE
+		add_native_detour(0x340A36A700E99699, all_scripts::DO_NOTHING);  // SECURITY::UNREGISTER_SCRIPT_VARIABLE
+		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING);  // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
 
 		add_native_detour(RAGE_JOAAT("shop_controller"), 0x34616828CD07F1A1, all_scripts::RETURN_FALSE); // prevent exploit reports
+		add_native_detour(RAGE_JOAAT("shop_controller"), 0xDC38CC1E35B6A5D7, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
 
 		add_native_detour(RAGE_JOAAT("freemode"), 0x2C83A9DA6BFFC4F9, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
+		add_native_detour(RAGE_JOAAT("freemode"), 0x5E9564D8246B909A, freemode::IS_PLAYER_PLAYING);
 
 		add_native_detour(RAGE_JOAAT("am_launcher"), 0xB8BA7F44DF1575E1, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 

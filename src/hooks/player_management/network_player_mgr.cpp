@@ -13,7 +13,7 @@ namespace big
 {
 	bool hooks::network_player_mgr_init(CNetworkPlayerMgr* _this, uint64_t a2, uint32_t a3, uint32_t a4[4])
 	{
-		LOG(INFO) << "CNetworkPlayerMgr#init got called, we're probably entering a session.";
+		LOG(INFO) << "CNetworkPlayerMgr init";
 
 		bool result = g_hooking->get_original<hooks::network_player_mgr_init>()(_this, a2, a3, a4);
 
@@ -24,7 +24,7 @@ namespace big
 
 	void hooks::network_player_mgr_shutdown(CNetworkPlayerMgr* _this)
 	{
-		LOG(INFO) << "CNetworkPlayerMgr#shutdown got called, we're probably leaving our session.";
+		LOG(INFO) << "CNetworkPlayerMgr shutdown";
 
 		g_player_service->do_cleanup();
 
@@ -40,6 +40,7 @@ namespace big
 		g_session.log_chat_messages_to_textbox = g_session_temp.log_chat_messages_to_textbox;
 		g_session.decloak_players              = g_session_temp.decloak_players;
 		g_session.custom_time                  = g_session_temp.custom_time;
+		g_session.auto_kick_chat_spammers      = g_session_temp.auto_kick_chat_spammers;
 
 		g_esp_t g_esp_temp;
 		g_esp.enabled             = g_esp_temp.enabled;

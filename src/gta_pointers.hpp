@@ -188,8 +188,6 @@ namespace big
 
 		PVOID m_model_spawn_bypass;
 
-		functions::get_host_array_handler_by_index m_get_host_array_handler_by_index;
-
 		PVOID m_allocate_memory_reliable;
 		functions::connection_manager_try_free_memory m_connection_manager_try_free_memory;
 		functions::remove_message_from_queue m_remove_message_from_queue;

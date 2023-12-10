@@ -4,7 +4,7 @@ namespace big
 {
 	notification_service::notification_service()
 	{
-		push("Welcome", "Loaded YimMenu. Press 'Insert' key to open");
+		push("Welcome", "Loaded YimMenu");
 
 		g_notification_service = this;
 	}

@@ -60,8 +60,6 @@ namespace big
 
 		void timeout();
 
-		std::optional<CommandAccessLevel> command_access_level = std::nullopt;
-
 		bool off_radar    = false;
 		bool never_wanted = false;
 		bool semi_godmode = false;

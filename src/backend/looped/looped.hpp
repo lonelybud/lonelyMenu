@@ -5,7 +5,6 @@ namespace big
 	class looped
 	{
 	public:
-		static void hud_transition_state();
 		static void hud_disable_input();
 		static void update_globals();
 		static void system_desync_kick_protection();

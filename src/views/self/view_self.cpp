@@ -1,17 +1,20 @@
-#include "core/scr_globals.hpp"
-#include "gta_util.hpp"
 #include "natives.hpp"
+#include "util/local_player.hpp"
 #include "views/view.hpp"
-
-#include <script/globals/GPBD_FM_3.hpp>
 
 namespace big
 {
 	static inline void render_first_block()
 	{
-		components::command_button<"clearwantedlvl">();
+		components::button("Clear Wanted Level", [] {
+			g_local_player->m_player_info->m_wanted_level = 0;
+			g_local_player->m_player_info->m_is_wanted    = false;
+		});
 		ImGui::SameLine();
-		components::command_button<"heal">();
+		components::button("Heal", [] {
+			ENTITY::SET_ENTITY_HEALTH(self::ped, PED::GET_PED_MAX_HEALTH(self::ped), 0);
+			PED::SET_PED_ARMOUR(self::ped, PLAYER::GET_PLAYER_MAX_ARMOUR(self::id));
+		});
 		ImGui::SameLine();
 		components::button("Clean", [] {
 			auto ped = self::ped;
@@ -28,6 +31,24 @@ namespace big
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 4, "ALL");
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 5, "ALL");
 		});
+		ImGui::SameLine();
+		components::button("Fill Inventory", [] {
+			std::string prefix = local_player::get_mp_prefix();
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NO_BOUGHT_YUM_SNACKS"), 30, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NO_BOUGHT_HEALTH_SNACKS"), 15, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NO_BOUGHT_EPIC_SNACKS"), 5, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NUMBER_OF_CHAMP_BOUGHT"), 5, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NUMBER_OF_ORANGE_BOUGHT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NUMBER_OF_BOURGE_BOUGHT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "NUMBER_OF_SPRUNK_BOUGHT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "MP_CHAR_ARMOUR_1_COUNT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "MP_CHAR_ARMOUR_2_COUNT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "MP_CHAR_ARMOUR_3_COUNT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "MP_CHAR_ARMOUR_4_COUNT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "MP_CHAR_ARMOUR_5_COUNT"), 10, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "CIGARETTES_BOUGHT"), 20, true);
+			STATS::STAT_SET_INT(rage::joaat(prefix + "BREATHING_APPAR_BOUGHT"), 20, true);
+		});
 	}
 
 	static inline void render_chkboxs()
@@ -36,18 +57,23 @@ namespace big
 		{
 			components::command_checkbox<"infoxy">();
 			components::command_checkbox<"godmode">();
-			components::command_checkbox<"noragdoll">();
+			components::command_checkbox<"otr">();
+
+			static const char* ragdoll_button_text = "Disable Ragdoll";
+			components::button(ragdoll_button_text, [] {
+				if (PED::CAN_PED_RAGDOLL(self::ped))
+				{
+					PED::SET_PED_CAN_RAGDOLL(self::ped, FALSE);
+					ragdoll_button_text = "Enable Ragdoll";
+				}
+				else
+				{
+					PED::SET_PED_CAN_RAGDOLL(self::ped, TRUE);
+					ragdoll_button_text = "Disable Ragdoll";
+				}
+			});
 		}
 		ImGui::EndGroup();
-	}
-
-	static inline void render_other_options1()
-	{
-		components::command_button<"fillsnacks">();
-		ImGui::SameLine();
-		components::button("Force passive mode (30 secs)", [] {
-			*scr_globals::passive.as<PBOOL>() = TRUE;
-		});
 	}
 
 	void view::self()
@@ -59,11 +85,5 @@ namespace big
 		ImGui::SeparatorText("###self_checkboxs");
 
 		render_chkboxs();
-
-		ImGui::Spacing();
-
-		ImGui::SeparatorText("###otherOptions1");
-
-		render_other_options1();
 	}
 }

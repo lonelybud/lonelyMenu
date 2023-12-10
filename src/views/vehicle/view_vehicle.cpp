@@ -30,11 +30,23 @@ namespace big
 
 	static inline void render_fun_feats()
 	{
-		static bool force_lowrider;
-		static float maxWheelRaiseFactor = 2;
+		static float maxWheelRaiseFactor = 0;
+		static int no_of_seats           = 0;
 
 		if (self::veh)
 		{
+			if (no_of_seats == 0)
+			{
+				no_of_seats = -1;
+				g_fiber_pool->queue_job([] {
+					no_of_seats = VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(self::veh) + 1;
+				});
+			}
+
+			ImGui::Text(std::format("No of seat: {}", no_of_seats).c_str());
+
+			ImGui::Spacing();
+
 			ImGui::BeginGroup();
 			{
 				components::sub_title("Basic Controls");
@@ -59,17 +71,14 @@ namespace big
 				{
 					components::sub_title("Lowrider Controls");
 
-					ImGui::Checkbox("force###forceLowrider", &force_lowrider);
+					components::button("Get suspension raise factor", [&] {
+						maxWheelRaiseFactor = VEHICLE::GET_HYDRAULIC_SUSPENSION_RAISE_FACTOR(self::veh, 0);
+					});
 
 					ImGui::Spacing();
 
-					if (force_lowrider)
+					if (maxWheelRaiseFactor)
 					{
-						ImGui::SetNextItemWidth(200);
-						ImGui::SliderFloat("maxWheelRaiseFactor", &maxWheelRaiseFactor, 1, 4);
-
-						ImGui::Spacing();
-
 						for (int i = 0; i < 4; ++i)
 						{
 							components::button("Raise W" + std::to_string(i + 1), [&, wheelIndex = wheelIndexes[i]] {
@@ -111,7 +120,8 @@ namespace big
 		else
 		{
 			components::small_text("Please sit in a vehicle");
-			force_lowrider = false;
+			maxWheelRaiseFactor = 0;
+			no_of_seats         = 0;
 		}
 	}
 
@@ -121,9 +131,23 @@ namespace big
 
 		components::command_checkbox<"veh_boost">();
 
-		components::command_checkbox<"seatbelt">();
-
 		components::command_checkbox<"rocketability">();
+
+		static bool can_be_knocked_off_veh = true;
+		components::button(can_be_knocked_off_veh ? "Enable Seat Belt" : "Disable Seat Belt", [] {
+			if (can_be_knocked_off_veh)
+			{
+				PED::SET_PED_CONFIG_FLAG(self::ped, 32, 0);
+				PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(self::ped, (int)eKnockOffVehicle::KNOCKOFFVEHICLE_NEVER);
+			}
+			else
+			{
+				PED::SET_PED_CONFIG_FLAG(self::ped, 32, 1);
+				PED::SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE(self::ped, (int)eKnockOffVehicle::KNOCKOFFVEHICLE_DEFAULT);
+			}
+
+			can_be_knocked_off_veh = !can_be_knocked_off_veh;
+		});
 
 		components::sub_title("set/get weapon capacity");
 

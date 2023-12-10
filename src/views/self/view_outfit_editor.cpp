@@ -16,6 +16,7 @@ namespace big
 		static std::string selected_file;
 
 		components::button("Refresh list", [] {
+			saved_outfits.clear();
 			for (const auto& directory_entry : std::filesystem::directory_iterator(get_folder().get_path()))
 				saved_outfits.push_back(directory_entry.path().filename().generic_string());
 		});
