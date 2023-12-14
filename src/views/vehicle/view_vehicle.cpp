@@ -30,7 +30,7 @@ namespace big
 
 	static inline void render_fun_feats()
 	{
-		static float maxWheelRaiseFactor = 0;
+		static float maxWheelRaiseFactor = -1;
 		static int no_of_seats           = 0;
 
 		if (self::veh)
@@ -77,8 +77,13 @@ namespace big
 
 					ImGui::Spacing();
 
-					if (maxWheelRaiseFactor)
+					if (maxWheelRaiseFactor != -1)
 					{
+						ImGui::SetNextItemWidth(200);
+						ImGui::SliderFloat("Custom Raise factor", &maxWheelRaiseFactor, 1, 4);
+
+						ImGui::Spacing();
+
 						for (int i = 0; i < 4; ++i)
 						{
 							components::button("Raise W" + std::to_string(i + 1), [&, wheelIndex = wheelIndexes[i]] {
@@ -120,7 +125,7 @@ namespace big
 		else
 		{
 			components::small_text("Please sit in a vehicle");
-			maxWheelRaiseFactor = 0;
+			maxWheelRaiseFactor = -1;
 			no_of_seats         = 0;
 		}
 	}

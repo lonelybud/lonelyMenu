@@ -41,36 +41,9 @@ namespace big
 			if (auto it = m_tunables.find(hash); it != m_tunables.end())
 				return reinterpret_cast<T>(it->second);
 
+			LOG(WARNING) << "Tunable 0x" << hash << " not found.";
+
 			return nullptr;
-		}
-
-		// wrapper around get_tunable(), may not set the tunable immediately if the service isn't initialized yet
-		template<typename T>
-		inline void set_tunable(rage::joaat_t hash, T value)
-		{
-			if (initialized())
-			{
-				if (auto tunable = get_tunable<T*>(hash))
-				{
-					*tunable = value;
-				}
-				else
-				{
-					LOG(WARNING) << "Tunable 0x" << hash << " not found.";
-				}
-			}
-			else
-			{
-				g_fiber_pool->queue_job([this, hash, value] {
-					while (!initialized())
-						script::get_current()->yield();
-
-					if (auto tunable = get_tunable<T*>(hash))
-					{
-						*tunable = value;
-					}
-				});
-			}
 		}
 
 	private:

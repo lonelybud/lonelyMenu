@@ -30,7 +30,12 @@ namespace big
 					        net_game_player->get_net_data(),
 					        msg,
 					        is_team))
+					{
 						notify::draw_chat(msg, net_game_player->get_name(), is_team);
+
+						if (g_session.log_chat_messages_to_textbox)
+							g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), msg);
+					}
 			});
 		};
 

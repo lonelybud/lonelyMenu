@@ -9,7 +9,7 @@ namespace big
 		{
 			const auto hash = src->get_arg<rage::joaat_t>(0);
 
-			if (hash == RAGE_JOAAT("main"))
+			if (hash == RAGE_JOAAT("director_mode") || hash == RAGE_JOAAT("main"))
 			{
 				src->set_return_value(0);
 				return;
