@@ -18,7 +18,7 @@ namespace big
 				if (is_rocket && (vehicle->m_boost == 0.f || !vehicle->m_boost_state))
 				{
 					vehicle->m_boost_allow_recharge = true;
-					vehicle->m_boost                = 3.f;
+					vehicle->m_boost                = 10.f;
 				}
 				else if (is_kers && vehicle->m_kers_boost == 0.f)
 				{

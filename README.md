@@ -1,6 +1,5 @@
 # YimMenu
 
-![](https://img.shields.io/badge/current_status-unkown-red)
 ![](https://img.shields.io/badge/mini_menu-v2-green)
 
 refer to original readme [here](https://github.com/YimMenu/YimMenu#readme)

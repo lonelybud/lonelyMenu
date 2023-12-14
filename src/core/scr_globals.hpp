@@ -4,27 +4,26 @@
 
 namespace big::scr_globals
 {
-	static inline const script_global gsbd(2648711);
-	static inline const script_global gsbd_kicking(1885447);
-	static inline const script_global globalplayer_bd(2657704);
-	static inline const script_global gpbd_fm_3(1895156);
-	static inline const script_global gpbd_fm_1(1853988);
-	static inline const script_global transition_state(1574996);
-	static inline const script_global vehicle_global(1586488);
-	static inline const script_global freemode_properties(2672524);
-	static inline const script_global freemode_global(2794162);
-	static inline const script_global transaction_overlimit(20483);
+	static inline const script_global gsbd(2648918);
+	static inline const script_global gsbd_kicking(1877042);
+	static inline const script_global globalplayer_bd(2657921);
+	static inline const script_global gpbd_fm_3(1886967);
+	static inline const script_global gpbd_fm_1(1845263);
+	static inline const script_global transition_state(1575008);
+	static inline const script_global vehicle_global(1586504);
+	static inline const script_global freemode_properties(2672741);
+	static inline const script_global freemode_global(2738587);
+	static inline const script_global transaction_overlimit(20796);
 	static inline const script_global passive(1574582);
-	static inline const script_global pickups(2765084);
-
-	static inline const script_global reset_clothing(103377); // freemode 75, &iLocal_.*, 2\);
+	static inline const script_global pickups(2707706);
+	static inline const script_global reset_clothing(103936); // freemode 75, &iLocal_.*, 2\);
 }
 
 namespace big::scr_locals
 {
 	namespace am_hunt_the_beast
 	{
-		constexpr static auto broadcast_idx        = 600;
-		constexpr static auto player_broadcast_idx = 2584;
+		constexpr static auto broadcast_idx        = 602;
+		constexpr static auto player_broadcast_idx = 2586;
 	}
 }
