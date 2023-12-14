@@ -98,7 +98,8 @@ namespace big
 
 		if (is_bad_metric)
 		{
-			LOG(WARNING) << "BAD METRIC: " << metric->get_name();
+			if (strcmp(metric->get_name(), "W_L") != 0) // dont log W_L metric
+				LOG(WARNING) << "BAD METRIC: " << metric->get_name();
 
 			std::ofstream log(g_file_manager.get_project_file("./bad-metrics.log").get_path(), std::ios::app);
 			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << yim_serializer.get_string() << std::endl;
@@ -114,11 +115,9 @@ namespace big
 				if (result.size() != data.size())
 					LOG(INFO) << "Removed YimMenu DLL from MM metric";
 				strncpy(reinterpret_cast<char*>(metric) + 0x18, result.c_str(), 0x900);
-
-				return g_hooking->get_original<prepare_metric_for_sending>()(serializer, unk, time, metric);
 			}
-
-			return false;
+			else
+				return false;
 		}
 
 		return g_hooking->get_original<prepare_metric_for_sending>()(serializer, unk, time, metric);
