@@ -15,7 +15,7 @@ namespace big
 		virtual void on_tick() override
 		{
 			scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[self::id].OffRadarActive = true;
-			*scr_globals::freemode_properties.at(57).as<int*>() = NETWORK::GET_NETWORK_TIME() + 1;
+			*scr_globals::freemode_properties.at(58).as<int*>() = NETWORK::GET_NETWORK_TIME() + 1;
 		}
 
 		virtual void on_disable() override
