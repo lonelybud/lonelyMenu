@@ -15,7 +15,7 @@ namespace big
 				bool is_rocket = VEHICLE::GET_HAS_ROCKET_BOOST(self::veh);
 				bool is_kers   = VEHICLE::GET_VEHICLE_HAS_KERS(self::veh);
 
-				if (is_rocket && (vehicle->m_boost == 0.f || !vehicle->m_boost_state))
+				if (is_rocket && (vehicle->m_boost == 0.f || !vehicle->m_boosting))
 				{
 					vehicle->m_boost_allow_recharge = true;
 					vehicle->m_boost                = 10.f;
