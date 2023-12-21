@@ -115,7 +115,7 @@ namespace big
 				LOG(WARNING) << "BAD METRIC: " << metric->get_name() << " " << contains_your_sc;
 			}
 
-			std::ofstream log(g_file_manager.get_project_file("./bad-metrics.log").get_path(), std::ios::app);
+			std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
 			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << data << std::endl;
 			log.close();
 

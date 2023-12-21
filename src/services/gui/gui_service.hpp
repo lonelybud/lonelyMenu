@@ -11,6 +11,7 @@ namespace big
 		WEAPONS,
 		TELEPORT,
 		OUTFIT_EDITOR,
+		ANIMATIONS,
 
 		VEHICLE,
 		LSC,
@@ -53,6 +54,7 @@ namespace big
 		                {tabs::WEAPONS, {"Weapons", view::weapons}},
 		                {tabs::TELEPORT, {"Teleport", view::teleport}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
+		                {tabs::ANIMATIONS, {"Animations", view::animations}},
 		            },
 		        },
 		    },

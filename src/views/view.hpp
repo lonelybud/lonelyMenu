@@ -31,6 +31,7 @@ namespace big
 		static void notifications();
 		static void root();
 		static void self();
+		static void animations();
 		static void network();
 		static void bad_players();
 		static void chat();

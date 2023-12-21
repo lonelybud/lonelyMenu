@@ -224,7 +224,6 @@ namespace big
 			components::button("Copy outfit", [current_player] {
 				steal_player_outfit(current_player);
 			});
-
 			ver_Space();
 
 			components::button("Copy Vehicle", [current_player] {
@@ -247,6 +246,7 @@ namespace big
 	static inline void render_kick(player_ptr current_player)
 	{
 		ImGui::BeginGroup();
+		if (!current_player->is_host() || *g_pointers->m_gta.m_is_session_started) // to prevent you from kicking host when session has not started.
 		{
 			components::sub_title("Kick");
 
