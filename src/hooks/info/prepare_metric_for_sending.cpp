@@ -1,5 +1,6 @@
 #include "hooking.hpp"
 #include "rage/rlMetric.hpp"
+#include "services/players/player_service.hpp"
 
 namespace big
 {
@@ -98,11 +99,24 @@ namespace big
 
 		if (is_bad_metric)
 		{
-			if (strcmp(metric->get_name(), "W_L") != 0) // dont log W_L metric
-				LOG(WARNING) << "BAD METRIC: " << metric->get_name();
+			std::string data = yim_serializer.get_string();
+
+			if (strcmp(metric->get_name(), "W_L") == 0)
+				; // dont log W_L metric
+			else
+			{
+				bool contains_your_sc = false;
+
+				auto net_data = g_player_service->get_self()->get_net_data();
+
+				if (strcmp(metric->get_name(), "DIG") == 0 && net_data)
+					contains_your_sc = data.find(std::to_string(net_data->m_gamer_handle.m_rockstar_id)) != std::string::npos;
+
+				LOG(WARNING) << "BAD METRIC: " << metric->get_name() << " " << contains_your_sc;
+			}
 
 			std::ofstream log(g_file_manager.get_project_file("./bad-metrics.log").get_path(), std::ios::app);
-			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << yim_serializer.get_string() << std::endl;
+			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << data << std::endl;
 			log.close();
 
 			if (strcmp(metric->get_name(), "MM") == 0)

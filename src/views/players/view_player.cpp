@@ -21,6 +21,17 @@ static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 
 namespace big
 {
+	const char* get_nat_type_str(int type)
+	{
+		switch (type)
+		{
+		case 1: return "open";
+		case 2: return "moderate";
+		case 3: return "strict";
+		}
+		return "unkown";
+	}
+
 	static big::player_ptr last_selected_player;
 	static uint64_t rockstar_id;
 
@@ -55,6 +66,10 @@ namespace big
 					    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
 
 					    ImGui::Spacing();
+
+					    ImGui::Text(std::format("NAT Type: {}",
+					        get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type))
+					                    .c_str());
 
 					    auto ip   = current_player->get_ip_address();
 					    auto port = current_player->get_port();

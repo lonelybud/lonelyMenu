@@ -1,5 +1,6 @@
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "gta_util.hpp"
 #include "pointers.hpp"
 
 #include <imgui.h>
@@ -15,10 +16,16 @@ namespace big
 			ImGui::Text(std::format("Game Version: {}", g_pointers->m_gta.m_game_version).c_str());
 			ImGui::Text(std::format("Online Version: {}", g_pointers->m_gta.m_online_version).c_str());
 
-			if (const auto state = *scr_globals::transition_state.as<eTransitionState*>(); (int)state < 48)
-				ImGui::Text(std::format("Transition State Text: {}", transition_states[(int)state]).c_str());
-			else
-				ImGui::Text(std::format("Transitio State: {}", (int)state).c_str());
+
+			const auto state          = *scr_globals::transition_state.as<eTransitionState*>();
+			const char* state_text    = transition_states[(int)state];
+			rage::scrThread* freemode = nullptr;
+
+			if (state == eTransitionState::TRANSITION_STATE_FM_TRANSITION_CREATE_PLAYER
+			    && (freemode = gta_util::find_script_thread(RAGE_JOAAT("freemode")), freemode && freemode->m_net_component))
+				state_text = "Wait For Host Broadcast Data";
+
+			ImGui::Text(std::format("Transition State: {}", state_text).c_str());
 
 			ImGui::EndTabItem();
 		}

@@ -59,7 +59,7 @@ namespace big
 
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;
-		bool auto_kick_chat_spammers      = false;
+		bool auto_kick_chat_spammers      = true;
 
 		struct custom_time
 		{

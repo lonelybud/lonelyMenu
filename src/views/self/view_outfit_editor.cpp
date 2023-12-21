@@ -4,22 +4,32 @@
 
 namespace big
 {
-	static folder get_folder()
-	{
-		return g_file_manager.get_project_folder("saved_outfits");
-	}
-
 	void view::outfit_editor()
 	{
 		static char outfit_name[MAX_PATH] = {};
-		static std::vector<std::string> saved_outfits;
-		static std::string selected_file;
 
-		components::button("Refresh list", [] {
-			saved_outfits.clear();
-			for (const auto& directory_entry : std::filesystem::directory_iterator(get_folder().get_path()))
-				saved_outfits.push_back(directory_entry.path().filename().generic_string());
-		});
+		static std::string selected_folder, selected_file;
+		static std::vector<std::string> outfits_folder, outfits;
+
+		ImGui::BeginGroup();
+		{
+			ImGui::Text("Components");
+			for (auto& item : outfit::components_t().items)
+				components::button(std::format("Clear {}", item.label), [item] {
+					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, 0, 0, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+				});
+		}
+		ImGui::EndGroup();
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		{
+			ImGui::Text("Props");
+			for (auto& item : outfit::props_t().items)
+				components::button(std::format("Clear {}", item.label), [item] {
+					PED::CLEAR_PED_PROP(self::ped, item.id, 0);
+				});
+		}
+		ImGui::EndGroup();
 
 		ImGui::Spacing();
 
@@ -28,7 +38,7 @@ namespace big
 		ImGui::SameLine();
 		components::button("Save Current", [] {
 			std::string str = outfit_name;
-			auto folder     = get_folder();
+			auto folder     = outfit::get_folder(selected_folder);
 
 			if (folder.get_file(str + ".json").exists())
 			{
@@ -36,15 +46,28 @@ namespace big
 				return;
 			}
 
-			outfit::save_outfit(str + ".json");
+			outfit::save_outfit(str + ".json", selected_folder);
 		});
 
 		ImGui::Spacing();
 
+		components::button("Refresh list", [] {
+			outfits_folder.clear();
+			outfits.clear();
+
+			for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder().get_path()))
+				if (directory_entry.is_directory())
+					outfits_folder.push_back(directory_entry.path().filename().generic_string());
+
+			for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder(selected_folder).get_path()))
+				if (directory_entry.path().extension() == ".json")
+					outfits.push_back(directory_entry.path().filename().generic_string());
+		});
+		ImGui::SameLine();
 		components::button("Apply Selected", [] {
 			if (selected_file.size())
 			{
-				auto filePath = get_folder().get_file(selected_file).get_path();
+				auto filePath = outfit::get_folder(selected_folder).get_file(selected_file).get_path();
 
 				if (std::filesystem::exists(filePath))
 				{
@@ -61,7 +84,7 @@ namespace big
 		components::button("Delete Selected", [] {
 			if (selected_file.size())
 			{
-				auto filePath = get_folder().get_file(selected_file).get_path();
+				auto filePath = outfit::get_folder(selected_folder).get_file(selected_file).get_path();
 
 				if (std::filesystem::exists(filePath))
 					std::filesystem::remove(filePath);
@@ -72,9 +95,23 @@ namespace big
 			}
 		});
 
-		if (ImGui::BeginListBox("##outfit_editor_list_box", ImVec2(300, 300)))
+		ImGui::SetNextItemWidth(300.f);
+		auto folder_display = selected_folder.empty() ? "Root" : selected_folder.c_str();
+		if (ImGui::BeginCombo("Folder###folder_list", folder_display))
 		{
-			for (auto& outfit : saved_outfits)
+			if (ImGui::Selectable("Root", selected_folder.empty()))
+				selected_folder.clear();
+
+			for (auto& folder_name : outfits_folder)
+				if (ImGui::Selectable(folder_name.c_str(), selected_folder == folder_name))
+					selected_folder = folder_name;
+
+			ImGui::EndCombo();
+		}
+
+		if (ImGui::BeginListBox("###file_list", ImVec2(300, 300)))
+		{
+			for (auto& outfit : outfits)
 				if (ImGui::Selectable(outfit.c_str(), outfit == selected_file))
 					selected_file = outfit;
 			ImGui::EndListBox();

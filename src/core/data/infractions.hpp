@@ -27,6 +27,7 @@ namespace big
 		REPORT,
 		VOTE_KICK,
 		REMOVE_WEAPON,
+		GIVE_WEAPON,
 		BOUNTY
 	};
 
@@ -51,6 +52,7 @@ namespace big
 	    {Infraction::REPORT, "Reported you"},
 	    {Infraction::VOTE_KICK, "Trying to vote kick you"},
 	    {Infraction::REMOVE_WEAPON, "Tried to remove weapon"},
+	    {Infraction::GIVE_WEAPON, "Tried to give weapon"},
 	    {Infraction::BOUNTY, "Set bounty on you"},
 	};
 }

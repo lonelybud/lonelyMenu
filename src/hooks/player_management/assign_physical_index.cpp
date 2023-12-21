@@ -14,7 +14,7 @@ namespace big
 {
 	inline bool is_spoofed_host_token(uint64_t token)
 	{
-		if (token < 200'000'000)
+		if (token < 1000'000'000'000)
 			return true;
 
 		return false;
@@ -98,8 +98,6 @@ namespace big
 							g_reactions.spoofed_host_token.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
 					}
 				});
-			else
-				LOG(INFO) << "g_fiber_pool->queue_job skipped for you";
 		}
 
 		return result;

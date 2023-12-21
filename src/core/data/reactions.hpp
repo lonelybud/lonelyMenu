@@ -55,8 +55,8 @@ namespace big
 		reaction request_control_event{"Request Control Event", "Blocked Request Control Event from {}"};
 		reaction spectate{"Spectate", "{} is spectating you"};
 
-		// not shown in UI settings
 		reaction remove_weapon{"Remove Weapon", "Blocked remove weapon from {}"};
+		reaction give_weapon{"Give Weapon", "Blocked give weapon from {}"};
 		reaction spoofed_host_token{"Spoofed Host token", "{} has spoofed their host token."};
 	} g_reactions{};
 }

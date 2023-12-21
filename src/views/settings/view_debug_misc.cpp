@@ -38,10 +38,6 @@ namespace big
 				components::button("Clear Tasks Immediately", [] {
 					TASK::CLEAR_PED_TASKS_IMMEDIATELY(self::ped);
 				});
-				ImGui::SameLine();
-				components::button("Clear Secondary Tasks", [] {
-					TASK::CLEAR_PED_SECONDARY_TASK(self::ped);
-				});
 			}
 
 			components::sub_title("Screen");

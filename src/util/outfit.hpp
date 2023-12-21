@@ -3,6 +3,11 @@
 
 namespace big::outfit
 {
+	inline folder get_folder(std::string folder_name = "")
+	{
+		return g_file_manager.get_project_folder("./saved_outfits/" + folder_name);
+	}
+
 	struct outfit_t
 	{
 		int id;
@@ -16,16 +21,16 @@ namespace big::outfit
 	struct components_t
 	{
 		std::vector<outfit_t> items = {
-		    // {0, "Face"},
+		    {0, "Face"},
 		    {1, "Mask"},
 		    // {2, "Hair"},
 		    {3, "Torso"},
 		    {4, "Leg"},
-		    // {5, "Parachute / bag"},
+		    {5, "Parachute / bag"},
 		    {6, "Shoes"},
 		    {7, "Accessory"},
 		    {8, "Undershirt"},
-		    // {9, "Kevlar"},
+		    {9, "Kevlar"},
 		    {10, "Badge"},
 		    {11, "Torso 2"},
 		};
@@ -108,7 +113,7 @@ namespace big::outfit
 		set_self_comps_props(components, props);
 	}
 
-	inline void save_outfit(std::string filename)
+	inline void save_outfit(std::string filename, std::string folder)
 	{
 		outfit::components_t components;
 		outfit::props_t props;
@@ -150,8 +155,9 @@ namespace big::outfit
 		j["props"]      = j_props;
 		j["model"]      = model;
 
-		static folder saved_outfit_path = g_file_manager.get_project_folder("saved_outfits");
-		std::ofstream o(saved_outfit_path.get_file(filename).get_path());
+		auto path = outfit::get_folder(folder).get_file(filename).get_path();
+		std::ofstream o(path);
 		o << std::setw(4) << j << std::endl;
+		o.close();
 	}
 }

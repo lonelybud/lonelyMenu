@@ -278,11 +278,18 @@ namespace big
 			int net_id = buffer->Read<int>(13);
 
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
-				LOG(WARNING) << std::format("Received GIVE_WEAPON_EVENT from {} to {} {}",
-				    source_player->get_name(),
-				    target_player->get_name(),
-				    NETWORK::NETWORK_IS_ACTIVITY_SESSION() ? "in activity" : "in freemode");
+			{
+				auto freemode = !NETWORK::NETWORK_IS_ACTIVITY_SESSION();
 
+				if (freemode)
+				{
+					g_reactions.give_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::GIVE_WEAPON, true);
+					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+					return;
+				}
+
+				LOG(WARNING) << std::format("Received GIVE_WEAPON_EVENT from {} during activity", source_player->get_name());
+			}
 			buffer->Seek(0);
 			break;
 		}
