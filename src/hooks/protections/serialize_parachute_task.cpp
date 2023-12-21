@@ -25,7 +25,7 @@ namespace big
 
 			if (m_syncing_player && m_syncing_player->is_valid())
 				if (auto plyr = g_player_service->get_by_id(m_syncing_player->m_player_id))
-					notify::crash_blocked(plyr, "invalid parachute object type");
+					notify::crash_blocked(plyr, 38);
 			object->m_entity = nullptr;
 			object->m_net_id = 0;
 		}

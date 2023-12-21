@@ -13,7 +13,8 @@
 
 namespace big
 {
-	reaction::reaction(const char* event_name, const char* notify_message) :
+	reaction::reaction(int id, const char* event_name, const char* notify_message) :
+	    m_id(id),
 	    m_event_name(event_name),
 	    m_notify_message(notify_message)
 	{
@@ -47,7 +48,21 @@ namespace big
 
 			auto str = std::vformat(m_notify_message, std::make_format_args(name));
 
-			if (log)
+			bool should_log = true;
+			if (player->last_event_id == m_id)
+			{
+				if (player->last_event_count >= 5)
+					should_log = false;
+				else
+					++player->last_event_count;
+			}
+			else
+			{
+				player->last_event_id    = m_id;
+				player->last_event_count = 1;
+			}
+
+			if (log && should_log)
 				LOG(WARNING) << str;
 
 			if (notify)

@@ -11,13 +11,13 @@ namespace big
 
 		if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 		{
-			notify::crash_blocked(plyr, "out of bounds object type");
+			notify::crash_blocked(plyr, 29);
 			return eAckCode::ACKCODE_FAIL;
 		}
 
 		if (auto net_obj = g_pointers->m_gta.m_get_net_object(mgr, object_id, true); net_obj && net_obj->m_object_type != (int16_t)object_type)
 		{
-			notify::crash_blocked(plyr, "incorrect object type");
+			notify::crash_blocked(plyr, 30);
 			return eAckCode::ACKCODE_FAIL;
 		}
 

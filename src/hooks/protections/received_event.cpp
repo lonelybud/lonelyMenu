@@ -85,13 +85,13 @@ namespace big
 				if ((action >= 15 && action <= 18) || action == 33)
 				{
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-					notify::crash_blocked(plyr, "vehicle temp action");
+					notify::crash_blocked(plyr, 31);
 					return;
 				}
 			}
 			else if (type > ScriptEntityChangeType::SetVehicleExclusiveDriver || type < ScriptEntityChangeType::BlockingOfNonTemporaryEvents)
 			{
-				notify::crash_blocked(plyr, "invalid script entity change type");
+				notify::crash_blocked(plyr, 32);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -209,7 +209,7 @@ namespace big
 
 				if (type == 0 || initial_length < min_length) // https://docs.fivem.net/natives/?_0xE832D760399EB220
 				{
-					notify::crash_blocked(plyr, "rope");
+					notify::crash_blocked(plyr, 33);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}
@@ -222,14 +222,14 @@ namespace big
 
 				if (pop_group == 0 && (percentage == 0 || percentage == 103))
 				{
-					notify::crash_blocked(plyr, "pop group override");
+					notify::crash_blocked(plyr, 34);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}
 			}
 			else if (type > WorldStateDataType::VehiclePlayerLocking || type < WorldStateDataType::CarGen)
 			{
-				notify::crash_blocked(plyr, "invalid world state type");
+				notify::crash_blocked(plyr, 35);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -244,7 +244,7 @@ namespace big
 
 			if (hash == RAGE_JOAAT("WEAPON_UNARMED"))
 			{
-				notify::crash_blocked(plyr, "remove unarmed");
+				notify::crash_blocked(plyr, 36);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -313,7 +313,7 @@ namespace big
 
 				if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 				{
-					notify::crash_blocked(plyr, "out of bounds give control type");
+					notify::crash_blocked(plyr, 37);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}

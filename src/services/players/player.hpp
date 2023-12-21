@@ -98,6 +98,10 @@ namespace big
 		bool log_clones         = false;
 		bool log_network_events = false;
 
+		// prevent spam logging of events in console
+		int last_event_id    = 0;
+		int last_event_count = 1;
+
 		int spectating_player = -1;
 
 	protected:

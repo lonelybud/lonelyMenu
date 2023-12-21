@@ -11,7 +11,7 @@ namespace big
 
 		if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 		{
-			notify::crash_blocked(plyr, "out of bounds object type");
+			notify::crash_blocked(plyr, 29);
 			return;
 		}
 
