@@ -239,8 +239,8 @@ namespace big
 		}
 		case eNetworkEvents::REMOVE_WEAPON_EVENT:
 		{
-			int net_id    = buffer->Read<int>(13);
-			uint32_t hash = buffer->Read<uint32_t>(32);
+			std::int16_t net_id = buffer->Read<std::int16_t>(13);
+			Hash hash           = buffer->Read<Hash>(32);
 
 			if (hash == RAGE_JOAAT("WEAPON_UNARMED"))
 			{
@@ -259,37 +259,17 @@ namespace big
 			buffer->Seek(0);
 			break;
 		}
-		case eNetworkEvents::REMOVE_ALL_WEAPONS_EVENT:
+		case eNetworkEvents::GIVE_WEAPON_EVENT:
 		{
-			int net_id = buffer->Read<int>(13);
+			std::int16_t net_id = buffer->Read<std::int16_t>(13);
 
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
-				g_reactions.remove_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::REMOVE_WEAPON, true);
+				g_reactions.give_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::GIVE_WEAPON, true);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
 
-			buffer->Seek(0);
-			break;
-		}
-		case eNetworkEvents::GIVE_WEAPON_EVENT:
-		{
-			int net_id = buffer->Read<int>(13);
-
-			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
-			{
-				auto freemode = !NETWORK::NETWORK_IS_ACTIVITY_SESSION();
-
-				if (freemode)
-				{
-					g_reactions.give_weapon.process(g_player_service->get_by_id(source_player->m_player_id), false, Infraction::GIVE_WEAPON, true);
-					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-					return;
-				}
-
-				LOG(WARNING) << std::format("Received GIVE_WEAPON_EVENT from {} during activity", source_player->get_name());
-			}
 			buffer->Seek(0);
 			break;
 		}
