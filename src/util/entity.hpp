@@ -1,5 +1,7 @@
 #pragma once
+#include "core/data/debug.hpp"
 #include "pointers.hpp"
+#include "scripts.hpp"
 
 namespace big::entity
 {
@@ -16,14 +18,25 @@ namespace big::entity
 		if (!*g_pointers->m_gta.m_is_session_started)
 			return true;
 
-		auto hnd = g_pointers->m_gta.m_handle_to_ptr(ent);
+		auto n_of_try = g_debug.request_control ? 5 : 1;
 
-		if (!hnd || !hnd->m_net_object || !*g_pointers->m_gta.m_is_session_started)
-			return false;
+		for (int i = 0; i < n_of_try; ++i)
+		{
+			auto hnd = g_pointers->m_gta.m_handle_to_ptr(ent);
 
-		if (network_has_control_of_entity(hnd->m_net_object))
-			return true;
+			if (hnd && hnd->m_net_object && network_has_control_of_entity(hnd->m_net_object))
+				return true;
+
+			if (n_of_try > 1)
+			{
+				g_pointers->m_gta.m_request_control(hnd->m_net_object);
+				script::get_current()->yield(10ms);
+			}
+		}
 
 		return false;
 	}
+
+	double distance_to_middle_of_screen(const rage::fvector2& screen_pos);
+	Entity get_entity_closest_to_middle_of_screen(rage::fwEntity** pointer = nullptr, std::vector<Entity> ignore_entities = {}, bool include_veh = true, bool include_ped = true, bool include_prop = true, bool include_players = true);
 }

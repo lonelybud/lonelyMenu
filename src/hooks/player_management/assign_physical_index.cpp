@@ -49,8 +49,8 @@ namespace big
 
 		g_player_service->player_join(player);
 
-		g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
-		g_session.next_host_list.filter_current_host();
+		if (!player->is_host())
+			g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
 		if (host_token < g_session.smallest_host_token)
 		{
 			g_session.smallest_host_token       = host_token;

@@ -10,6 +10,7 @@
 #include "rage/gameSkeleton.hpp"
 #include "renderer.hpp"
 #include "script_mgr.hpp"
+#include "services/context_menu/context_menu_service.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/mobile/mobile_service.hpp"
@@ -121,6 +122,7 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto hooking_instance = std::make_unique<hooking>();
 			    LOG(INFO) << "Hooking initialized.";
 
+			    auto context_menu_service_instance   = std::make_unique<context_menu_service>();
 			    auto mobile_service_instance         = std::make_unique<mobile_service>();
 			    auto notification_service_instance   = std::make_unique<notification_service>();
 			    auto player_service_instance         = std::make_unique<player_service>();
@@ -134,6 +136,8 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::loop, "Backend Loop", false));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::misc_loop, "Miscellaneous"));
+			    g_script_mgr.add_script(std::make_unique<script>(&backend::disable_control_action_loop, "Disable Controls"));
+			    g_script_mgr.add_script(std::make_unique<script>(&context_menu_service::context_menu, "Context Menu"));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::tunables_script, "Tunables"));
 			    LOG(INFO) << "Scripts registered.";
 

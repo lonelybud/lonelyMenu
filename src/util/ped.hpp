@@ -1,8 +1,18 @@
 #pragma once
+#include "entity.hpp"
 #include "natives.hpp"
 
 namespace big::ped
 {
+	inline void kill_ped(const Ped ped)
+	{
+		Hash weaponHash;
+		WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weaponHash, 1);
+
+		if (entity::take_control_of(ped))
+			ENTITY::SET_ENTITY_HEALTH(ped, 0, self::ped, weaponHash);
+	}
+
 	inline bool load_animation_dict(const char* dict)
 	{
 		if (STREAMING::HAS_ANIM_DICT_LOADED(dict))

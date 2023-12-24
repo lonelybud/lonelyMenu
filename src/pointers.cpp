@@ -529,6 +529,15 @@ namespace big
                 g_pointers->m_gta.m_queue_packet = ptr.add(1).rip().as<functions::queue_packet>();
             }
         },
+        // Request Control
+        {
+            "RC",
+            "E8 ? ? ? ? EB 3E 48 8B D3",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_request_control = ptr.add(1).rip().as<functions::request_control>();
+            }
+        },
         // Get Connection Peer
         {
             "GCP",

@@ -2,8 +2,10 @@
 #include "core/scr_globals.hpp"
 #include "gui/components/components.hpp"
 #include "natives.hpp"
+#include "util/entity.hpp"
 #include "util/local_player.hpp"
 #include "util/lua_script.cpp"
+#include "util/ped.hpp"
 #include "util/pools.hpp"
 
 namespace big
@@ -29,6 +31,16 @@ namespace big
 				});
 			}
 
+			components::sub_title("World");
+			{
+				components::button("Kill All Enemies", [] {
+					for (auto ped : entity::get_entities(false, true))
+						if (!PED::IS_PED_A_PLAYER(ped))
+							if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == 4 || relation == 5 || relation == 3)
+								ped::kill_ped(ped);
+				});
+			}
+
 			components::sub_title("Tasks");
 			{
 				components::button("Clear Tasks", [] {
@@ -50,6 +62,7 @@ namespace big
 			components::sub_title("Experiments");
 			{
 				ImGui::Checkbox("Auto Grab Money etc", &g_debug.fm_mission_controller_cart_grab);
+				ImGui::Checkbox("Request Control", &g_debug.request_control);
 			}
 
 			components::sub_title("Game");

@@ -1,3 +1,4 @@
+#include "core/data/context_menu.hpp"
 #include "natives.hpp"
 #include "util/local_player.hpp"
 #include "views/view.hpp"
@@ -58,6 +59,7 @@ namespace big
 			components::command_checkbox<"infoxy">();
 			components::command_checkbox<"godmode">();
 			components::command_checkbox<"otr">();
+			ImGui::Checkbox("Context Menu", &g_context_menu.enabled);
 
 			static const char* ragdoll_button_text = "Disable Ragdoll";
 			components::button(ragdoll_button_text, [] {

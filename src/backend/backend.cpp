@@ -6,6 +6,7 @@
 #include "script.hpp"
 #include "script_patches.hpp"
 #include "services/bad_players/bad_players.hpp"
+#include "services/context_menu/context_menu_service.hpp"
 #include "services/tunables/tunables_service.hpp"
 #include "thread_pool.hpp"
 #include "util/globals.hpp"
@@ -44,7 +45,7 @@ namespace big
 
 			if (g_debug.fm_mission_controller_cart_grab)
 			{
-				constexpr int fm_mission_controller_cart_grab       = 10247;
+				constexpr int fm_mission_controller_cart_grab       = 10253;
 				constexpr int fm_mission_controller_cart_grab_speed = 14;
 
 				if (lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab) == 3)
@@ -52,6 +53,18 @@ namespace big
 				else if (lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab) == 4)
 					lua_script::locals::set_float("fm_mission_controller", fm_mission_controller_cart_grab + fm_mission_controller_cart_grab_speed, 2);
 			}
+
+			script::get_current()->yield();
+		}
+	}
+
+	void backend::disable_control_action_loop()
+	{
+		LOG(INFO) << "Starting script: Disable Control Action";
+
+		while (g_running)
+		{
+			context_menu_service::disable_control_action_loop();
 
 			script::get_current()->yield();
 		}

@@ -86,7 +86,7 @@ namespace big
 		        {
 		            "Settings",
 		            [this] {
-			            this->set_selected(tabs::ESP_SETTINGS);
+			            this->set_selected(tabs::DEBUG);
 		            },
 		            {
 		                {tabs::ESP_SETTINGS, {"ESP", view::esp_settings}},

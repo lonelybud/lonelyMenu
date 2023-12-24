@@ -202,12 +202,6 @@ namespace big
 		MIPH,
 		MPS
 	};
-	NLOHMANN_JSON_SERIALIZE_ENUM(SpeedUnit,
-	    {
-	        {SpeedUnit::KMPH, "kmph"},
-	        {SpeedUnit::MIPH, "miph"},
-	        {SpeedUnit::MPS, "mps"},
-	    })
 
 	enum class RainbowPaintType
 	{
@@ -215,12 +209,6 @@ namespace big
 		Fade,
 		Spasm
 	};
-	NLOHMANN_JSON_SERIALIZE_ENUM(RainbowPaintType,
-	    {
-	        {RainbowPaintType::Off, "off"},
-	        {RainbowPaintType::Fade, "fade"},
-	        {RainbowPaintType::Spasm, "spasm"},
-	    })
 
 	enum class AutoDriveDestination
 	{
@@ -228,23 +216,12 @@ namespace big
 		OBJECTITVE,
 		WAYPOINT,
 	};
-	NLOHMANN_JSON_SERIALIZE_ENUM(AutoDriveDestination,
-	    {
-	        {AutoDriveDestination::STOPPED, "stopped"},
-	        {AutoDriveDestination::OBJECTITVE, "objective"},
-	        {AutoDriveDestination::WAYPOINT, "waypoint"},
-	    })
 
 	enum class AutoDriveStyle
 	{
 		LAW_ABIDING, 
 		THE_ROAD_IS_YOURS
 	};
-	NLOHMANN_JSON_SERIALIZE_ENUM(AutoDriveStyle,
-	    {
-	        {AutoDriveStyle::LAW_ABIDING, "law_abiding"},
-	        {AutoDriveStyle::THE_ROAD_IS_YOURS, "the_road_is_yours"},
-	    })
 
 	enum class eEntityProofs : uint32_t
 	{

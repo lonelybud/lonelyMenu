@@ -28,6 +28,7 @@ namespace big
 		});
 
 		g_renderer->add_dx_callback(esp::draw, 2); // TODO: move to ESP service
+		g_renderer->add_dx_callback(view::context_menu, 1);
 
 		dx_init();
 

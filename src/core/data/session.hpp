@@ -1,4 +1,6 @@
 #pragma once
+#include "fiber_pool.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
 namespace big
@@ -10,6 +12,8 @@ namespace big
 			std::string name;
 			uint64_t token;
 		};
+
+		bool you_are_host = false;
 
 	public:
 		std::vector<std::pair<uint8_t, next_host_player>> list;
@@ -28,21 +32,33 @@ namespace big
 
 		void delete_plyr(int8_t id)
 		{
-			auto it = std::remove_if(list.begin(), list.end(), [id](auto& p) {
-				return p.first == id;
-			});
+			if (list.size())
+			{
+				auto it = std::remove_if(list.begin(), list.end(), [id](auto& p) {
+					return p.first == id;
+				});
 
-			list.erase(it, list.end());
+				if (it != list.end())
+					list.erase(it, list.end());
+			}
 		}
 
 		void filter_current_host()
 		{
-			for (const auto& [_, plyr] : g_player_service->players())
-				if (plyr->is_host())
+			g_fiber_pool->queue_job([this] {
+				for (const auto& [_, plyr] : g_player_service->players())
+					if (plyr->is_host())
+					{
+						this->delete_plyr(plyr->id());
+						return;
+					}
+
+				if (g_player_service->get_self()->is_host() && !this->you_are_host)
 				{
-					delete_plyr(plyr->id());
-					return;
+					this->you_are_host = true;
+					g_notification_service->push_success("Host List", "You are the session host now :)", true);
 				}
+			});
 		}
 	};
 

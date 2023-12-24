@@ -30,13 +30,11 @@ namespace big
 
 		g_self    = {};
 		g_vehicle = {};
-
-		g_weapons_t g_weapons_temp;
-		g_weapons.aimbot.enable = g_weapons_temp.aimbot.enable;
+		g_weapons = {};
 
 		g_session_t g_session_temp;
 		g_session.lock_session                 = g_session_temp.lock_session;
-		g_session.next_host_list.list          = g_session_temp.next_host_list.list;
+		g_session.next_host_list               = {};
 		g_session.log_chat_messages_to_textbox = g_session_temp.log_chat_messages_to_textbox;
 		g_session.decloak_players              = g_session_temp.decloak_players;
 		g_session.custom_time                  = g_session_temp.custom_time;
