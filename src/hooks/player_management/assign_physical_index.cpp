@@ -30,9 +30,16 @@ namespace big
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
+			if (*g_pointers->m_gta.m_is_session_started && g_session.next_host_list.current_host
+			    && g_session.next_host_list.current_host->id() == player->m_player_id)
+			{
+				g_session.next_host_list.current_host       = nullptr;
+				g_session.next_host_list.determine_new_host = true;
+				g_notification_service->push_success("Host Migration", std::format("The host '{}' is leaving. Determining next one...", player_name), true);
+			}
+
 			g_player_service->player_leave(player);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
-			g_session.next_host_list.filter_current_host();
 
 			if (net_player_data)
 			{
@@ -47,10 +54,13 @@ namespace big
 
 		const auto result = g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 
-		g_player_service->player_join(player);
+		auto plyr = g_player_service->player_join(player);
 
-		if (!player->is_host())
+		if (plyr && plyr->is_host())
+			g_session.next_host_list.current_host = plyr;
+		else
 			g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
+
 		if (host_token < g_session.smallest_host_token)
 		{
 			g_session.smallest_host_token       = host_token;
@@ -60,13 +70,18 @@ namespace big
 		if (net_player_data)
 		{
 			if (g_notifications.player_join.log)
-				LOG(INFO) << "Player joined '" << player_name << "' allocating slot #" << (int)player->m_player_id << " with Rockstar ID: " << rockstar_id;
+				LOGF(INFO,
+				    "Player joined '{}'{} allocating slot #{} with Rockstar ID: {}",
+				    player_name,
+				    player->is_host() ? "(host)" : "",
+				    (int)player->m_player_id,
+				    rockstar_id);
 			if (g_notifications.player_join.notify)
 				g_notification_service->push("Player Joined", std::vformat("{} taking slot", std::make_format_args(player_name)));
 
 			if (player->m_player_id != self::id)
-				g_fiber_pool->queue_job([id = player->m_player_id, rockstar_id, player_name, host_token] {
-					if (auto plyr = g_player_service->get_by_id(id))
+				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token] {
+					if (plyr && plyr->is_valid())
 					{
 						if (*g_pointers->m_gta.m_is_session_started)
 						{

@@ -1,3 +1,4 @@
+#include "core/data/debug.hpp"
 #include "core/data/self.hpp"
 #include "core/data/session.hpp"
 #include "core/data/syncing_player.hpp"
@@ -47,6 +48,8 @@ namespace big
 
 		m_syncing_player      = nullptr;
 		m_syncing_object_type = (eNetObjType)-1;
+
+		g_debug = {};
 
 		g_hooking->get_original<hooks::network_player_mgr_shutdown>()(_this);
 	}

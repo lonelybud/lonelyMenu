@@ -38,7 +38,7 @@ namespace big
 		[[nodiscard]] player_ptr get_by_host_token(uint64_t token) const;
 		[[nodiscard]] player_ptr get_selected() const;
 
-		void player_join(CNetGamePlayer* net_game_player);
+		player_ptr player_join(CNetGamePlayer* net_game_player);
 		void player_leave(CNetGamePlayer* net_game_player);
 
 		players& players()

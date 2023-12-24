@@ -1,6 +1,7 @@
 #include "backend.hpp"
 
 #include "core/data/debug.hpp"
+#include "core/data/session.hpp"
 #include "looped/looped.hpp"
 #include "looped_command.hpp"
 #include "script.hpp"
@@ -52,6 +53,28 @@ namespace big
 					lua_script::locals::set_int("fm_mission_controller", fm_mission_controller_cart_grab, 4);
 				else if (lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab) == 4)
 					lua_script::locals::set_float("fm_mission_controller", fm_mission_controller_cart_grab + fm_mission_controller_cart_grab_speed, 2);
+			}
+
+			if (g_session.next_host_list.determine_new_host)
+			{
+				if (g_player_service->get_self()->is_host())
+					g_session.next_host_list.current_host = g_player_service->get_self();
+				else
+					for (const auto& [_, plyr] : g_player_service->players())
+						if (plyr->is_host())
+						{
+							g_session.next_host_list.current_host = plyr;
+							break;
+						}
+
+				if (g_session.next_host_list.current_host)
+				{
+					g_session.next_host_list.determine_new_host = false;
+					g_session.next_host_list.delete_plyr(g_session.next_host_list.current_host->id()); // filter out new host from the list
+					g_notification_service->push_success("Host Determined",
+					    std::format("'{}' is the new host", g_session.next_host_list.current_host->get_name()),
+					    true);
+				}
 			}
 
 			script::get_current()->yield();

@@ -70,18 +70,20 @@ namespace big
 	player_ptr player_service::get_self()
 	{
 		if (!m_self_ptr || !m_self_ptr->equals(*m_self))
-			m_self_ptr                       = std::make_shared<player>(*m_self);
+			m_self_ptr = std::make_shared<player>(*m_self);
 
 		return m_self_ptr;
 	}
 
-	void player_service::player_join(CNetGamePlayer* net_game_player)
+	player_ptr player_service::player_join(CNetGamePlayer* net_game_player)
 	{
 		if (net_game_player == nullptr || net_game_player == *m_self)
-			return;
+			return nullptr;
 
 		auto plyr = std::make_shared<player>(net_game_player);
-		m_players.insert({plyr->get_name(), std::move(plyr)});
+		auto itr  = m_players.insert({plyr->get_name(), std::move(plyr)});
+
+		return itr->second;
 	}
 
 	void player_service::player_leave(CNetGamePlayer* net_game_player)

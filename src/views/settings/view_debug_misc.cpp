@@ -63,6 +63,7 @@ namespace big
 			{
 				ImGui::Checkbox("Auto Grab Money etc", &g_debug.fm_mission_controller_cart_grab);
 				ImGui::Checkbox("Request Control", &g_debug.request_control);
+				ImGui::Checkbox("Disable clothing validation", &g_debug.disable_clothing_validation);
 			}
 
 			components::sub_title("Game");

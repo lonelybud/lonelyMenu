@@ -13,9 +13,10 @@ namespace big
 			uint64_t token;
 		};
 
-		bool you_are_host = false;
-
 	public:
+		player_ptr current_host = nullptr;
+		bool determine_new_host = false;
+
 		std::vector<std::pair<uint8_t, next_host_player>> list;
 
 		void insert_plyr(uint8_t id, uint64_t token, const char* name)
@@ -41,24 +42,6 @@ namespace big
 				if (it != list.end())
 					list.erase(it, list.end());
 			}
-		}
-
-		void filter_current_host()
-		{
-			g_fiber_pool->queue_job([this] {
-				for (const auto& [_, plyr] : g_player_service->players())
-					if (plyr->is_host())
-					{
-						this->delete_plyr(plyr->id());
-						return;
-					}
-
-				if (g_player_service->get_self()->is_host() && !this->you_are_host)
-				{
-					this->you_are_host = true;
-					g_notification_service->push_success("Host List", "You are the session host now :)", true);
-				}
-			});
 		}
 	};
 
