@@ -8,6 +8,7 @@
 #include "script_patches.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/context_menu/context_menu_service.hpp"
+#include "services/known_players.hpp"
 #include "services/tunables/tunables_service.hpp"
 #include "thread_pool.hpp"
 #include "util/globals.hpp"
@@ -20,6 +21,7 @@ namespace big
 		register_script_patches();
 
 		bad_players_nm::load_blocked_list();
+		known_player_nm::load_list();
 
 		while (g_running)
 		{

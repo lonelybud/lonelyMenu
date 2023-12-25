@@ -19,6 +19,15 @@ namespace big
 			len = 0;
 		}
 
+		void flush_buffer()
+		{
+			std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
+			log << buf << std::endl;
+			log.close();
+
+			reset_buf();
+		}
+
 		void append_msg(const char* player_name, char* msg)
 		{
 			char new_msg[320]         = {'\0'};
@@ -31,12 +40,7 @@ namespace big
 			if (availableSpace < msg_len)
 			{
 				LOG(WARNING) << "Chat buffer overflow: Flushing buffer to disk..";
-
-				std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-				log << buf << std::endl;
-				log.close();
-
-				reset_buf();
+				flush_buffer();
 			}
 
 			len += msg_len;

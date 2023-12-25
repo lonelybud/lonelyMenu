@@ -6,6 +6,7 @@
 #include "services/bad_players/bad_players.hpp"
 #include "services/friends/friends_service.hpp"
 #include "services/gui/gui_service.hpp"
+#include "services/known_players.hpp"
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 #include "util/player.hpp"
@@ -35,7 +36,6 @@ namespace big
 			{
 				g_session.next_host_list.current_host       = nullptr;
 				g_session.next_host_list.determine_new_host = true;
-				g_notification_service->push_success("Host Migration", std::format("The host '{}' is leaving. Determining next one...", player_name), true);
 			}
 
 			g_player_service->player_leave(player);
@@ -44,7 +44,8 @@ namespace big
 			if (net_player_data)
 			{
 				if (g_notifications.player_leave.log)
-					LOG(INFO) << "Player left '" << player_name << "' freeing slot #" << (int)player->m_player_id << " with Rockstar ID: " << rockstar_id;
+					LOGF(INFO, "Player left '{}', slot #{}. RID: {}", player_name, (int)player->m_player_id, rockstar_id);
+
 				if (g_notifications.player_leave.notify)
 					g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
 			}
@@ -71,7 +72,7 @@ namespace big
 		{
 			if (g_notifications.player_join.log)
 				LOGF(INFO,
-				    "Player joined '{}'{} allocating slot #{} with Rockstar ID: {}",
+				    "Player joined '{}'{}, slot #{}. RID: {}",
 				    player_name,
 				    player->is_host() ? "(host)" : "",
 				    (int)player->m_player_id,
@@ -85,6 +86,9 @@ namespace big
 					{
 						if (*g_pointers->m_gta.m_is_session_started)
 						{
+							if (known_player_nm::is_known(rockstar_id))
+								plyr->is_known_player = true;
+
 							if (bad_players_nm::is_blocked(rockstar_id))
 							{
 								auto str = get_blocked_player_joined_log_string(plyr);
@@ -101,11 +105,19 @@ namespace big
 
 								return;
 							}
-							else if (g_session.lock_session && g_player_service->get_self()->is_host() && !friends_service::is_friend(rockstar_id))
+							else
 							{
-								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
-								g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry to locked session.", player_name), true);
-								return;
+								auto is_friend = friends_service::is_friend(rockstar_id);
+
+								if (is_friend && !plyr->is_known_player)
+									known_player_nm::toggle(plyr, true);
+
+								if (g_session.lock_session && g_player_service->get_self()->is_host() && !is_friend)
+								{
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
+									g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
+									return;
+								}
 							}
 						}
 

@@ -83,6 +83,7 @@ namespace big
 		bool is_spammer                                     = false;
 		std::string spam_message                            = "";
 		bool is_toxic                                       = false;
+		bool is_known_player                                = false;
 		int crash_count                                     = 0;
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 

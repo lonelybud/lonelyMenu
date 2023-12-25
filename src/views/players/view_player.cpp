@@ -6,6 +6,7 @@
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
+#include "services/known_players.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/globals.hpp"
 #include "util/player.hpp"
@@ -173,6 +174,10 @@ namespace big
 			ImGui::SameLine();
 			if (components::button(current_player->is_modder ? "Un-flag Modder" : "Flag Modder"))
 				current_player->is_modder = !current_player->is_modder;
+			ImGui::SameLine();
+			components::button(current_player->is_known_player ? "Unmark Known" : "Mark Known", [current_player] {
+				known_player_nm::toggle(current_player);
+			});
 		}
 		ImGui::EndGroup();
 	}
@@ -308,6 +313,8 @@ namespace big
 					strcat(player_tab.name, " [MOD]");
 				if (current_player->is_blocked)
 					strcat(player_tab.name, " [BLOCKED]");
+				if (current_player->is_known_player)
+					strcat(player_tab.name, " [KNOWN]");
 
 				if (auto net_player_data = current_player->get_net_data())
 					rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
