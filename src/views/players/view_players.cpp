@@ -84,7 +84,7 @@ namespace big
 		if (selected_player)
 			ImGui::PopStyleColor();
 
-		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_toxic)
+		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_toxic || plyr->is_known_player)
 			ImGui::PopStyleColor();
 
 		// render icons on top of the player button
