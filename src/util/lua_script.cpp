@@ -16,7 +16,7 @@ namespace big::lua_script
 		std::transform(text.begin(), text.end(), text.begin(), ::toupper);
 
 		if (text.substr(0, 3) == "MPX")
-			text[2] = big::local_player::get_active_character_slot();
+			text[2] = big::local_player::get_active_character_slot() + '0';
 
 		return rage::joaat(text);
 	}
