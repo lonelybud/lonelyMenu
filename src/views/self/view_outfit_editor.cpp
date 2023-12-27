@@ -46,7 +46,7 @@ namespace big
 				return;
 			}
 
-			outfit::save_outfit(str + ".json", selected_folder);
+			outfit::save_outfit(self::ped, str + ".json", selected_folder);
 		});
 
 		ImGui::Spacing();

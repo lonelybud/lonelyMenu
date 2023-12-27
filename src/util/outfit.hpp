@@ -113,22 +113,22 @@ namespace big::outfit
 		set_self_comps_props(components, props);
 	}
 
-	inline void save_outfit(std::string filename, std::string folder)
+	inline void save_outfit(Ped ped, std::string filename, std::string folder)
 	{
 		outfit::components_t components;
 		outfit::props_t props;
-		auto model = ENTITY::GET_ENTITY_MODEL(self::ped);
+		auto model = ENTITY::GET_ENTITY_MODEL(ped);
 
 		for (auto& item : components.items)
 		{
-			item.drawable_id = PED::GET_PED_DRAWABLE_VARIATION(self::ped, item.id);
-			item.texture_id  = PED::GET_PED_TEXTURE_VARIATION(self::ped, item.id);
+			item.drawable_id = PED::GET_PED_DRAWABLE_VARIATION(ped, item.id);
+			item.texture_id  = PED::GET_PED_TEXTURE_VARIATION(ped, item.id);
 		}
 
 		for (auto& item : props.items)
 		{
-			item.drawable_id = PED::GET_PED_PROP_INDEX(self::ped, item.id, 1);
-			item.texture_id  = PED::GET_PED_PROP_TEXTURE_INDEX(self::ped, item.id);
+			item.drawable_id = PED::GET_PED_PROP_INDEX(ped, item.id, 1);
+			item.texture_id  = PED::GET_PED_PROP_TEXTURE_INDEX(ped, item.id);
 		}
 
 		nlohmann::json j;

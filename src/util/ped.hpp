@@ -9,7 +9,7 @@ namespace big::ped
 		Hash weaponHash;
 		WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weaponHash, 1);
 
-		if (entity::take_control_of(ped))
+		if (!ENTITY::IS_ENTITY_DEAD(ped, 0) && entity::take_control_of(ped))
 			ENTITY::SET_ENTITY_HEALTH(ped, 0, self::ped, weaponHash);
 	}
 

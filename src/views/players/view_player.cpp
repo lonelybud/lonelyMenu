@@ -20,6 +20,12 @@
 
 static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 
+auto get_current_time_in_mill()
+{
+	auto currentTime = std::chrono::system_clock::now().time_since_epoch();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
+}
+
 namespace big
 {
 	const char* get_nat_type_str(int type)
@@ -229,20 +235,28 @@ namespace big
 			components::button("Copy outfit", [current_player] {
 				steal_player_outfit(current_player);
 			});
+			ImGui::SameLine();
+			components::button("Save outfit", [current_player] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()); ped)
+					outfit::save_outfit(ped, std::to_string(get_current_time_in_mill()).append(".json"), "");
+				else
+					g_notification_service->push_error("Save outfit", "Failed to get ped", false);
+			});
+
 			ver_Space();
 
 			components::button("Copy Vehicle", [current_player] {
 				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
 					persist_car_service::clone_ped_car(veh);
+				else
+					g_notification_service->push_error("Copy Vehicle", "Failed to get veh", false);
 			});
 			ImGui::SameLine();
 			components::button("Save Vehicle", [current_player] {
 				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
-				{
-					auto currentTime = std::chrono::system_clock::now().time_since_epoch();
-					auto millis      = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
-					persist_car_service::save_vehicle(veh, std::to_string(millis).append(".json"), "");
-				}
+					persist_car_service::save_vehicle(veh, std::to_string(get_current_time_in_mill()).append(".json"), "");
+				else
+					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
 			});
 		}
 		ImGui::EndGroup();
@@ -260,7 +274,7 @@ namespace big
 
 			ImGui::Spacing();
 
-			components::player_command_button<"shkick">(current_player);
+			// components::player_command_button<"shkick">(current_player);
 			components::player_command_button<"endkick">(current_player);
 			components::player_command_button<"nfkick">(current_player);
 			components::player_command_button<"oomkick">(current_player);
