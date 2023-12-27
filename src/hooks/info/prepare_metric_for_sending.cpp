@@ -1,6 +1,7 @@
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "rage/rlMetric.hpp"
 #include "services/players/player_service.hpp"
+#include "gta/json_serializer.hpp"
 
 namespace big
 {

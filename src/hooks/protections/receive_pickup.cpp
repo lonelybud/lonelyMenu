@@ -1,5 +1,5 @@
 #include "core/settings/protections.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big

@@ -1,4 +1,4 @@
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"

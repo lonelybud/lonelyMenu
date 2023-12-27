@@ -1,5 +1,5 @@
 #include "gta/net_game_event.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "pointers.hpp"
 #include "services/notifications/notification_service.hpp"
 

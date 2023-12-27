@@ -1,7 +1,7 @@
 #include "core/scr_globals.hpp"
 #include "gta/net_array.hpp"
-#include "hooking.hpp"
 #include "network/CNetGamePlayer.hpp"
+#include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
 
 #include <script/globals/GlobalPlayerBD.hpp>

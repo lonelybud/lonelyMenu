@@ -15,6 +15,7 @@ class CNetGamePlayer;
 namespace rage
 {
 	class netArrayHandlerBase;
+	class netPlayer;
 }
 
 class CGameArrayMgr

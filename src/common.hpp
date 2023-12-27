@@ -55,10 +55,11 @@
 
 #include "logger/logger.hpp"
 
-#include "gta/natives.hpp"
 #include "ped/CPed.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+
+#include <script/types.hpp>
 
 // clang-format on
 

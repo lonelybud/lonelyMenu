@@ -3,7 +3,7 @@
 #include "core/settings.hpp"
 #include "fiber_pool.hpp"
 #include "gui.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "logger/exception_handler.hpp"
 #include "native_hooks/native_hooks.hpp"
 #include "pointers.hpp"

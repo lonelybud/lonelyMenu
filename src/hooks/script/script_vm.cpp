@@ -1,7 +1,7 @@
 #include "core/data/script_vm.hpp"
 
 #include "core/scr_globals.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "pointers.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
 

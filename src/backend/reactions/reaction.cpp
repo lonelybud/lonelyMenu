@@ -4,7 +4,6 @@
 #include "core/data/infractions.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
-#include "gui.hpp"
 #include "script.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"

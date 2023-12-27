@@ -5,7 +5,7 @@
 #include "core/data/vehicle.hpp"
 #include "core/data/weapons.hpp"
 #include "core/settings/esp.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
 
 #include <network/CNetworkPlayerMgr.hpp>

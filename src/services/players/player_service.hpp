@@ -1,6 +1,8 @@
 #pragma once
 #include "player.hpp"
 
+#include <network/CNetGamePlayer.hpp>
+
 namespace big
 {
 	class player;

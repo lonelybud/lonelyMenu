@@ -5,7 +5,7 @@
 #include "gta/net_game_event.hpp"
 #include "gta/script_handler.hpp"
 #include "gta_util.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "natives.hpp"
 #include "util/math.hpp"
 

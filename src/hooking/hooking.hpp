@@ -1,15 +1,13 @@
 #pragma once
 #include "MinHook.h"
-#include "call_hook.hpp"
 #include "detour_hook.hpp"
 #include "gta/enums.hpp"
-#include "gta/fwddec.hpp"
-#include "gta/json_serializer.hpp"
-#include "gta/script_thread.hpp"
 #include "vmt_hook.hpp"
 #include "vtable_hook.hpp"
 
-#include <network/netConnection.hpp>
+#include <network/CNetGamePlayer.hpp>
+#include <network/netConnection.hpp> // cannot stub this
+#include <script/scrProgram.hpp>
 
 class CPlayerGamerDataNode;
 class CPlayerGameStateDataNode;
@@ -38,6 +36,12 @@ class CNonPhysicalPlayerData;
 class TimecycleKeyframeData;
 class CPedTaskSpecificDataNode;
 class CPedTaskSequenceDataNode;
+class Network;
+class GtaThread;
+class CNetworkPlayerMgr;
+class CNetworkObjectMgr;
+
+enum class eAckCode : uint32_t;
 
 namespace rage
 {
@@ -51,6 +55,9 @@ namespace rage
 	class datBitBuffer;
 	class rlMetric;
 	class rlTaskStatus;
+	class netEventMgr;
+	class json_serializer;
+	class netGameEvent;
 }
 
 namespace big

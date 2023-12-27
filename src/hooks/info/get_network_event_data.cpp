@@ -1,7 +1,7 @@
 #include "core/data/infractions.hpp"
 #include "core/data/reactions.hpp"
 #include "gta/net_game_event.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/globals.hpp"

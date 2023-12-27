@@ -1,8 +1,9 @@
 #include "native_hooks.hpp"
 
+#include "invoker/crossmap.hpp"
+
 #include "all_scripts.hpp"
 #include "am_launcher.hpp"
-#include "crossmap.hpp"
 #include "freemode.hpp"
 #include "gta_util.hpp"
 #include "shop_controller.hpp"
@@ -13,21 +14,7 @@
 
 namespace big
 {
-	static bool map_native(rage::scrNativeHash* hash)
-	{
-		for (auto const& mapping : g_crossmap)
-		{
-			if (mapping.first == *hash)
-			{
-				*hash = mapping.second;
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	native_hook::native_hook(rage::scrProgram* program, const std::unordered_map<rage::scrNativeHash, rage::scrNativeHandler>& native_replacements)
+	native_hook::native_hook(rage::scrProgram* program, const std::unordered_map<NativeIndex, rage::scrNativeHandler>& native_replacements)
 	{
 		hook_instance(program, native_replacements);
 	}
@@ -47,7 +34,7 @@ namespace big
 		}
 	}
 
-	void native_hook::hook_instance(rage::scrProgram* program, const std::unordered_map<rage::scrNativeHash, rage::scrNativeHandler>& native_replacements)
+	void native_hook::hook_instance(rage::scrProgram* program, const std::unordered_map<NativeIndex, rage::scrNativeHandler>& native_replacements)
 	{
 		m_program  = program;
 		m_vmt_hook = std::make_unique<vmt_hook>(m_program, 9);
@@ -59,15 +46,9 @@ namespace big
 
 		std::unordered_map<rage::scrNativeHandler, rage::scrNativeHandler> handler_replacements;
 
-		for (auto& [replacement_hash, replacement_handler] : native_replacements)
+		for (auto& [replacement_index, replacement_handler] : native_replacements)
 		{
-			auto native = replacement_hash;
-			map_native(&native);
-
-			auto og_handler = g_pointers->m_gta.m_get_native_handler(g_pointers->m_gta.m_native_registration_table, native);
-			if (!og_handler)
-				continue;
-
+			auto og_handler = native_invoker::get_handlers()[static_cast<int>(replacement_index)];
 			handler_replacements[og_handler] = replacement_handler;
 		}
 
@@ -103,25 +84,25 @@ namespace big
 
 	native_hooks::native_hooks()
 	{
-		add_native_detour(0x1CA59E306ECB80A5, all_scripts::NETWORK_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
-		add_native_detour(0xD1110739EEADB592, all_scripts::NETWORK_TRY_TO_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
-		add_native_detour(0x158C16F5E4CF41F8, all_scripts::RETURN_TRUE); // bypass casino country restrictions
-		add_native_detour(0x40EB1EFD921822BC, all_scripts::DO_NOTHING);  // SECURITY::REGISTER_SCRIPT_VARIABLE
-		add_native_detour(0x340A36A700E99699, all_scripts::DO_NOTHING);  // SECURITY::UNREGISTER_SCRIPT_VARIABLE
-		add_native_detour(0x8E580AB902917360, all_scripts::DO_NOTHING);  // SECURITY::FORCE_CHECK_SCRIPT_VARIABLES
+		add_native_detour(NativeIndex::NETWORK_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT, all_scripts::NETWORK_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
+		add_native_detour(NativeIndex::NETWORK_TRY_TO_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT, all_scripts::NETWORK_TRY_TO_SET_THIS_SCRIPT_IS_NETWORK_SCRIPT);
+		add_native_detour(NativeIndex::NETWORK_CASINO_CAN_BET, all_scripts::RETURN_TRUE); // bypass casino country restrictions
+		add_native_detour(NativeIndex::REGISTER_SCRIPT_VARIABLE, all_scripts::DO_NOTHING);
+		add_native_detour(NativeIndex::UNREGISTER_SCRIPT_VARIABLE, all_scripts::DO_NOTHING);
+		add_native_detour(NativeIndex::FORCE_CHECK_SCRIPT_VARIABLES, all_scripts::DO_NOTHING);
 
-		add_native_detour(RAGE_JOAAT("shop_controller"), 0x34616828CD07F1A1, all_scripts::RETURN_FALSE); // prevent exploit reports
-		add_native_detour(RAGE_JOAAT("shop_controller"), 0xDC38CC1E35B6A5D7, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
+		add_native_detour(RAGE_JOAAT("shop_controller"), NativeIndex::IS_PED_SHOOTING, all_scripts::RETURN_FALSE); // prevent exploit reports
+		add_native_detour(RAGE_JOAAT("shop_controller"), NativeIndex::SET_WARNING_MESSAGE_WITH_HEADER, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
 
-		add_native_detour(RAGE_JOAAT("freemode"), 0x2C83A9DA6BFFC4F9, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("freemode"), 0x5E9564D8246B909A, freemode::IS_PLAYER_PLAYING);
+		add_native_detour(RAGE_JOAAT("freemode"), NativeIndex::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
+		add_native_detour(RAGE_JOAAT("freemode"), NativeIndex::IS_PLAYER_PLAYING, freemode::IS_PLAYER_PLAYING);
 
-		add_native_detour(RAGE_JOAAT("am_launcher"), 0xB8BA7F44DF1575E1, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
+		add_native_detour(RAGE_JOAAT("am_launcher"), NativeIndex::START_NEW_SCRIPT_WITH_ARGS, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x4EDE34FBADD967A6, tunables::WAIT);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x40FCE03E50E8DBE8, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x697F508861875B42, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), 0x972BC203BBC4C4D5, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
+		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::WAIT, tunables::WAIT);
+		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_INT_HASH, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
+		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
+		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_FLOAT_HASH, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)
@@ -136,25 +117,25 @@ namespace big
 		g_native_hooks = nullptr;
 	}
 
-	void native_hooks::add_native_detour(rage::scrNativeHash hash, rage::scrNativeHandler detour)
+	void native_hooks::add_native_detour(NativeIndex index, rage::scrNativeHandler detour)
 	{
-		add_native_detour(ALL_SCRIPT_HASH, hash, detour);
+		add_native_detour(ALL_SCRIPT_HASH, index, detour);
 	}
 
-	void native_hooks::add_native_detour(rage::joaat_t script_hash, rage::scrNativeHash hash, rage::scrNativeHandler detour)
+	void native_hooks::add_native_detour(rage::joaat_t script_hash, NativeIndex index, rage::scrNativeHandler detour)
 	{
 		if (const auto& it = m_native_registrations.find(script_hash); it != m_native_registrations.end())
 		{
-			it->second.emplace_back(hash, detour);
+			it->second.emplace_back(index, detour);
 			return;
 		}
 
-		m_native_registrations.emplace(script_hash, std::vector<native_detour>({{hash, detour}}));
+		m_native_registrations.emplace(script_hash, std::vector<native_detour>({{index, detour}}));
 	}
 
 	void native_hooks::hook_program(rage::scrProgram* program)
 	{
-		std::unordered_map<rage::scrNativeHash, rage::scrNativeHandler> native_replacements;
+		std::unordered_map<NativeIndex, rage::scrNativeHandler> native_replacements;
 		const auto script_hash = program->m_name_hash;
 
 		// Functions that need to be detoured for all scripts

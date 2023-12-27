@@ -1,5 +1,5 @@
 #include "core/data/syncing_player.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 

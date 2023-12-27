@@ -3,7 +3,7 @@
 #include "fiber_pool.hpp"
 #include "gta/enums.hpp"
 #include "gta/net_game_event.hpp"
-#include "hooking.hpp"
+#include "hooking/hooking.hpp"
 #include "script/scriptIdBase.hpp"
 #include "util/math.hpp"
 #include "util/mobile.hpp"
