@@ -2,6 +2,7 @@
 
 #include "gta/vehicle_values.hpp"
 #include "script.hpp"
+#include "services/gta_data/gta_data_service.hpp"
 
 namespace big::vehicle
 {
@@ -189,5 +190,16 @@ namespace big::vehicle
 					VEHICLE::SET_VEHICLE_DOOR_OPEN(veh, i, false, false);
 				else
 					VEHICLE::SET_VEHICLE_DOOR_SHUT(veh, i, false);
+	}
+
+	std::string get_vehicle_model_name(Vehicle veh)
+	{
+		auto model = ENTITY::GET_ENTITY_MODEL(veh);
+
+		for (auto& pair : g_gta_data_service->vehicles())
+			if (model == pair.second.m_hash)
+				return get_vehicle_model_name(pair.second);
+
+		return "Unknown";
 	}
 }

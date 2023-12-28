@@ -2,6 +2,7 @@
 #include "entity.hpp"
 #include "gta/enums.hpp"
 #include "natives.hpp"
+#include "services/gta_data/vehicle_item.hpp"
 
 namespace big::vehicle
 {
@@ -32,4 +33,10 @@ namespace big::vehicle
 	void max_vehicle_performance(Vehicle veh);
 
 	void operate_vehicle_door(Vehicle veh, eDoorId doorId, bool open);
+
+	inline std::string get_vehicle_model_name(vehicle_item veh)
+	{
+		return std::format("{} {} {}", veh.m_vehicle_class, veh.m_display_manufacturer, veh.m_display_name);
+	}
+	std::string get_vehicle_model_name(Vehicle veh);
 }

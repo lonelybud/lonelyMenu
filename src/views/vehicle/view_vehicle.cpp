@@ -62,6 +62,18 @@ namespace big
 					}
 					ImGui::NewLine();
 				}
+				ImGui::BeginGroup();
+				components::small_text("Interior lights");
+				{
+					components::button("On###ILON", [] {
+						VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, TRUE);
+					});
+					ImGui::SameLine();
+					components::button("Off###ILOFF", [] {
+						VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, FALSE);
+					});
+				}
+				ImGui::EndGroup();
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());

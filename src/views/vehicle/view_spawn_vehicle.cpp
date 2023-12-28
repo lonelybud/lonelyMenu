@@ -109,11 +109,7 @@ namespace big
 						spawn_location = vehicle::get_spawn_location(vehicle.m_hash);
 
 					auto veh  = vehicle::spawn(vehicle.m_hash, spawn_location);
-					auto name = std::format("{} {} {} {}",
-					    vehicle.m_vehicle_class,
-					    vehicle.m_display_manufacturer,
-					    vehicle.m_display_name,
-					    vehicle.m_hash);
+					auto name = vehicle::get_vehicle_model_name(vehicle);
 
 					if (veh == 0)
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);

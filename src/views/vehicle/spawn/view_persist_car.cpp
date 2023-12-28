@@ -1,12 +1,12 @@
 #include "core/data/hud.hpp"
 #include "core/data/vehicle.hpp"
 #include "fiber_pool.hpp"
-#include "services/gta_data/gta_data_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/blip.hpp"
 #include "util/strings.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
+#include "util/vehicle.hpp"
 
 namespace big
 {
@@ -56,18 +56,8 @@ namespace big
 		components::button("Populate Name", [vehicle_file_name_input] {
 			if (self::veh)
 			{
-				auto model = ENTITY::GET_ENTITY_MODEL(self::veh);
-				for (auto& pair : g_gta_data_service->vehicles())
-					if (model == pair.second.m_hash)
-					{
-						auto name = std::format("{} {} {}",
-						    pair.second.m_vehicle_class,
-						    pair.second.m_display_manufacturer,
-						    pair.second.m_display_name);
-
-						strcpy(vehicle_file_name_input, name.c_str());
-						return;
-					}
+				std::string name = vehicle::get_vehicle_model_name(self::veh);
+				strcpy(vehicle_file_name_input, name.c_str());
 			}
 		});
 	}

@@ -80,15 +80,16 @@ namespace big
 		return folders;
 	}
 
-	void persist_car_service::clone_ped_car(Vehicle vehicle)
+	void persist_car_service::clone_ped_car(Vehicle vehicle, const char* ped_name)
 	{
+		std::string model_name = vehicle::get_vehicle_model_name(vehicle);
 		auto veh = spawn_vehicle_full(get_vehicle_json(vehicle));
 
 		if (veh == 0)
-			g_notification_service->push_error("Clone Player Car", std::format("Unable to clone {}", ENTITY::GET_ENTITY_MODEL(vehicle)), true);
+			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
 		else
 		{
-			g_notification_service->push_success("Clone Player Car", std::format("Cloned {}", ENTITY::GET_ENTITY_MODEL(vehicle)), true);
+			g_notification_service->push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
 			ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 		}
 	}

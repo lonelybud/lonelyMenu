@@ -52,12 +52,12 @@ namespace big
 		else if (plyr->is_blocked)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f)); // purple
 		else if (plyr->is_known_player)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.55f, 0.9f, 1.f)); // blue
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.25f, 1.f)); // grey
 		else if (plyr->is_toxic)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f)); // green dark
 
 		if (selected_player)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.29f, 0.45f, 0.69f, 1.f));
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.29f, 0.45f, 0.69f, 1.f)); // blue
 
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.0, 0.5});
 		ImGui::PushID(plyr->id());
