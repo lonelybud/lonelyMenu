@@ -60,6 +60,16 @@ namespace big
 			components::command_checkbox<"godmode">();
 			components::command_checkbox<"otr">();
 			ImGui::Checkbox("Context Menu", &g_context_menu.enabled);
+			components::options_modal("Context Menu Modal", [] {
+				ImGui::Text("Allowed Entity Types:");
+				ImGui::CheckboxFlags("Object", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::OBJECT));
+				ImGui::SameLine();
+				ImGui::CheckboxFlags("Ped", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PED));
+				ImGui::SameLine();
+				ImGui::CheckboxFlags("Player", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PLAYER));
+				ImGui::SameLine();
+				ImGui::CheckboxFlags("Vehicle", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::VEHICLE));
+			});
 
 			static const char* ragdoll_button_text = "Disable Ragdoll";
 			components::button(ragdoll_button_text, [] {

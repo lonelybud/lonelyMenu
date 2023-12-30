@@ -5,6 +5,7 @@
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
+#include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/known_players.hpp"
 #include "services/vehicle/persist_car_service.hpp"
@@ -17,6 +18,7 @@
 #include <script/globals/GPBD_FM.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
+#include <vehicle/CVehicleModelInfo.hpp>
 
 static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 
@@ -71,6 +73,26 @@ namespace big
 					    ImGui::Text("K/D Ratio: %f", stats.KdRatio);
 					    ImGui::Text("Kills On Players: %d", stats.KillsOnPlayers);
 					    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
+					    ImGui::Text("Rockstar Id: %d", rockstar_id);
+
+					    ImGui::Spacing();
+
+					    if (CPed* ped = current_player->get_ped(); ped != nullptr)
+					    {
+						    if (ped->m_damage_bits & (uint32_t)eEntityProofs::GOD)
+							    ImGui::Text("Player God Mod");
+
+						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
+							    if (auto vehicle = current_player->get_current_vehicle(); vehicle != nullptr)
+							    {
+								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
+									    ImGui::Text("Vehicle: ",
+									        g_gta_data_service->vehicles()[vehicle_model_info->m_name].m_display_name);
+
+								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
+									    ImGui::Text("Vehicle God Mod");
+							    }
+					    }
 
 					    ImGui::Spacing();
 
@@ -161,8 +183,8 @@ namespace big
 
 			extra_info_button(current_player);
 			ImGui::SameLine();
-			if (components::button("Copy Name##copyname"))
-				ImGui::SetClipboardText(current_player->get_name());
+			if (components::button("Copy Name & SC id##copyname"))
+				ImGui::SetClipboardText(std::format("{} {}", current_player->get_name(), rockstar_id).c_str());
 
 			ImGui::Spacing();
 

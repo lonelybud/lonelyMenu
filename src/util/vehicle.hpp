@@ -14,13 +14,13 @@ namespace big::vehicle
 		if (plate != nullptr && plate[0] != 0)
 			VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT(veh, plate);
 	}
-	inline void repair()
+	inline void repair(Vehicle veh)
 	{
-		if (!ENTITY::IS_ENTITY_A_VEHICLE(self::veh))
+		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
 			return;
 
-		VEHICLE::SET_VEHICLE_FIXED(self::veh);
-		VEHICLE::SET_VEHICLE_DIRT_LEVEL(self::veh, 0.f);
+		VEHICLE::SET_VEHICLE_FIXED(veh);
+		VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
 	}
 
 	Vector3 get_spawn_location(Hash hash, Ped ped = self::ped);

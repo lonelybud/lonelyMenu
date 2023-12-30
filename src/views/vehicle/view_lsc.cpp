@@ -675,6 +675,17 @@ namespace big
 							}
 							case 5: //Wheel Color
 							{
+								constexpr auto alloy_color = 156;
+
+								if (ImGui::Selectable("Alloy", selected_color == alloy_color))
+								{
+									selected_color            = alloy_color;
+									owned_mods[MOD_WHEEL_COL] = alloy_color;
+									g_fiber_pool->queue_job([] {
+										VEHICLE::SET_VEHICLE_EXTRA_COLOURS(current_veh, owned_mods[MOD_PEARLESCENT_COL], owned_mods[MOD_WHEEL_COL]);
+									});
+								}
+
 								for (const auto& [color, name] : lsc_classic_colors)
 								{
 									if (ImGui::Selectable(name.c_str(), selected_color == color))

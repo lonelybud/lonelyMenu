@@ -82,8 +82,11 @@ namespace big
 
 	void persist_car_service::clone_ped_car(Vehicle vehicle, const char* ped_name)
 	{
+		if (!ENTITY::IS_ENTITY_A_VEHICLE(vehicle))
+			return;
+
 		std::string model_name = vehicle::get_vehicle_model_name(vehicle);
-		auto veh = spawn_vehicle_full(get_vehicle_json(vehicle));
+		auto veh               = spawn_vehicle_full(get_vehicle_json(vehicle));
 
 		if (veh == 0)
 			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
@@ -172,6 +175,8 @@ namespace big
 			VEHICLE::SET_VEHICLE_EXTRA_COLOUR_6(vehicle, vehicle_json[dash_color_key]);
 			VEHICLE::SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, vehicle_json[headlight_color_key]);
 		}
+
+		VEHICLE::SET_VEHICLE_DIRT_LEVEL(vehicle, 0.f);
 
 		return vehicle;
 	}

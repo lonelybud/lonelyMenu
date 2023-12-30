@@ -1,3 +1,4 @@
+#include "core/data/context_menu.hpp"
 #include "core/data/debug.hpp"
 #include "core/data/self.hpp"
 #include "core/data/session.hpp"
@@ -29,9 +30,10 @@ namespace big
 
 		g_player_service->do_cleanup();
 
-		g_self    = {};
-		g_vehicle = {};
-		g_weapons = {};
+		g_self         = {};
+		g_vehicle      = {};
+		g_weapons      = {};
+		g_context_menu = {};
 
 		g_session_t g_session_temp;
 		g_session.lock_session                 = g_session_temp.lock_session;

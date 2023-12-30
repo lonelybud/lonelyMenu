@@ -1,4 +1,5 @@
 #include "core/enums.hpp"
+#include "services/vehicle/persist_car_service.hpp"
 #include "util/mobile.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
@@ -24,7 +25,11 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("Repair", [] {
-			vehicle::repair();
+			vehicle::repair(self::veh);
+		});
+		ImGui::SameLine();
+		components::button("Copy Vehicle", [] {
+			persist_car_service::clone_ped_car(self::veh);
 		});
 	}
 

@@ -9,6 +9,8 @@ namespace big
 	{
 		bool enabled = false;
 
+		uint8_t allowed_entity_types = 0;
+
 		ImU32 selected_option_color = 4278255360;
 
 		bool bounding_box_enabled = true;

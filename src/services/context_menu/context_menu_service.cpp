@@ -12,6 +12,7 @@ namespace big
 	context_menu_service::context_menu_service()
 	{
 		g_context_menu_service = this;
+		load_shared();
 	}
 
 	context_menu_service::~context_menu_service()
@@ -137,12 +138,55 @@ namespace big
 		{
 			switch (m_pointer->m_model_info->m_model_type)
 			{
+			case eModelType::Object:
+			{
+				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::OBJECT)))
+				{
+					break;
+				}
+				return &options.at(ContextEntityType::OBJECT);
+			}
+			case eModelType::OnlineOnlyPed:
 			case eModelType::Ped:
 			{
-				if (const auto ped = reinterpret_cast<CPed*>(m_pointer); ped && ped->m_player_info)
+				if (const auto ped = reinterpret_cast<CPed*>(m_pointer); ped)
+				{
+					if (ped->m_ped_task_flag & static_cast<uint8_t>(ePedTask::TASK_DRIVING) && ped->m_vehicle)
+					{
+						if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::VEHICLE)))
+						{
+							break;
+						}
+
+						m_pointer = ped->m_vehicle;
+						return &options.at(ContextEntityType::VEHICLE);
+					}
+					if (ped->m_player_info)
+					{
+						if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)))
+						{
+							break;
+						}
+
+						return &options.at(ContextEntityType::PLAYER);
+					}
+				}
+
+				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PED)))
+				{
 					break;
+				}
 
 				return &options.at(ContextEntityType::PED);
+			}
+			case eModelType::Vehicle:
+			{
+				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::VEHICLE)))
+				{
+					break;
+				}
+
+				return &options.at(ContextEntityType::VEHICLE);
 			}
 			default: break;
 			}
@@ -152,7 +196,7 @@ namespace big
 
 	void context_menu_service::get_entity_closest_to_screen_center()
 	{
-		m_handle = entity::get_entity_closest_to_middle_of_screen(&m_pointer, {}, false, true, false, false);
+		m_handle = entity::get_entity_closest_to_middle_of_screen(&m_pointer);
 
 		if (ENTITY::DOES_ENTITY_EXIST(m_handle) && !ENTITY::IS_ENTITY_DEAD(m_handle, 0) && m_pointer)
 			fill_model_bounding_box_screen_space();
@@ -160,6 +204,26 @@ namespace big
 		{
 			m_handle  = 0;
 			m_pointer = nullptr;
+		}
+	}
+
+	void context_menu_service::load_shared()
+	{
+		for (auto& [type, menu] : options)
+		{
+			if (type == ContextEntityType::SHARED)
+				continue;
+			menu.options.insert(menu.options.end(),
+			    options.at(ContextEntityType::SHARED).options.begin(),
+			    options.at(ContextEntityType::SHARED).options.end());
+
+			uint32_t max_size = 0;
+			for (auto& [name, _] : menu.options)
+			{
+				max_size = static_cast<int>(max_size < name.length() ? name.length() : max_size);
+			}
+
+			menu.menu_size = {(10.f * static_cast<float>(max_size)) + 10.f, 2 * (10.f * static_cast<float>(menu.options.size())) + 10.f};
 		}
 	}
 

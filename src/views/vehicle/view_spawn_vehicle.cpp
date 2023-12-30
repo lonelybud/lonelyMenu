@@ -40,13 +40,10 @@ namespace big
 
 	void render_spawn_new_vehicle()
 	{
-		static bool spawn_maxed;
 		static int selected_class = -1;
 		string_vec& class_arr     = g_gta_data_service->vehicle_classes();
 		static std::string search_veh_name;
 		static vehicle_map searched_vehicles;
-
-		ImGui::Checkbox("Spawn Maxed", &spawn_maxed);
 
 		ImGui::Spacing();
 
@@ -114,13 +111,9 @@ namespace big
 					if (veh == 0)
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
 					else
-					{
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
 
-						if (spawn_maxed)
-							vehicle::max_vehicle(veh);
-					}
-
+					VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
 					ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 				});
 				ImGui::PopID();
