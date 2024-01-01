@@ -1,8 +1,6 @@
 #pragma once
 #include "services/bad_players/bad_players.hpp"
-#include "services/notifications/notification_service.hpp"
 #include "services/players/player.hpp"
-#include "util/outfit.hpp"
 
 namespace big
 {
@@ -20,25 +18,6 @@ namespace big
 		}
 
 		return "";
-	}
-
-	inline void steal_player_outfit(big::player_ptr plyr)
-	{
-		if (plyr->is_valid())
-		{
-			auto target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id());
-
-			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
-			{
-				g_notification_service->push_error("Steal Oufit", "Model not same.", true);
-				return;
-			}
-
-			outfit::components_t components;
-			outfit::props_t props;
-
-			set_self_comps_props(components, props, target);
-		}
 	}
 
 	inline player_ptr get_player_from_ped(Ped ped)

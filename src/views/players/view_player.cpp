@@ -8,8 +8,10 @@
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/known_players.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/globals.hpp"
+#include "util/outfit.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
 #include "views/view.hpp"
@@ -20,16 +22,35 @@
 #include <script/globals/GlobalPlayerBD.hpp>
 #include <vehicle/CVehicleModelInfo.hpp>
 
-static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
-
-auto get_current_time_in_mill()
-{
-	auto currentTime = std::chrono::system_clock::now().time_since_epoch();
-	return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
-}
-
 namespace big
 {
+	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
+
+	static auto get_current_time_in_mill()
+	{
+		auto currentTime = std::chrono::system_clock::now().time_since_epoch();
+		return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
+	}
+
+	inline void steal_player_outfit(big::player_ptr plyr, bool save = false)
+	{
+		if (plyr->is_valid())
+		{
+			auto target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id());
+
+			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
+			{
+				g_notification_service->push_error("Steal Oufit", "Model not same.", true);
+				return;
+			}
+
+			if (save)
+				outfit::save_outfit(target, std::to_string(get_current_time_in_mill()).append(".json"), "");
+			else
+				outfit::set_self_comps_props({}, {}, target);
+		}
+	}
+
 	const char* get_nat_type_str(int type)
 	{
 		switch (type)
@@ -259,10 +280,7 @@ namespace big
 			});
 			ImGui::SameLine();
 			components::button("Save outfit", [current_player] {
-				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()); ped)
-					outfit::save_outfit(ped, std::to_string(get_current_time_in_mill()).append(".json"), "");
-				else
-					g_notification_service->push_error("Save outfit", "Failed to get ped", false);
+				steal_player_outfit(current_player, true);
 			});
 
 			ver_Space();

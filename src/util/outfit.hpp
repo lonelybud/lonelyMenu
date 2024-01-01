@@ -59,7 +59,7 @@ namespace big::outfit
 		return -1;
 	}
 
-	inline void set_self_comps_props(outfit::components_t& components, outfit::props_t& props, Ped target = 0)
+	inline void set_self_comps_props(outfit::components_t components, outfit::props_t props, Ped target = 0)
 	{
 		for (auto item : components.items)
 		{
@@ -84,6 +84,12 @@ namespace big::outfit
 	{
 		components_t components;
 		props_t props;
+
+		if (j["model"] != ENTITY::GET_ENTITY_MODEL(self::ped))
+		{
+			g_notification_service->push_error("Apply Oufit", "Model not same.", true);
+			return;
+		}
 
 		for (auto& item : j["components"].items())
 		{
@@ -159,5 +165,21 @@ namespace big::outfit
 		std::ofstream o(path);
 		o << std::setw(4) << j << std::endl;
 		o.close();
+	}
+
+	inline void check_bounds_drawable(outfit_t* item)
+	{
+		if (item->drawable_id > item->drawable_id_max)
+			item->drawable_id = item->drawable_id_max;
+		if (item->drawable_id < -1)
+			item->drawable_id = -1;
+	}
+
+	inline void check_bounds_texture(outfit_t* item)
+	{
+		if (item->texture_id > item->texture_id_max)
+			item->texture_id = item->texture_id_max;
+		if (item->texture_id < -1)
+			item->texture_id = -1;
 	}
 }

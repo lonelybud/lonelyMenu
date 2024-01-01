@@ -6,32 +6,97 @@ namespace big
 {
 	void view::outfit_editor()
 	{
-		static char outfit_name[MAX_PATH] = {};
+		static outfit::components_t components;
+		static outfit::props_t props;
 
-		static std::string selected_folder, selected_file;
-		static std::vector<std::string> outfits_folder, outfits;
+		components::button("Refresh State for current Outfit", [] {
+			for (auto& item : components.items)
+			{
+				item.drawable_id     = PED::GET_PED_DRAWABLE_VARIATION(self::ped, item.id);
+				item.drawable_id_max = PED::GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
+
+				item.texture_id = PED::GET_PED_TEXTURE_VARIATION(self::ped, item.id);
+				item.texture_id_max = PED::GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
+			}
+
+			for (auto& item : props.items)
+			{
+				item.drawable_id     = PED::GET_PED_PROP_INDEX(self::ped, item.id, 1);
+				item.drawable_id_max = PED::GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
+
+				item.texture_id = PED::GET_PED_PROP_TEXTURE_INDEX(self::ped, item.id);
+				item.texture_id_max = PED::GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
+			}
+		});
 
 		ImGui::BeginGroup();
+		for (auto& item : components.items)
 		{
-			ImGui::Text("Components");
-			for (auto& item : outfit::components_t().items)
-				components::button(std::format("Clear {}", item.label), [item] {
-					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, 0, 0, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+			ImGui::SetNextItemWidth(120);
+			if (ImGui::InputInt(std::format("{} [0,{}]##1", item.label, item.drawable_id_max).c_str(), &item.drawable_id))
+			{
+				outfit::check_bounds_drawable(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
+				g_fiber_pool->queue_job([item] {
+					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, item.drawable_id, 0, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
 				});
+			}
+		}
+		ImGui::EndGroup();
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		for (auto& item : components.items)
+		{
+			ImGui::SetNextItemWidth(120);
+			if (ImGui::InputInt(std::format("{} {} [0,{}]##2", item.label, "TEX", item.texture_id_max).c_str(), &item.texture_id))
+			{
+				outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
+				g_fiber_pool->queue_job([item] {
+					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, item.drawable_id, item.texture_id, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+				});
+			}
 		}
 		ImGui::EndGroup();
 		ImGui::SameLine();
 		ImGui::BeginGroup();
 		{
-			ImGui::Text("Props");
-			for (auto& item : outfit::props_t().items)
-				components::button(std::format("Clear {}", item.label), [item] {
-					PED::CLEAR_PED_PROP(self::ped, item.id, 0);
-				});
+			for (auto& item : props.items)
+			{
+				ImGui::SetNextItemWidth(120);
+				if (ImGui::InputInt(std::format("{} [0,{}]##3", item.label, item.drawable_id_max).c_str(), &item.drawable_id))
+				{
+					outfit::check_bounds_drawable(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
+					g_fiber_pool->queue_job([item] {
+						if (item.drawable_id == -1)
+							PED::CLEAR_PED_PROP(self::ped, item.id, 1);
+						else
+							PED::SET_PED_PROP_INDEX(self::ped, item.id, item.drawable_id, 0, TRUE, 1);
+					});
+				}
+			}
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			for (auto& item : props.items)
+			{
+				ImGui::SetNextItemWidth(120);
+				if (ImGui::InputInt(std::format("{} {} [0,{}]##4", item.label, "TEX", item.texture_id_max).c_str(), &item.texture_id))
+				{
+					outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
+					g_fiber_pool->queue_job([item] {
+						PED::SET_PED_PROP_INDEX(self::ped, item.id, item.drawable_id, item.texture_id, TRUE, 1);
+					});
+				}
+			}
 		}
 		ImGui::EndGroup();
 
 		ImGui::Spacing();
+
+		static char outfit_name[MAX_PATH] = {};
+		static std::string selected_folder, selected_file;
+		static std::vector<std::string> outfits_folder, outfits;
+		auto folder_display = selected_folder.empty() ? "Root" : selected_folder.c_str();
 
 		ImGui::SetNextItemWidth(300);
 		components::input_text("###outfit_name", outfit_name, sizeof(outfit_name));
@@ -96,7 +161,6 @@ namespace big
 		});
 
 		ImGui::SetNextItemWidth(300.f);
-		auto folder_display = selected_folder.empty() ? "Root" : selected_folder.c_str();
 		if (ImGui::BeginCombo("Folder###folder_list", folder_display))
 		{
 			if (ImGui::Selectable("Root", selected_folder.empty()))
