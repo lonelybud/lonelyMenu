@@ -1,8 +1,8 @@
 #include "pointers.hpp"
 
 #include "gta_pointers_layout_info.hpp"
-#include "sc_pointers_layout_info.hpp"
 #include "memory/all.hpp"
+#include "sc_pointers_layout_info.hpp"
 
 namespace big
 {
@@ -906,6 +906,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_nullsub = ptr.as<void(*)()>();
+            }
+        },
+        // Get Ped Seat
+        {
+            "GPS",
+            "E8 ? ? ? ? 48 85 DB 74 66",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_ped_seat = ptr.add(1).rip().as<functions::get_ped_seat>();
             }
         }
         >(); // don't leave a trailing comma at the end

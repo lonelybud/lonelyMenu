@@ -12,6 +12,7 @@ namespace big
 		TELEPORT,
 		OUTFIT_EDITOR,
 		ANIMATIONS,
+		PTFX_EFFECTS,
 
 		VEHICLE,
 		LSC,
@@ -55,6 +56,7 @@ namespace big
 		                {tabs::TELEPORT, {"Teleport", view::teleport}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
 		                {tabs::ANIMATIONS, {"Animations", view::animations}},
+		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
 		            },
 		        },
 		    },

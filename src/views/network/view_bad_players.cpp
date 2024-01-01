@@ -84,7 +84,7 @@ namespace big
 				else if (search_blocked_player_name.length() > 0)
 					temp_objs = searched_blocked_players = filter_bad_players(bad_players_nm::bad_players_list, search_blocked_player_name);
 
-				for (auto& pair : (search_blocked_player_name.length() > 0 ? temp_objs : bad_players_nm::bad_players_list))
+				for (auto& pair : (temp_objs.size() ? temp_objs : bad_players_nm::bad_players_list))
 					if (pair.second.block_join && ImGui::Selectable(pair.second.name.c_str(), selected_id && selected_id == pair.first))
 						selected_id = pair.first;
 

@@ -12,6 +12,7 @@ class CVehicleGadgetDataNode;
 class CGameScriptHandlerNetComponent;
 class CDoorBreakEvent;
 class GenericPool;
+class CGetPedSeatReturnClass;
 enum eVehicleGadgetType : uint32_t;
 enum class PedBones : uint16_t;
 class CNetComplaintMgr;
@@ -139,4 +140,6 @@ namespace big::functions
 	using remove_message_from_unacked_reliables = void (*)(void* list, uint16_t* unk);
 
 	using remove_reference = void (*)(rage::fwRefAwareBase* object, void* reference);
+
+	using get_ped_seat = CGetPedSeatReturnClass* (*)(PVOID seat_info, CPed* ped);
 }

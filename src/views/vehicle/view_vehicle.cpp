@@ -155,6 +155,8 @@ namespace big
 
 		components::command_checkbox<"rocketability">();
 
+		components::command_checkbox<"allow_all_weapons">();
+
 		static bool can_be_knocked_off_veh = true;
 		components::button(can_be_knocked_off_veh ? "Enable Seat Belt" : "Disable Seat Belt", [] {
 			if (can_be_knocked_off_veh)
