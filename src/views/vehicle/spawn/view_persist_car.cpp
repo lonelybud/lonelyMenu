@@ -5,8 +5,8 @@
 #include "util/blip.hpp"
 #include "util/strings.hpp"
 #include "util/teleport.hpp"
-#include "views/view.hpp"
 #include "util/vehicle.hpp"
+#include "views/view.hpp"
 
 namespace big
 {
@@ -118,6 +118,7 @@ namespace big
 		components::input_text_with_hint("File Name", "Search", search, sizeof(search), ImGuiInputTextFlags_None);
 		std::string lower_search = search;
 		std::transform(lower_search.begin(), lower_search.end(), lower_search.begin(), tolower);
+		static bool open_modal = false;
 
 		ImGui::SetNextItemWidth(250);
 		ImGui::Text("Saved Vehicles");
@@ -136,9 +137,7 @@ namespace big
 					if (ImGui::Selectable(file_name, selected_vehicle_file == pair, ImGuiSelectableFlags_AllowItemOverlap))
 					{
 						selected_vehicle_file = pair;
-						g_fiber_pool->queue_job([] {
-							load_vehicle();
-						});
+						open_modal            = true;
 					}
 
 					ImGui::SameLine();
@@ -182,5 +181,29 @@ namespace big
 			save_vehicle_button(vehicle_file_name_input, persist_vehicle_sub_folder.c_str());
 
 		ImGui::EndGroup();
+
+		if (open_modal)
+			ImGui::OpenPopup("##spawncarmodel2");
+		if (ImGui::BeginPopupModal("##spawncarmodel2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		{
+			ImGui::Text(std::format("Are you sure you want to spawn {}", selected_vehicle_file).c_str());
+			ImGui::Spacing();
+			if (ImGui::Button("Yes"))
+			{
+				g_fiber_pool->queue_job([] {
+					load_vehicle();
+				});
+
+				open_modal = false;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("No"))
+			{
+				open_modal = false;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
 	}
 }

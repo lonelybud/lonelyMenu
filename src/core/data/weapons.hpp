@@ -4,6 +4,8 @@ namespace big
 {
 	struct g_weapons_t
 	{
+		bool infinite_mag = false;
+
 		struct aimbot
 		{
 			bool enable    = false;

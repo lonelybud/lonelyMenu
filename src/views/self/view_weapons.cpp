@@ -19,6 +19,8 @@ namespace big
 
 	static inline void render_misc()
 	{
+		components::command_checkbox<"infclip">();
+
 		components::command_checkbox<"aimbot">();
 		ImGui::SetNextItemWidth(350);
 		ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
@@ -48,26 +50,23 @@ namespace big
 
 			ImGui::SetNextItemWidth(300);
 			if (components::input_text_with_hint("###search_weapon_name", "search name", search_weapon_name))
-				searched_weapons.clear();
+			{
+				if (search_weapon_name.length() > 0)
+					searched_weapons = filter_weapons_map(g_gta_data_service->weapons(), search_weapon_name);
+				else
+					searched_weapons.clear();
+			}
 
 			if (ImGui::BeginListBox("###weaponsList", {300, 100}))
 			{
-				std::map<std::string, big::weapon_item> temp_objs;
-
-				if (searched_weapons.size())
-					temp_objs = searched_weapons;
-				else if (search_weapon_name.length() > 0)
-					temp_objs = searched_weapons = filter_weapons_map(g_gta_data_service->weapons(), search_weapon_name);
-
-				for (auto& weapon : (temp_objs.size() ? temp_objs : g_gta_data_service->weapons()))
-				{
+				for (auto& weapon : (searched_weapons.size() ? searched_weapons : g_gta_data_service->weapons()))
 					if (weapon.second.m_display_name != "NULL"
 					    && ImGui::Selectable(weapon.second.m_display_name.c_str(), weapon.second.m_hash == selected_weapon_hash))
 					{
 						selected_weapon      = weapon.second.m_display_name;
 						selected_weapon_hash = weapon.second.m_hash;
 					}
-				}
+
 				ImGui::EndListBox();
 			}
 			ImGui::SameLine();

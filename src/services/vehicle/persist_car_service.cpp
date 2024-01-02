@@ -102,7 +102,7 @@ namespace big
 		const Hash vehicle_hash = vehicle_json[vehicle_model_hash_key];
 		Vector3 spawn_location = spawn_coords.has_value() ? spawn_coords.value() : vehicle::get_spawn_location(vehicle_hash);
 
-		const auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0, is_networked);
+		auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0, is_networked);
 
 		script::get_current()->yield();
 
@@ -176,7 +176,7 @@ namespace big
 			VEHICLE::SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, vehicle_json[headlight_color_key]);
 		}
 
-		VEHICLE::SET_VEHICLE_DIRT_LEVEL(vehicle, 0.f);
+		vehicle::repair(vehicle);
 
 		return vehicle;
 	}

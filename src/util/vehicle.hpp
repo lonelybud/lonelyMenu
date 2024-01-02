@@ -34,7 +34,7 @@ namespace big::vehicle
 
 	void operate_vehicle_door(Vehicle veh, eDoorId doorId, bool open);
 
-	inline std::string get_vehicle_model_name(vehicle_item veh)
+	inline std::string get_vehicle_model_name(const vehicle_item veh)
 	{
 		return std::format("{} {} {}", veh.m_vehicle_class, veh.m_display_manufacturer, veh.m_display_name);
 	}

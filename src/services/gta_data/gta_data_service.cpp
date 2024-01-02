@@ -194,7 +194,7 @@ namespace big
 			const auto vehicle = cached_vehicles[i];
 
 			add_if_not_exists(m_vehicle_classes, vehicle.m_vehicle_class);
-			m_vehicles.insert({vehicle.m_name, vehicle});
+			m_vehicles.insert({vehicle.m_hash, vehicle});
 		}
 
 		std::sort(m_vehicle_classes.begin(), m_vehicle_classes.end());

@@ -117,25 +117,27 @@ namespace big
 
 		ImGui::SetNextItemWidth(200);
 		if (components::input_text_with_hint("##searchDicText", "searchDic", searchDicText))
-			searchedAnimDictCompactObjs.clear();
+		{
+			if (searchDicText.length() > 0)
+				searchedAnimDictCompactObjs = filterStrings<ptfxEffects::AnimDictCompactObj>(animDictCompactObjs, searchDicText, animDictCompactObjReducer);
+			else
+				searchedAnimDictCompactObjs.clear();
+
+			selecDicIndex = -1;
+		}
 		ImGui::SameLine();
 		components::button("Load ptfx effects", [&] {
 			ptfxEffects::loadEffects(animDictCompactObjs);
 		});
 
+		auto& objs = searchedAnimDictCompactObjs.size() ? searchedAnimDictCompactObjs : animDictCompactObjs;
+
 		ImGui::BeginGroup();
 		components::small_text("DictionaryName");
 		if (ImGui::BeginListBox("##dictionaries", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 		{
-			std::vector<ptfxEffects::AnimDictCompactObj> temp_objs;
-
-			if (searchedAnimDictCompactObjs.size())
-				temp_objs = searchedAnimDictCompactObjs;
-			else if (searchDicText.length() > 0)
-				temp_objs = searchedAnimDictCompactObjs = filterStrings<ptfxEffects::AnimDictCompactObj>(animDictCompactObjs, searchDicText, animDictCompactObjReducer);
-
 			unsigned i = 0;
-			for (auto& dicObj : (temp_objs.size() ? temp_objs : animDictCompactObjs))
+			for (auto& dicObj : objs)
 			{
 				if (ImGui::Selectable(dicObj.DictionaryName.c_str(), selecDicIndex == i))
 					selecDicIndex = i;
@@ -150,10 +152,10 @@ namespace big
 		components::small_text("EffectNames");
 		if (selecDicIndex != -1 && ImGui::BeginListBox("##effectNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 		{
-			for (auto& effectName : animDictCompactObjs[selecDicIndex].EffectNames)
+			for (auto& effectName : objs[selecDicIndex].EffectNames)
 				if (ImGui::Selectable(effectName.c_str(), effectName == g_ptfx_effects.effect))
 				{
-					g_ptfx_effects.asset  = animDictCompactObjs[selecDicIndex].DictionaryName.c_str();
+					g_ptfx_effects.asset  = objs[selecDicIndex].DictionaryName.c_str();
 					g_ptfx_effects.effect = effectName.c_str();
 				}
 

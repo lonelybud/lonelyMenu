@@ -14,6 +14,7 @@
 #include "util/outfit.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
+#include "util/vehicle.hpp"
 #include "views/view.hpp"
 
 #include <network/netConnection.hpp>
@@ -108,7 +109,8 @@ namespace big
 							    {
 								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
 									    ImGui::Text("Vehicle: ",
-									        g_gta_data_service->vehicles()[vehicle_model_info->m_name].m_display_name);
+									        vehicle::get_vehicle_model_name(
+									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]));
 
 								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
 									    ImGui::Text("Vehicle God Mod");

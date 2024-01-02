@@ -208,11 +208,11 @@ namespace big
 
 		if (info->m_model_type == eModelType::Vehicle)
 		{
-			for (auto& [name, data] : g_gta_data_service->vehicles())
+			for (auto& [hash, data] : g_gta_data_service->vehicles())
 			{
-				if (data.m_hash == model)
+				if (hash == model)
 				{
-					model_str = name.data();
+					model_str = data.m_name;
 				}
 			}
 		}

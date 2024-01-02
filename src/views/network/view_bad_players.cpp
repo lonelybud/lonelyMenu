@@ -54,7 +54,12 @@ namespace big
 
 		ImGui::SetNextItemWidth(300);
 		if (components::input_text_with_hint("###searched_blocked_players", "search blocked player", search_blocked_player_name))
-			searched_blocked_players.clear();
+		{
+			if (search_blocked_player_name.length() > 0)
+				searched_blocked_players = filter_bad_players(bad_players_nm::bad_players_list, search_blocked_player_name);
+			else
+				searched_blocked_players.clear();
+		}
 
 		ImGui::Spacing();
 
@@ -77,14 +82,7 @@ namespace big
 			ImGui::Text("Joins blocked -");
 			if (ImGui::BeginListBox("##bad_players_blocked", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
-				std::map<uint64_t, bad_players_nm::bad_player> temp_objs;
-
-				if (searched_blocked_players.size())
-					temp_objs = searched_blocked_players;
-				else if (search_blocked_player_name.length() > 0)
-					temp_objs = searched_blocked_players = filter_bad_players(bad_players_nm::bad_players_list, search_blocked_player_name);
-
-				for (auto& pair : (temp_objs.size() ? temp_objs : bad_players_nm::bad_players_list))
+				for (auto& pair : (searched_blocked_players.size() ? searched_blocked_players : bad_players_nm::bad_players_list))
 					if (pair.second.block_join && ImGui::Selectable(pair.second.name.c_str(), selected_id && selected_id == pair.first))
 						selected_id = pair.first;
 

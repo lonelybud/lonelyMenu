@@ -15,7 +15,7 @@ namespace big
 	};
 
 	using ped_map     = std::map<std::string, ped_item>;
-	using vehicle_map = std::map<std::string, vehicle_item>;
+	using vehicle_map = std::map<uint32_t, vehicle_item>;
 	using string_vec  = std::vector<std::string>;
 
 	class gta_data_service final

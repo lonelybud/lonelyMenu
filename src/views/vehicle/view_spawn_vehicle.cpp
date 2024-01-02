@@ -44,6 +44,8 @@ namespace big
 		string_vec& class_arr     = g_gta_data_service->vehicle_classes();
 		static std::string search_veh_name;
 		static vehicle_map searched_vehicles;
+		static vehicle_item selected_veh;
+		static bool open_modal = false;
 
 		ImGui::Spacing();
 
@@ -74,24 +76,36 @@ namespace big
 		if (components::input_text_with_hint("Model Name", "Search", search_veh_name))
 			searched_vehicles.clear();
 
+		if ((search_veh_name.length() > 0 || selected_class != -1) && !searched_vehicles.size())
+			searched_vehicles = filter_vehicles(search_veh_name, selected_class);
+
 		if (ImGui::BeginListBox("###vehicles", {300, 300}))
 		{
-			vehicle_map* temp_objs = nullptr;
-
-			if (search_veh_name.length() > 0 || selected_class != -1)
-			{
-				if (!searched_vehicles.size())
-					searched_vehicles = filter_vehicles(search_veh_name, selected_class);
-
-				temp_objs = &searched_vehicles;
-			}
-
-			for (auto& pair : (temp_objs != nullptr ? *temp_objs : g_gta_data_service->vehicles()))
+			for (auto& pair : (searched_vehicles.size() ? searched_vehicles : g_gta_data_service->vehicles()))
 			{
 				const auto& vehicle = pair.second;
 
 				ImGui::PushID(vehicle.m_hash);
-				components::selectable(vehicle.m_display_name, false, [&vehicle] {
+				if (components::selectable(vehicle.m_display_name, false))
+				{
+					selected_veh = vehicle;
+					open_modal   = true;
+				}
+
+				ImGui::PopID();
+			}
+			ImGui::EndListBox();
+		}
+
+		if (open_modal)
+			ImGui::OpenPopup("##spawncarmodel");
+		if (ImGui::BeginPopupModal("##spawncarmodel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		{
+			ImGui::Text(std::format("Are you sure you want to spawn {}", selected_veh.m_display_name).c_str());
+			ImGui::Spacing();
+			if (ImGui::Button("Yes"))
+			{
+				g_fiber_pool->queue_job([] {
 					Vector3 spawn_location;
 					std::optional<Vector3> waypoint_location;
 
@@ -103,22 +117,30 @@ namespace big
 							return;
 					}
 					else
-						spawn_location = vehicle::get_spawn_location(vehicle.m_hash);
+						spawn_location = vehicle::get_spawn_location(selected_veh.m_hash);
 
-					auto veh  = vehicle::spawn(vehicle.m_hash, spawn_location);
-					auto name = vehicle::get_vehicle_model_name(vehicle);
+					auto veh  = vehicle::spawn(selected_veh.m_hash, spawn_location);
+					auto name = vehicle::get_vehicle_model_name(selected_veh);
 
 					if (veh == 0)
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
 					else
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
 
-					VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
+					vehicle::repair(veh);
 					ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 				});
-				ImGui::PopID();
+
+				open_modal = false;
+				ImGui::CloseCurrentPopup();
 			}
-			ImGui::EndListBox();
+			ImGui::SameLine();
+			if (ImGui::Button("No"))
+			{
+				open_modal = false;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
 		}
 	}
 
