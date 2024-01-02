@@ -15,8 +15,11 @@ namespace big
 	void looped::system_spoofing()
 	{
 		if (!g_session.orig_host_token && *g_pointers->m_gta.m_host_token)
+		{
 			g_session.orig_host_token = host_token = g_session.host_token = g_session.smallest_host_token =
 			    *g_pointers->m_gta.m_host_token;
+			LOG(VERBOSE) << "Your host token is: " << *g_pointers->m_gta.m_host_token;
+		}
 
 		if (host_token != g_session.host_token && gta_util::get_network()->m_game_session_state == 0)
 		{

@@ -17,6 +17,16 @@ const char* const doornames[MAX_VEHICLE_DOORS]{
 
 namespace big
 {
+	static void update_seats(std::map<int, bool>& seats, int no_of_seats)
+	{
+		std::map<int, bool> tmp_seats;
+
+		for (int i = -1; i < (no_of_seats - 1); i++)
+			tmp_seats[i] = VEHICLE::IS_VEHICLE_SEAT_FREE(self::veh, i, TRUE);
+
+		seats = tmp_seats;
+	}
+
 	static inline void render_first_block()
 	{
 		components::button("Mors Mutual Fix All Vehicles", [] {
@@ -31,12 +41,17 @@ namespace big
 		components::button("Copy Vehicle", [] {
 			persist_car_service::clone_ped_car(self::veh);
 		});
+		ImGui::SameLine();
+		components::button("Lock / Unlock", [] {
+			vehicle::lockUnlockVehicle(self::veh);
+		});
 	}
 
 	static inline void render_fun_feats()
 	{
 		static float maxWheelRaiseFactor = -1;
 		static int no_of_seats           = 0;
+		static std::map<int, bool> seats;
 
 		if (self::veh)
 		{
@@ -45,6 +60,7 @@ namespace big
 				no_of_seats = -1;
 				g_fiber_pool->queue_job([] {
 					no_of_seats = VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(self::veh) + 1;
+					update_seats(seats, no_of_seats);
 				});
 			}
 
@@ -67,7 +83,7 @@ namespace big
 					}
 					ImGui::NewLine();
 				}
-				ImGui::BeginGroup();
+
 				components::small_text("Interior lights");
 				{
 					components::button("On###ILON", [] {
@@ -78,7 +94,34 @@ namespace big
 						VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, FALSE);
 					});
 				}
-				ImGui::EndGroup();
+
+				components::small_text("Seats");
+				{
+					components::button("Refresh seats", [] {
+						update_seats(seats, no_of_seats);
+					});
+
+					for (auto& it : seats)
+					{
+						int idx = it.first;
+
+						if (!it.second)
+							ImGui::BeginDisabled();
+						components::button(idx >= 0 ? ("S_" + std::to_string(idx + 1)) : "S_0", [idx] {
+							if (VEHICLE::IS_VEHICLE_SEAT_FREE(self::veh, idx, TRUE))
+							{
+								PED::SET_PED_INTO_VEHICLE(self::ped, self::veh, idx);
+								update_seats(seats, no_of_seats);
+							}
+						});
+						if (!it.second)
+							ImGui::EndDisabled();
+
+						if ((idx + 2) % 7 != 0)
+							ImGui::SameLine();
+					}
+					ImGui::NewLine();
+				}
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
@@ -88,7 +131,7 @@ namespace big
 				{
 					components::sub_title("Lowrider Controls");
 
-					components::button("Get suspension raise factor", [&] {
+					components::button("Get suspension raise factor", [] {
 						maxWheelRaiseFactor = VEHICLE::GET_HYDRAULIC_SUSPENSION_RAISE_FACTOR(self::veh, 0);
 					});
 
@@ -118,7 +161,7 @@ namespace big
 						}
 						ImGui::NewLine();
 
-						components::button("Raise all", [&] {
+						components::button("Raise all", [] {
 							VEHICLE::SET_HYDRAULIC_WHEEL_STATE(self::veh, 0, 4, maxWheelRaiseFactor, 0);
 							VEHICLE::SET_HYDRAULIC_WHEEL_STATE(self::veh, 1, 4, maxWheelRaiseFactor, 0);
 							VEHICLE::SET_HYDRAULIC_WHEEL_STATE(self::veh, 4, 4, maxWheelRaiseFactor, 0);
@@ -130,7 +173,7 @@ namespace big
 							VEHICLE::SET_HYDRAULIC_WHEEL_STATE(self::veh, 5, 1, maxWheelRaiseFactor, 0);
 						});
 						ImGui::SameLine();
-						components::button("Lower all", [&] {
+						components::button("Lower all", [] {
 							VEHICLE::SET_HYDRAULIC_VEHICLE_STATE(self::veh, 0);
 						});
 					}
