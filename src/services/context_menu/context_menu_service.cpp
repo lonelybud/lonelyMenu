@@ -138,56 +138,18 @@ namespace big
 		{
 			switch (m_pointer->m_model_info->m_model_type)
 			{
-			case eModelType::Object:
-			{
-				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::OBJECT)))
-				{
-					break;
-				}
-				return &options.at(ContextEntityType::OBJECT);
-			}
+			case eModelType::Object: return &options.at(ContextEntityType::OBJECT);
 			case eModelType::OnlineOnlyPed:
 			case eModelType::Ped:
 			{
-				if (const auto ped = reinterpret_cast<CPed*>(m_pointer); ped)
-				{
-					if (ped->m_ped_task_flag & static_cast<uint8_t>(ePedTask::TASK_DRIVING) && ped->m_vehicle)
-					{
-						if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::VEHICLE)))
-						{
-							break;
-						}
-
-						m_pointer = ped->m_vehicle;
-						return &options.at(ContextEntityType::VEHICLE);
-					}
-					if (ped->m_player_info)
-					{
-						if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)))
-						{
-							break;
-						}
-
-						return &options.at(ContextEntityType::PLAYER);
-					}
-				}
-
-				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PED)))
-				{
-					break;
-				}
+				if (const auto ped = reinterpret_cast<CPed*>(m_pointer);
+				    ped && ped->m_player_info && misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)))
+					return &options.at(ContextEntityType::PLAYER);
 
 				return &options.at(ContextEntityType::PED);
+				break;
 			}
-			case eModelType::Vehicle:
-			{
-				if (!misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::VEHICLE)))
-				{
-					break;
-				}
-
-				return &options.at(ContextEntityType::VEHICLE);
-			}
+			case eModelType::Vehicle: return &options.at(ContextEntityType::VEHICLE);
 			default: break;
 			}
 		}
@@ -196,7 +158,12 @@ namespace big
 
 	void context_menu_service::get_entity_closest_to_screen_center()
 	{
-		m_handle = entity::get_entity_closest_to_middle_of_screen(&m_pointer);
+		m_handle = entity::get_entity_closest_to_middle_of_screen(&m_pointer,
+		    {},
+		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::VEHICLE)),
+		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PED)),
+		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::OBJECT)),
+		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)));
 
 		if (ENTITY::DOES_ENTITY_EXIST(m_handle) && !ENTITY::IS_ENTITY_DEAD(m_handle, 0) && m_pointer)
 			fill_model_bounding_box_screen_space();
