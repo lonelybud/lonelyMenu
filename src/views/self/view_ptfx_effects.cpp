@@ -130,7 +130,7 @@ namespace big
 			ptfxEffects::loadEffects(animDictCompactObjs);
 		});
 
-		auto& objs = searchedAnimDictCompactObjs.size() ? searchedAnimDictCompactObjs : animDictCompactObjs;
+		auto& objs = searchDicText.length() > 0 ? searchedAnimDictCompactObjs : animDictCompactObjs;
 
 		ImGui::BeginGroup();
 		components::small_text("DictionaryName");

@@ -81,7 +81,8 @@ namespace big
 
 		if (ImGui::BeginListBox("###vehicles", {300, 300}))
 		{
-			for (auto& pair : (searched_vehicles.size() ? searched_vehicles : g_gta_data_service->vehicles()))
+			for (auto& pair :
+			    ((search_veh_name.length() > 0 || selected_class != -1) ? searched_vehicles : g_gta_data_service->vehicles()))
 			{
 				const auto& vehicle = pair.second;
 

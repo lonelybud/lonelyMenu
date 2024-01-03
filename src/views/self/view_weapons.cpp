@@ -59,7 +59,7 @@ namespace big
 
 			if (ImGui::BeginListBox("###weaponsList", {300, 100}))
 			{
-				for (auto& weapon : (searched_weapons.size() ? searched_weapons : g_gta_data_service->weapons()))
+				for (auto& weapon : (search_weapon_name.length() > 0 ? searched_weapons : g_gta_data_service->weapons()))
 					if (weapon.second.m_display_name != "NULL"
 					    && ImGui::Selectable(weapon.second.m_display_name.c_str(), weapon.second.m_hash == selected_weapon_hash))
 					{

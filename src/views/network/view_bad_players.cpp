@@ -82,7 +82,7 @@ namespace big
 			ImGui::Text("Joins blocked -");
 			if (ImGui::BeginListBox("##bad_players_blocked", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
-				for (auto& pair : (searched_blocked_players.size() ? searched_blocked_players : bad_players_nm::bad_players_list))
+				for (auto& pair : (search_blocked_player_name.length() > 0 ? searched_blocked_players : bad_players_nm::bad_players_list))
 					if (pair.second.block_join && ImGui::Selectable(pair.second.name.c_str(), selected_id && selected_id == pair.first))
 						selected_id = pair.first;
 
