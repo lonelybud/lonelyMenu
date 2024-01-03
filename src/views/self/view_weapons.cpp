@@ -19,8 +19,6 @@ namespace big
 
 	static inline void render_misc()
 	{
-		components::command_checkbox<"infclip">();
-
 		components::command_checkbox<"aimbot">();
 		if (g_weapons.aimbot.enable)
 		{
@@ -28,13 +26,6 @@ namespace big
 			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
 
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
-		}
-
-		components::command_checkbox<"modify_weapon_values">();
-		if (g_weapons.modify_weapon_values.enable)
-		{
-			ImGui::PushItemWidth(200);
-			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
 		}
 
 		ImGui::Spacing();
@@ -105,5 +96,17 @@ namespace big
 		ImGui::Spacing();
 
 		render_ammunation();
+
+		ImGui::Spacing();
+
+		components::command_checkbox<"modify_weapon_values">();
+		if (g_weapons.modify_weapon_values.enable)
+		{
+			ImGui::PushItemWidth(200);
+			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
+		}
+
+		components::command_checkbox<"infclip">();
+		// components::command_checkbox<"rapidfire">();
 	}
 }

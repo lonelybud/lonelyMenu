@@ -55,6 +55,9 @@ namespace big
 
 					if (!seat_info && (seat_info = get_seat_info()))
 					{
+						if (!seat_info->anim_info)
+							return;
+
 						for (auto drive_by_anim_info : seat_info->anim_info->m_drive_by_anim_infos)
 							if (drive_by_anim_info->m_weapon_groups->m_groups.size() != 7
 							    && drive_by_anim_info->m_weapon_groups->m_groups.contains(GROUP_PISTOL))

@@ -5,6 +5,7 @@ namespace big
 	struct g_weapons_t
 	{
 		bool infinite_mag = false;
+		bool rapid_fire   = false;
 
 		struct aimbot
 		{

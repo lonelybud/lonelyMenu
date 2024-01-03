@@ -20,30 +20,25 @@ namespace big
 			}
 		}
 
-		virtual void on_enable() override
-		{
-		}
-
 		virtual void on_tick() override
 		{
-			if (g_local_player)
-				if (auto* const weapon_mgr = g_local_player->m_weapon_manager; weapon_mgr)
+			if (auto* const weapon_mgr = g_local_player->m_weapon_manager; weapon_mgr)
+			{
+				if (p_modified_weapon != weapon_mgr->m_weapon_info)
 				{
-					if (p_modified_weapon != weapon_mgr->m_weapon_info)
-					{
-						reset();
+					reset();
 
-						if (weapon_mgr->m_weapon_info)
-						{
-							p_modified_weapon = weapon_mgr->m_weapon_info;
-							g_weapons.modify_weapon_values.time_bw_shots = m_time_between_shots = p_modified_weapon->m_time_between_shots;
-						}
-					}
-					else if (p_modified_weapon)
+					if (weapon_mgr->m_weapon_info)
 					{
-						p_modified_weapon->m_time_between_shots = g_weapons.modify_weapon_values.time_bw_shots;
+						p_modified_weapon = weapon_mgr->m_weapon_info;
+						g_weapons.modify_weapon_values.time_bw_shots = m_time_between_shots = p_modified_weapon->m_time_between_shots;
 					}
 				}
+				else if (p_modified_weapon)
+				{
+					p_modified_weapon->m_time_between_shots = g_weapons.modify_weapon_values.time_bw_shots;
+				}
+			}
 		}
 
 		virtual void on_disable() override
