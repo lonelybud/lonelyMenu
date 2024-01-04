@@ -27,6 +27,7 @@ namespace big
 			else
 			{
 				g_notification_service->push_success("Persist Car", std::format("Spawned {}", selected_vehicle_file), true);
+				g_vehicle.spawned_vehicles[vehicle] = {selected_vehicle_file};
 				// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
 			}
 

@@ -18,6 +18,8 @@ namespace big
 		LSC,
 		SPAWN_VEHICLE,
 		PV,
+		SPAWNED_VEHICLES,
+
 		NETWORK,
 		BAD_PLAYERS,
 		CHAT,
@@ -69,6 +71,7 @@ namespace big
 		                {tabs::LSC, {"LSC", view::lsc}},
 		                {tabs::SPAWN_VEHICLE, {"Spawn Vehicle", view::spawn_vehicle}},
 		                {tabs::PV, {"Personal Vehicles", view::pv}},
+		                {tabs::SPAWNED_VEHICLES, {"Spawned Vehicles", view::spawned_vehicles}},
 		            },
 		        },
 		    },

@@ -1,6 +1,7 @@
 #include "persist_car_service.hpp"
 
 #include "base/CObject.hpp"
+#include "core/data/vehicle.hpp"
 #include "gta/vehicle_values.hpp"
 #include "pointers.hpp"
 #include "script.hpp"
@@ -93,6 +94,7 @@ namespace big
 		else
 		{
 			g_notification_service->push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
+			g_vehicle.spawned_vehicles[veh] = {model_name};
 			// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 		}
 	}

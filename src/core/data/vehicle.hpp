@@ -14,5 +14,14 @@ namespace big
 		bool vehicle_lock                    = false;
 		bool vehicle_lock_unlock_temporarily = false;
 
+		struct SpawnedVehicle
+		{
+			std::string vehicle_name;
+			int passenger_count = 0;
+			bool is_locked      = false;
+			bool is_dead        = false;
+		};
+
+		std::map<Vehicle, SpawnedVehicle> spawned_vehicles;
 	} g_vehicle{};
 }

@@ -126,7 +126,10 @@ namespace big
 					if (veh == 0)
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
 					else
+					{
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
+						g_vehicle.spawned_vehicles[veh] = {name};
+					}
 
 					vehicle::repair(veh);
 					// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
