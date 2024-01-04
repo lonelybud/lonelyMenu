@@ -129,7 +129,7 @@ namespace big
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
 
 					vehicle::repair(veh);
-					ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+					// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 				});
 
 				open_modal = false;

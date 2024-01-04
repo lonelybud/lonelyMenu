@@ -93,7 +93,7 @@ namespace big
 		else
 		{
 			g_notification_service->push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
-			ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+			// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 		}
 	}
 
