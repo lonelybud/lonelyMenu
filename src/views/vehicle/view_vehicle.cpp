@@ -1,3 +1,4 @@
+#include "core/data/vehicle.hpp"
 #include "core/enums.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/mobile.hpp"
@@ -40,10 +41,6 @@ namespace big
 		ImGui::SameLine();
 		components::button("Copy Vehicle", [] {
 			persist_car_service::clone_ped_car(self::veh);
-		});
-		ImGui::SameLine();
-		components::button("Lock / Unlock", [] {
-			vehicle::lockUnlockVehicle(self::veh);
 		});
 	}
 
@@ -192,13 +189,29 @@ namespace big
 
 	static inline void render_general()
 	{
-		components::command_checkbox<"vehgodmode">();
+		ImGui::BeginGroup();
+		{
+			components::command_checkbox<"vehgodmode">();
 
-		components::command_checkbox<"veh_boost">();
+			components::command_checkbox<"veh_boost">();
 
-		components::command_checkbox<"rocketability">();
+			components::command_checkbox<"rocketability">();
+		}
+		ImGui::EndGroup();
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		{
+			components::command_checkbox<"allow_all_weapons">();
 
-		components::command_checkbox<"allow_all_weapons">();
+			components::command_checkbox<"blockhoming">();
+
+			components::command_checkbox<"vehicle_lock">();
+			if (g_vehicle.vehicle_lock)
+				ImGui::Checkbox("Unlock Vehicle Temporarly", &g_vehicle.vehicle_lock_unlock_temporarily);
+		}
+		ImGui::EndGroup();
+
+		ImGui::Spacing();
 
 		static bool can_be_knocked_off_veh = true;
 		components::button(can_be_knocked_off_veh ? "Enable Seat Belt" : "Disable Seat Belt", [] {

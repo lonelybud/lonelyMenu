@@ -49,7 +49,9 @@ namespace big::vehicle
 			for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(vehicle); ++i)
 			{
 				auto ped = VEHICLE::GET_PED_IN_VEHICLE_SEAT(vehicle, i, 0);
-				if (!PED::IS_PED_A_PLAYER(ped))
+				if (PED::IS_PED_A_PLAYER(ped))
+					return false;
+				else
 					TASK::CLEAR_PED_TASKS_IMMEDIATELY(ped);
 			}
 
@@ -68,14 +70,15 @@ namespace big::vehicle
 		return true;
 	}
 
-	inline void lockUnlockVehicle(Entity veh)
+	inline void lockUnlockVehicle(Entity veh, eVehicleLockState current_state = eVehicleLockState::VEHICLELOCK_NONE)
 	{
 		if (entity::take_control_of(veh))
 		{
-			auto door_locked_state = (eVehicleLockState)VEHICLE::GET_VEHICLE_DOOR_LOCK_STATUS(veh);
+			auto door_locked_state = current_state != eVehicleLockState::VEHICLELOCK_NONE ? current_state : (eVehicleLockState)VEHICLE::GET_VEHICLE_DOOR_LOCK_STATUS(veh);
+
 			if (door_locked_state == eVehicleLockState::VEHICLELOCK_LOCKED)
 			{
-				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_NONE);
+				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_UNLOCKED);
 				g_notification_service->push_success("Vehicle", "Vehicle is un-locked");
 			}
 			else

@@ -1,4 +1,5 @@
 #include "backend/looped/looped.hpp"
+#include "gta/enums.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
@@ -64,6 +65,9 @@ namespace big
 						if (player)
 							LOG(WARNING) << "You got Killed by: " << player->get_name();
 					}
+
+					if (g_local_player->m_vehicle)
+						g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
 				}
 			}
 			else if (last_dead)

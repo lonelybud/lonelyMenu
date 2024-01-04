@@ -9,6 +9,10 @@ namespace big
 		bool spawn_at_waypoint = false;
 		bool force_rocket      = false;
 		bool unlimited_weapons = false;
+		bool block_homing      = false;
+
+		bool vehicle_lock                    = false;
+		bool vehicle_lock_unlock_temporarily = false;
 
 	} g_vehicle{};
 }
