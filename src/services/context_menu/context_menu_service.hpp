@@ -4,10 +4,10 @@
 #include "natives.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
+#include "util/delete_entity.hpp"
 #include "util/ped.hpp"
 #include "util/teleport.hpp"
 #include "util/vehicle.hpp"
-#include "util/delete_entity.hpp"
 
 #include <entities/CDynamicEntity.hpp>
 
@@ -63,13 +63,20 @@ namespace big
 		s_context_menu vehicle_menu{ContextEntityType::VEHICLE,
 		    0,
 		    {},
-		    {{"COPY",
-		         [this] {
-			         persist_car_service::clone_ped_car(m_handle);
-		         }},
-		        {"LOCK / UNLOCK", [this] {
-			         vehicle::lockUnlockVehicle(m_handle);
-		         }}}};
+		    {
+		        {"LOCK / UNLOCK",
+		            [this] {
+			            vehicle::lockUnlockVehicle(m_handle);
+		            }},
+		        {"COPY",
+		            [this] {
+			            persist_car_service::clone_ped_car(m_handle);
+		            }},
+		        {"SAVE",
+		            [this] {
+			            persist_car_service::save_vehicle(m_handle, "", "");
+		            }},
+		    }};
 
 		s_context_menu player_menu{ContextEntityType::PLAYER, 0, {}, {}};
 
@@ -81,6 +88,21 @@ namespace big
 		            [this] {
 			            ped::kill_ped(m_handle);
 		            }},
+		        {"RECRUIT",
+		            [this] {
+			            auto group_id = PED::GET_PED_GROUP_INDEX(self::ped);
+
+			            TASK::CLEAR_PED_TASKS(m_handle);
+			            if (!PED::IS_PED_GROUP_MEMBER(m_handle, group_id))
+			            {
+				            PED::SET_PED_AS_GROUP_MEMBER(m_handle, group_id);
+				            PED::SET_PED_RELATIONSHIP_GROUP_HASH(m_handle, PED::GET_PED_RELATIONSHIP_GROUP_HASH(self::ped));
+				            PED::SET_PED_NEVER_LEAVES_GROUP(m_handle, TRUE);
+				            PED::SET_PED_FLEE_ATTRIBUTES(m_handle, 512 | 1024 | 2048 | 16384 | 131072 | 262144, TRUE);
+			            }
+			            else
+				            PED::REMOVE_PED_FROM_GROUP(m_handle);
+		            }},
 		    }};
 
 		s_context_menu object_menu{ContextEntityType::OBJECT, 0, {}, {}};
@@ -88,19 +110,22 @@ namespace big
 		s_context_menu shared_menu{ContextEntityType::SHARED,
 		    0,
 		    {},
-		    {{"TP TOP",
-		         [this] {
-			         teleport::tp_on_top(m_handle);
-		         }},
-		        {"DELETE", [this] {
-			         if (ENTITY::IS_ENTITY_A_PED(m_handle))
-			         {
-				         g_notification_service->push_warning("Failed", "Cannot delete a ped");
-				         return;
-			         }
-					 
-			         entity::delete_entity(m_handle);
-		         }}}};
+		    {
+		        {"TP TOP",
+		            [this] {
+			            teleport::tp_on_top(m_handle);
+		            }},
+		        {"DELETE",
+		            [this] {
+			            if (ENTITY::IS_ENTITY_A_PED(m_handle))
+			            {
+				            g_notification_service->push_warning("Failed", "Cannot delete a ped");
+				            return;
+			            }
+
+			            entity::delete_entity(m_handle);
+		            }},
+		    }};
 
 		std::unordered_map<ContextEntityType, s_context_menu> options = {
 		    {ContextEntityType::VEHICLE, vehicle_menu},

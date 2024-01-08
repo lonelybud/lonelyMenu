@@ -139,15 +139,17 @@ namespace big
 			switch (m_pointer->m_model_info->m_model_type)
 			{
 			case eModelType::Object: return &options.at(ContextEntityType::OBJECT);
-			case eModelType::OnlineOnlyPed:
+			// case eModelType::OnlineOnlyPed:
 			case eModelType::Ped:
 			{
-				if (const auto ped = reinterpret_cast<CPed*>(m_pointer);
-				    ped && ped->m_player_info && misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)))
-					return &options.at(ContextEntityType::PLAYER);
+				if (const auto ped = reinterpret_cast<CPed*>(m_pointer); ped && ped->m_player_info)
+				{
+					if (misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)))
+						return &options.at(ContextEntityType::PLAYER);
+					break;
+				}
 
 				return &options.at(ContextEntityType::PED);
-				break;
 			}
 			case eModelType::Vehicle: return &options.at(ContextEntityType::VEHICLE);
 			default: break;

@@ -17,11 +17,11 @@ namespace big::vehicle
 	}
 	inline void repair(Vehicle veh)
 	{
-		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
-			return;
-
-		VEHICLE::SET_VEHICLE_FIXED(veh);
-		VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
+		if (ENTITY::IS_ENTITY_A_VEHICLE(veh) && entity::take_control_of(veh))
+		{
+			VEHICLE::SET_VEHICLE_FIXED(veh);
+			VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
+		}
 	}
 
 	Vector3 get_spawn_location(Hash hash, Ped ped = self::ped);

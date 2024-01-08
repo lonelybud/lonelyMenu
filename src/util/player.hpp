@@ -1,6 +1,8 @@
 #pragma once
 #include "services/bad_players/bad_players.hpp"
 #include "services/players/player.hpp"
+#include "util/outfit.hpp"
+#include "util/time.hpp"
 
 namespace big
 {
@@ -28,5 +30,24 @@ namespace big
 					return p.second;
 
 		return nullptr;
+	}
+
+	inline void steal_player_outfit(big::player_ptr plyr, bool save = false)
+	{
+		if (plyr->is_valid())
+		{
+			auto target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id());
+
+			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
+			{
+				g_notification_service->push_error("Steal Oufit", "Model not same.", true);
+				return;
+			}
+
+			if (save)
+				outfit::save_outfit(target, std::to_string(get_current_time_in_mill()).append(".json"), "");
+			else
+				outfit::set_self_comps_props({}, {}, target);
+		}
 	}
 }

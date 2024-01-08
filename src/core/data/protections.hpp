@@ -24,12 +24,10 @@ namespace big
 			bool teleport_to_warehouse      = true;
 			bool start_activity             = true;
 			bool send_sms                   = true;
-
-			NLOHMANN_DEFINE_TYPE_INTRUSIVE(script_events, ceo_money, clear_wanted_level, force_mission, force_teleport, gta_banner, mc_teleport, personal_vehicle_destroyed, remote_off_radar, rotate_cam, send_to_cutscene, send_to_location, sound_spam, spectate, give_collectible, vehicle_kick, teleport_to_warehouse, start_activity, send_sms)
 		} script_events{};
 
-		bool receive_pickup = false;
-
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(g_protections_t, script_events, receive_pickup)
+		bool request_control_event = true;
+		bool clear_ped_tasks       = true;
+		bool receive_pickup        = false;
 	} g_protections{};
 }

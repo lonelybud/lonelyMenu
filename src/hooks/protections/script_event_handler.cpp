@@ -1,7 +1,7 @@
 #include "backend/player_command.hpp"
+#include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
-#include "core/settings/protections.hpp"
 #include "gta/net_game_event.hpp"
 #include "gta/script_handler.hpp"
 #include "gta_util.hpp"
@@ -79,7 +79,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::ClearWantedLevel:
-			if (g_protections.script_events.clear_wanted_level && !is_player_driver_of_local_vehicle(player->m_player_id))
+			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level
+			    && !is_player_driver_of_local_vehicle(player->m_player_id))
 			{
 				g_reactions.clear_wanted_level.process(plyr, false, Infraction::PLAYED_YOU_POS, true);
 				return true;
@@ -150,7 +151,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::MCTeleport:
-			if (g_protections.script_events.mc_teleport && args[4] <= 32 && !is_player_our_boss(plyr->id()))
+			if (!plyr->is_friend() && g_protections.script_events.mc_teleport && args[4] <= 32 && !is_player_our_boss(plyr->id()))
 			{
 				for (int i = 0; i < 32; i++)
 				{
@@ -175,7 +176,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::RemoteOffradar:
-			if (g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && !is_player_driver_of_local_vehicle(plyr->id()))
+			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && !is_player_driver_of_local_vehicle(plyr->id()))
 			{
 				g_reactions.remote_off_radar.process(plyr, false, Infraction::NONE, false);
 				return true;
@@ -258,7 +259,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::Teleport:
-			if (g_protections.script_events.force_teleport && !is_player_driver_of_local_vehicle(player->m_player_id))
+			if (!plyr->is_friend() && g_protections.script_events.force_teleport
+			    && !is_player_driver_of_local_vehicle(player->m_player_id))
 			{
 				g_reactions.force_teleport.process(plyr, false, Infraction::NONE, false);
 				return true;
@@ -268,7 +270,7 @@ namespace big
 			g_reactions.transaction_error.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
 			return true;
 		case eRemoteEvent::VehicleKick:
-			if (g_protections.script_events.vehicle_kick)
+			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick)
 			{
 				g_reactions.vehicle_kick.process(plyr, false, Infraction::NONE, false);
 				return true;

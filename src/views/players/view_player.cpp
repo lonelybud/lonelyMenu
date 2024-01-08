@@ -1,7 +1,7 @@
 #include "core/data/infractions.hpp"
 #include "core/data/language_codes.hpp"
 #include "core/scr_globals.hpp"
-#include "core/settings/protections.hpp"
+#include "core/data/protections.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -11,7 +11,6 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/globals.hpp"
-#include "util/outfit.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
 #include "util/vehicle.hpp"
@@ -26,31 +25,6 @@
 namespace big
 {
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
-
-	static auto get_current_time_in_mill()
-	{
-		auto currentTime = std::chrono::system_clock::now().time_since_epoch();
-		return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime).count();
-	}
-
-	inline void steal_player_outfit(big::player_ptr plyr, bool save = false)
-	{
-		if (plyr->is_valid())
-		{
-			auto target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id());
-
-			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
-			{
-				g_notification_service->push_error("Steal Oufit", "Model not same.", true);
-				return;
-			}
-
-			if (save)
-				outfit::save_outfit(target, std::to_string(get_current_time_in_mill()).append(".json"), "");
-			else
-				outfit::set_self_comps_props({}, {}, target);
-		}
-	}
 
 	const char* get_nat_type_str(int type)
 	{
@@ -108,9 +82,10 @@ namespace big
 							    if (auto vehicle = current_player->get_current_vehicle(); vehicle != nullptr)
 							    {
 								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
-									    ImGui::Text("Vehicle: ",
+									    ImGui::Text(std::format("Vehicle: {}",
 									        vehicle::get_vehicle_model_name(
-									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]));
+									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]))
+									                    .c_str());
 
 								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
 									    ImGui::Text("Vehicle God Mod");
@@ -296,7 +271,7 @@ namespace big
 			ImGui::SameLine();
 			components::button("Save Vehicle", [current_player] {
 				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
-					persist_car_service::save_vehicle(veh, std::to_string(get_current_time_in_mill()).append(".json"), "");
+					persist_car_service::save_vehicle(veh, "", "");
 				else
 					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
 			});
@@ -325,6 +300,12 @@ namespace big
 
 			if (!current_player->is_host())
 				components::player_command_button<"desync">(current_player);
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+			components::button("Timeout Player", [current_player] {
+				current_player->timeout();
+			});
 		}
 		ImGui::EndGroup();
 	}

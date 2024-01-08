@@ -86,7 +86,7 @@ namespace big
 
 			if (kick_player)
 			{
-				player->timeout();
+				// player->timeout();
 
 				// block join
 				if (!player->is_blocked)

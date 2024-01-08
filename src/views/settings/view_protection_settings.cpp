@@ -1,4 +1,4 @@
-#include "core/settings/protections.hpp"
+#include "core/data/protections.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -34,10 +34,12 @@ namespace big
 		ImGui::Checkbox("Vehicle Kick", &g_protections.script_events.vehicle_kick);
 		ImGui::Checkbox("Wanted Level", &g_protections.script_events.clear_wanted_level);
 		ImGui::EndGroup();
-		
+
 		ImGui::SameLine();
 
 		ImGui::BeginGroup();
+		ImGui::Checkbox("Request Control Event", &g_protections.request_control_event); // teleporting you with vehicle
+		ImGui::Checkbox("Clear Ped Tasks", &g_protections.clear_ped_tasks);             // teleporting you
 		ImGui::Checkbox("Receive Pickup", &g_protections.receive_pickup);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("This prevents the collection of pickups such as unwanted money bags\nNote: Normal pickups are also no longer possible to collect with this enabled");

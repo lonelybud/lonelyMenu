@@ -1,5 +1,6 @@
 #pragma once
 #include "natives.hpp"
+#include "services/notifications/notification_service.hpp"
 
 namespace big::outfit
 {

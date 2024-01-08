@@ -84,11 +84,27 @@ namespace big
 				components::small_text("Interior lights");
 				{
 					components::button("On###ILON", [] {
-						VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, TRUE);
+						if (entity::take_control_of(self::veh))
+							VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, TRUE);
 					});
 					ImGui::SameLine();
 					components::button("Off###ILOFF", [] {
-						VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, FALSE);
+						if (entity::take_control_of(self::veh))
+							VEHICLE::SET_VEHICLE_INTERIORLIGHT(self::veh, FALSE);
+					});
+				}
+
+				components::small_text("Windows");
+				{
+					components::button("Roll Down All", [] {
+						if (entity::take_control_of(self::veh))
+							VEHICLE::ROLL_DOWN_WINDOWS(self::veh);
+					});
+					ImGui::SameLine();
+					components::button("Roll Up All", [] {
+						if (entity::take_control_of(self::veh))
+							for (int i = 0; i < 4; i++)
+								VEHICLE::ROLL_UP_WINDOW(self::veh, i);
 					});
 				}
 
@@ -245,7 +261,8 @@ namespace big
 		ImGui::InputInt("Capacity", &capacity);
 		ImGui::SameLine();
 		components::button("Set ammo capacity", [] {
-			VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index, capacity);
+			if (entity::take_control_of(self::veh))
+				VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index, capacity);
 		});
 	}
 

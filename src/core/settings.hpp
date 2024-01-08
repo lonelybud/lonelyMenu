@@ -2,7 +2,6 @@
 
 #include "settings/esp.hpp"
 #include "settings/notifications.hpp"
-#include "settings/protections.hpp"
 #include "settings/settings.hpp"
 #include "settings/window.hpp"
 
@@ -29,12 +28,11 @@ namespace big
 
 	public:
 		g_notifications_t& notifications = g_notifications;
-		g_protections_t& protections     = g_protections;
 		g_settings_t& settings           = g_settings;
 		g_window_t& window               = g_window;
 		g_esp_t& esp                     = g_esp;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(menu_settings, notifications, protections, settings, window, esp)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(menu_settings, notifications, settings, window, esp)
 	};
 
 	inline auto g_menu_settings = menu_settings();

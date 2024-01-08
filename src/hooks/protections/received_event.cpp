@@ -1,3 +1,4 @@
+#include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "fiber_pool.hpp"
@@ -119,7 +120,8 @@ namespace big
 		{
 			int net_id = buffer->Read<int>(13);
 
-			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
+			if (!plyr->is_friend() && g_protections.clear_ped_tasks && g_local_player && g_local_player->m_net_object
+			    && g_local_player->m_net_object->m_object_id == net_id)
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				g_reactions.clear_ped_tasks.process(plyr, false, Infraction::NONE, false);
@@ -169,8 +171,9 @@ namespace big
 		case eNetworkEvents::REQUEST_CONTROL_EVENT:
 		{
 			auto net_id = buffer->Read<int>(13);
-			if (g_local_player && g_local_player->m_vehicle && g_local_player->m_vehicle->m_net_object
-			    && g_local_player->m_vehicle->m_net_object->m_object_id == net_id) //The request is for a vehicle we are currently in.
+
+			if (!plyr->is_friend() && g_protections.request_control_event && g_local_player && g_local_player->m_vehicle
+			    && g_local_player->m_vehicle->m_net_object && g_local_player->m_vehicle->m_net_object->m_object_id == net_id) //The request is for a vehicle we are currently in.
 			{
 				Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle();
 				Vehicle veh              = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);

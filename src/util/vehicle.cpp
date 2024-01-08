@@ -130,6 +130,9 @@ namespace big::vehicle
 
 	void max_vehicle(Vehicle veh)
 	{
+		if (!entity::take_control_of(veh))
+			return;
+
 		Hash model = ENTITY::GET_ENTITY_MODEL(veh);
 
 		VEHICLE::SET_VEHICLE_MOD_KIT(veh, 0);
@@ -184,6 +187,9 @@ namespace big::vehicle
 	*/
 	void operate_vehicle_door(Vehicle veh, eDoorId doorId, bool open)
 	{
+		if (!entity::take_control_of(veh))
+			return;
+
 		for (int i = 0; i < 6; i++)
 			if ((doorId == eDoorId::VEH_EXT_DOOR_INVALID_ID || (int)doorId == i) && VEHICLE::GET_IS_DOOR_VALID(veh, i))
 				if (open)

@@ -7,6 +7,7 @@
 #include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/misc.hpp"
+#include "util/time.hpp"
 #include "util/vehicle.hpp"
 #include "vehicle/CVehicle.hpp"
 
@@ -19,6 +20,10 @@ namespace big
 			g_notification_service->push_warning("Persist Car", "Tried to save a vehicle which does not exist");
 			return;
 		}
+
+		if (!file_name.length())
+			file_name = std::to_string(get_current_time_in_mill()).append(".json");
+
 		const auto file = check_vehicle_folder(folder_name).get_file(file_name);
 		std::ofstream file_stream(file.get_path(), std::ios::out | std::ios::trunc);
 		file_stream << get_vehicle_json(vehicle).dump(4);

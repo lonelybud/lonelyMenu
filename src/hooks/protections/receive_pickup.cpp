@@ -1,4 +1,4 @@
-#include "core/settings/protections.hpp"
+#include "core/data/protections.hpp"
 #include "hooking/hooking.hpp"
 #include "services/notifications/notification_service.hpp"
 
