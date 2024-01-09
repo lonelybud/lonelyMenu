@@ -28,12 +28,15 @@ namespace big
 		}
 
 		components::button("Delete All", [] {
-			for (auto& pair : g_vehicle.spawned_vehicles)
+			auto temp = g_vehicle.spawned_vehicles;
+			for (auto it = g_vehicle.spawned_vehicles.begin(); it != g_vehicle.spawned_vehicles.end(); ++it)
 			{
-				auto ent = pair.first;
-				entity::delete_entity(ent);
+				auto ent = it->first;
+				if (entity::delete_entity(ent))
+					if (auto itr = temp.find(it->first); itr != temp.end())
+						temp.erase(itr);
 			}
-			g_vehicle.spawned_vehicles.clear();
+			g_vehicle.spawned_vehicles = temp;
 		});
 		ImGui::SameLine();
 		ImGui::Text(std::to_string(g_vehicle.spawned_vehicles.size()).c_str());
@@ -53,12 +56,12 @@ namespace big
 				                .c_str());
 
 				components::button("TP", [it] {
-					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, TRUE);
+					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, 0);
 					teleport::to_coords(location, true);
 				});
 				ImGui::SameLine();
 				components::button("Waypoint", [it] {
-					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, TRUE);
+					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, 0);
 					HUD::SET_NEW_WAYPOINT(location.x, location.y);
 				});
 				ImGui::SameLine();

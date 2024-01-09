@@ -12,13 +12,15 @@ namespace big
 		TELEPORT,
 		OUTFIT_EDITOR,
 		ANIMATIONS,
-		PTFX_EFFECTS,
 
 		VEHICLE,
 		LSC,
 		SPAWN_VEHICLE,
 		PV,
 		SPAWNED_VEHICLES,
+
+		MISC,
+		PTFX_EFFECTS,
 
 		NETWORK,
 		BAD_PLAYERS,
@@ -58,7 +60,7 @@ namespace big
 		                {tabs::TELEPORT, {"Teleport", view::teleport}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
 		                {tabs::ANIMATIONS, {"Animations", view::animations}},
-		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
+
 		            },
 		        },
 		    },
@@ -72,6 +74,16 @@ namespace big
 		                {tabs::SPAWN_VEHICLE, {"Spawn Vehicle", view::spawn_vehicle}},
 		                {tabs::PV, {"Personal Vehicles", view::pv}},
 		                {tabs::SPAWNED_VEHICLES, {"Spawned Vehicles", view::spawned_vehicles}},
+		            },
+		        },
+		    },
+		    {
+		        tabs::MISC,
+		        {
+		            "Misc",
+		            view::misc,
+		            {
+		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
 		            },
 		        },
 		    },

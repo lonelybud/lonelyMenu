@@ -49,5 +49,6 @@ namespace big
 		static void context_menu();
 		static void gta_data();
 		static void gta_cache();
+		static void misc();
 	};
 }

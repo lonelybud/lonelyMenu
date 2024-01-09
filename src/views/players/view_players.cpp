@@ -53,7 +53,7 @@ namespace big
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f)); // purple
 		else if (plyr->is_known_player)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.25f, 1.f)); // grey
-		else if (plyr->is_toxic)
+		else if (plyr->is_other)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f)); // green dark
 
 		if (selected_player)
@@ -84,7 +84,7 @@ namespace big
 		if (selected_player)
 			ImGui::PopStyleColor();
 
-		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_toxic || plyr->is_known_player)
+		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_other || plyr->is_known_player)
 			ImGui::PopStyleColor();
 
 		// render icons on top of the player button

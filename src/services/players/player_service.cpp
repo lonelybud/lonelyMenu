@@ -38,7 +38,7 @@ namespace big
 	player_ptr player_service::get_by_msg_id(uint32_t msg_id) const
 	{
 		for (const auto& [_, player] : m_players)
-			if (player->get_net_game_player()->m_msg_id == msg_id)
+			if (player && player->m_msg_id == msg_id)
 				return player;
 		return nullptr;
 	}
@@ -46,7 +46,7 @@ namespace big
 	player_ptr player_service::get_by_id(uint32_t id) const
 	{
 		for (const auto& [_, player] : m_players)
-			if (player->id() == id)
+			if (player && player->id() == id)
 				return player;
 		return nullptr;
 	}
@@ -54,11 +54,8 @@ namespace big
 	player_ptr player_service::get_by_host_token(uint64_t token) const
 	{
 		for (const auto& [_, player] : m_players)
-		{
-			auto net_data = player->get_net_data();
-			if (net_data && net_data->m_host_token == token)
+			if (player && player->m_host_token == token)
 				return player;
-		}
 		return nullptr;
 	}
 

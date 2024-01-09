@@ -1,7 +1,7 @@
 #include "core/data/infractions.hpp"
 #include "core/data/language_codes.hpp"
-#include "core/scr_globals.hpp"
 #include "core/data/protections.hpp"
+#include "core/scr_globals.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -13,6 +13,7 @@
 #include "util/globals.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
+#include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -239,8 +240,20 @@ namespace big
 			components::sub_title("Teleport / Location");
 
 			components::button("Set Waypoint", [current_player] {
-				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), true);
+				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
 				HUD::SET_NEW_WAYPOINT(location.x, location.y);
+			});
+
+			ImGui::Spacing();
+
+			components::button("TP", [current_player] {
+				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
+				teleport::to_coords(location, true);
+			});
+			ImGui::SameLine();
+			components::button("TP IN VEH", [current_player] {
+				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
+					teleport::into_vehicle(veh);
 			});
 		}
 		ImGui::EndGroup();
@@ -263,14 +276,14 @@ namespace big
 			ver_Space();
 
 			components::button("Copy Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
+				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
 					persist_car_service::clone_ped_car(veh, current_player->get_name());
 				else
 					g_notification_service->push_error("Copy Vehicle", "Failed to get veh", false);
 			});
 			ImGui::SameLine();
 			components::button("Save Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), false); veh)
+				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
 					persist_car_service::save_vehicle(veh, "", "");
 				else
 					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
@@ -279,7 +292,7 @@ namespace big
 		ImGui::EndGroup();
 	}
 
-	static inline void render_kick(player_ptr current_player)
+	static inline void render_toxic(player_ptr current_player)
 	{
 		ImGui::BeginGroup();
 		if (!current_player->is_host() || *g_pointers->m_gta.m_is_session_started) // to prevent you from kicking host when session has not started.
@@ -301,10 +314,16 @@ namespace big
 			if (!current_player->is_host())
 				components::player_command_button<"desync">(current_player);
 
-			ImGui::Spacing();
-			ImGui::Spacing();
-			components::button("Timeout Player", [current_player] {
+			ver_Space();
+
+			components::sub_title("Other");
+
+			components::button("Timeout", [current_player] {
 				current_player->timeout();
+			});
+			ImGui::SameLine();
+			components::button("Un-timeout", [current_player] {
+				current_player->timeout(false);
 			});
 		}
 		ImGui::EndGroup();
@@ -389,7 +408,7 @@ namespace big
 			ImGui::SameLine(0, 50);
 			ImGui::BeginGroup();
 			{
-				render_kick(current_player);
+				render_toxic(current_player);
 			}
 			ImGui::EndGroup();
 		}

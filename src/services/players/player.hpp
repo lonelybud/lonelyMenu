@@ -58,7 +58,7 @@ namespace big
 		[[nodiscard]] bool is_host() const;
 		[[nodiscard]] bool is_valid() const;
 
-		void timeout();
+		void timeout(bool value = true);
 
 		bool off_radar    = false;
 		bool never_wanted = false;
@@ -70,7 +70,8 @@ namespace big
 		rate_limiter m_invites_rate_limit{10s, 2};
 		rate_limiter m_radio_request_rate_limit{5s, 2};
 
-		bool block_radio_requests = false;
+		bool block_radio_requests     = false;
+		bool block_host_migr_requests = false;
 
 		int m_num_spawned_permanent_vehicles = 0;
 
@@ -78,13 +79,16 @@ namespace big
 
 		bool is_modder = false;
 		std::unordered_set<int> infractions;
-		bool is_blocked                                     = false;
-		bool join_prevented                                 = false;
-		bool is_spammer                                     = false;
-		std::string spam_message                            = "";
-		bool is_toxic                                       = false;
-		bool is_known_player                                = false;
-		int crash_count                                     = 0;
+		bool is_blocked          = false;
+		bool join_prevented      = false;
+		bool is_spammer          = false;
+		std::string spam_message = "";
+		bool is_other            = false;
+		bool is_known_player     = false;
+		int crash_count          = 0;
+		uint32_t m_msg_id        = 0;
+		uint64_t m_host_token    = 0;
+
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 
 		std::optional<uint32_t> player_time_value;

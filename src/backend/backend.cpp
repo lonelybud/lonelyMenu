@@ -1,7 +1,9 @@
 #include "backend.hpp"
 
-#include "core/data/debug.hpp"
+#include "core/data/misc.hpp"
 #include "core/data/session.hpp"
+#include "core/scr_globals.hpp"
+#include "gta/joaat.hpp"
 #include "looped/looped.hpp"
 #include "looped_command.hpp"
 #include "script.hpp"
@@ -10,9 +12,6 @@
 #include "services/context_menu/context_menu_service.hpp"
 #include "services/known_players.hpp"
 #include "services/tunables/tunables_service.hpp"
-#include "thread_pool.hpp"
-#include "util/globals.hpp"
-#include "util/lua_script.cpp"
 
 namespace big
 {
@@ -44,17 +43,12 @@ namespace big
 		while (g_running)
 		{
 			looped::hud_disable_input();
-			looped::self_persist_outfit();
 
-			if (g_debug.fm_mission_controller_cart_grab)
+			if (g_misc.disable_clothing_validation)
 			{
-				constexpr int fm_mission_controller_cart_grab       = 10253;
-				constexpr int fm_mission_controller_cart_grab_speed = 14;
-
-				if (lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab) == 3)
-					lua_script::locals::set_int("fm_mission_controller", fm_mission_controller_cart_grab, 4);
-				else if (lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab) == 4)
-					lua_script::locals::set_float("fm_mission_controller", fm_mission_controller_cart_grab + fm_mission_controller_cart_grab_speed, 2);
+				*scr_globals::reset_clothing.as<PBOOL>() = FALSE;
+				if (auto tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION")))
+					*tunable = TRUE;
 			}
 
 			if (g_session.next_host_list.determine_new_host)

@@ -19,7 +19,7 @@ namespace big
 	{
 	}
 
-	void reaction::process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool is_toxic)
+	void reaction::process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool other)
 	{
 		rage::rlGamerInfo* net_data;
 
@@ -74,8 +74,8 @@ namespace big
 				if (!bad_players_nm::does_exist(rockstar_id))
 					bad_players_nm::add_player({name, rockstar_id, false, player->is_spammer});
 			}
-			else if (is_toxic)
-				player->is_toxic = true;
+			else if (other)
+				player->is_other = true;
 
 			// open player info of attacker
 			if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)

@@ -1,3 +1,4 @@
+#include "core/data/misc.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/outfit.hpp"
 #include "views/view.hpp"
@@ -8,6 +9,9 @@ namespace big
 	{
 		static outfit::components_t components;
 		static outfit::props_t props;
+
+		ImGui::Checkbox("Disable clothing validation", &g_misc.disable_clothing_validation);
+		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {
 			for (auto& item : components.items)

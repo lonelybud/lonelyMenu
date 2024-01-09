@@ -12,26 +12,6 @@ namespace big
 		ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));
 	}
 
-	static inline void render_world_time()
-	{
-		ImGui::BeginGroup();
-		{
-			components::sub_title("Time Override");
-
-			components::command_checkbox<"timeoverride">();
-
-			if (g_session.custom_time.override_time)
-			{
-				ImGui::PushItemWidth(150);
-				ImGui::SliderInt("Hour", &g_session.custom_time.hour, 0, 23);
-				ImGui::SliderInt("Minute", &g_session.custom_time.minute, 0, 59);
-				ImGui::SliderInt("Second", &g_session.custom_time.second, 0, 59);
-				ImGui::PopItemWidth();
-			}
-		}
-		ImGui::EndGroup();
-	}
-
 	static inline void render_misc()
 	{
 		ImGui::BeginGroup();
@@ -135,10 +115,6 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
-			render_world_time();
-
-			ver_Space();
-
 			render_misc();
 		}
 		ImGui::EndGroup();

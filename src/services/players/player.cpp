@@ -1,7 +1,6 @@
 #include "player.hpp"
 
 #include "gta_util.hpp"
-#include "network/CNetGamePlayer.hpp"
 #include "services/friends/friends_service.hpp"
 
 #include <network/RemoteGamerInfoMsg.hpp>
@@ -11,7 +10,14 @@ namespace big
 	player::player(CNetGamePlayer* net_game_player) :
 	    m_net_game_player(net_game_player)
 	{
-		m_is_friend = friends_service::is_friend(net_game_player);
+		if (net_game_player != (CNetGamePlayer*)gta_util::get_network_player_mgr()->m_local_net_player)
+		{
+			m_is_friend = friends_service::is_friend(net_game_player);
+			m_msg_id    = net_game_player->m_msg_id;
+
+			if (const auto* net_player_data = net_game_player->get_net_data())
+				m_host_token = net_player_data->m_host_token;
+		}
 	}
 
 	CVehicle* player::get_current_vehicle() const
@@ -157,13 +163,13 @@ namespace big
 		return lower;
 	}
 
-	void player::timeout()
+	void player::timeout(bool v)
 	{
-		this->block_net_events   = true;
-		this->block_clone_sync   = true;
-		this->block_clone_create = true;
-		this->block_explosions   = true;
+		this->block_net_events   = v;
+		this->block_clone_sync   = v;
+		this->block_clone_create = v;
+		this->block_explosions   = v;
 
-		LOGF(WARNING, "{} has been timed out", this->get_name());
+		LOGF(WARNING, "Timeout player '{}' : {}", this->get_name(), v ? "true" : "false");
 	}
 }

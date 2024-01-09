@@ -1,11 +1,11 @@
 #include "backend/player_command.hpp"
 #include "core/data/session.hpp"
 #include "core/settings/notifications.hpp"
+#include "fiber_pool.hpp"
+#include "hooking/hooking.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/friends/friends_service.hpp"
 #include "services/known_players.hpp"
-#include "fiber_pool.hpp"
-#include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 #include "util/player.hpp"
@@ -27,6 +27,8 @@ namespace big
 		auto rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
 		auto player_name = net_player_data->m_name;
 		auto host_token  = net_player_data->m_host_token;
+		auto is_dev_qa   = player->m_is_rockstar_dev || player->m_is_rockstar_qa;
+		auto is_cheater  = player->m_is_cheater;
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
@@ -80,7 +82,7 @@ namespace big
 				g_notification_service->push("Player Joined", std::vformat("{} taking slot", std::make_format_args(player_name)));
 
 			if (player->m_player_id != self::id)
-				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token] {
+				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa, is_cheater] {
 					if (plyr && plyr->is_valid())
 					{
 						if (*g_pointers->m_gta.m_is_session_started)
@@ -111,12 +113,18 @@ namespace big
 								if (is_friend && !plyr->is_known_player)
 									known_player_nm::toggle(plyr, true);
 
+								if (is_dev_qa)
+									g_reactions.rockstar_dev.process(plyr, false, Infraction::IS_ROCKSTAR_DEV_OR_QA, false, true);
+
 								if (g_session.lock_session && g_player_service->get_self()->is_host() && !is_friend)
 								{
 									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 									g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
 									return;
 								}
+
+								if (is_cheater)
+									g_reactions.cheater_joined.process(plyr, false, Infraction::IS_CHEATER, false, true);
 							}
 						}
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "core/data/debug.hpp"
+#include "core/data/misc.hpp"
 #include "pointers.hpp"
 #include "scripts.hpp"
 
@@ -18,7 +18,7 @@ namespace big::entity
 		if (!*g_pointers->m_gta.m_is_session_started)
 			return true;
 
-		auto n_of_try = g_debug.request_control ? 300 : 1;
+		auto n_of_try = g_misc.request_control ? 300 : 1;
 
 		for (int i = 0; i < n_of_try; ++i)
 		{

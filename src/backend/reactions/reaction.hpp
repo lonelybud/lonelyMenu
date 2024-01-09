@@ -19,6 +19,6 @@ namespace big
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(reaction, notify, log)
 
 		reaction(int id, const char* event_name, const char* notify_message);
-		virtual void process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool is_toxic = false);
+		virtual void process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool other = false);
 	};
 }

@@ -58,6 +58,9 @@ namespace big
 		reaction remove_weapon{47, "Remove Weapon", "Blocked remove weapon from {}"};
 		reaction give_weapon{48, "Give Weapon", "Blocked give weapon from {}"};
 		reaction spoofed_host_token{49, "Spoofed Host token", "{} has spoofed their host token."};
+
+		reaction cheater_joined{14, "Cheater Joined", "{} is a cheater marked by rockstar!"};
+		reaction rockstar_dev{14, "Rockstar player", "{} is detected as DEV or QA!"};
 	} g_reactions{};
 
 	inline std::map<int, const char*> crashes = {

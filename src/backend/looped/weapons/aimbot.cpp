@@ -27,7 +27,7 @@ namespace big
 				for (auto ped : entity::get_entities(false, true))
 					if (!ENTITY::IS_ENTITY_DEAD(ped, 0)) // Tracetype is always 17. LOS check
 					{
-						Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, false);
+						Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, 0);
 
 						if (SYSTEM::VDIST2(self::pos.x,
 						        self::pos.y,

@@ -52,4 +52,24 @@ namespace big::teleport
 
 		to_coords(ent_pos);
 	}
+
+	inline void into_vehicle(Vehicle veh)
+	{
+		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
+			return g_notification_service->push_warning("Teleport", "Invalid Vehicle");
+
+		for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(veh); i++)
+			if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i, TRUE))
+			{
+				if (to_coords(ENTITY::GET_ENTITY_COORDS(veh, 0)))
+				{
+					script::get_current()->yield();
+					if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i, TRUE))
+						PED::SET_PED_INTO_VEHICLE(self::ped, veh, i);
+				}
+				return;
+			}
+
+		g_notification_service->push_warning("Teleport", "No seat available");
+	}
 }

@@ -22,6 +22,7 @@ namespace big
 
 			PED::CLEAR_PED_BLOOD_DAMAGE(ped);
 			PED::CLEAR_PED_ENV_DIRT(ped);
+			PED::CLEAR_PED_WETNESS(ped);
 
 			// https://forum.cfx.re/t/information-needed-to-clear-visible-player-damage-scars-etc/283216
 			// https://docs.fivem.net/natives/?_0x397C38AA7B4A5F83

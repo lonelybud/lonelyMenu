@@ -19,14 +19,10 @@ namespace big
 			response.m_status_code = 1;
 			g_pointers->m_gta.m_write_join_response_data(&response, ctx->m_join_response_data, 512, &ctx->m_join_response_size);
 
-			auto is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;
-
-			auto str = std::format("Join Request denied to {} {} ({})", is_spammer ? "Spammer" : "Player", player_info->m_name, rockstar_id);
-
-			if (is_spammer)
-				LOG(WARNING) << str;
-			else
-				g_notification_service->push_success("Join Blocked", str, true);
+			if (!bad_players_nm::bad_players_list[rockstar_id].is_spammer)
+				g_notification_service->push_success("Join Blocked",
+				    std::format("Join Request denied to Player {} ({})", player_info->m_name, rockstar_id),
+				    true);
 
 			return false;
 		}

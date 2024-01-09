@@ -123,7 +123,7 @@ namespace big::entity
 		};
 
 		auto update_closest_entity = [&](Entity handle, rage::fwEntity* entity_ptr) {
-			Vector3 pos = ENTITY::GET_ENTITY_COORDS(handle, 1);
+			Vector3 pos = ENTITY::GET_ENTITY_COORDS(handle, 0);
 			rage::fvector2 screenpos;
 			HUD::GET_HUD_SCREEN_POSITION_FROM_WORLD_POSITION(pos.x, pos.y, pos.z, &screenpos.x, &screenpos.y);
 

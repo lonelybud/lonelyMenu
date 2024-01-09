@@ -1,4 +1,5 @@
 #include "core/data/infractions.hpp"
+#include "core/data/misc.hpp"
 #include "core/data/reactions.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
@@ -111,6 +112,14 @@ namespace big
 
 					if (auto victim = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index); victim && victim->m_entity_type == 4)
 					{
+						if (auto info = reinterpret_cast<CPed*>(victim)->m_player_info; info && g_misc.notify_friend_attacked)
+						{
+							if (auto victim_player = g_player_service->get_by_host_token(info->m_net_player_data.m_host_token);
+							    victim_player && victim_player->is_friend() && !player->is_friend())
+								g_notification_service->push_warning("Friend Attacked",
+								    std::format("{} attacked {}", player->get_name(), victim_player->get_name()));
+						}
+
 						if (is_invincible(player))
 							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WITH_GODMODE, true);
 

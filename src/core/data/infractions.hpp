@@ -28,7 +28,9 @@ namespace big
 		VOTE_KICK,
 		REMOVE_WEAPON,
 		GIVE_WEAPON,
-		BOUNTY
+		BOUNTY,
+		IS_ROCKSTAR_DEV_OR_QA,
+		IS_CHEATER,
 	};
 
 	inline std::unordered_map<Infraction, const char*> infraction_desc = {
@@ -54,5 +56,7 @@ namespace big
 	    {Infraction::REMOVE_WEAPON, "Tried to remove weapon"},
 	    {Infraction::GIVE_WEAPON, "Tried to give weapon"},
 	    {Infraction::BOUNTY, "Set bounty on you"},
+	    {Infraction::IS_ROCKSTAR_DEV_OR_QA, "Is a rockstar DEV or QA"},
+	    {Infraction::IS_CHEATER, "Is a cheater marked by rockstar"},
 	};
 }

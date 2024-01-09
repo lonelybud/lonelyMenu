@@ -1,11 +1,10 @@
 #include "native_hooks.hpp"
 
-#include "invoker/crossmap.hpp"
-
 #include "all_scripts.hpp"
 #include "am_launcher.hpp"
 #include "freemode.hpp"
 #include "gta_util.hpp"
+#include "invoker/crossmap.hpp"
 #include "shop_controller.hpp"
 #include "tunables.hpp"
 
@@ -48,7 +47,7 @@ namespace big
 
 		for (auto& [replacement_index, replacement_handler] : native_replacements)
 		{
-			auto og_handler = native_invoker::get_handlers()[static_cast<int>(replacement_index)];
+			auto og_handler                  = native_invoker::get_handlers()[static_cast<int>(replacement_index)];
 			handler_replacements[og_handler] = replacement_handler;
 		}
 

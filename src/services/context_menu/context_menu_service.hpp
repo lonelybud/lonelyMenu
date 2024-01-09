@@ -76,6 +76,10 @@ namespace big
 		            [this] {
 			            persist_car_service::save_vehicle(m_handle, "", "");
 		            }},
+		        {"TP IN",
+		            [this] {
+			            teleport::into_vehicle(m_handle);
+		            }},
 		    }};
 
 		s_context_menu player_menu{ContextEntityType::PLAYER, 0, {}, {}};

@@ -12,7 +12,7 @@ namespace big::entity
 		if (!(ent && ENTITY::DOES_ENTITY_EXIST(ent)))
 		{
 			g_notification_service->push_error("Deletion failed", std::format("Entity does not exist {}", ent));
-			return false;
+			return true;
 		}
 		if (!take_control_of(ent))
 		{
@@ -50,6 +50,13 @@ namespace big::entity
 		// if (ENTITY::DOES_ENTITY_EXIST(ent))
 		// 	ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&ent);
 
-		return !ENTITY::DOES_ENTITY_EXIST(temp);
+		if (ENTITY::DOES_ENTITY_EXIST(temp))
+		{
+			g_notification_service->push_error("Deletion failed", std::format("Entity {} exists even after deleting", temp));
+			ent = temp;
+			return false;
+		}
+
+		return true;
 	}
 }

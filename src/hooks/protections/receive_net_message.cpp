@@ -16,8 +16,6 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
-#include <network/netTime.hpp>
-
 static inline void gamer_handle_deserialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
 {
 	constexpr int PC_PLATFORM = 3;
@@ -96,20 +94,22 @@ namespace big
 		buffer.m_flagBits = 1;
 
 		rage::eNetMessage msgType;
-		player_ptr player;
-
-		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
-		{
-			if (gta_util::get_network()->m_game_session_ptr->m_players[i]->m_player_data.m_peer_id_2 == frame->m_peer_id)
-			{
-				player = g_player_service->get_by_host_token(
-				    gta_util::get_network()->m_game_session_ptr->m_players[i]->m_player_data.m_host_token);
-				break;
-			}
-		}
 
 		if (!get_msg_type(msgType, buffer))
 			return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);
+
+		player_ptr player;
+		auto msg_id = frame->m_msg_id, peer_id = frame->m_peer_id;
+
+		if (!(player = g_player_service->get_by_msg_id(frame->m_msg_id)))
+			for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
+				if (auto sn_player = gta_util::get_network()->m_game_session_ptr->m_players[i])
+					if (sn_player && sn_player->m_player_data.m_peer_id_2 == frame->m_peer_id)
+					{
+						if (sn_player->m_player_data.m_host_token)
+							player = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
+						break;
+					}
 
 		if (player)
 		{
@@ -148,10 +148,16 @@ namespace big
 			}
 			case rage::eNetMessage::MsgScriptMigrateHost:
 			{
+				if (player->block_host_migr_requests)
+					return true;
+
 				if (player->m_host_migration_rate_limit.process())
 				{
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
+					{
+						player->block_host_migr_requests = true;
 						g_reactions.oom_kick2.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
+					}
 					return true;
 				}
 
@@ -198,8 +204,8 @@ namespace big
 				{
 					if (player->m_radio_request_rate_limit.exceeded_last_process())
 					{
-						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 						player->block_radio_requests = true;
+						g_reactions.oom_kick.process(player, !player->is_friend(), Infraction::TRIED_KICK_PLAYER, true);
 					}
 					return true;
 				}
