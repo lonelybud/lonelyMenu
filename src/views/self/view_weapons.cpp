@@ -107,6 +107,6 @@ namespace big
 		}
 
 		components::command_checkbox<"infclip">();
-		// components::command_checkbox<"rapidfire">();
+		components::command_checkbox<"rapidfire">();
 	}
 }

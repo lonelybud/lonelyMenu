@@ -5,32 +5,37 @@
 
 namespace big
 {
+	static outfit::components_t components;
+	static outfit::props_t props;
+
+	static void refresh_outfit_state()
+	{
+		for (auto& item : components.items)
+		{
+			item.drawable_id     = PED::GET_PED_DRAWABLE_VARIATION(self::ped, item.id);
+			item.drawable_id_max = PED::GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
+
+			item.texture_id     = PED::GET_PED_TEXTURE_VARIATION(self::ped, item.id);
+			item.texture_id_max = PED::GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
+		}
+
+		for (auto& item : props.items)
+		{
+			item.drawable_id     = PED::GET_PED_PROP_INDEX(self::ped, item.id, 1);
+			item.drawable_id_max = PED::GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
+
+			item.texture_id = PED::GET_PED_PROP_TEXTURE_INDEX(self::ped, item.id);
+			item.texture_id_max = PED::GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
+		}
+	}
+
 	void view::outfit_editor()
 	{
-		static outfit::components_t components;
-		static outfit::props_t props;
-
 		ImGui::Checkbox("Disable clothing validation", &g_misc.disable_clothing_validation);
 		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {
-			for (auto& item : components.items)
-			{
-				item.drawable_id     = PED::GET_PED_DRAWABLE_VARIATION(self::ped, item.id);
-				item.drawable_id_max = PED::GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
-
-				item.texture_id = PED::GET_PED_TEXTURE_VARIATION(self::ped, item.id);
-				item.texture_id_max = PED::GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
-			}
-
-			for (auto& item : props.items)
-			{
-				item.drawable_id     = PED::GET_PED_PROP_INDEX(self::ped, item.id, 1);
-				item.drawable_id_max = PED::GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(self::ped, item.id) - 1;
-
-				item.texture_id = PED::GET_PED_PROP_TEXTURE_INDEX(self::ped, item.id);
-				item.texture_id_max = PED::GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(self::ped, item.id, item.drawable_id) - 1;
-			}
+			refresh_outfit_state();
 		});
 
 		ImGui::BeginGroup();
@@ -42,6 +47,7 @@ namespace big
 				outfit::check_bounds_drawable(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
 				g_fiber_pool->queue_job([item] {
 					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, item.drawable_id, 0, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+					refresh_outfit_state();
 				});
 			}
 		}
@@ -56,6 +62,7 @@ namespace big
 				outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
 				g_fiber_pool->queue_job([item] {
 					PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, item.drawable_id, item.texture_id, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+					refresh_outfit_state();
 				});
 			}
 		}
@@ -74,6 +81,8 @@ namespace big
 							PED::CLEAR_PED_PROP(self::ped, item.id, 1);
 						else
 							PED::SET_PED_PROP_INDEX(self::ped, item.id, item.drawable_id, 0, TRUE, 1);
+
+						refresh_outfit_state();
 					});
 				}
 			}
@@ -89,6 +98,7 @@ namespace big
 					outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
 					g_fiber_pool->queue_job([item] {
 						PED::SET_PED_PROP_INDEX(self::ped, item.id, item.drawable_id, item.texture_id, TRUE, 1);
+						refresh_outfit_state();
 					});
 				}
 			}
@@ -143,7 +153,15 @@ namespace big
 					std::ifstream i(filePath);
 					nlohmann::json j;
 					i >> j;
+
+					if (!g_misc.disable_clothing_validation)
+					{
+						g_misc.disable_clothing_validation = true;
+						g_notification_service->push_success("Clothing Validation", "Disabled automatically.");
+					}
+
 					outfit::apply_outfit(j);
+					refresh_outfit_state();
 				}
 				else
 					g_notification_service->push_warning("Apply Outfit Failed", "File does not exist.");

@@ -7,17 +7,11 @@
 
 namespace big
 {
-	player::player(CNetGamePlayer* net_game_player) :
-	    m_net_game_player(net_game_player)
+	player::player(CNetGamePlayer* net_game_player, uint64_t host_token) :
+	    m_net_game_player(net_game_player),
+	    m_host_token(host_token)
 	{
-		if (net_game_player != (CNetGamePlayer*)gta_util::get_network_player_mgr()->m_local_net_player)
-		{
-			m_is_friend = friends_service::is_friend(net_game_player);
-			m_msg_id    = net_game_player->m_msg_id;
-
-			if (const auto* net_player_data = net_game_player->get_net_data())
-				m_host_token = net_player_data->m_host_token;
-		}
+		m_is_friend = friends_service::is_friend(net_game_player);
 	}
 
 	CVehicle* player::get_current_vehicle() const

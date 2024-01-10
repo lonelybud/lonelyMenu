@@ -19,7 +19,7 @@ namespace big
 
 		players m_players;
 
-		player_ptr m_dummy = std::make_shared<player>(nullptr);
+		player_ptr m_dummy = std::make_shared<player>(nullptr, 0);
 		player_ptr m_selected_player;
 
 	public:
@@ -35,12 +35,11 @@ namespace big
 
 		[[nodiscard]] player_ptr get_self();
 
-		[[nodiscard]] player_ptr get_by_msg_id(uint32_t msg_id) const;
 		[[nodiscard]] player_ptr get_by_id(uint32_t id) const;
 		[[nodiscard]] player_ptr get_by_host_token(uint64_t token) const;
 		[[nodiscard]] player_ptr get_selected() const;
 
-		player_ptr player_join(CNetGamePlayer* net_game_player);
+		player_ptr player_join(CNetGamePlayer* net_game_player, uint64_t host_token);
 		void player_leave(CNetGamePlayer* net_game_player);
 
 		players& players()

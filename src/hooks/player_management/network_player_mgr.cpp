@@ -46,8 +46,6 @@ namespace big
 
 		bool result = g_hooking->get_original<hooks::network_player_mgr_init>()(_this, a2, a3, a4);
 
-		g_player_service->player_join(_this->m_local_net_player);
-
 		clean_up();
 
 		return result;

@@ -99,17 +99,15 @@ namespace big
 			return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);
 
 		player_ptr player;
-		auto msg_id = frame->m_msg_id, peer_id = frame->m_peer_id;
 
-		if (!(player = g_player_service->get_by_msg_id(frame->m_msg_id)))
-			for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
-				if (auto sn_player = gta_util::get_network()->m_game_session_ptr->m_players[i])
-					if (sn_player && sn_player->m_player_data.m_peer_id_2 == frame->m_peer_id)
-					{
-						if (sn_player->m_player_data.m_host_token)
-							player = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
-						break;
-					}
+		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
+			if (auto sn_player = gta_util::get_network()->m_game_session_ptr->m_players[i])
+				if (sn_player && sn_player->m_player_data.m_peer_id_2 == frame->m_peer_id)
+				{
+					if (sn_player->m_player_data.m_host_token)
+						player = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
+					break;
+				}
 
 		if (player)
 		{

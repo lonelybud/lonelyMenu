@@ -25,11 +25,12 @@ namespace big
 		friend class player_service;
 
 		CNetGamePlayer* m_net_game_player = nullptr;
+		uint64_t m_host_token;
 		std::string m_identifier;
 		bool m_is_friend;
 
 	public:
-		explicit player(CNetGamePlayer* net_game_player);
+		explicit player(CNetGamePlayer* net_game_player, uint64_t host_token);
 		~player() = default;
 
 		player(const player&)                = default;
@@ -86,8 +87,6 @@ namespace big
 		bool is_other            = false;
 		bool is_known_player     = false;
 		int crash_count          = 0;
-		uint32_t m_msg_id        = 0;
-		uint64_t m_host_token    = 0;
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 

@@ -12,13 +12,13 @@ namespace big
 {
 	void looped::update_globals()
 	{
-		static bool last_dead = false;
+		static bool last_dead   = false;
+		auto network_player_mgr = gta_util::get_network_player_mgr();
 
-		if (!*g_pointers->m_gta.m_network_player_mgr || !(*g_pointers->m_gta.m_network_player_mgr)->m_local_net_player
-		    || (*g_pointers->m_gta.m_network_player_mgr)->m_local_net_player->m_player_id == -1)
+		if (!network_player_mgr || !network_player_mgr->m_local_net_player || network_player_mgr->m_local_net_player->m_player_id == -1)
 			self::id = 0;
 		else
-			self::id = (*g_pointers->m_gta.m_network_player_mgr)->m_local_net_player->m_player_id;
+			self::id = network_player_mgr->m_local_net_player->m_player_id;
 
 		g_local_player = gta_util::get_local_ped();
 

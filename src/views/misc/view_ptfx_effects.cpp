@@ -1,4 +1,5 @@
 #include "core/data/ptfx_effects.hpp"
+#include "natives.hpp"
 #include "pointers.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/strings.hpp"
@@ -102,6 +103,16 @@ namespace big
 		return v.DictionaryName;
 	};
 
+	static inline void set_effect(const char* asset, const char* effect)
+	{
+		g_fiber_pool->queue_job([current_asset = g_ptfx_effects.asset] {
+			STREAMING::REMOVE_NAMED_PTFX_ASSET(current_asset);
+		});
+
+		g_ptfx_effects.asset  = asset;
+		g_ptfx_effects.effect = effect;
+	}
+
 	void view::ptfx_effects()
 	{
 		static std::vector<ptfxEffects::AnimDictCompactObj> animDictCompactObjs, searchedAnimDictCompactObjs;
@@ -114,6 +125,33 @@ namespace big
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(400);
 		ImGui::SliderFloat("PTFX Size", &g_ptfx_effects.size, 0.1f, 2.f);
+
+		ImGui::Spacing();
+		static float custom_location[3];
+		ImGui::InputFloat3("##Customlocation", custom_location);
+		components::button("Set current coordinates", [&] {
+			custom_location[0] = self::pos.x;
+			custom_location[1] = self::pos.y;
+			custom_location[2] = self::pos.z;
+		});
+		ImGui::SameLine();
+		components::button("Trigger ptfx effect at coord", [&] {
+			STREAMING::REQUEST_NAMED_PTFX_ASSET(g_ptfx_effects.asset);
+			GRAPHICS::USE_PARTICLE_FX_ASSET(g_ptfx_effects.asset);
+			GRAPHICS::START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(g_ptfx_effects.effect,
+			    custom_location[0],
+			    custom_location[1],
+			    custom_location[2],
+			    0.f,
+			    0.f,
+			    0.f,
+			    g_ptfx_effects.size,
+			    0.f,
+			    0.f,
+			    0.f,
+			    0);
+		});
+		ImGui::Spacing();
 
 		ImGui::SetNextItemWidth(200);
 		if (components::input_text_with_hint("##searchDicText", "searchDic", searchDicText))
@@ -154,10 +192,7 @@ namespace big
 		{
 			for (auto& effectName : objs[selecDicIndex].EffectNames)
 				if (ImGui::Selectable(effectName.c_str(), effectName == g_ptfx_effects.effect))
-				{
-					g_ptfx_effects.asset  = objs[selecDicIndex].DictionaryName.c_str();
-					g_ptfx_effects.effect = effectName.c_str();
-				}
+					set_effect(objs[selecDicIndex].DictionaryName.c_str(), effectName.c_str());
 
 			ImGui::EndListBox();
 		}
@@ -251,10 +286,9 @@ namespace big
 					}
 					else
 					{
-						customEffectName      = effect.name;
-						g_ptfx_effects.asset  = effect.dict.c_str();
-						g_ptfx_effects.effect = effect.effect.c_str();
-						g_ptfx_effects.size   = effect.size;
+						customEffectName = effect.name;
+						set_effect(effect.dict.c_str(), effect.effect.c_str());
+						g_ptfx_effects.size = effect.size;
 					}
 				}
 			}

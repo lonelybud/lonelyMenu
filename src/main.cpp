@@ -102,6 +102,10 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto pointers_instance = std::make_unique<pointers>();
 			    LOG(INFO) << "Pointers initialized.";
 
+			    // crash the game if online
+			    if (*g_pointers->m_gta.m_is_session_started)
+				    exit(0);
+
 			    while (!disable_anticheat_skeleton())
 			    {
 				    LOG(WARNING) << "Failed patching anticheat gameskeleton (injected too early?). Waiting 100ms and trying again";

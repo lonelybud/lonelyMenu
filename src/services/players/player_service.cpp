@@ -10,16 +10,10 @@ namespace big
 	    m_self(nullptr),
 	    m_selected_player(m_dummy)
 	{
-		g_player_service = this;
-
 		const auto network_player_mgr = gta_util::get_network_player_mgr();
-		if (!network_player_mgr)
-			return;
 
-		m_self = &network_player_mgr->m_local_net_player;
-
-		for (uint16_t i = 0; i < network_player_mgr->m_player_limit; ++i)
-			player_join(network_player_mgr->m_player_list[i]);
+		g_player_service = this;
+		m_self           = &network_player_mgr->m_local_net_player;
 	}
 
 	player_service::~player_service()
@@ -33,14 +27,6 @@ namespace big
 		m_player_to_use_complaint_kick.reset();
 		m_selected_player = m_dummy;
 		m_players.clear();
-	}
-
-	player_ptr player_service::get_by_msg_id(uint32_t msg_id) const
-	{
-		for (const auto& [_, player] : m_players)
-			if (player && player->m_msg_id == msg_id)
-				return player;
-		return nullptr;
 	}
 
 	player_ptr player_service::get_by_id(uint32_t id) const
@@ -67,17 +53,17 @@ namespace big
 	player_ptr player_service::get_self()
 	{
 		if (!m_self_ptr || !m_self_ptr->equals(*m_self))
-			m_self_ptr = std::make_shared<player>(*m_self);
+		{
+			LOG(VERBOSE) << "Creating self player from network player";
+			m_self_ptr = std::make_shared<player>(*m_self, 0);
+		}
 
 		return m_self_ptr;
 	}
 
-	player_ptr player_service::player_join(CNetGamePlayer* net_game_player)
+	player_ptr player_service::player_join(CNetGamePlayer* net_game_player, uint64_t host_token)
 	{
-		if (net_game_player == nullptr || net_game_player == *m_self)
-			return nullptr;
-
-		auto plyr = std::make_shared<player>(net_game_player);
+		auto plyr = std::make_shared<player>(net_game_player, host_token);
 		auto itr  = m_players.insert({plyr->get_name(), std::move(plyr)});
 
 		return itr->second;

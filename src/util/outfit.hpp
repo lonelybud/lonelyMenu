@@ -14,8 +14,8 @@ namespace big::outfit
 		int id;
 		std::string label;
 		int drawable_id     = 0;
-		int drawable_id_max = 0;
 		int texture_id      = 0;
+		int drawable_id_max = 0;
 		int texture_id_max  = 0;
 	};
 
@@ -25,15 +25,15 @@ namespace big::outfit
 		    {0, "Face"},
 		    {1, "Mask"},
 		    // {2, "Hair"},
-		    {3, "Torso"},
-		    {4, "Leg"},
+		    {3, "Torso", 15, 0},
+		    {4, "Leg", 15, 0},
 		    {5, "Parachute / bag"},
-		    {6, "Shoes"},
+		    {6, "Shoes", 35, 0},
 		    {7, "Accessory"},
-		    {8, "Undershirt"},
+		    {8, "Undershirt", 14, 0},
 		    {9, "Kevlar"},
 		    {10, "Badge"},
-		    {11, "Torso 2"},
+		    {11, "Torso 2", -1, 0},
 		};
 	};
 

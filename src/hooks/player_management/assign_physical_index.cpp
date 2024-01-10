@@ -56,7 +56,7 @@ namespace big
 
 		const auto result = g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 
-		auto plyr = g_player_service->player_join(player);
+		auto plyr = (player == g_player_service->get_self()->get_net_game_player()) ? nullptr : g_player_service->player_join(player, host_token);
 
 		if (plyr && plyr->is_host())
 			g_session.next_host_list.current_host = plyr;
@@ -81,7 +81,7 @@ namespace big
 			if (g_notifications.player_join.notify)
 				g_notification_service->push("Player Joined", std::vformat("{} taking slot", std::make_format_args(player_name)));
 
-			if (player->m_player_id != self::id)
+			if (plyr)
 				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa, is_cheater] {
 					if (plyr && plyr->is_valid())
 					{
