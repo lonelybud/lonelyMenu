@@ -113,8 +113,15 @@ namespace big
 		return nullptr;
 	}
 
-	void ped_animation_service::play_saved_ped_animation(ped_animation p, Ped ped)
+	void ped_animation_service::play_saved_ped_animation(ped_animation p, Ped ped, float* relative_loc)
 	{
+		if (relative_loc[0] || relative_loc[1] || relative_loc[2])
+		{
+			p.pos[0] = self::pos.x + relative_loc[0];
+			p.pos[1] = self::pos.y + relative_loc[1];
+			p.pos[2] = self::pos.z + relative_loc[2];
+		}
+
 		ped::ped_play_animation(ped, p.dict, p.anim, p.blendin, p.blendout, p.time_to_play, p.flags, p.start_phase, false, {p.pos[0], p.pos[1], p.pos[2]}, {p.rot[0], p.rot[1], p.rot[2]});
 	}
 }

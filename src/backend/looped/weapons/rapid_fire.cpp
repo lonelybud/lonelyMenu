@@ -13,12 +13,22 @@ namespace big
 
 		CWeaponInfo* current_weapon = nullptr;
 
+		Hash weapon_hash;
+		int original_weapon_tint = 0;
+		int current_weapon_tint  = 0;
+
 		virtual void on_tick() override
 		{
 			if (auto* const weapon_mgr = g_local_player->m_weapon_manager; weapon_mgr)
 			{
 				if (!current_weapon)
+				{
 					current_weapon = weapon_mgr->m_weapon_info;
+
+					WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weapon_hash, FALSE);
+					if (weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+						current_weapon_tint = original_weapon_tint = WEAPON::GET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash);
+				}
 
 				if (current_weapon != weapon_mgr->m_weapon_info)
 				{
@@ -31,6 +41,13 @@ namespace big
 					auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
 					Vector3 end           = camera_position + camera_direction * 2000.0;
 
+					if (weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+					{
+						WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, current_weapon_tint++);
+						if (current_weapon_tint > 7)
+							current_weapon_tint = 0;
+					}
+
 					PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
 					WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
 				}
@@ -39,6 +56,9 @@ namespace big
 
 		virtual void on_disable() override
 		{
+			if (current_weapon && weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+				WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, original_weapon_tint);
+
 			current_weapon = nullptr;
 		}
 	};

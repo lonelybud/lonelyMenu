@@ -10,6 +10,7 @@ namespace big
 
 		static std::string category = "Default";
 		static ped_animation deletion_ped_animation{};
+		static float relative_pos[3];
 
 		if (!std::string(deletion_ped_animation.name).empty())
 			ImGui::OpenPopup("##deletepedanimation");
@@ -49,12 +50,19 @@ namespace big
 
 		ImGui::SameLine();
 		components::button("Play", [] {
-			g_ped_animation_service.play_saved_ped_animation(g_ped_animation_service.current_animation, self::ped);
+			g_ped_animation_service.play_saved_ped_animation(g_ped_animation_service.current_animation, self::ped, relative_pos);
 		});
 		ImGui::SameLine();
 		components::button("Stop", [] {
 			TASK::CLEAR_PED_TASKS(self::ped);
 		});
+
+		ImGui::Spacing();
+		ImGui::InputFloat3("Relative Position", relative_pos);
+		components::button("Reset##resetrelpos", [] {
+			relative_pos[0] = relative_pos[1] = relative_pos[2] = 0;
+		});
+		ImGui::Spacing();
 
 		if (ImGui::TreeNode("Advanced Options"))
 		{
@@ -217,7 +225,7 @@ namespace big
 							if (ImGui::IsMouseDoubleClicked(0))
 							{
 								g_fiber_pool->queue_job([p] {
-									g_ped_animation_service.play_saved_ped_animation(g_ped_animation_service.current_animation, self::ped);
+									g_ped_animation_service.play_saved_ped_animation(g_ped_animation_service.current_animation, self::ped, relative_pos);
 								});
 							}
 						}

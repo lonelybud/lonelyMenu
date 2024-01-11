@@ -24,7 +24,7 @@ namespace big::outfit
 		std::vector<outfit_t> items = {
 		    {0, "Face"},
 		    {1, "Mask"},
-		    // {2, "Hair"},
+		    {2, "Hair"},
 		    {3, "Torso", 15, 0},
 		    {4, "Leg", 15, 0},
 		    {5, "Parachute / bag"},
@@ -64,6 +64,9 @@ namespace big::outfit
 	{
 		for (auto item : components.items)
 		{
+			if (item.id == 2)
+				continue; // dont apply hair
+
 			auto draw    = target ? PED::GET_PED_DRAWABLE_VARIATION(target, item.id) : item.drawable_id;
 			auto texture = target ? PED::GET_PED_TEXTURE_VARIATION(target, item.id) : item.texture_id;
 
@@ -144,6 +147,9 @@ namespace big::outfit
 
 		for (auto& item : components.items)
 		{
+			if (item.id == 2)
+				continue; // dont save hair
+
 			nlohmann::json tmp;
 			tmp["drawable_id"]                    = item.drawable_id;
 			tmp["texture_id"]                     = item.texture_id;

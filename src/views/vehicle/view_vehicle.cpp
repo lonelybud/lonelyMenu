@@ -217,8 +217,6 @@ namespace big
 		ImGui::SameLine();
 		ImGui::BeginGroup();
 		{
-			components::command_checkbox<"allow_all_weapons">();
-
 			components::command_checkbox<"blockhoming">();
 
 			components::command_checkbox<"vehicle_lock">();

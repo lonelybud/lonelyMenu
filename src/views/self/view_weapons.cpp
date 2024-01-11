@@ -73,7 +73,7 @@ namespace big
 			}
 			ImGui::SameLine();
 			components::button("Give Weapon", [] {
-				WEAPON::GIVE_WEAPON_TO_PED(self::ped, selected_weapon_hash, 9999, false, true);
+				WEAPON::GIVE_WEAPON_TO_PED(self::ped, selected_weapon_hash, 9999, FALSE, TRUE);
 			});
 		}
 	}
@@ -105,7 +105,8 @@ namespace big
 			ImGui::PushItemWidth(200);
 			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
 		}
-
+		
+		components::command_checkbox<"allow_all_weapons">();
 		components::command_checkbox<"infclip">();
 		components::command_checkbox<"rapidfire">();
 	}
