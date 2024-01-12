@@ -83,16 +83,10 @@ namespace big
 			tick_count = 1;
 
 			if (const auto draw_list = ImGui::GetBackgroundDrawList(); draw_list)
-			{
 				if (g_esp.show_player)
 					g_player_service->iterate([draw_list](const player_entry& entry) {
 						draw_player(entry.second, draw_list);
 					});
-
-				if (g_esp.show_gs_cache_boxes && *g_pointers->m_gta.m_script_globals && **g_pointers->m_gta.m_script_globals)
-					if (auto gs_cache_box_entity = *scr_globals::pickups.at(605).as<Entity*>(); gs_cache_box_entity != 0)
-						draw_object(g_pointers->m_gta.m_handle_to_ptr(gs_cache_box_entity), draw_list, "G's Cache");
-			}
 		}
 		else
 			++tick_count;

@@ -17,10 +17,6 @@ namespace big
 
 			ImGui::Spacing();
 
-			ImGui::Checkbox("Show G's Cache Boxes", &g_esp.show_gs_cache_boxes);
-
-			ImGui::Spacing();
-
 			ImGui::SetNextItemWidth(200);
 			ImGui::SliderInt("###tick_count_threshhold", &g_esp.tick_count_threshhold, 0, 60);
 

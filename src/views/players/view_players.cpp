@@ -74,7 +74,7 @@ namespace big
 		{
 			ImGui::BeginTooltip();
 			for (auto infraction : plyr->infractions)
-				ImGui::BulletText(infraction_desc[(Infraction)infraction]);
+				ImGui::BulletText(infraction_desc[(Infraction)infraction.first]);
 			ImGui::EndTooltip();
 		}
 

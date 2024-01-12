@@ -9,7 +9,6 @@ namespace big
 		float global_render_distance[2] = {0.f, 600.f};
 		bool show_player                = true;
 		bool distance                   = false;
-		bool show_gs_cache_boxes        = false;
 
 		int tick_count_threshhold = 30;
 

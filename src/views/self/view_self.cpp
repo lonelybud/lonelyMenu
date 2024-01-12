@@ -65,6 +65,7 @@ namespace big
 			components::command_checkbox<"infoxy">();
 			components::command_checkbox<"godmode">();
 			components::command_checkbox<"otr">();
+			components::command_checkbox<"noidlekick">();
 			ImGui::Checkbox("Context Menu", &g_context_menu.enabled);
 			components::options_modal("Context Menu Modal", [] {
 				ImGui::Text("Allowed Entity Types:");

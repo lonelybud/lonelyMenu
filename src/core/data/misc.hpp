@@ -13,7 +13,7 @@ namespace big
 		bool fm_mission_controller_cart_grab = false;
 		bool disable_clothing_validation     = false;
 		bool request_control                 = true;
-		bool notify_friend_attacked          = true;
+		bool notify_friend_killed          = true;
 	};
 
 	inline g_misc_t g_misc{};

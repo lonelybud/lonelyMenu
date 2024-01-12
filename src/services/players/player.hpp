@@ -79,14 +79,13 @@ namespace big
 		bool m_block_permanent_vehicles = false;
 
 		bool is_modder = false;
-		std::unordered_set<int> infractions;
+		std::map<int, int> infractions;
 		bool is_blocked          = false;
 		bool join_prevented      = false;
 		bool is_spammer          = false;
 		std::string spam_message = "";
 		bool is_other            = false;
 		bool is_known_player     = false;
-		int crash_count          = 0;
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 

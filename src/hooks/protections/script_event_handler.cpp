@@ -236,7 +236,7 @@ namespace big
 
 			if (!known_location)
 			{
-				g_reactions.tse_freeze.process(plyr, false, Infraction::TSE_FREEZE, true);
+				g_reactions.tse_freeze.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
 				return true;
 			}
 			break;
@@ -293,7 +293,7 @@ namespace big
 			{
 				if (activity == eActivityType::Survival || activity == eActivityType::Mission || activity == eActivityType::Deathmatch || activity == eActivityType::BaseJump || activity == eActivityType::Race)
 				{
-					g_reactions.tse_freeze.process(plyr, false, Infraction::TSE_FREEZE, true);
+					g_reactions.tse_freeze.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
 					return true;
 				}
 				else if (activity == eActivityType::Darts)
@@ -405,7 +405,7 @@ namespace big
 		{
 			LOG(INFO) << "Hash = " << (int)args[0];
 			LOG(INFO) << "Sender = " << args[1];
-			g_reactions.tse_sender_mismatch.process(plyr, false, Infraction::TSE_SENDER_MISMATCH, true);
+			g_reactions.tse_sender_mismatch.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
 			return true;
 		}
 

@@ -7,5 +7,6 @@ namespace big
 		bool unlimited_oxygen = false;
 		bool god_mode         = false;
 		bool off_radar        = false;
+		bool no_idle_kick     = false;
 	} g_self{};
 }

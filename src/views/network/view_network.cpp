@@ -40,8 +40,6 @@ namespace big
 			if (components::button("Restore Host token"))
 				g_session.host_token = g_session.orig_host_token;
 
-			ImGui::Spacing();
-
 			if (g_player_service->get_self()->is_host())
 			{
 				ImGui::Spacing();
@@ -52,6 +50,13 @@ namespace big
 					});
 				});
 			}
+
+			ImGui::Spacing();
+			components::button("Clear all players infractions", [] {
+				g_player_service->iterate([](const player_entry& player) {
+					player.second->infractions.clear();
+				});
+			});
 
 			ImGui::Spacing();
 

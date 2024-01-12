@@ -21,6 +21,8 @@ namespace big
 		g_weapons      = {};
 		g_context_menu = {};
 		g_misc         = {};
+		g_esp          = {};
+		g_debug        = {};
 
 		g_session_t g_session_temp;
 		g_session.lock_session                 = g_session_temp.lock_session;
@@ -29,15 +31,8 @@ namespace big
 		g_session.decloak_players              = g_session_temp.decloak_players;
 		g_session.auto_kick_chat_spammers      = g_session_temp.auto_kick_chat_spammers;
 
-		g_esp_t g_esp_temp;
-		g_esp.enabled             = g_esp_temp.enabled;
-		g_esp.show_player         = g_esp_temp.show_player;
-		g_esp.show_gs_cache_boxes = g_esp_temp.show_gs_cache_boxes;
-
 		m_syncing_player      = nullptr;
 		m_syncing_object_type = (eNetObjType)-1;
-
-		g_debug = {};
 	}
 
 	bool hooks::network_player_mgr_init(CNetworkPlayerMgr* _this, uint64_t a2, uint32_t a3, uint32_t a4[4])

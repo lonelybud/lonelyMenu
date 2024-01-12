@@ -335,12 +335,9 @@ namespace big
 		{
 			ImGui::BeginGroup();
 			components::sub_title("Infractions");
-
-			if (current_player->crash_count)
-				ImGui::BulletText(std::format("*** Crash Count - {}", current_player->crash_count).c_str());
-
 			for (auto infraction : current_player->infractions)
-				ImGui::BulletText(infraction_desc[(Infraction)infraction]);
+				ImGui::BulletText(
+				    std::format("{} - {}", infraction_desc[(Infraction)infraction.first], infraction.second).c_str());
 			ImGui::EndGroup();
 		}
 	}

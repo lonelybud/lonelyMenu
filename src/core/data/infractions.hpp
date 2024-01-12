@@ -18,8 +18,6 @@ namespace big
 		INVALID_PLAYER_MODEL,
 		SUPER_JUMP,
 		UNDEAD_OTR,
-		TSE_FREEZE,
-		TSE_SENDER_MISMATCH,
 		PLAYED_YOU_POS,
 		PLAYED_YOU_NEG,
 		GIVE_COLLECTIBLE,
@@ -34,29 +32,27 @@ namespace big
 	};
 
 	inline std::unordered_map<Infraction, const char*> infraction_desc = {
-	    {Infraction::TRIGGERED_ANTICHEAT, "Triggered Rockstar's anticheat"},
-	    {Infraction::TRIED_CRASH_PLAYER, "Tried to crash you"},
-	    {Infraction::TRIED_KICK_PLAYER, "Tried to kick you"},
+	    {Infraction::TRIGGERED_ANTICHEAT, "Triggered Rockstar's anticheat"}, // notify once
+	    {Infraction::TRIED_CRASH_PLAYER, "Tried to crash you"},              // kick
+	    {Infraction::TRIED_KICK_PLAYER, "Tried to kick you"},                // kick
 	    {Infraction::ATTACKING_WITH_GODMODE, "Attacked someone while using godmode"},
 	    {Infraction::ATTACKING_WITH_INVISIBILITY, "Attacked someone while being invisible"},
 	    {Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST, "Attacked someone while hidden in player list"},
-	    {Infraction::SPOOFED_DATA, "Had spoofed data"},
-	    {Infraction::SPOOFED_HOST_TOKEN, "Had spoofed their host token"},
-	    {Infraction::INVALID_PLAYER_MODEL, "Had used an invalid player model"},
-	    {Infraction::SUPER_JUMP, "Had used super jump"},
-	    {Infraction::UNDEAD_OTR, "Had used undead OTR"},
-	    {Infraction::TSE_FREEZE, "Tried TSE freeze you"},
-	    {Infraction::TSE_SENDER_MISMATCH, "Sent TSE sender mismatch"},
-	    {Infraction::PLAYED_YOU_POS, "Played with you positive"},
-	    {Infraction::PLAYED_YOU_NEG, "Played with you negative"},
-	    {Infraction::GIVE_COLLECTIBLE, "Tried to give collectible"},
-	    {Infraction::CASH_SPAWN, "Spawning cash"},
+	    {Infraction::SPOOFED_DATA, "Had spoofed data"},                         // notify once
+	    {Infraction::SPOOFED_HOST_TOKEN, "Had spoofed their host token"},       // notify once
+	    {Infraction::INVALID_PLAYER_MODEL, "Had used an invalid player model"}, // notify once
+	    {Infraction::SUPER_JUMP, "Had used super jump"},                        // notify once
+	    {Infraction::UNDEAD_OTR, "Had used undead OTR"},                        // notify once
+	    {Infraction::PLAYED_YOU_POS, "Played with you positive"},               // notify once
+	    {Infraction::PLAYED_YOU_NEG, "Played with you negative"},               // notify once
+	    {Infraction::GIVE_COLLECTIBLE, "Tried to give collectible"},            // notify once
+	    {Infraction::CASH_SPAWN, "Spawning cash"},                              // notify once
 	    {Infraction::REPORT, "Reported you"},
 	    {Infraction::VOTE_KICK, "Trying to vote kick you"},
-	    {Infraction::REMOVE_WEAPON, "Tried to remove weapon"},
-	    {Infraction::GIVE_WEAPON, "Tried to give weapon"},
+	    {Infraction::REMOVE_WEAPON, "Tried to remove weapon"}, // notify once
+	    {Infraction::GIVE_WEAPON, "Tried to give weapon"},     // notify once
 	    {Infraction::BOUNTY, "Set bounty on you"},
-	    {Infraction::IS_ROCKSTAR_DEV_OR_QA, "Is a rockstar DEV or QA"},
-	    {Infraction::IS_CHEATER, "Is a cheater marked by rockstar"},
+	    {Infraction::IS_ROCKSTAR_DEV_OR_QA, "Is a rockstar DEV or QA"}, // notify once
+	    {Infraction::IS_CHEATER, "Is a cheater marked by rockstar"},    // notify once
 	};
 }

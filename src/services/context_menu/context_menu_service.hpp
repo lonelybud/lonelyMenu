@@ -129,9 +129,10 @@ namespace big
 		            }},
 		        {"DELETE",
 		            [this] {
-			            if (ENTITY::IS_ENTITY_A_PED(m_handle))
+			            if (m_pointer->m_model_info->m_model_type == eModelType::Ped
+			                && reinterpret_cast<CPed*>(m_pointer)->m_player_info)
 			            {
-				            g_notification_service->push_warning("Failed", "Cannot delete a ped");
+				            g_notification_service->push_warning("Failed", "Cannot delete a player");
 				            return;
 			            }
 

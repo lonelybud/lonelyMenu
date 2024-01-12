@@ -3,10 +3,12 @@
 #include "util/entity.hpp"
 #include "util/lua_script.hpp"
 #include "util/ped.hpp"
+#include "util/teleport.hpp"
 #include "views/view.hpp"
 
 namespace big
 {
+	// https://github.com/SilentSal0/Silent-Night
 	constexpr int CPFHl   = 24333;      // cayo perico fingerprint hack local
 	constexpr int CPPCCl  = 30357 + 3;  // cayo perico plasma cutter cut local ("DLC_H4_anims_glass_cutter_Sounds")
 	constexpr int CPSTCl  = 29118;      // cayo perico sewer tunnel cut local
@@ -52,7 +54,7 @@ namespace big
 		ImGui::SeparatorText("Other");
 		{
 			ImGui::Checkbox("Request Control", &g_misc.request_control);
-			ImGui::Checkbox("Notify attack of player on friend", &g_misc.notify_friend_attacked);
+			ImGui::Checkbox("Notify attack of player on friend", &g_misc.notify_friend_killed);
 
 			ImGui::Spacing();
 
@@ -91,6 +93,27 @@ namespace big
 			ImGui::SameLine();
 			components::button("Wet yourself", [] {
 				PED::SET_PED_WETNESS_HEIGHT(self::ped, 1);
+			});
+		}
+
+		ImGui::SeparatorText("Daily Collectables");
+		{
+			static std::string combination_retn;
+			components::button("Show Stash House safecodes", [] {
+				combination_retn = "";
+				for (int i = 0; i <= 2; i++)
+					if (i == 2)
+						combination_retn += std::to_string(lua_script::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1));
+					else
+						combination_retn += std::to_string(lua_script::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) + "-";
+			});
+			ImGui::SameLine();
+			ImGui::Text(combination_retn.c_str());
+
+			components::button("TP to G'cache object", [] {
+				if (*g_pointers->m_gta.m_script_globals && **g_pointers->m_gta.m_script_globals)
+					if (auto gs_cache_box_entity = *scr_globals::pickups.at(605).as<Entity*>(); gs_cache_box_entity != 0)
+						teleport::tp_on_top(gs_cache_box_entity);
 			});
 		}
 
