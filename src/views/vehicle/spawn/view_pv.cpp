@@ -33,5 +33,26 @@ namespace big
 
 			ImGui::EndListBox();
 		}
+
+		ImGui::Spacing();
+
+		components::button("Request Avenger", [] {
+			mobile::services::request_avenger();
+		});
+		components::button("Request Kosatka", [] {
+			mobile::services::request_kosatka();
+		});
+		components::button("Request M.O.C", [] {
+			mobile::services::request_mobile_operations_center();
+		});
+		components::button("Request Terrorbyte", [] {
+			mobile::services::request_terrorbyte();
+		});
+		components::button("Request Acid Lab", [] {
+			mobile::services::request_acidlab();
+		});
+		components::button("Request Acid Bike", [] {
+			mobile::services::request_acidlab_bike();
+		});
 	}
 }

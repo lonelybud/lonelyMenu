@@ -32,10 +32,20 @@ namespace big::teleport
 
 	inline bool to_waypoint()
 	{
-		std::optional<Vector3> waypoint_location = blip::get_waypoint_location();
+		std::optional<Vector3> location = blip::get_blip_location((int)BlipIcons::Waypoint);
 
-		if (waypoint_location.has_value())
-			return to_coords(waypoint_location.value(), true);
+		if (location.has_value())
+			return to_coords(location.value(), true);
+
+		return false;
+	}
+
+	inline bool to_objective(bool load_ground = true)
+	{
+		std::optional<Vector3> location = blip::get_objective_location();
+
+		if (location.has_value())
+			return to_coords(location.value(), load_ground);
 
 		return false;
 	}

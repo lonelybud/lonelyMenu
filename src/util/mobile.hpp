@@ -38,6 +38,40 @@ namespace big::mobile
 			return fixed_count;
 		}
 	}
+
+	namespace services
+	{
+		inline void request_avenger()
+		{
+			*scr_globals::freemode_global.at(938).as<int*>() = 1;
+		}
+
+		inline void request_kosatka()
+		{
+			*scr_globals::freemode_global.at(960).as<int*>() = 1;
+		}
+
+		inline void request_mobile_operations_center()
+		{
+			*scr_globals::freemode_global.at(930).as<int*>() = 1;
+		}
+
+		inline void request_terrorbyte()
+		{
+			*scr_globals::freemode_global.at(943).as<int*>() = 1;
+		}
+
+		inline void request_acidlab()
+		{
+			*scr_globals::freemode_global.at(944).as<int*>() = 1;
+		}
+
+		inline void request_acidlab_bike()
+		{
+			*scr_globals::freemode_global.at(994).as<int*>() = 1;
+		}
+	}
+
 	namespace mechanic
 	{
 		inline Vehicle get_personal_vehicle()

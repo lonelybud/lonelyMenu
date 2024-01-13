@@ -18,7 +18,9 @@ namespace big
 		{
 			std::optional<Vector3> waypoint_location;
 			if (g_vehicle.spawn_at_waypoint)
-				waypoint_location = blip::get_waypoint_location();
+				if (waypoint_location = blip::get_blip_location((int)BlipIcons::Waypoint, -1, true, true);
+				    !waypoint_location.has_value())
+					return;
 
 			auto vehicle = persist_car_service::load_vehicle(selected_vehicle_file, persist_vehicle_sub_folder, waypoint_location);
 

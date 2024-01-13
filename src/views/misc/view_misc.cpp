@@ -37,6 +37,15 @@ namespace big
 				ImGui::PopItemWidth();
 			}
 
+			components::button("Increase NightClub Popularity", [] {
+				lua_script::stats::set_int("MPX_CLUB_POPULARITY", 1000);
+			});
+		}
+
+		ImGui::SeparatorText("Ped");
+		{
+			components::command_checkbox<"pedsignore">();
+
 			ImGui::Spacing();
 
 			components::button("Kill All Enemies", [] {
@@ -46,8 +55,12 @@ namespace big
 							ped::kill_ped(ped);
 			});
 			ImGui::SameLine();
-			components::button("Increase NightClub Popularity", [] {
-				lua_script::stats::set_int("MPX_CLUB_POPULARITY", 1000);
+			components::button("Kill Police", [] {
+				if (g_local_player->m_player_info->m_is_wanted)
+					for (auto ped : entity::get_entities(false, true))
+						if (!PED::IS_PED_A_PLAYER(ped))
+							if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == 255)
+								ped::kill_ped(ped);
 			});
 		}
 

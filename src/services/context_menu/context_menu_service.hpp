@@ -115,6 +115,10 @@ namespace big
 			            else
 				            PED::REMOVE_PED_FROM_GROUP(m_handle);
 		            }},
+		        {"RELATION",
+		            [this] {
+			            LOG(WARNING) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
+		            }},
 		    }};
 
 		s_context_menu object_menu{ContextEntityType::OBJECT, 0, {}, {}};

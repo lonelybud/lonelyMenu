@@ -112,7 +112,8 @@ namespace big
 
 					if (g_vehicle.spawn_at_waypoint)
 					{
-						if (auto waypoint_location = blip::get_waypoint_location(); waypoint_location.has_value())
+						if (auto waypoint_location = blip::get_blip_location((int)BlipIcons::Waypoint, -1, true, true);
+						    waypoint_location.has_value())
 							spawn_location = waypoint_location.value();
 						else
 							return;

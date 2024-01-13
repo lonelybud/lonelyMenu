@@ -11,6 +11,14 @@ namespace big
 		components::button("Waypoint", [] {
 			teleport::to_waypoint();
 		});
+		ImGui::SameLine();
+		components::button("Objective", [] {
+			teleport::to_objective();
+		});
+		ImGui::SameLine();
+		components::button("Objective (NG)", [] {
+			teleport::to_objective(false);
+		});
 
 		ImGui::SeparatorText("Direction");
 
@@ -75,6 +83,10 @@ namespace big
 
 		components::button("Teleport", [] {
 			teleport::to_coords({new_location[0], new_location[1], new_location[2]}, true);
+		});
+		ImGui::SameLine();
+		components::button("Teleport (NG)", [] {
+			teleport::to_coords({new_location[0], new_location[1], new_location[2]}, false);
 		});
 	}
 }
