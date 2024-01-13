@@ -21,7 +21,6 @@ namespace big
 		g_weapons      = {};
 		g_context_menu = {};
 		g_misc         = {};
-		g_esp          = {};
 		g_debug        = {};
 
 		g_session_t g_session_temp;
@@ -30,6 +29,9 @@ namespace big
 		g_session.log_chat_messages_to_textbox = g_session_temp.log_chat_messages_to_textbox;
 		g_session.decloak_players              = g_session_temp.decloak_players;
 		g_session.auto_kick_chat_spammers      = g_session_temp.auto_kick_chat_spammers;
+
+		g_esp_t g_esp_temp;
+		g_esp.enabled = g_esp_temp.enabled;
 
 		m_syncing_player      = nullptr;
 		m_syncing_object_type = (eNetObjType)-1;

@@ -697,6 +697,15 @@ namespace big
 			    g_pointers->m_gta.m_vehicle_pool = ptr.add(3).rip().as<VehiclePool***>();
 		    }
         },
+        // Get Host Array Handler By Index
+        {
+            "GHAHBI",
+            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC 20 8A 81 8F",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_host_array_handler_by_index = ptr.as<functions::get_host_array_handler_by_index>();
+            }
+        },
         // Allocate Memory Reliable & Connection Manager Try Free Memory
         {
             "AMR&CMTFM",

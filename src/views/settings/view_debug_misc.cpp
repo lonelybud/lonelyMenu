@@ -37,14 +37,6 @@ namespace big
 				components::button("SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE", [] {
 					NETWORK::SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE();
 				});
-
-				components::button("SESSION_END", [] {
-					NETWORK::NETWORK_SESSION_END(0, 1);
-				});
-				ImGui::SameLine();
-				components::button("SESSION_LEAVE", [] {
-					NETWORK::NETWORK_SESSION_LEAVE(0);
-				});
 			}
 
 			// ImGui::Spacing();

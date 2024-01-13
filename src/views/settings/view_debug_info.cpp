@@ -1,5 +1,6 @@
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "gta/net_array.hpp"
 #include "gta_util.hpp"
 #include "pointers.hpp"
 
@@ -16,16 +17,30 @@ namespace big
 			ImGui::Text(std::format("Game Version: {}", g_pointers->m_gta.m_game_version).c_str());
 			ImGui::Text(std::format("Online Version: {}", g_pointers->m_gta.m_online_version).c_str());
 
-
 			const auto state          = *scr_globals::transition_state.as<eTransitionState*>();
 			const char* state_text    = transition_states[(int)state];
 			rage::scrThread* freemode = nullptr;
 
 			if (state == eTransitionState::TRANSITION_STATE_FM_TRANSITION_CREATE_PLAYER
 			    && (freemode = gta_util::find_script_thread(RAGE_JOAAT("freemode")), freemode && freemode->m_net_component))
-				state_text = "Wait For Host Broadcast Data";
+			{
+				int num_array_handlers{};
+				int received_array_handlers{};
 
-			ImGui::Text(std::format("Transition State: {}", state_text).c_str());
+				while (auto handler =
+				           g_pointers->m_gta.m_get_host_array_handler_by_index((CGameScriptHandlerNetComponent*)freemode->m_net_component, num_array_handlers++))
+					if (handler->m_flags & 1)
+						received_array_handlers++;
+
+				if (num_array_handlers == 0)
+					num_array_handlers = 1;
+
+				float percent = round((static_cast<float>(received_array_handlers) / num_array_handlers) * 100);
+
+				ImGui::Text(std::format("Transition State: Host Broadcast Data ({})", percent).c_str());
+			}
+			else
+				ImGui::Text(std::format("Transition State: {}", state_text).c_str());
 
 			ImGui::EndTabItem();
 		}

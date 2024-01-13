@@ -13,11 +13,9 @@ namespace big
         int time_to_play = -1;
         int flags = 0;
         float start_phase = 0;
-        float pos[3] = {};
-        float rot[3] = {};
     };
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ped_animation, name, dict, anim, blendin, blendout, time_to_play, flags, start_phase, pos, rot);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ped_animation, name, dict, anim, blendin, blendout, time_to_play, flags, start_phase);
 
     class ped_animation_service
     {

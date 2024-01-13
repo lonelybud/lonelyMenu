@@ -131,8 +131,6 @@ namespace big::functions
 
 	using send_packet = bool (*)(rage::netConnectionManager* mgr, rage::netPeerAddress* adde, int connection_id, void* data, int size, int flags);
 
-	using get_entity_attached_to = rage::CDynamicEntity* (*)(rage::CDynamicEntity* entity);
-
 	using get_host_array_handler_by_index = rage::netArrayHandlerBase* (*)(CGameScriptHandlerNetComponent* component, int index);
 
 	using connection_manager_try_free_memory = void (*)(rage::netConnectionManager* mgr);

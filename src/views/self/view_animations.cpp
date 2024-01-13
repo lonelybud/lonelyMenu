@@ -72,21 +72,6 @@ namespace big
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("-1 will make the duration indefinite, assuming it is looped");
 			ImGui::PopItemWidth();
-
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("Current location and rotation will be saved and used");
-
-			else
-			{
-				g_ped_animation_service.current_animation.pos[0] = 0;
-				g_ped_animation_service.current_animation.pos[1] = 0;
-				g_ped_animation_service.current_animation.pos[2] = 0;
-
-				g_ped_animation_service.current_animation.rot[0] = 0;
-				g_ped_animation_service.current_animation.rot[1] = 0;
-				g_ped_animation_service.current_animation.rot[2] = 0;
-			}
-
 			ImGui::BeginGroup(); //Regular flags
 
 			ImGui::CheckboxFlags("Looped", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::LOOPING));
