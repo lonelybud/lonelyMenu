@@ -1,5 +1,6 @@
 #include "backend/player_command.hpp"
 #include "core/data/session.hpp"
+#include "core/scr_globals.hpp"
 #include "core/settings/notifications.hpp"
 #include "fiber_pool.hpp"
 #include "hooking/hooking.hpp"
@@ -9,6 +10,8 @@
 #include "services/players/player_service.hpp"
 #include "util/notify.hpp"
 #include "util/player.hpp"
+
+#include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
 {
@@ -49,6 +52,13 @@ namespace big
 
 				if (g_notifications.player_leave.notify)
 					g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
+			}
+
+			if (g_player_service->get_self()->is_host())
+			{
+				auto flags = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->m_player_id].PlayerStateFlags;
+				if (flags.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds) || flags.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent))
+					g_notification_service->push_error("Join Failed", std::vformat("{} was unable to join", std::make_format_args(player_name)), true);
 			}
 
 			return g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
@@ -122,6 +132,9 @@ namespace big
 									g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
 									return;
 								}
+
+								if (is_friend)
+									g_notification_service->push_success("Friend joined", player_name);
 
 								if (is_cheater)
 									g_reactions.cheater_joined.process(plyr, false, Infraction::IS_CHEATER, false, true);

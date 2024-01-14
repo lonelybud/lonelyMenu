@@ -91,11 +91,11 @@ namespace big
 				player->is_other = true;
 
 			// open player info of crazy dude
-			if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)
-			{
-				g_gui_service->set_selected(tabs::PLAYER);
-				g_player_service->set_selected(player);
-			}
+			// if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)
+			// {
+			// 	g_gui_service->set_selected(tabs::PLAYER);
+			// 	g_player_service->set_selected(player);
+			// }
 
 			if (!player->is_friend() && kick_player)
 			{

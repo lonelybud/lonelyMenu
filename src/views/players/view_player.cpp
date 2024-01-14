@@ -27,15 +27,39 @@ namespace big
 {
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 
-	const char* get_nat_type_str(int type)
+	static inline const char* get_nat_type_str(int type)
 	{
 		switch (type)
 		{
 		case 1: return "open";
 		case 2: return "moderate";
 		case 3: return "strict";
+		default: return "unkown";
 		}
-		return "unkown";
+	}
+
+	static inline const char* get_freemode_state(eFreemodeState type)
+	{
+		switch (type)
+		{
+		case eFreemodeState::NONE: return "None";
+		case eFreemodeState::RUNNING: return "Running";
+		case eFreemodeState::CLOSING: return "Closing";
+		default: return "unkown";
+		}
+	}
+
+	static inline const char* get_player_state(SCR_BITSET<ePlayerStateFlags> type)
+	{
+		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateAscent))
+			return "ascending";
+		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds))
+			return "clouds";
+		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStatePan))
+			return "pan";
+		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent))
+			return "descending";
+		return "Unknown";
 	}
 
 	static big::player_ptr last_selected_player;
@@ -53,48 +77,39 @@ namespace big
 		    [current_player] {
 			    if (auto id = current_player->id(); id != -1)
 			    {
+				    auto& gpbd_fm_3       = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[id];
+				    auto& gpbd_fm_1       = scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[id];
+				    auto& globalplayer_bd = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[id];
+
+				    auto& stats       = gpbd_fm_1.PlayerStats;
+				    auto& boss_goon   = gpbd_fm_3.BossGoon;
+				    const auto money  = reinterpret_cast<uint64_t&>(stats.Money);
+				    const auto wallet = reinterpret_cast<uint64_t&>(stats.WalletBalance);
+
+
 				    ImGui::BeginGroup();
 				    {
-					    auto& stats       = scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[id].PlayerStats;
-					    auto& boss_goon   = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[id].BossGoon;
-					    const auto money  = reinterpret_cast<uint64_t&>(stats.Money);
-					    const auto wallet = reinterpret_cast<uint64_t&>(stats.WalletBalance);
-
 					    if (boss_goon.Language >= 0 && boss_goon.Language < 13)
 						    ImGui::Text("Language: %s", languages[boss_goon.Language].name);
-
 					    ImGui::Text("Money In Wallet: %llu", wallet);
 					    ImGui::Text("Money In Bank: %llu", money - wallet);
 					    ImGui::Text("Total Money: %llu", money);
 					    ImGui::Text("Rank: %d (RP %d)", stats.Rank, stats.RP);
-					    ImGui::Text("K/D Ratio: %f", stats.KdRatio);
-					    ImGui::Text("Kills On Players: %d", stats.KillsOnPlayers);
-					    ImGui::Text("Deaths By Players: %d", stats.DeathsByPlayers);
+					    ImGui::Text("K/D Ratio: %f / Kills: %d / Deaths: %d", stats.KdRatio, stats.KillsOnPlayers, stats.DeathsByPlayers);
 					    ImGui::Text("Rockstar Id: %d", rockstar_id);
+					    ImGui::Text("Male: %d", globalplayer_bd.IsMale);
+					    ImGui::Text("Bad sport: %d", globalplayer_bd.IsBadsport);
+					    ImGui::Text("Rockstar dev (dev dlc check, yim): %d", globalplayer_bd.IsRockstarDev);
 
-					    ImGui::Spacing();
-
-					    if (CPed* ped = current_player->get_ped(); ped != nullptr)
+					    if (current_player == g_player_service->get_self())
 					    {
-						    if (ped->m_damage_bits & (uint32_t)eEntityProofs::GOD)
-							    ImGui::Text("Player God Mod");
-
-						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
-							    if (auto vehicle = current_player->get_current_vehicle(); vehicle != nullptr)
-							    {
-								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
-									    ImGui::Text(std::format("Vehicle: {}",
-									        vehicle::get_vehicle_model_name(
-									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]))
-									                    .c_str());
-
-								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
-									    ImGui::Text("Vehicle God Mod");
-							    }
+						    ImGui::Spacing();
+						    ImGui::Text("Nightclub popularity: %f", gpbd_fm_1.PropertyData.NightclubData.Popularity);
+						    ImGui::Text("Nightclub Money: %d", gpbd_fm_1.PropertyData.NightclubData.SafeCashValue);
+						    ImGui::Text("Arcade Money: %d", gpbd_fm_1.PropertyData.ArcadeData.SafeCashValue);
 					    }
 
 					    ImGui::Spacing();
-
 					    ImGui::Text(std::format("NAT Type: {}",
 					        get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type))
 					                    .c_str());
@@ -149,6 +164,56 @@ namespace big
 								                                .c_str());
 						    }
 					    }
+
+					    if (auto net_data = current_player->get_net_data())
+					    {
+						    ImGui::Text(std::format("Host token: {}", net_data->m_host_token).c_str());
+						    ImGui::SameLine();
+						    if (ImGui::SmallButton("copy##copyHtoken"))
+							    ImGui::SetClipboardText(std::format("{}", net_data->m_host_token).c_str());
+					    }
+				    }
+				    ImGui::EndGroup();
+				    ImGui::SameLine();
+				    ImGui::BeginGroup();
+				    {
+					    ImGui::Text("Freemode State: %s", get_freemode_state(globalplayer_bd.FreemodeState));
+					    ImGui::Text("Session Join State: %s", get_player_state(globalplayer_bd.PlayerStateFlags));
+					    ImGui::Text("Is in interior: %d", globalplayer_bd.CurrentInteriorIndex != 0);
+
+					    ImGui::Spacing();
+
+					    ImGui::Text("CurrentMission: %d", gpbd_fm_1.PlaylistData.CurrentMission);
+					    ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
+					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
+					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
+
+					    ImGui::Spacing();
+
+					    std::string mode_str;
+
+					    if (CPed* ped = current_player->get_ped(); ped != nullptr)
+					    {
+						    if (ped->m_damage_bits & (uint32_t)eEntityProofs::GOD)
+							    ImGui::Text("Player God Mod");
+						    else if (ped->m_damage_bits & (uint32_t)eEntityProofs::BULLET)
+							    ImGui::Text("Player Bullet Proof");
+						    else if (ped->m_damage_bits & (uint32_t)eEntityProofs::EXPLOSION)
+							    ImGui::Text("Player Explosion Proof");
+
+						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
+							    if (auto vehicle = current_player->get_current_vehicle(); vehicle != nullptr)
+							    {
+								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
+									    ImGui::Text(std::format("Vehicle: {}",
+									        vehicle::get_vehicle_model_name(
+									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]))
+									                    .c_str());
+
+								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
+									    ImGui::Text("Vehicle God Mod");
+							    }
+					    }
 				    }
 				    ImGui::EndGroup();
 
@@ -159,16 +224,6 @@ namespace big
 				    ImGui::Checkbox("Block Clone Syncs", &current_player->block_clone_sync);
 				    ImGui::Checkbox("Block Network Events", &current_player->block_net_events);
 				    ImGui::Checkbox("Log Clones", &current_player->log_clones);
-
-				    ImGui::Separator();
-
-				    if (auto net_data = current_player->get_net_data())
-				    {
-					    ImGui::Text(std::format("Host token: {}", net_data->m_host_token).c_str());
-					    ImGui::SameLine();
-					    if (ImGui::SmallButton("copy##copyHtoken"))
-						    ImGui::SetClipboardText(std::format("{}", net_data->m_host_token).c_str());
-				    }
 			    }
 		    },
 		    false);
@@ -287,6 +342,15 @@ namespace big
 					persist_car_service::save_vehicle(veh, "", "");
 				else
 					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
+			});
+
+			ver_Space();
+
+			components::button("Notify Killer", [current_player] {
+				Hash weapon;
+				auto p = NETWORK::NETWORK_GET_KILLER_OF_PLAYER(current_player->id(), &weapon);
+				if (auto player = g_player_service->get_by_id(p))
+					g_notification_service->push_error("Player Killer", player->get_name());
 			});
 		}
 		ImGui::EndGroup();
