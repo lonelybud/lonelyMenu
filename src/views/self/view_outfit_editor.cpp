@@ -162,6 +162,7 @@ namespace big
 
 					outfit::apply_outfit(j);
 					refresh_outfit_state();
+					i.close();
 				}
 				else
 					g_notification_service->push_warning("Apply Outfit Failed", "File does not exist.");

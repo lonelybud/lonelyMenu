@@ -105,9 +105,14 @@ namespace big
 			ImGui::PushItemWidth(200);
 			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
 		}
-		
+
 		components::command_checkbox<"allow_all_weapons">();
 		components::command_checkbox<"infclip">();
 		components::command_checkbox<"rapidfire">();
+		if (g_weapons.rapid_fire)
+		{
+			ImGui::PushItemWidth(200);
+			ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
+		}
 	}
 }

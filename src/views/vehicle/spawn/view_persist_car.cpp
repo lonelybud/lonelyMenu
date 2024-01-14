@@ -22,7 +22,16 @@ namespace big
 				    !waypoint_location.has_value())
 					return;
 
-			auto vehicle = persist_car_service::load_vehicle(selected_vehicle_file, persist_vehicle_sub_folder, waypoint_location);
+			const auto file =
+			    persist_car_service::check_vehicle_folder(persist_vehicle_sub_folder).get_file(selected_vehicle_file).get_path();
+
+			if (!std::filesystem::exists(file))
+			{
+				g_notification_service->push_warning("Persist Car", "File does not exist.");
+				return;
+			}
+
+			auto vehicle = persist_car_service::load_vehicle(file, waypoint_location);
 
 			if (vehicle == 0)
 				g_notification_service->push_error("Persist Car", std::format("Unable to spawn {}", selected_vehicle_file), true);

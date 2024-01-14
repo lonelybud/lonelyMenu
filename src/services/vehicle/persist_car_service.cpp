@@ -30,30 +30,23 @@ namespace big
 		file_stream.close();
 	}
 
-	nlohmann::json persist_car_service::load_vehicle_json(std::string_view file_name, std::string folder_name)
+	Vehicle persist_car_service::load_vehicle(const std::filesystem::path file, const std::optional<Vector3>& spawn_coords)
 	{
-		const auto file = check_vehicle_folder(folder_name).get_file(file_name);
-		std::ifstream file_stream(file.get_path());
+		std::ifstream file_stream(file);
 		nlohmann::json vehicle_json;
 
 		try
 		{
 			file_stream >> vehicle_json;
-			file_stream.close();
+			return spawn_vehicle_full(vehicle_json, spawn_coords);
 		}
 		catch (std::exception& e)
 		{
-			g_notification_service->push_warning("Persist Car", "Failed to load JSON file");
-			return NULL;
+			LOG(WARNING) << e.what();
 		}
 
-		return vehicle_json;
-	}
-
-	Vehicle persist_car_service::load_vehicle(std::string_view file_name, std::string folder_name, const std::optional<Vector3>& spawn_coords)
-	{
-		nlohmann::json vehicle_json = load_vehicle_json(file_name, folder_name);
-		return spawn_vehicle_full(vehicle_json, spawn_coords);
+		file_stream.close();
+		return NULL;
 	}
 
 	void persist_car_service::delete_vehicle(std::string_view file_name, std::string folder_name)

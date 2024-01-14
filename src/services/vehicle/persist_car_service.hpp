@@ -13,10 +13,10 @@ namespace big
 
 		static void clone_ped_car(Vehicle vehicle, const char* ped_name = "");
 		static void save_vehicle(Vehicle vehicle, std::string_view file_name, std::string folder_name);
-		static nlohmann::json load_vehicle_json(std::string_view file_name, std::string folder_name);
-		static Vehicle load_vehicle(std::string_view file_name, std::string folder_name = "", const std::optional<Vector3>& = std::nullopt);
+		static Vehicle load_vehicle(const std::filesystem::path file, const std::optional<Vector3>& = std::nullopt);
 		static void delete_vehicle(std::string_view file_name, std::string folder_name);
 		static Vehicle spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords = std::nullopt, bool is_networked = true);
+		static big::folder check_vehicle_folder(std::string folder_name = "");
 
 	private:
 		static constexpr auto plate_text_key             = "plate_text";
@@ -41,6 +41,5 @@ namespace big
 		static constexpr auto dash_color_key             = "dash_color";
 
 		static nlohmann::json get_vehicle_json(Vehicle vehicle);
-		static big::folder check_vehicle_folder(std::string folder_name = "");
 	};
 }

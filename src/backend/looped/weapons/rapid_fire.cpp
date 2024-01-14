@@ -3,6 +3,7 @@
 #include "gta/enums.hpp"
 #include "gui.hpp"
 #include "natives.hpp"
+#include "script.hpp"
 #include "util/math.hpp"
 
 namespace big
@@ -50,6 +51,9 @@ namespace big
 
 					PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
 					WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
+
+					if (g_weapons.rapid_fire_delay)
+						script::get_current()->yield(std::chrono::milliseconds::duration(g_weapons.rapid_fire_delay));
 				}
 			}
 		}
