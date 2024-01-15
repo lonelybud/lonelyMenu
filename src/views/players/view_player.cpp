@@ -21,6 +21,7 @@
 #include <script/globals/GPBD_FM.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
+#include <ui/CBlipList.hpp>
 #include <vehicle/CVehicleModelInfo.hpp>
 
 namespace big
@@ -292,12 +293,41 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
+			auto& globalplayer_bd = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[current_player->id()];
+			bool highlight_player = globalplayer_bd.PlayerBlip.BlipFlags.IsSet(eBlipFlags::kFlashBlip)
+			    && globalplayer_bd.PlayerBlip.BlipFlags.IsSet(eBlipFlags::kFlashMinimapDisplay);
+
 			components::sub_title("Teleport / Location");
 
 			components::button("Set Waypoint", [current_player] {
+				if (globals::get_interior_from_player(current_player->id()) != 0)
+				{
+					auto blips = g_pointers->m_gta.m_blip_list->m_Blips;
+					for (int i = 0; i < 1500; i++)
+						if (auto blip = blips[i].m_pBlip; blip && (blip->m_render_bits & (int)BlipRenderBits::BlipIsOnScreen))
+							if (blip->m_message && !strcmp(blip->m_message, current_player->get_name()))
+								return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
+
+					return g_notification_service->push_error("Failed", "Player in interior. Try open map and try again.");
+				}
+
 				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
 				HUD::SET_NEW_WAYPOINT(location.x, location.y);
 			});
+			ImGui::SameLine();
+			if (ImGui::Checkbox("Highlight", &highlight_player))
+			{
+				if (highlight_player)
+				{
+					globalplayer_bd.PlayerBlip.BlipFlags.Set(eBlipFlags::kFlashBlip);
+					globalplayer_bd.PlayerBlip.BlipFlags.Set(eBlipFlags::kFlashMinimapDisplay);
+				}
+				else
+				{
+					globalplayer_bd.PlayerBlip.BlipFlags.Clear(eBlipFlags::kFlashBlip);
+					globalplayer_bd.PlayerBlip.BlipFlags.Clear(eBlipFlags::kFlashMinimapDisplay);
+				}
+			}
 
 			ImGui::Spacing();
 
@@ -399,6 +429,9 @@ namespace big
 		{
 			ImGui::BeginGroup();
 			components::sub_title("Infractions");
+			components::button("Clear infractions", [current_player] {
+				current_player->infractions.clear();
+			});
 			for (auto infraction : current_player->infractions)
 				ImGui::BulletText(
 				    std::format("{} - {}", infraction_desc[(Infraction)infraction.first], infraction.second).c_str());

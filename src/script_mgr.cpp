@@ -1,6 +1,6 @@
 #include "script_mgr.hpp"
 
-#include "gta/script_thread.hpp"
+#include "gta/joaat.hpp"
 #include "gta_util.hpp"
 #include "pointers.hpp"
 #include "script/tlsContext.hpp"

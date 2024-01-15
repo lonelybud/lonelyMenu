@@ -1,11 +1,12 @@
 #pragma once
-#include "gta/script_thread.hpp"
+#include "gta/fwddec.hpp"
 #include "pointers.hpp"
 #include "script/tlsContext.hpp"
 
 #include <network/CNetworkPlayerMgr.hpp>
 #include <network/Network.hpp>
 #include <ped/CPedFactory.hpp>
+#include <script/GtaThread.hpp>
 #include <script/scrProgramTable.hpp>
 
 namespace big::gta_util

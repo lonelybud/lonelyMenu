@@ -1,5 +1,6 @@
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "gta/joaat.hpp"
 #include "gta/net_array.hpp"
 #include "gta_util.hpp"
 #include "pointers.hpp"

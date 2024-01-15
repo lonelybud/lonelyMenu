@@ -881,6 +881,15 @@ namespace big
                 g_pointers->m_gta.m_model_spawn_bypass = ptr.add(8).as<PVOID>();
             }
         },
+        // Blip List
+        {
+            "BLPLST",
+            "4C 8D 05 ? ? ? ? 0F B7 C1",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_blip_list = ptr.add(3).rip().as<CBlipList*>();
+            }
+        },
         // Free Event Error
         {
             "FEE",
