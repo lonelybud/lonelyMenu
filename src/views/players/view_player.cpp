@@ -304,9 +304,9 @@ namespace big
 				{
 					auto blips = g_pointers->m_gta.m_blip_list->m_Blips;
 					for (int i = 0; i < 1500; i++)
-						if (auto blip = blips[i].m_pBlip; blip && (blip->m_render_bits & (int)BlipRenderBits::BlipIsOnScreen))
-							if (blip->m_message && !strcmp(blip->m_message, current_player->get_name()))
-								return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
+						if (auto blip = blips[i].m_pBlip;
+						    blip && blip->m_message && !strcmp(blip->m_message, current_player->get_name()))
+							return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
 
 					return g_notification_service->push_error("Failed", "Player in interior. Try open map and try again.");
 				}

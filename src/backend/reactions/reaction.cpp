@@ -39,9 +39,10 @@ namespace big
 					{
 					case Infraction::TRIED_CRASH_PLAYER:
 					case Infraction::TRIED_KICK_PLAYER:
-					case Infraction::ATTACKING_WITH_GODMODE:
-					case Infraction::ATTACKING_WITH_INVISIBILITY:
-					case Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST:
+					case Infraction::KILLED_WITH_GODMODE:
+					case Infraction::KILLED_WITH_INVISIBILITY:
+					case Infraction::KILLED_WHEN_HIDDEN_FROM_PLAYER_LIST:
+					case Infraction::KILLED_ORBITAL_CANON:
 					case Infraction::REPORT:
 					case Infraction::VOTE_KICK:
 					case Infraction::BOUNTY: break;

@@ -110,44 +110,37 @@ namespace big
 					if (player->get_player_info() && player->get_player_info()->m_game_state == eGameState::InMPCutscene)
 						break;
 
-					if (auto victim = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index); victim && victim->m_entity_type == 4)
-					{
-						auto victim_cped = reinterpret_cast<CPed*>(victim);
+					if (auto victim = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index);
+					    victim && damager != victim && victim->m_entity_type == 4)
+						if (auto victim_cped = reinterpret_cast<CPed*>(victim); victim_cped->m_player_info)
+							if (damage_data.m_victim_destroyed)
+							{
+								auto victim_player =
+								    g_player_service->get_by_host_token(victim_cped->m_player_info->m_net_player_data.m_host_token);
 
-						if (g_misc.notify_friend_killed && player != g_player_service->get_self() && damager != victim
-						    && victim_cped->m_player_info && damage_data.m_victim_destroyed)
-							if (auto victim_player =
-							        g_player_service->get_by_host_token(victim_cped->m_player_info->m_net_player_data.m_host_token);
-							    victim_player && victim_player->is_friend())
-								g_notification_service->push_warning("Friend Killed",
-								    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
-								    true);
+								if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
+									g_notification_service->push_warning("Friend Killed",
+									    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
+									    true);
 
-						// does not trigger everytime
-						// if (victim_cped == g_local_player && damage_data.m_victim_destroyed)
-						// 	LOG(WARNING) << "You got killed by " << player->get_name();
+								if (is_invincible(player))
+									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WITH_GODMODE, true);
 
-						if (is_invincible(player))
-							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WITH_GODMODE, true);
+								if (is_invisible(player))
+								{
+									if (damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_EXPLOSION") || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RAMMED_BY_CAR")
+									    || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RUN_OVER_BY_CAR"))
+										break;
 
-						if (is_invisible(player))
-						{
-							if (!reinterpret_cast<CPed*>(victim)->m_player_info)
-								break;
+									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WITH_INVISIBILITY, true);
+								}
 
-							if (damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_EXPLOSION") || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RAMMED_BY_CAR")
-							    || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RUN_OVER_BY_CAR"))
-								break;
+								if (is_hidden_from_player_list(player))
+									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WHEN_HIDDEN_FROM_PLAYER_LIST, true);
 
-							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WITH_INVISIBILITY, true);
-						}
-
-						if (is_hidden_from_player_list(player))
-							g_reactions.modder_detection.process(player, false, Infraction::ATTACKING_WHEN_HIDDEN_FROM_PLAYER_LIST, true);
-
-						if (is_using_orbital_cannon(player))
-							g_reactions.modder_detection.process(player, false, Infraction::SPOOFED_DATA, true);
-					}
+								if (is_using_orbital_cannon(player))
+									g_reactions.modder_detection.process(player, false, Infraction::KILLED_ORBITAL_CANON, true);
+							}
 				}
 			}
 			break;
