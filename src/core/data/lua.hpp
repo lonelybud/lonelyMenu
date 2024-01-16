@@ -123,22 +123,28 @@ namespace big
 			LOG(WARNING) << "Compound Targets: " << cayo_compound_targets;
 			LOG(WARNING) << "Primary Target: " << cayo_targets[get_cayo_target()];
 		}
-		inline void scope_compound_and_island_targets()
+		inline void set_compound_and_island_targets()
 		{
 			// ************ CayoTargetsSetter(0, 0, 0, 255, "C", "GOLD", 330350)
 			lua_helper::stats::set_int("MPX_H4LOOT_GOLD_C", 255);
-			lua_helper::stats::set_int("MPX_H4LOOT_GOLD_C_SCOPED", 255);
 			lua_helper::stats::set_int("MPX_H4LOOT_CASH_C", 0);
-			lua_helper::stats::set_int("MPX_H4LOOT_CASH_C_SCOPED", 0);
 			lua_helper::stats::set_int("MPX_H4LOOT_PAINT", 0);
-			lua_helper::stats::set_int("MPX_H4LOOT_PAINT_SCOPED", 0);
 
 			// ************ CayoTargetsSetter(0, 0, 16777215, 0, "I", "COKE", 200095)
 			lua_helper::stats::set_int("MPX_H4LOOT_COKE_I", 16777215);
-			lua_helper::stats::set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215);
 			lua_helper::stats::set_int("MPX_H4LOOT_CASH_I", 0);
-			lua_helper::stats::set_int("MPX_H4LOOT_CASH_I_SCOPED", 0);
 			lua_helper::stats::set_int("MPX_H4LOOT_WEED_I", 0);
+		}
+		inline void scope_compound_and_island_targets()
+		{
+			// ************ CayoTargetsSetter(0, 0, 0, 255, "C", "GOLD", 330350)
+			lua_helper::stats::set_int("MPX_H4LOOT_GOLD_C_SCOPED", 255);
+			lua_helper::stats::set_int("MPX_H4LOOT_CASH_C_SCOPED", 0);
+			lua_helper::stats::set_int("MPX_H4LOOT_PAINT_SCOPED", 0);
+
+			// ************ CayoTargetsSetter(0, 0, 16777215, 0, "I", "COKE", 200095)
+			lua_helper::stats::set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215);
+			lua_helper::stats::set_int("MPX_H4LOOT_CASH_I_SCOPED", 0);
 			lua_helper::stats::set_int("MPX_H4LOOT_WEED_I_SCOPED", 0);
 		}
 	}

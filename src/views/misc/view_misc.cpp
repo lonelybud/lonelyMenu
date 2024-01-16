@@ -177,7 +177,11 @@ namespace big
 				lua_scripts::log_cayo_details();
 			});
 			ImGui::SameLine();
-			components::button("Scope compounds/island targets", [] {
+			components::button("Set comp/island targets", [] {
+				lua_scripts::set_compound_and_island_targets();
+			});
+			ImGui::SameLine();
+			components::button("Scope comp/island targets", [] {
 				lua_scripts::scope_compound_and_island_targets();
 			});
 

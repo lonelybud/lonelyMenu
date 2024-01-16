@@ -34,9 +34,11 @@ namespace big
 		{
 			if (current_veh != self::veh)
 			{
+				if (current_veh != -1)
+					selected_slot = -1; // dont change selected slot when refreshing the current vehicle state
+
 				current_veh   = self::veh;
 				preparing_veh = true;
-				selected_slot = -1;
 
 				g_fiber_pool->queue_job([] {
 					if (!HUD::HAS_THIS_ADDITIONAL_TEXT_LOADED("MOD_MNU", 10))
@@ -162,12 +164,12 @@ namespace big
 					ImGui::SameLine();
 					components::button("Max Vehicle", [] {
 						vehicle::max_vehicle(self::veh);
-						current_veh = 0;
+						current_veh = -1;
 					});
 					ImGui::SameLine();
 					components::button("Max Performance", [] {
 						vehicle::max_vehicle_performance(self::veh);
-						current_veh = 0;
+						current_veh = -1;
 					});
 				}
 				ImGui::SeparatorText("Mod Options");
@@ -275,7 +277,7 @@ namespace big
 												VEHICLE::SET_VEHICLE_WHEEL_TYPE(current_veh, mod);
 												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_FRONTWHEEL, 0, false);
 												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_REARWHEEL, 0, false);
-												current_veh = 0;
+												current_veh = -1;
 											}
 											else if (selected_slot == MOD_PLATE_STYLE)
 											{
@@ -289,6 +291,48 @@ namespace big
 							}
 						}
 						ImGui::EndGroup();
+
+						if (is_wheel_mod && *wheel_stock_mod != -1)
+						{
+							ImGui::SameLine();
+							ImGui::BeginGroup();
+							{
+								auto wheel_map = selected_slot == MOD_REARWHEEL ? rear_wheel_map : front_wheel_map;
+
+								components::sub_title("Style");
+								if (ImGui::BeginListBox("##style", ImVec2(200, 200)))
+								{
+									std::string mod_name = mod_display_names[selected_slot][*wheel_stock_mod];
+									auto wheel_mods      = wheel_map[mod_name];
+
+									for (int i = 0; i < wheel_mods.size(); i++)
+									{
+										int& mod = wheel_mods[i];
+
+										int should_custom = false;
+
+										// bennys fix
+										if (!is_bennys)
+										{
+											if (i == 0 && ImGui::Selectable("Stock", mod == owned_mods[selected_slot] && *wheel_custom == false))
+												g_fiber_pool->queue_job([&mod] {
+													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, FALSE);
+													current_veh = -1;
+												});
+											should_custom = true;
+										}
+
+										if (ImGui::Selectable(("Style " + std::to_string(mod)).c_str(), mod == owned_mods[selected_slot] && *wheel_custom == should_custom))
+											g_fiber_pool->queue_job([&mod, should_custom] {
+												VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, should_custom);
+												current_veh = -1;
+											});
+									}
+									ImGui::EndListBox();
+								}
+							}
+							ImGui::EndGroup();
+						}
 					}
 				}
 				ImGui::SeparatorText("Neon Light Options");
