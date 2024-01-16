@@ -4,7 +4,7 @@
 #include "natives.hpp"
 #include "script_local.hpp"
 
-namespace big::lua_script
+namespace big::lua_helper
 {
 	static Hash stat_text_to_hash(std::string& text)
 	{

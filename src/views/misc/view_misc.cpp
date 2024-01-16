@@ -1,27 +1,13 @@
+#include "core/data/lua.hpp"
 #include "core/data/misc.hpp"
 #include "core/scr_globals.hpp"
 #include "util/entity.hpp"
-#include "util/lua_script.hpp"
 #include "util/ped.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
 
 namespace big
 {
-	// https://github.com/SilentSal0/Silent-Night
-	constexpr int CPFHl   = 24333;      // cayo perico fingerprint hack local
-	constexpr int CPPCCl  = 30357 + 3;  // cayo perico plasma cutter cut local ("DLC_H4_anims_glass_cutter_Sounds")
-	constexpr int CPSTCl  = 29118;      // cayo perico sewer tunnel cut local
-	constexpr int DCFHl   = 52985;      // diamond casino fingerprint hack local
-	constexpr int DCKHl   = 54047;      // diamond casino keypad hack local
-	constexpr int DCDVDl1 = 10107 + 7;  // diamond casino drill vault door local 1
-	constexpr int DCDVDl2 = 10107 + 37; // diamond casino drill vault door local 2
-	auto FMC              = "fm_mission_controller";
-	auto FMC20            = "fm_mission_controller_2020";
-
-	// lua_script::locals::get_int("fm_mission_controller", fm_mission_controller_cart_grab)
-	// lua_script::locals::set_int("fm_mission_controller", fm_mission_controller_cart_grab, 4);
-
 	void view::misc()
 	{
 		ImGui::SeparatorText("World");
@@ -38,7 +24,7 @@ namespace big
 			}
 
 			components::button("Increase NightClub Popularity", [] {
-				lua_script::stats::set_int("MPX_CLUB_POPULARITY", 1000);
+				lua_scripts::increase_nightClub_popularity();
 			});
 		}
 
@@ -113,12 +99,7 @@ namespace big
 		{
 			static std::string combination_retn;
 			components::button("Show Stash House safecodes", [] {
-				combination_retn = "";
-				for (int i = 0; i <= 2; i++)
-					if (i == 2)
-						combination_retn += std::to_string(lua_script::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1));
-					else
-						combination_retn += std::to_string(lua_script::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) + "-";
+				combination_retn = lua_scripts::get_stash_house_safecode();
 			});
 			ImGui::SameLine();
 			ImGui::Text(combination_retn.c_str());
@@ -132,37 +113,63 @@ namespace big
 
 		ImGui::SeparatorText("Casino Heist");
 		{
+			static int casino_target = 0;
+			ImGui::SetNextItemWidth(200);
+			if (ImGui::Combo("Target###casino", &casino_target, lua_scripts::casino_targets, IM_ARRAYSIZE(lua_scripts::casino_targets)))
+				g_fiber_pool->queue_job([=] {
+					lua_scripts::set_casino_target(casino_target);
+				});
+			ImGui::SameLine();
+			components::button("Refresh##ctrefresh", [] {
+				casino_target = lua_scripts::get_casino_target();
+			});
+
 			components::command_checkbox<"casino_cart_item_auto_grab">();
 
 			components::button("Bypass Fingerprint##casino", [] {
-				if (lua_script::locals::get_int(FMC, DCFHl) == 4)
-					lua_script::locals::set_int(FMC, DCFHl, 5);
+				lua_scripts::bypass_fingerprint_casino();
 			});
 			ImGui::SameLine();
 			components::button("Bypass Keypad", [] {
-				if (lua_script::locals::get_int(FMC, DCKHl) != 4)
-					lua_script::locals::set_int(FMC, DCKHl, 5);
+				lua_scripts::bypass_keypad_casino();
 			});
 			ImGui::SameLine();
 			components::button("Bypass Drill", [] {
-				lua_script::locals::set_int(FMC, DCDVDl1, lua_script::locals::get_int(FMC, DCDVDl2));
+				lua_scripts::bypass_drill();
 			});
 		}
 
 		ImGui::SeparatorText("Cayo Heist");
 		{
+			static int cayo_target = 0;
+			ImGui::SetNextItemWidth(200);
+			if (ImGui::Combo("Target###Cayo", &cayo_target, lua_scripts::cayo_targets, IM_ARRAYSIZE(lua_scripts::cayo_targets)))
+				g_fiber_pool->queue_job([=] {
+					lua_scripts::set_cayo_target(cayo_target);
+				});
+			ImGui::SameLine();
+			components::button("Refresh##ctrefresh", [] {
+				cayo_target = lua_scripts::get_cayo_target();
+			});
+			ImGui::SameLine();
+			components::button("Log Cayo Details", [] {
+				lua_scripts::log_cayo_details();
+			});
+			ImGui::SameLine();
+			components::button("Scope compounds/island targets", [] {
+				lua_scripts::scope_compound_and_island_targets();
+			});
+
 			components::button("Bypass Fingerprint##cayo", [] {
-				if (lua_script::locals::get_int(FMC20, CPFHl) == 4)
-					lua_script::locals::set_int(FMC20, CPFHl, 5);
+				lua_scripts::bypass_fingerprint_cayo();
 			});
 			ImGui::SameLine();
 			components::button("Bypass Plasma Cutter", [] {
-				lua_script::locals::set_float(FMC20, CPPCCl, 100);
+				lua_scripts::bypass_plasma_cutter();
 			});
 			ImGui::SameLine();
 			components::button("Bypass Sewer Tunnel", [] {
-				if (auto v = lua_script::locals::get_int(FMC20, CPSTCl); v >= 3 || v <= 6)
-					lua_script::locals::set_int(FMC20, CPSTCl, 6);
+				lua_scripts::bypass_sewer_tunnel();
 			});
 		}
 	}
