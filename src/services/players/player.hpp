@@ -86,6 +86,7 @@ namespace big
 		std::string spam_message = "";
 		bool is_other            = false;
 		bool is_known_player     = false;
+		bool has_joined          = false;
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 

@@ -8,8 +8,8 @@ namespace big
 	class player;
 
 	using player_ptr   = std::shared_ptr<player>;
-	using player_entry = std::pair<std::string, player_ptr>;
-	using players      = std::multimap<std::string, player_ptr>;
+	using player_entry = std::pair<uint8_t, player_ptr>;
+	using players      = std::multimap<uint8_t, player_ptr>;
 
 	class player_service final
 	{

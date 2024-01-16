@@ -31,9 +31,8 @@ namespace big
 
 	player_ptr player_service::get_by_id(uint32_t id) const
 	{
-		for (const auto& [_, player] : m_players)
-			if (player && player->id() == id)
-				return player;
+		if (auto it = m_players.find(id); it != m_players.end())
+			return it->second;
 		return nullptr;
 	}
 
@@ -64,7 +63,7 @@ namespace big
 	player_ptr player_service::player_join(CNetGamePlayer* net_game_player, uint64_t host_token)
 	{
 		auto plyr = std::make_shared<player>(net_game_player, host_token);
-		auto itr  = m_players.insert({plyr->get_name(), std::move(plyr)});
+		auto itr  = m_players.insert({plyr->id(), std::move(plyr)});
 
 		return itr->second;
 	}

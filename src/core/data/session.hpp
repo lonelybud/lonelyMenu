@@ -14,9 +14,6 @@ namespace big
 		};
 
 	public:
-		player_ptr current_host = nullptr;
-		bool determine_new_host = false;
-
 		std::vector<std::pair<uint8_t, next_host_player>> list;
 
 		void insert_plyr(uint8_t id, uint64_t token, const char* name)
@@ -47,8 +44,6 @@ namespace big
 
 	struct g_session_t
 	{
-		uint64_t smallest_host_token          = 0;
-		std::string smallest_host_token_owner = "";
 		next_host_list next_host_list;
 
 		uint64_t orig_host_token = 0;
@@ -59,6 +54,8 @@ namespace big
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;
 		bool auto_kick_chat_spammers      = true;
+
+		bool notified_as_host = false;
 	};
 
 	inline g_session_t g_session{};

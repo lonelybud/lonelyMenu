@@ -91,27 +91,32 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
-			components::sub_title("Smallest Host token");
-			ImGui::SameLine();
-			if (ImGui::SmallButton("reset##resetsmallToken"))
-			{
-				g_session.smallest_host_token       = g_session.orig_host_token;
-				g_session.smallest_host_token_owner = "";
-			}
-
-			ImGui::Text(std::format("Token: {}", g_session.smallest_host_token).c_str());
-			ImGui::SameLine();
-			if (ImGui::SmallButton("copy##copysmallToken"))
-				ImGui::SetClipboardText(std::format("{}", g_session.smallest_host_token).c_str());
-
-			ImGui::Text(std::format("Owner: {}", g_session.smallest_host_token_owner).c_str());
-
-			ImGui::Spacing();
-
 			components::sub_title("Next Host");
 
+			components::button("Refresh###hostlist", [] {
+				big::player_ptr host = nullptr;
+
+				if (g_player_service->get_self()->is_host())
+					host = g_player_service->get_self();
+				else
+					for (const auto& [_, plyr] : g_player_service->players())
+						if (plyr->is_host())
+						{
+							host = plyr;
+							break;
+						}
+
+				if (host)
+					g_session.next_host_list.delete_plyr(host->id()); // filter out host from the list
+			});
+
+			int hosts_count = 0;
 			for (auto& pair : g_session.next_host_list.list)
-				ImGui::Text(pair.second.name.c_str());
+			{
+				ImGui::Text(std::format("{} ({})", pair.second.name.c_str(), pair.second.token).c_str());
+				if (++hosts_count; hosts_count == 6)
+					return;
+			}
 		}
 		ImGui::EndGroup();
 	}

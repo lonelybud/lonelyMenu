@@ -53,26 +53,27 @@ namespace big
 					*tunable = TRUE;
 			}
 
-			if (g_session.next_host_list.determine_new_host)
-			{
-				if (g_player_service->get_self()->is_host())
-					g_session.next_host_list.current_host = g_player_service->get_self();
-				else
-					for (const auto& [_, plyr] : g_player_service->players())
-						if (plyr->is_host())
-						{
-							g_session.next_host_list.current_host = plyr;
-							break;
-						}
+			script::get_current()->yield();
+		}
+	}
 
-				if (g_session.next_host_list.current_host)
+	void backend::players_state()
+	{
+		LOG(INFO) << "Starting script: Players State";
+
+		while (g_running)
+		{
+			if (g_player_service->get_self()->is_host())
+			{
+				if (!g_session.notified_as_host)
 				{
-					g_session.next_host_list.determine_new_host = false;
-					g_session.next_host_list.delete_plyr(g_session.next_host_list.current_host->id()); // filter out new host from the list
-					g_notification_service->push_success("Host Determined",
-					    std::format("'{}' is the new host", g_session.next_host_list.current_host->get_name()),
-					    true);
+					g_session.notified_as_host = true;
+					g_notification_service->push_success("You are host", "", true);
 				}
+
+				for (auto& [_, player] : g_player_service->players())
+					if (!player->has_joined && scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].FreemodeState == eFreemodeState::RUNNING)
+						player->has_joined = true;
 			}
 
 			script::get_current()->yield();

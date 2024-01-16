@@ -9,5 +9,6 @@ namespace big
 		static void misc_loop();
 		static void disable_control_action_loop();
 		static void tunables_script();
+		static void players_state();
 	};
 }

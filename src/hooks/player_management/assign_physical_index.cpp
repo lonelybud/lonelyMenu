@@ -35,31 +35,17 @@ namespace big
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
-			if (*g_pointers->m_gta.m_is_session_started && g_session.next_host_list.current_host
-			    && g_session.next_host_list.current_host->id() == player->m_player_id)
-			{
-				g_session.next_host_list.current_host       = nullptr;
-				g_session.next_host_list.determine_new_host = true;
-			}
+			if (g_player_service->get_self()->is_host() && !g_player_service->get_by_id(player->m_player_id)->has_joined)
+				g_notification_service->push_error("Join Failed", std::vformat("{} was unable to join", std::make_format_args(player_name)), true);
 
 			g_player_service->player_leave(player);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
 
-			if (net_player_data)
-			{
-				if (g_notifications.player_leave.log)
-					LOGF(INFO, "Player left '{}', slot #{}. RID: {}", player_name, (int)player->m_player_id, rockstar_id);
+			if (g_notifications.player_leave.log)
+				LOGF(INFO, "Player left '{}', slot #{}. RID: {}", player_name, (int)player->m_player_id, rockstar_id);
 
-				if (g_notifications.player_leave.notify)
-					g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
-			}
-
-			if (g_player_service->get_self()->is_host())
-			{
-				auto flags = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->m_player_id].PlayerStateFlags;
-				if (flags.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds) || flags.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent))
-					g_notification_service->push_error("Join Failed", std::vformat("{} was unable to join", std::make_format_args(player_name)), true);
-			}
+			if (g_notifications.player_leave.notify)
+				g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
 
 			return g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 		}
@@ -68,16 +54,8 @@ namespace big
 
 		auto plyr = (player == g_player_service->get_self()->get_net_game_player()) ? nullptr : g_player_service->player_join(player, host_token);
 
-		if (plyr && plyr->is_host())
-			g_session.next_host_list.current_host = plyr;
-		else
+		if (!plyr || !plyr->is_host())
 			g_session.next_host_list.insert_plyr(player->m_player_id, host_token, player_name);
-
-		if (host_token < g_session.smallest_host_token)
-		{
-			g_session.smallest_host_token       = host_token;
-			g_session.smallest_host_token_owner = player_name;
-		}
 
 		if (net_player_data)
 		{

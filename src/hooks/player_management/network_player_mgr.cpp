@@ -29,6 +29,7 @@ namespace big
 		g_session.log_chat_messages_to_textbox = g_session_temp.log_chat_messages_to_textbox;
 		g_session.decloak_players              = g_session_temp.decloak_players;
 		g_session.auto_kick_chat_spammers      = g_session_temp.auto_kick_chat_spammers;
+		g_session.notified_as_host             = g_session_temp.notified_as_host;
 
 		g_esp_t g_esp_temp;
 		g_esp.enabled = g_esp_temp.enabled;

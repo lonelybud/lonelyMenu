@@ -16,8 +16,7 @@ namespace big
 	{
 		if (!g_session.orig_host_token && *g_pointers->m_gta.m_host_token)
 		{
-			g_session.orig_host_token = host_token = g_session.host_token = g_session.smallest_host_token =
-			    *g_pointers->m_gta.m_host_token;
+			g_session.orig_host_token = host_token = g_session.host_token = *g_pointers->m_gta.m_host_token;
 			LOG(VERBOSE) << "Your host token is: " << *g_pointers->m_gta.m_host_token;
 		}
 
