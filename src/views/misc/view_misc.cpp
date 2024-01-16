@@ -1,5 +1,6 @@
 #include "core/data/lua.hpp"
 #include "core/data/misc.hpp"
+#include "core/enums.hpp"
 #include "core/scr_globals.hpp"
 #include "util/entity.hpp"
 #include "util/ped.hpp"
@@ -84,7 +85,7 @@ namespace big
 			components::button("Toggle Radar", [] {
 				HUD::DISPLAY_RADAR(HUD::IS_RADAR_HIDDEN());
 			});
-
+			ImGui::SameLine();
 			components::button("Remove all sticky bombs", [] {
 				Entity entity = self::veh ? self::veh : self::ped;
 				NETWORK::REMOVE_ALL_STICKY_BOMBS_FROM_ENTITY(entity, self::ped);
@@ -92,6 +93,26 @@ namespace big
 			ImGui::SameLine();
 			components::button("Wet yourself", [] {
 				PED::SET_PED_WETNESS_HEIGHT(self::ped, 1);
+			});
+
+			ImGui::Spacing();
+			components::button("Start New Public Session", [] {
+				if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
+				{
+					g_notification_service->push_error("Failed", "Player switch in progress, wait a bit.");
+					return;
+				}
+
+				SCRIPT::REQUEST_SCRIPT_WITH_NAME_HASH(RAGE_JOAAT("pausemenu_multiplayer"));
+				while (!SCRIPT::HAS_SCRIPT_WITH_NAME_HASH_LOADED(RAGE_JOAAT("pausemenu_multiplayer")))
+					script::get_current()->yield();
+
+				*scr_globals::session2.as<int*>() = (int)eSessionType::NEW_PUBLIC;
+				*scr_globals::session.as<int*>()  = 1;
+				script::get_current()->yield(200ms);
+				*scr_globals::session.as<int*>() = 0;
+
+				SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED(RAGE_JOAAT("pausemenu_multiplayer"));
 			});
 		}
 

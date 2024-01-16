@@ -83,7 +83,8 @@ namespace big
 		{
 			if (g_notifications.player_join.log)
 				LOGF(INFO,
-				    "Player joined '{}'{}, slot #{}. RID: {}",
+				    "{} joined '{}'{}, slot #{}. RID: {}",
+				    (plyr && plyr->is_friend() ? "*** Friend" : "Player"),
 				    player_name,
 				    player->is_host() ? "(host)" : "",
 				    (int)player->m_player_id,
@@ -95,51 +96,44 @@ namespace big
 				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa, is_cheater] {
 					if (plyr && plyr->is_valid())
 					{
-						if (*g_pointers->m_gta.m_is_session_started)
+						if (known_player_nm::is_known(rockstar_id))
+							plyr->is_known_player = true;
+
+						if (bad_players_nm::is_blocked(rockstar_id))
 						{
-							if (known_player_nm::is_known(rockstar_id))
-								plyr->is_known_player = true;
+							auto str = get_blocked_player_joined_log_string(plyr);
 
-							if (bad_players_nm::is_blocked(rockstar_id))
+							if (g_player_service->get_self()->is_host() && *g_pointers->m_gta.m_is_session_started)
 							{
-								auto str = get_blocked_player_joined_log_string(plyr);
-
-								if (g_player_service->get_self()->is_host())
-								{
-									LOG(WARNING) << str;
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
-									return;
-								}
-
-								if (!plyr->is_spammer)
-									g_notification_service->push_warning("Carefull", str, true);
-
+								LOG(WARNING) << str;
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
 								return;
 							}
-							else
-							{
-								auto is_friend = friends_service::is_friend(rockstar_id);
 
-								if (is_friend && !plyr->is_known_player)
-									known_player_nm::toggle(plyr, true);
-
-								if (is_dev_qa)
-									g_reactions.rockstar_dev.process(plyr, false, Infraction::IS_ROCKSTAR_DEV_OR_QA, false, true);
-
-								if (g_session.lock_session && g_player_service->get_self()->is_host() && !is_friend)
-								{
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
-									g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
-									return;
-								}
-
-								if (is_friend)
-									g_notification_service->push_success("Friend joined", player_name);
-
-								if (is_cheater)
-									g_reactions.cheater_joined.process(plyr, false, Infraction::IS_CHEATER, false, true);
-							}
+							if (!plyr->is_spammer)
+								g_notification_service->push_warning("Carefull", str, true);
 						}
+
+						if (is_dev_qa)
+							g_reactions.rockstar_dev.process(plyr, false, Infraction::IS_ROCKSTAR_DEV_OR_QA, false, true);
+
+						if (plyr->is_friend())
+						{
+							g_notification_service->push_success("Friend joined", player_name);
+							if (!plyr->is_known_player)
+								known_player_nm::toggle(plyr, true);
+						}
+
+						if (g_session.lock_session && g_player_service->get_self()->is_host() && !plyr->is_friend()
+						    && *g_pointers->m_gta.m_is_session_started)
+						{
+							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
+							g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
+							return;
+						}
+
+						if (is_cheater)
+							g_reactions.cheater_joined.process(plyr, false, Infraction::IS_CHEATER, false, true);
 
 						if (is_spoofed_host_token(host_token))
 							g_reactions.spoofed_host_token.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);

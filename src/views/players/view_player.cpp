@@ -333,7 +333,7 @@ namespace big
 
 			components::button("TP", [current_player] {
 				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
-				teleport::to_coords(location, false);
+				teleport::to_coords(location);
 			});
 			ImGui::SameLine();
 			components::button("TP IN VEH", [current_player] {

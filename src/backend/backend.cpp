@@ -10,6 +10,7 @@
 #include "script_patches.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/context_menu/context_menu_service.hpp"
+#include "services/custom_teleport/custom_teleport_service.hpp"
 #include "services/known_players.hpp"
 #include "services/tunables/tunables_service.hpp"
 
@@ -21,6 +22,7 @@ namespace big
 
 		bad_players_nm::load_blocked_list();
 		known_player_nm::load_list();
+		g_custom_teleport_service.fetch_saved_locations();
 
 		while (g_running)
 		{

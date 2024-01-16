@@ -30,12 +30,12 @@ namespace big::teleport
 		return true;
 	}
 
-	inline bool to_waypoint()
+	inline bool to_waypoint(bool load_ground = true)
 	{
 		std::optional<Vector3> location = blip::get_blip_location((int)BlipIcons::Waypoint);
 
 		if (location.has_value())
-			return to_coords(location.value(), true);
+			return to_coords(location.value(), load_ground);
 
 		return false;
 	}

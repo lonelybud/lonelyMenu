@@ -14,6 +14,8 @@ namespace big::scr_globals
 	static inline const script_global freemode_properties(2672741);
 	static inline const script_global freemode_global(2738587);
 	static inline const script_global transaction_overlimit(20796);
+	static inline const script_global session(1574589);
+	static inline const script_global session2(1575032);
 	static inline const script_global passive(1574582);
 	static inline const script_global pickups(2707706);
 	static inline const script_global reset_clothing(103936); // freemode 75, &iLocal_.*, 2\);

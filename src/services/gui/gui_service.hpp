@@ -10,6 +10,7 @@ namespace big
 		SELF,
 		WEAPONS,
 		TELEPORT,
+		CUSTOM_TELEPORT,
 		OUTFIT_EDITOR,
 		ANIMATIONS,
 
@@ -58,9 +59,9 @@ namespace big
 		            {
 		                {tabs::WEAPONS, {"Weapons", view::weapons}},
 		                {tabs::TELEPORT, {"Teleport", view::teleport}},
+		                {tabs::CUSTOM_TELEPORT, {"Custom Teleport", view::custom_teleport}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
 		                {tabs::ANIMATIONS, {"Animations", view::animations}},
-
 		            },
 		        },
 		    },

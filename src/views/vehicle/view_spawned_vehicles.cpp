@@ -57,7 +57,7 @@ namespace big
 
 				components::button("TP", [it] {
 					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, 0);
-					teleport::to_coords(location, true);
+					teleport::to_coords(location);
 				});
 				ImGui::SameLine();
 				components::button("Waypoint", [it] {

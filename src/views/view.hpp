@@ -43,6 +43,7 @@ namespace big
 		static void persist_car();
 		static void spawned_vehicles();
 		static void teleport();
+		static void custom_teleport();
 		static void view_player();
 		static void players();
 		static void weapons();

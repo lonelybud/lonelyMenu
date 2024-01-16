@@ -13,10 +13,6 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("Objective", [] {
-			teleport::to_objective();
-		});
-		ImGui::SameLine();
-		components::button("Objective (NG)", [] {
 			teleport::to_objective(false);
 		});
 
@@ -80,13 +76,8 @@ namespace big
 		components::small_text("Custom teleport");
 		ImGui::SetNextItemWidth(400);
 		ImGui::InputFloat3("##Customlocation", new_location);
-
 		components::button("Teleport", [] {
-			teleport::to_coords({new_location[0], new_location[1], new_location[2]}, true);
-		});
-		ImGui::SameLine();
-		components::button("Teleport (NG)", [] {
-			teleport::to_coords({new_location[0], new_location[1], new_location[2]}, false);
+			teleport::to_coords({new_location[0], new_location[1], new_location[2]});
 		});
 	}
 }
