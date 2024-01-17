@@ -6,21 +6,45 @@
 
 namespace big
 {
-	static const char* thread_states = "RUNNING\0WAITING\0KILLED\0PAUSED\0STATE_4\0";
+	static const char* thread_states = "IDLE\0RUNNING\0KILLED\0PAUSED\0STATE_4\0";
 
 	inline void view_debug_threads()
 	{
 		if (ImGui::BeginTabItem("Threads"))
 		{
+			static bool idle = true, running = true, killed = true, paused = true, state_4 = true;
+
 			if (g_pointers->m_gta.m_script_threads)
 			{
 				ImGui::Text(std::format("Number of threads: {}", g_pointers->m_gta.m_script_threads->size()).c_str());
+				ImGui::Checkbox("idle", &idle);
+				ImGui::SameLine();
+				ImGui::Checkbox("running", &running);
+				ImGui::SameLine();
+				ImGui::Checkbox("killed", &killed);
+				ImGui::SameLine();
+				ImGui::Checkbox("paused", &paused);
+				ImGui::SameLine();
+				ImGui::Checkbox("state_4", &state_4);
+
 				ImGui::Spacing();
-				ImGui::BeginChild("ScrollingRegion", {600, 500});
+
+				ImGui::BeginChild("ScrollingRegion", {600, 450});
 				for (auto script : *g_pointers->m_gta.m_script_threads)
 					if (script)
 					{
 						if (script->m_context.m_state != rage::eThreadState::killed && script->m_context.m_stack_size == 0)
+							continue;
+
+						if (script->m_context.m_state == rage::eThreadState::idle && !idle)
+							continue;
+						if (script->m_context.m_state == rage::eThreadState::running && !running)
+							continue;
+						if (script->m_context.m_state == rage::eThreadState::killed && !killed)
+							continue;
+						if (script->m_context.m_state == rage::eThreadState::unk_3 && !paused)
+							continue;
+						if (script->m_context.m_state == rage::eThreadState::unk_4 && !state_4)
 							continue;
 
 						ImGui::PushID(script->m_context.m_thread_id);

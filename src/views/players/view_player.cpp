@@ -52,12 +52,8 @@ namespace big
 
 	static inline const char* get_player_state(SCR_BITSET<ePlayerStateFlags> type)
 	{
-		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateAscent))
-			return "ascending";
 		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds))
 			return "clouds";
-		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStatePan))
-			return "pan";
 		if (type.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent))
 			return "descending";
 		return "Unknown";
@@ -180,12 +176,11 @@ namespace big
 				    {
 					    ImGui::Text("Freemode State: %s", get_freemode_state(globalplayer_bd.FreemodeState));
 					    ImGui::Text("Session Join State: %s", get_player_state(globalplayer_bd.PlayerStateFlags));
-					    ImGui::Text("Is in interior: %d", globalplayer_bd.CurrentInteriorIndex != 0);
 
 					    ImGui::Spacing();
 
-					    ImGui::Text("CurrentMission: %d", gpbd_fm_1.PlaylistData.CurrentMission);
-					    ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
+					    ImGui::Text("Is in interior: %d", globalplayer_bd.CurrentInteriorIndex != 0);
+					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
 

@@ -72,8 +72,12 @@ namespace big
 				}
 
 				for (auto& [_, player] : g_player_service->players())
-					if (!player->has_joined && scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].FreemodeState == eFreemodeState::RUNNING)
-						player->has_joined = true;
+					if (!player->has_joined)
+						if (auto& entry = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()];
+						    entry.FreemodeState == eFreemodeState::RUNNING
+						    && !(entry.PlayerStateFlags.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds)
+						        || entry.PlayerStateFlags.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent)))
+							player->has_joined = true;
 			}
 
 			script::get_current()->yield();

@@ -115,7 +115,7 @@ namespace big
 			{
 				ImGui::Text(std::format("{} ({})", pair.second.name.c_str(), pair.second.token).c_str());
 				if (++hosts_count; hosts_count == 6)
-					return;
+					break;
 			}
 		}
 		ImGui::EndGroup();
