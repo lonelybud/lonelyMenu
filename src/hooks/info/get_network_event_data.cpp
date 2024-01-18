@@ -1,6 +1,6 @@
-#include "core/data/infractions.hpp"
 #include "core/data/misc.hpp"
 #include "core/data/reactions.hpp"
+#include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -118,28 +118,24 @@ namespace big
 								auto victim_player =
 								    g_player_service->get_by_host_token(victim_cped->m_player_info->m_net_player_data.m_host_token);
 
+								victim_player->last_killed_by = player;
+
 								if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
 									g_notification_service->push_warning("Friend Killed",
 									    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
 									    true);
 
 								if (is_invincible(player))
-									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WITH_GODMODE, true);
+									g_reactions.killed_with_god.process(player);
 
 								if (is_invisible(player))
-								{
-									if (damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_EXPLOSION") || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RAMMED_BY_CAR")
-									    || damage_data.m_weapon_used == RAGE_JOAAT("WEAPON_RUN_OVER_BY_CAR"))
-										break;
-
-									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WITH_INVISIBILITY, true);
-								}
+									g_reactions.killed_with_invis.process(player);
 
 								if (is_hidden_from_player_list(player))
-									g_reactions.modder_detection.process(player, false, Infraction::KILLED_WHEN_HIDDEN_FROM_PLAYER_LIST, true);
+									g_reactions.killed_when_hidden.process(player);
 
 								if (is_using_orbital_cannon(player))
-									g_reactions.modder_detection.process(player, false, Infraction::KILLED_ORBITAL_CANON, true);
+									g_reactions.Killed_with_orbital.process(player);
 							}
 				}
 			}

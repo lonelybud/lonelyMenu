@@ -1,6 +1,8 @@
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
+#include "gta/joaat.hpp"
 #include "hooking/hooking.hpp"
-#include "util/notify.hpp"
+#include "services/players/player_service.hpp"
 
 #include <netsync/nodes/task/ClonedTakeOffPedVariationInfo.hpp>
 
@@ -33,7 +35,7 @@ namespace big
 		{
 			if (m_syncing_player && m_syncing_player->is_valid())
 				if (auto plyr = g_player_service->get_by_id(m_syncing_player->m_player_id))
-					notify::crash_blocked(plyr, 39);
+					g_reactions.crash39.process(plyr);
 			info->m_prop_hash = 0;
 		}
 	}

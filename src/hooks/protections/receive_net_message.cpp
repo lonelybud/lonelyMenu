@@ -1,6 +1,5 @@
 #include "backend/command.hpp"
 #include "backend/player_command.hpp"
-#include "core/data/infractions.hpp"
 #include "core/data/kick_reasons.hpp"
 #include "core/data/packet_types.hpp"
 #include "core/data/reactions.hpp"
@@ -154,7 +153,7 @@ namespace big
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
 					{
 						player->block_host_migr_requests = true;
-						g_reactions.oom_kick2.process(player, true, Infraction::TRIED_KICK_PLAYER, true);
+						g_reactions.oom_kick2.process(player);
 					}
 					return true;
 				}
@@ -203,7 +202,7 @@ namespace big
 					if (player->m_radio_request_rate_limit.exceeded_last_process())
 					{
 						player->block_radio_requests = true;
-						g_reactions.oom_kick.process(player, true, Infraction::TRIED_KICK_PLAYER, true);
+						g_reactions.oom_kick.process(player);
 					}
 					return true;
 				}

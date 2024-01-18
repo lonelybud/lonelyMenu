@@ -1,7 +1,8 @@
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "hooking/hooking.hpp"
+#include "pointers.hpp"
 #include "services/players/player_service.hpp"
-#include "util/notify.hpp"
 
 namespace big
 {
@@ -11,13 +12,13 @@ namespace big
 
 		if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 		{
-			notify::crash_blocked(plyr, 29);
+			g_reactions.crash29.process(plyr);
 			return eAckCode::ACKCODE_FAIL;
 		}
 
 		if (auto net_obj = g_pointers->m_gta.m_get_net_object(mgr, object_id, true); net_obj && net_obj->m_object_type != (int16_t)object_type)
 		{
-			notify::crash_blocked(plyr, 30);
+			g_reactions.crash30.process(plyr);
 			return eAckCode::ACKCODE_FAIL;
 		}
 

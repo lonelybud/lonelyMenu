@@ -94,9 +94,6 @@ namespace big
 
 	std::optional<netAddress> player::get_ip_address()
 	{
-		if (this == g_player_service->get_self().get() && get_net_data())
-			return get_net_data()->m_external_ip;
-
 		if (auto peer = get_connection_peer())
 		{
 			if (peer->m_peer_address.m_connection_type != 1)
@@ -110,9 +107,6 @@ namespace big
 
 	uint16_t player::get_port()
 	{
-		if (this == g_player_service->get_self().get() && get_net_data())
-			return get_net_data()->m_external_port;
-
 		if (auto peer = get_connection_peer())
 		{
 			if (peer->m_peer_address.m_connection_type != 1)

@@ -1,108 +1,113 @@
 #pragma once
 #include "backend/reactions/reaction.hpp"
+#include "core/enums.hpp"
 
 namespace big
 {
 	inline struct g_reactions_t
 	{
-		reaction end_session_kick{1, "End Session Kick", "Blocked End Session Kick from {}"};
-		reaction network_bail{2, "Network Bail", "Blocked Network Bail from {}"};
-		reaction null_function_kick{3, "Null Function Kick", "Blocked Null Function Kick from {}"};
-		reaction kick_vote{4, "Kick Vote", "{} is voting to kick you!"};
-		reaction oom_kick{5, "OOM Kick", "Blocked OOM Kick (from radio requests) from {}"};
-		reaction oom_kick2{6, "OOM Kick", "Blocked OOM Kick (from host migr. requests) from {}"};
-		reaction crash{7, "Crash", "Blocked Crash from {}"};
-		reaction stand_user_crash{8, "Crash", "Blocked Stand User Crash from {}"};
-		reaction report{9, "Report", "Blocked Report from {}"};
+		reaction end_session_kick{reaction_type::kick_player, reaction_sub_type::end_session_kick, "End Session Kick", "End Session Kick", false, true, false};
+		reaction network_bail{reaction_type::kick_player, reaction_sub_type::network_bail, "Network bail", "Network bail", false, true, false};
+		reaction null_function_kick{reaction_type::kick_player, reaction_sub_type::null_function_kick, "Null Function Kick", "Null Function Kick", false, true, false};
+		reaction oom_kick{reaction_type::kick_player, reaction_sub_type::oom_kick, "OOM Kick (radio)", "OOM Kick (radio)", false, true, false};
+		reaction oom_kick2{reaction_type::kick_player, reaction_sub_type::oom_kick2, "OOM Kick (host migr.)", "OOM Kick (host migr.)", false, true, false};
+		reaction tse_freeze{reaction_type::kick_player, reaction_sub_type::tse_freeze, "TSE Freeze", "TSE Freeze", false, true, false};
+		reaction tse_sender_mismatch{reaction_type::kick_player, reaction_sub_type::tse_sender_mismatch, "TSE Sender Mismatch", "TSE Sender Mismatch", false, true, false};
 
-		reaction gta_banner{10, "GTA Banner", "Blocked GTA Banner from {}"}; // please don't enable this
-		reaction tse_freeze{11, "TSE Freeze", "Blocked TSE Freeze from {}"};
-		reaction tse_sender_mismatch{12, "TSE Sender Mismatch", "Blocked TSE Sender Mismatch from {}"};
+		reaction scripted_event_crash{reaction_type::crash_player, reaction_sub_type::scripted_event_crash, "Scripted Event Crash", "Scripted Event Crash", false, true, false};
+		reaction stand_user_crash{reaction_type::crash_player, reaction_sub_type::stand_user_crash, "Stand User Crash", "Stand User Crash", false, true, false};
+		reaction crash1{reaction_type::crash_player, reaction_sub_type::crash1, "Crash 1", "invalid vehicle model", false, true, false};
+		reaction crash2{reaction_type::crash_player, reaction_sub_type::crash2, "Crash 2", "vehicle model mismatch", false, true, false};
+		reaction crash3{reaction_type::crash_player, reaction_sub_type::crash3, "Crash 3", "invalid door model", false, true, false};
+		reaction crash4{reaction_type::crash_player, reaction_sub_type::crash4, "Crash 4", "invalid pickup model", false, true, false};
+		reaction crash5{reaction_type::crash_player, reaction_sub_type::crash5, "Crash 5", "invalid pickup weapon component hash", false, true, false};
+		reaction crash6{reaction_type::crash_player, reaction_sub_type::crash6, "Crash 6", "infinite physical attachment", false, true, false};
+		reaction crash7{reaction_type::crash_player, reaction_sub_type::crash7, "Crash 7", "invalid attachment", false, true, false};
+		reaction crash8{reaction_type::crash_player, reaction_sub_type::crash8, "Crash 8", "invalid ped model", false, true, false};
+		reaction crash9{reaction_type::crash_player, reaction_sub_type::crash9, "Crash 9", "invalid ped prop model", false, true, false};
+		reaction crash10{reaction_type::crash_player, reaction_sub_type::crash10, "Crash 10", "infinite ped attachment", false, true, false};
+		reaction crash11{reaction_type::crash_player, reaction_sub_type::crash11, "Crash 11", "invalid object model", false, true, false};
+		reaction crash12{reaction_type::crash_player, reaction_sub_type::crash12, "Crash 12", "invalid player model (appearance node)", false, true, false};
+		reaction crash13{reaction_type::crash_player, reaction_sub_type::crash13, "Crash 13", "invalid player model (creation node)", false, true, false};
+		reaction crash14{reaction_type::crash_player, reaction_sub_type::crash14, "Crash 14", "invalid sector position (sector node)", false, true, false};
+		reaction crash15{reaction_type::crash_player, reaction_sub_type::crash15, "Crash 15", "invalid sector position (player game state node)", false, true, false};
+		reaction crash16{reaction_type::crash_player, reaction_sub_type::crash16, "Crash 16", "out of bounds train track index", false, true, false};
+		reaction crash17{reaction_type::crash_player, reaction_sub_type::crash17, "Crash 17", "out of bounds train config index", false, true, false};
+		reaction crash18{reaction_type::crash_player, reaction_sub_type::crash18, "Crash 18", "out of bounds carriage config index", false, true, false};
+		reaction crash19{reaction_type::crash_player, reaction_sub_type::crash19, "Crash 19", "mount flag", false, true, false};
+		reaction crash20{reaction_type::crash_player, reaction_sub_type::crash20, "Crash 20", "invalid gadget", false, true, false};
+		reaction crash21{reaction_type::crash_player, reaction_sub_type::crash21, "Crash 21", "submarine car (sync)", false, true, false};
+		reaction crash22{reaction_type::crash_player, reaction_sub_type::crash22, "Crash 22", "submarine car (creation)", false, true, false};
+		reaction crash23{reaction_type::crash_player, reaction_sub_type::crash23, "Crash 23", "invalid sector position (camera data node)", false, true, false};
+		reaction crash24{reaction_type::crash_player, reaction_sub_type::crash24, "Crash 24", "out of bounds gadget type", false, true, false};
+		reaction crash25{reaction_type::crash_player, reaction_sub_type::crash25, "Crash 25", "invalid ped task", false, true, false};
+		reaction crash26{reaction_type::crash_player, reaction_sub_type::crash26, "Crash 26", "invalid vehicle task", false, true, false};
+		reaction crash27{reaction_type::crash_player, reaction_sub_type::crash27, "Crash 27", "invalid script info", false, true, false};
+		reaction crash28{reaction_type::crash_player, reaction_sub_type::crash28, "Crash 28", "invalid interior", false, true, false};
+		reaction crash29{reaction_type::crash_player, reaction_sub_type::crash29, "Crash 29", "out of bounds object type", false, true, false};
+		reaction crash30{reaction_type::crash_player, reaction_sub_type::crash30, "Crash 30", "incorrect object type", false, true, false};
+		reaction crash31{reaction_type::crash_player, reaction_sub_type::crash31, "Crash 31", "vehicle temp action", false, true, false};
+		reaction crash32{reaction_type::crash_player, reaction_sub_type::crash32, "Crash 32", "invalid script entity change type", false, true, false};
+		reaction crash33{reaction_type::crash_player, reaction_sub_type::crash33, "Crash 33", "rope", false, true, false};
+		reaction crash34{reaction_type::crash_player, reaction_sub_type::crash34, "Crash 34", "pop group override", false, true, false};
+		reaction crash35{reaction_type::crash_player, reaction_sub_type::crash35, "Crash 35", "invalid world state type", false, true, false};
+		reaction crash36{reaction_type::crash_player, reaction_sub_type::crash36, "Crash 36", "remove unarmed", false, true, false};
+		reaction crash37{reaction_type::crash_player, reaction_sub_type::crash37, "Crash 37", "out of bounds give control type", false, true, false};
+		reaction crash38{reaction_type::crash_player, reaction_sub_type::crash38, "Crash 38", "invalid parachute object type", false, true, false};
+		reaction crash39{reaction_type::crash_player, reaction_sub_type::crash39, "Crash 39", "invalid parachute model", false, true, false};
+		reaction crash40{reaction_type::crash_player, reaction_sub_type::crash40, "Crash 40", "out of bounds instance id", false, true, false};
 
-		reaction game_anti_cheat_modder_detection{13, "Anti-Cheat Modder Detection", "{} is detected as a modder by anti-cheat!"};
-		reaction modder_detection{14, "Modder Detection", "{} is detected as a modder!"};
+		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", "Voting to kick you", false, false, true};
+		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", false, false, true};
+		reaction bounty{reaction_type::none, reaction_sub_type::bounty, "Bounty", "Set bounty on you", false, false, true};
 
-		reaction bounty{15, "Bounty", "Received Bounty from {}"};
-		reaction ceo_kick{16, "CEO Kick", "Blocked CEO Kick from {}"};
-		reaction ceo_money{17, "CEO Money", "Blocked CEO Money from {}"};
-		reaction clear_wanted_level{18, "Clear Wanted Level", "Blocked Clear Wanted Level from {}"};
-		reaction fake_deposit{19, "Fake Deposit", "Blocked Fake Deposit from {}"};
-		reaction force_mission{20, "Force Mission", "Blocked Force Mission from {}"};
-		reaction force_teleport{21, "Force Teleport", "Blocked Force Teleport from {}"};
-		reaction kick_from_interior{22, "Kick From Interior", "Blocked Kick From Interior from {}"};
-		reaction mc_teleport{23, "MC Teleport", "Blocked MC Teleport from {}"};
-		reaction personal_vehicle_destroyed{24, "Personal Vehicle Destroyed", "Blocked Personal Vehicle Destroyed from {}"};
-		reaction destroy_personal_vehicle{25, "Destroy Personal Vehicle", "Blocked Destroy Personal Vehicle from {}"};
-		reaction give_collectible{26, "Give Collectible", "Blocked Give Collectible from {}"};
-		reaction remote_off_radar{27, "Remote Off Radar", "Blocked Remote Off Radar from {}"};
-		reaction rotate_cam{28, "Rotate Cam", "Blocked Rotate Cam from {}"};
-		reaction send_to_cutscene{29, "Send To Cutscene", "Blocked Send To Cutscene from {}"};
-		reaction send_to_location{30, "Send To Location", "Blocked Send To Location from {}"};
-		reaction send_to_interior{31, "Send To Interior", "Blocked Send To Interior from {}"};
-		reaction sound_spam{32, "Sound Spam", "Blocked Sound Spam from {}"};
-		reaction spectate_notification{33, "Spectate Notification", "Blocked Spectate Notification from {}"};
-		reaction transaction_error{34, "Transaction Error", "Blocked Transaction Error from {}"};
-		reaction vehicle_kick{35, "Vehicle Kick", "Blocked Vehicle Kick from {}"};
-		reaction teleport_to_warehouse{36, "Teleport To Warehouse", "Blocked Teleport To Warehouse from {}"};
-		reaction start_activity{37, "Start Activity", "Blocked Start Activity from {}"};
-		reaction start_script{38, "Start Script", "Blocked Start Script from {}"};
-		reaction trigger_business_raid{39, "Trigger Business Raid", "Blocked Trigger Business Raid from {}"};
-		reaction turn_into_beast{40, "Turn Into Beast", "Blocked Turn Into Beast from {}"};
-		reaction remote_wanted_level{41, "Remote Wanted Level", "Blocked Remote Wanted Level from {}"};
-		reaction clear_ped_tasks{42, "Clear Ped Tasks", "Blocked Clear Ped Tasks from {}"};
-		reaction remote_ragdoll{43, "Remote Ragdoll", "Blocked Remote Ragdoll from {}"};
-		reaction report_cash_spawn{44, "Cash Spawn", "{} is spawning cash!"};
-		reaction request_control_event{45, "Request Control Event", "Blocked Request Control Event from {}"};
-		reaction spectate{46, "Spectate", "{} is spectating you"};
+		reaction anti_cheat_modder_detection{reaction_type::modder_detection, reaction_sub_type::anti_cheat_modder_detection, "Anti cheat modder detection", "Detected modder by anti-cheat", true, true, false};
+		reaction spoofed_host_token{reaction_type::modder_detection, reaction_sub_type::spoofed_host_token, "Spoofed host token", "Spoofed their host token", true, true, false};
+		reaction killed_with_god{reaction_type::modder_detection, reaction_sub_type::killed_with_god, "Killed with god", "Killed someone with god", false, true, false};
+		reaction killed_with_invis{reaction_type::modder_detection, reaction_sub_type::killed_with_invis, "Killed when invisible", "Killed someone when invisible", false, true, false};
+		reaction killed_when_hidden{reaction_type::modder_detection, reaction_sub_type::killed_when_hidden, "Killed when hidden", "Killed someone while hidden in list", false, true, false};
+		reaction Killed_with_orbital{reaction_type::modder_detection, reaction_sub_type::Killed_with_orbital, "Killed with orbital", "Killed someone with orbital canon", false, true, false};
+		reaction spoofed_data{reaction_type::modder_detection, reaction_sub_type::spoofed_data, "Spoofed data", "Had spoofed their data", true, true, false};
+		reaction invalid_player_model{reaction_type::modder_detection, reaction_sub_type::invalid_player_model, "Invalid player model", "Had used an invalid player model", true, true, false};
+		reaction super_jump{reaction_type::modder_detection, reaction_sub_type::super_jump, "Super jump", "Had used super jump", true, true, false};
 
-		reaction remove_weapon{47, "Remove Weapon", "Blocked remove weapon from {}"};
-		reaction give_weapon{48, "Give Weapon", "Blocked give weapon from {}"};
-		reaction spoofed_host_token{49, "Spoofed Host token", "{} has spoofed their host token."};
+		reaction cheater_joined{reaction_type::none, reaction_sub_type::cheater_joined, "Cheater Joined?", "Is cheater marked by rockstar", true, false, true};
+		reaction rockstar_dev{reaction_type::none, reaction_sub_type::rockstar_dev, "Dev Joined?", "Is rockstar DEV or QA", true, false, true};
 
-		reaction cheater_joined{14, "Cheater Joined", "{} is a cheater marked by rockstar!"};
-		reaction rockstar_dev{14, "Rockstar player", "{} is detected as DEV or QA!"};
+		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", "Received GTA Banner", false, false, false, 1};
+		reaction sound_spam{reaction_type::none, reaction_sub_type::sound_spam, "Sound Spam", "Received Sound Spam", false, false, false};
+		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", "Received Spectate", false, false, false};
+		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", "Received Remote Ragdoll", false, false, false, 1};
+		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", "Received Spectate Notification", false, false, false};
+
+		reaction ceo_kick{reaction_type::none, reaction_sub_type::ceo_kick, "CEO Kick", "CEO Kick", false, true, false, 2};
+		reaction ceo_money{reaction_type::none, reaction_sub_type::ceo_money, "CEO Money", "CEO Money", false, true, false, 2};
+		reaction clear_wanted_level{reaction_type::none, reaction_sub_type::clear_wanted_level, "Clear Wanted Level", "Clear Wanted Level", false, true, false, 2};
+		reaction fake_deposit{reaction_type::none, reaction_sub_type::fake_deposit, "Fake Deposit", "Fake Deposit", true, true, false};
+		reaction force_mission{reaction_type::none, reaction_sub_type::force_mission, "Force Mission", "Force Mission", false, true, false, 1};
+		reaction force_teleport{reaction_type::none, reaction_sub_type::force_teleport, "Force Teleport", "Force Teleport", false, true, false, 1};
+		reaction kick_from_interior{reaction_type::none, reaction_sub_type::kick_from_interior, "Kick From Interior", "Kick From Interior", false, true, false, 1};
+		reaction mc_teleport{reaction_type::none, reaction_sub_type::mc_teleport, "MC Teleport", "MC Teleport", false, true, false, 1};
+		reaction personal_vehicle_destroyed{reaction_type::none, reaction_sub_type::personal_vehicle_destroyed, "Per. Veh Destroyed", "Personal Vehicle Destroyed", false, true, false, 1};
+		reaction destroy_personal_vehicle{reaction_type::none, reaction_sub_type::destroy_personal_vehicle, "Destroy Per. Veh", "Destroy Personal Vehicle", false, true, false, 1};
+		reaction give_collectible{reaction_type::none, reaction_sub_type::give_collectible, "Give Collectible", "Given you Collectible", false, true, false, 1};
+		reaction remote_off_radar{reaction_type::none, reaction_sub_type::remote_off_radar, "Remote Off Radar", "Given you Remote Off Radar", false, true, false, 1};
+		reaction rotate_cam{reaction_type::none, reaction_sub_type::rotate_cam, "Rotate Cam", "Rotated your Camera", true, true, false};
+		reaction send_to_cutscene{reaction_type::none, reaction_sub_type::send_to_cutscene, "Send To Cutscene", "Received Send To Cutscene", true, true, false};
+		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", "Received Send To Location", true, true, false};
+		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", true, true, false};
+		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", "Received Transaction Error", true, true, false};
+		reaction vehicle_kick{reaction_type::none, reaction_sub_type::vehicle_kick, "Vehicle Kick", "Received Vehicle Kick", false, true, false, 2};
+		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", "Received Teleport to warehouse", true, true, false};
+		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", "Received Start Activity", true, true, false};
+		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", "Received Start Script", true, true, false};
+		reaction trigger_business_raid{reaction_type::none, reaction_sub_type::trigger_business_raid, "Trigger Business Raid", "Tried to Trigger Business Raid", true, true, false};
+		reaction turn_into_beast{reaction_type::none, reaction_sub_type::turn_into_beast, "Turn Into Beast", "Received Turn Into Beast", true, true, false};
+		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", "Received Remote Wanted Level", true, true, false};
+		reaction clear_ped_tasks{reaction_type::none, reaction_sub_type::clear_ped_tasks, "Clear Ped Tasks", "Received Clear Ped Tasks", false, true, false, 2};
+		reaction report_cash_spawn{reaction_type::none, reaction_sub_type::report_cash_spawn, "Cash Spawn", "Received Cash Spawn", true, true, false};
+		reaction request_control_event{reaction_type::none, reaction_sub_type::request_control_event, "Request Control Event", "Received Request Control Event", false, true, false, 2};
+		reaction remove_weapon{reaction_type::none, reaction_sub_type::remove_weapon, "Remove Weapon", "Received Remove Weapon", true, true, false};
+		reaction give_weapon{reaction_type::none, reaction_sub_type::give_weapon, "Give Weapon", "Received Give Weapon", true, true, false};
 	} g_reactions{};
-
-	inline std::map<int, const char*> crashes = {
-	    {1, "invalid vehicle model"},
-	    {2, "vehicle model mismatch"},
-	    {3, "invalid door model"},
-	    {4, "invalid pickup model"},
-	    {5, "invalid pickup weapon component hash"},
-	    {6, "infinite physical attachment"},
-	    {7, "invalid attachment"},
-	    {8, "invalid ped model"},
-	    {9, "invalid ped prop model"},
-	    {10, "infinite ped attachment"},
-	    {11, "invalid object model"},
-	    {12, "invalid player model (appearance node)"},
-	    {13, "invalid player model (creation node)"},
-	    {14, "invalid sector position (sector node)"},
-	    {15, "invalid sector position (player game state node)"},
-	    {16, "out of bounds train track index"},
-	    {17, "out of bounds train config index"},
-	    {18, "out of bounds carriage config index"},
-	    {19, "mount flag"},
-	    {20, "invalid gadget"},
-	    {21, "submarine car (sync)"},
-	    {22, "submarine car (creation)"},
-	    {23, "invalid sector position (camera data node)"},
-	    {24, "out of bounds gadget type"},
-	    {25, "invalid ped task"},
-	    {26, "invalid vehicle task"},
-	    {27, "invalid script info"},
-	    {28, "invalid interior"},
-	    {29, "out of bounds object type"},
-	    {30, "incorrect object type"},
-	    {31, "vehicle temp action"},
-	    {32, "invalid script entity change type"},
-	    {33, "rope"},
-	    {34, "pop group override"},
-	    {35, "invalid world state type"},
-	    {36, "remove unarmed"},
-	    {37, "out of bounds give control type"},
-	    {38, "invalid parachute object type"},
-	    {39, "invalid parachute model"},
-	    {40, "out of bounds instance id"},
-	};
 }

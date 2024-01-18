@@ -1,7 +1,8 @@
-#include "fiber_pool.hpp"
-#include "views/view.hpp"
-#include "script_mgr.hpp"
+#include "backend/looped_command.hpp"
 #include "core/settings/window.hpp"
+#include "fiber_pool.hpp"
+#include "script_mgr.hpp"
+#include "views/view.hpp"
 
 namespace big
 {
@@ -11,14 +12,7 @@ namespace big
 		ImGui::SetNextWindowPos({10.f, 10.f});
 		if (ImGui::Begin("menu_heading", nullptr, window_flags | ImGuiWindowFlags_NoScrollbar))
 		{
-			ImGui::BeginGroup();
 			ImGui::Text("Welcome");
-			// ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.172f, 0.380f, 0.909f, 1.f));
-			// ImGui::Text(g_local_player == nullptr || g_local_player->m_player_info == nullptr ?
-			//         "YimMenu" :
-			//         g_local_player->m_player_info->m_net_player_data.m_name);
-			// ImGui::PopStyleColor();
-			ImGui::EndGroup();
 			ImGui::SameLine();
 			ImGui::SetCursorPos(
 			    {(300.f * g_window.gui_scale) - ImGui::CalcTextSize("Unload").x - ImGui::GetStyle().ItemSpacing.x,

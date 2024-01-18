@@ -13,14 +13,14 @@ namespace big
 			bool gta_banner                 = true;
 			bool mc_teleport                = true;
 			bool personal_vehicle_destroyed = true;
-			bool remote_off_radar           = false;
+			bool remote_off_radar           = true;
 			bool rotate_cam                 = true;
 			bool send_to_cutscene           = true;
 			bool send_to_location           = true;
 			bool sound_spam                 = true;
 			bool spectate                   = true;
 			bool give_collectible           = true;
-			bool vehicle_kick               = false;
+			bool vehicle_kick               = true;
 			bool teleport_to_warehouse      = true;
 			bool start_activity             = true;
 			bool send_sms                   = true;

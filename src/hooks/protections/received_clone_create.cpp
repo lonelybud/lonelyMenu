@@ -1,7 +1,7 @@
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
-#include "util/notify.hpp"
 
 namespace big
 {
@@ -11,7 +11,7 @@ namespace big
 
 		if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 		{
-			notify::crash_blocked(plyr, 29);
+			g_reactions.crash29.process(plyr);
 			return;
 		}
 

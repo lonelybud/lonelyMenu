@@ -14,7 +14,7 @@ namespace big
 		static constexpr int fm_mission_controller_cart_grab_speed = 14;
 		static constexpr int CPFHl                                 = 24333; // cayo perico fingerprint hack local
 		static constexpr int CPPCCl = 30357 + 3; // cayo perico plasma cutter cut local ("DLC_H4_anims_glass_cutter_Sounds")
-		static constexpr int CPSTCl         = 29118;      // cayo perico sewer tunnel cut local
+		static constexpr int CPSTCl         = 29118;      // cayo perico Drainage Pipe cut local
 		static constexpr int DCFHl          = 52985;      // diamond casino fingerprint hack local
 		static constexpr int DCKHl          = 54047;      // diamond casino keypad hack local
 		static constexpr int DCDVDl1        = 10107 + 7;  // diamond casino drill vault door local 1
@@ -22,7 +22,7 @@ namespace big
 		static auto FMC                     = "fm_mission_controller";
 		static auto FMC20                   = "fm_mission_controller_2020";
 		inline const char* casino_targets[] = {"Money", "Gold", "Art", "Diamonds"};
-		inline const char* cayo_targets[] = {"Tequila (630K)", "Ruby Necklace (700K)", "Bearer Bonds (770K)", "Pink Diamond (1.3M)", "Unkown", "Panther Statue (1.9M)"};
+		inline const char* cayo_targets[] = {"Tequila (630K)", "Ruby Necklace (700K)", "Bearer Bonds (770K)", "Pink Diamond (1.3M)", "Madrazo Files", "Panther Statue (1.9M)"};
 
 		struct CayoLocation
 		{
@@ -92,7 +92,7 @@ namespace big
 		{
 			lua_helper::locals::set_float(FMC20, CPPCCl, 100);
 		}
-		inline void bypass_sewer_tunnel()
+		inline void bypass_drainage_pipe()
 		{
 			if (auto v = lua_helper::locals::get_int(FMC20, CPSTCl); v >= 3 || v <= 6)
 				lua_helper::locals::set_int(FMC20, CPSTCl, 6);

@@ -1,4 +1,3 @@
-#include "core/data/infractions.hpp"
 #include "core/data/language_codes.hpp"
 #include "core/data/protections.hpp"
 #include "core/scr_globals.hpp"
@@ -62,11 +61,6 @@ namespace big
 	static big::player_ptr last_selected_player;
 	static uint64_t rockstar_id;
 
-	static inline void ver_Space()
-	{
-		ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));
-	}
-
 	static void extra_info_button(player_ptr current_player)
 	{
 		components::options_modal(
@@ -98,21 +92,15 @@ namespace big
 					    ImGui::Text("Bad sport: %d", globalplayer_bd.IsBadsport);
 					    ImGui::Text("Rockstar dev (dev dlc check, yim): %d", globalplayer_bd.IsRockstarDev);
 
-					    if (current_player == g_player_service->get_self())
-					    {
-						    ImGui::Spacing();
-						    ImGui::Text("Nightclub popularity: %f", gpbd_fm_1.PropertyData.NightclubData.Popularity);
-						    ImGui::Text("Nightclub Money: %d", gpbd_fm_1.PropertyData.NightclubData.SafeCashValue);
-						    ImGui::Text("Arcade Money: %d", gpbd_fm_1.PropertyData.ArcadeData.SafeCashValue);
-					    }
-
 					    ImGui::Spacing();
 					    ImGui::Text(std::format("NAT Type: {}",
 					        get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type))
 					                    .c_str());
 
-					    auto ip   = current_player->get_ip_address();
-					    auto port = current_player->get_port();
+					    auto ip = (current_player == g_player_service->get_self()) ? current_player->get_net_data()->m_external_ip :
+					                                                                 current_player->get_ip_address();
+					    auto port = (current_player == g_player_service->get_self()) ? current_player->get_net_data()->m_external_port :
+					                                                                   current_player->get_port();
 
 					    if (ip)
 					    {
@@ -183,6 +171,8 @@ namespace big
 					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
+					    if (current_player->last_killed_by && current_player->last_killed_by->is_valid())
+						    ImGui::Text("Last killed by: %s", current_player->last_killed_by->get_name());
 
 					    ImGui::Spacing();
 
@@ -353,7 +343,7 @@ namespace big
 				steal_player_outfit(current_player, true);
 			});
 
-			ver_Space();
+			components::ver_space();
 
 			components::button("Copy Vehicle", [current_player] {
 				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
@@ -367,15 +357,6 @@ namespace big
 					persist_car_service::save_vehicle(veh, "", "");
 				else
 					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
-			});
-
-			ver_Space();
-
-			components::button("Notify Killer", [current_player] {
-				Hash weapon;
-				auto p = NETWORK::NETWORK_GET_KILLER_OF_PLAYER(current_player->id(), &weapon);
-				if (auto player = g_player_service->get_by_id(p))
-					g_notification_service->push_error("Player Killer", player->get_name());
 			});
 		}
 		ImGui::EndGroup();
@@ -403,7 +384,7 @@ namespace big
 			if (!current_player->is_host())
 				components::player_command_button<"desync">(current_player);
 
-			ver_Space();
+			components::ver_space();
 
 			components::sub_title("Other");
 
@@ -428,8 +409,7 @@ namespace big
 				current_player->infractions.clear();
 			});
 			for (auto infraction : current_player->infractions)
-				ImGui::BulletText(
-				    std::format("{} - {}", infraction_desc[(Infraction)infraction.first], infraction.second).c_str());
+				ImGui::BulletText(std::format("{} - {}", infraction.first->m_notify_message, infraction.second).c_str());
 			ImGui::EndGroup();
 		}
 	}
@@ -475,11 +455,11 @@ namespace big
 			{
 				render_info(current_player);
 
-				ver_Space();
+				components::ver_space();
 
 				render_chat_spam(current_player);
 
-				ver_Space();
+				components::ver_space();
 
 				render_infractions(current_player);
 			}
@@ -489,7 +469,7 @@ namespace big
 			{
 				render_tel_loc(current_player);
 
-				ver_Space();
+				components::ver_space();
 
 				render_misc(current_player);
 			}

@@ -1,3 +1,4 @@
+#include "pointers.hpp"
 #include "services/ped_animations/ped_animations_service.hpp"
 #include "util/animations.hpp"
 #include "views/view.hpp"
@@ -42,7 +43,8 @@ namespace big
 		components::options_modal(
 		    "All animations",
 		    [] {
-			    animations::list_all_anims(&g_ped_animation_service.current_animation.dict, &g_ped_animation_service.current_animation.anim);
+			    animations::list_all_anims(&g_ped_animation_service.current_animation.dict,
+			        &g_ped_animation_service.current_animation.anim);
 		    },
 		    true,
 		    "List all anims");
@@ -75,16 +77,28 @@ namespace big
 			ImGui::BeginGroup(); //Regular flags
 
 			ImGui::CheckboxFlags("Looped", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::LOOPING));
-			ImGui::CheckboxFlags("Hold Last Frame", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::HOLD_LAST_FRAME));
-			ImGui::CheckboxFlags("Uninterruptable", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::NOT_INTERRUPTABLE));
-			ImGui::CheckboxFlags("Only Upperbody", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::UPPERBODY));
-			ImGui::CheckboxFlags("Secondary slot", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::SECONDARY));
+			ImGui::CheckboxFlags("Hold Last Frame",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::HOLD_LAST_FRAME));
+			ImGui::CheckboxFlags("Uninterruptable",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::NOT_INTERRUPTABLE));
+			ImGui::CheckboxFlags("Only Upperbody",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::UPPERBODY));
+			ImGui::CheckboxFlags("Secondary slot",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::SECONDARY));
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("Allow primary animations to run simultaniously, such as walking");
-			ImGui::CheckboxFlags("Realize Animation Orientation", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::REORIENT_WHEN_FINISHED));
+			ImGui::CheckboxFlags("Realize Animation Orientation",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::REORIENT_WHEN_FINISHED));
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("Use the final orientation achieved in the animation");
-			ImGui::CheckboxFlags("Hide Weapon", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::HIDE_WEAPON));
+			ImGui::CheckboxFlags("Hide Weapon",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::HIDE_WEAPON));
 
 			ImGui::EndGroup();
 			ImGui::SameLine();
@@ -97,13 +111,23 @@ namespace big
 			ImGui::CheckboxFlags("Sync Out", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::TAG_SYNC_OUT));
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("Seamless transition out of the animation, for example to continue walking");
-			ImGui::CheckboxFlags("Sync Continuous", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::TAG_SYNC_CONTINUOUS));
+			ImGui::CheckboxFlags("Sync Continuous",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::TAG_SYNC_CONTINUOUS));
 			if (ImGui::IsItemHovered())
 				ImGui::SetTooltip("Seamless transition during the animation, especially usefull for upperbody animations");
-			ImGui::CheckboxFlags("Force Start", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::FORCE_START));
-			ImGui::CheckboxFlags("Disable Colission", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::TURN_OFF_COLLISION));
-			ImGui::CheckboxFlags("Override Physics", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::OVERRIDE_PHYSICS));
-			ImGui::CheckboxFlags("Ignore Gravity", reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags), static_cast<unsigned int>(animations::anim_flags::IGNORE_GRAVITY));
+			ImGui::CheckboxFlags("Force Start",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::FORCE_START));
+			ImGui::CheckboxFlags("Disable Colission",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::TURN_OFF_COLLISION));
+			ImGui::CheckboxFlags("Override Physics",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::OVERRIDE_PHYSICS));
+			ImGui::CheckboxFlags("Ignore Gravity",
+			    reinterpret_cast<unsigned int*>(&g_ped_animation_service.current_animation.flags),
+			    static_cast<unsigned int>(animations::anim_flags::IGNORE_GRAVITY));
 
 			ImGui::EndGroup();
 

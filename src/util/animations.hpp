@@ -3,6 +3,7 @@
 #include "file_manager.hpp"
 #include "file_manager/file.hpp"
 #include "notify.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "thread_pool.hpp"
 
 namespace big::animations
@@ -12,16 +13,16 @@ namespace big::animations
 
 	enum class anim_flags
 	{
-		LOOPING                          = 1 << 0, 
-		HOLD_LAST_FRAME                  = 1 << 1, 
-		REPOSITION_WHEN_FINISHED         = 1 << 2, 
-		NOT_INTERRUPTABLE                = 1 << 3, 
-		UPPERBODY                        = 1 << 4, 
-		SECONDARY                        = 1 << 5, 
+		LOOPING                          = 1 << 0,
+		HOLD_LAST_FRAME                  = 1 << 1,
+		REPOSITION_WHEN_FINISHED         = 1 << 2,
+		NOT_INTERRUPTABLE                = 1 << 3,
+		UPPERBODY                        = 1 << 4,
+		SECONDARY                        = 1 << 5,
 		REORIENT_WHEN_FINISHED           = 1 << 6,
-		ABORT_ON_PED_MOVEMENT            = 1 << 7, 
-		ADDITIVE                         = 1 << 8, 
-		TURN_OFF_COLLISION               = 1 << 9, 
+		ABORT_ON_PED_MOVEMENT            = 1 << 7,
+		ADDITIVE                         = 1 << 8,
+		TURN_OFF_COLLISION               = 1 << 9,
 		OVERRIDE_PHYSICS                 = 1 << 10,
 		IGNORE_GRAVITY                   = 1 << 11,
 		EXTRACT_INITIAL_OFFSET           = 1 << 12,
@@ -42,7 +43,7 @@ namespace big::animations
 		EXPAND_PED_CAPSULE_FROM_SKELETON = 1 << 27,
 		USE_ALTERNATIVE_FP_ANIM          = 1 << 28,
 		BLENDOUT_WRT_LAST_FRAME          = 1 << 29,
-		USE_FULL_BLENDING                = 1 << 30 
+		USE_FULL_BLENDING                = 1 << 30
 	};
 
 	/*

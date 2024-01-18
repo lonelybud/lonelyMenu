@@ -1,25 +1,28 @@
 #include "reaction.hpp"
 
 #include "backend/player_command.hpp"
-#include "core/data/infractions.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "script.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
-#include "util/notify.hpp"
 
 namespace big
 {
-	reaction::reaction(int id, const char* event_name, const char* notify_message) :
-	    m_id(id),
+	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, const char* notify_message, bool notify_once, bool is_modder, bool other, int n_events_at_time) :
+	    type(type),
+	    sub_type(sub_type),
 	    m_event_name(event_name),
-	    m_notify_message(notify_message)
+	    m_notify_message(notify_message),
+	    notify_once(notify_once),
+	    is_modder(is_modder),
+	    other(other),
+	    n_events_at_time(n_events_at_time)
 	{
 	}
 
-	void reaction::process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool other)
+	void reaction::process(player_ptr player)
 	{
 		rage::rlGamerInfo* net_data;
 
@@ -28,57 +31,62 @@ namespace big
 			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
 			auto name        = net_data->m_name;
 
-			if (infraction != Infraction::NONE)
-			{
-				if (!player->infractions.contains((int)infraction))
-					player->infractions[(int)infraction] = 1;
-				else
-				{
-					// infraction must have been logged/notified before so return. Exception for below infractions
-					switch (infraction)
-					{
-					case Infraction::TRIED_CRASH_PLAYER:
-					case Infraction::TRIED_KICK_PLAYER:
-					case Infraction::KILLED_WITH_GODMODE:
-					case Infraction::KILLED_WITH_INVISIBILITY:
-					case Infraction::KILLED_WHEN_HIDDEN_FROM_PLAYER_LIST:
-					case Infraction::KILLED_ORBITAL_CANON:
-					case Infraction::REPORT:
-					case Infraction::VOTE_KICK:
-					case Infraction::BOUNTY: break;
-					default: return;
-					}
+			bool kick_player = false;
 
-					++player->infractions[(int)infraction];
-				}
+			if (!player->infractions.contains(this))
+				player->infractions[this] = 1;
+			else
+			{
+				if (this->notify_once)
+					return;
+
+				++player->infractions[this];
 			}
 
-			// auto-kick crashing player whose crash count > 20
-			if (infraction == Infraction::TRIED_CRASH_PLAYER && player->infractions[(int)infraction] > 20)
-				kick_player = true;
+			// auto-kick crashing player
+			if (this->type == reaction_type::crash_player)
+				switch (this->sub_type)
+				{
+				case reaction_sub_type::crash1:
+				case reaction_sub_type::crash2:
+				case reaction_sub_type::crash26:
+				case reaction_sub_type::crash31: break;
+				case reaction_sub_type::crash33:
+				{
+					kick_player = true;
+					break;
+				}
+				default:
+				{
+					if (player->infractions[this] > 5)
+						kick_player = true;
+					break;
+				}
+				}
 
-			auto str = std::vformat(m_notify_message, std::make_format_args(name));
+			auto str = std::format("{} from '{}'", m_notify_message, name);
 
-			// dont log same event more than 5 time from the same player. This will keep console logs short and concise.
+			// dont log same event more than n time from the same player. This will keep console logs short and concise.
 			bool should_log = true;
-			if (player->last_event_id == m_id)
+			if (player->last_event_id == sub_type)
 			{
-				if (player->last_event_count >= 5)
+				if (player->last_event_count >= this->n_events_at_time)
 					should_log = false;
 				else
 					++player->last_event_count;
 			}
 			else
 			{
-				player->last_event_id    = m_id;
+				player->last_event_id    = sub_type;
 				player->last_event_count = 1;
 			}
 			//
 
+			auto title = this->type == reaction_type::modder_detection ? "Modder Detection" : "Reaction";
 			if (log && should_log)
-				LOG(WARNING) << str;
+				LOG(WARNING) << title << ": " << str;
 			if (notify)
-				g_notification_service->push_warning("Protections", str);
+				g_notification_service->push_warning(title, str);
 
 			// add modder to bad players temporary list
 			if (is_modder)
@@ -113,5 +121,7 @@ namespace big
 					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
 			}
 		}
+		else
+			g_notification_service->push_warning("Reaction", std::format("{} from '{}'", m_notify_message, "?"), true);
 	}
 }

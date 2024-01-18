@@ -1,5 +1,6 @@
 #include "mobile_service.hpp"
 
+#include "gta/joaat.hpp"
 #include "natives.hpp"
 #include "script.hpp"
 #include "util/mobile.hpp"

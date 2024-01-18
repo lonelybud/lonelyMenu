@@ -1,6 +1,8 @@
+#include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "hooking/hooking.hpp"
-#include "util/notify.hpp"
+#include "pointers.hpp"
+#include "services/players/player_service.hpp"
 
 #include <entities/CDynamicEntity.hpp>
 
@@ -25,7 +27,7 @@ namespace big
 
 			if (m_syncing_player && m_syncing_player->is_valid())
 				if (auto plyr = g_player_service->get_by_id(m_syncing_player->m_player_id))
-					notify::crash_blocked(plyr, 38);
+					g_reactions.crash38.process(plyr);
 			object->m_entity = nullptr;
 			object->m_net_id = 0;
 		}

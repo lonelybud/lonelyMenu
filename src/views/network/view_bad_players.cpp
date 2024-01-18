@@ -130,7 +130,7 @@ namespace big
 					ImGui::SetClipboardText(std::to_string(selected_id).c_str());
 			}
 			ImGui::EndGroup();
-			ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+			components::hor_space();
 			ImGui::BeginGroup();
 			{
 				auto block_join = bad_players_nm::bad_players_list[selected_id].block_join;

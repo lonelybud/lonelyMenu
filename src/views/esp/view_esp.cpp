@@ -83,10 +83,9 @@ namespace big
 			tick_count = 1;
 
 			if (const auto draw_list = ImGui::GetBackgroundDrawList(); draw_list)
-				if (g_esp.show_player)
-					g_player_service->iterate([draw_list](const player_entry& entry) {
-						draw_player(entry.second, draw_list);
-					});
+				g_player_service->iterate([draw_list](const player_entry& entry) {
+					draw_player(entry.second, draw_list);
+				});
 		}
 		else
 			++tick_count;

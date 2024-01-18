@@ -1,5 +1,4 @@
 #include "backend/player_command.hpp"
-#include "core/data/infractions.hpp"
 #include "natives.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -18,9 +17,8 @@ namespace big
 				return;
 			}
 
-			if (!player->is_blocked
-			    && (player->infractions.contains((int)Infraction::TRIED_KICK_PLAYER) || player->infractions.contains((int)Infraction::TRIED_CRASH_PLAYER)))
-				bad_players_nm::add_player(player, true, player->is_spammer);
+			if ((player->is_modder || player->is_spammer) && !player->is_blocked)
+				bad_players_nm::add_player(player, player->is_modder, player->is_spammer);
 
 			g_notification_service->push_success("Kick", std::format("Host kick to {}", player->get_name()), true);
 			NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());

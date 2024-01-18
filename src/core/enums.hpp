@@ -219,7 +219,7 @@ namespace big
 
 	enum class AutoDriveStyle
 	{
-		LAW_ABIDING, 
+		LAW_ABIDING,
 		THE_ROAD_IS_YOURS
 	};
 
@@ -299,5 +299,122 @@ namespace big
 	{
 		RELEASE = WM_KEYUP,
 		DOWN    = WM_KEYDOWN
+	};
+
+	enum class reaction_type
+	{
+		none,
+		kick_player,
+		crash_player,
+		modder_detection
+	};
+
+	enum class reaction_sub_type
+	{
+		none,
+		
+		end_session_kick,
+		network_bail,
+		null_function_kick,
+		oom_kick,
+		oom_kick2,
+		tse_freeze,
+		tse_sender_mismatch,
+
+		scripted_event_crash,
+		stand_user_crash,
+		crash1,
+		crash2,
+		crash3,
+		crash4,
+		crash5,
+		crash6,
+		crash7,
+		crash8,
+		crash9,
+		crash10,
+		crash11,
+		crash12,
+		crash13,
+		crash14,
+		crash15,
+		crash16,
+		crash17,
+		crash18,
+		crash19,
+		crash20,
+		crash21,
+		crash22,
+		crash23,
+		crash24,
+		crash25,
+		crash26,
+		crash27,
+		crash28,
+		crash29,
+		crash30,
+		crash31,
+		crash32,
+		crash33,
+		crash34,
+		crash35,
+		crash36,
+		crash37,
+		crash38,
+		crash39,
+		crash40,
+
+		kick_vote,
+		report,
+		bounty,
+
+		anti_cheat_modder_detection,
+		spoofed_host_token,
+		killed_with_god,
+		killed_with_invis,
+		killed_when_hidden,
+		Killed_with_orbital,
+		spoofed_data,
+		invalid_player_model,
+		super_jump,
+
+		cheater_joined,
+		rockstar_dev,
+
+		gta_banner,
+		sound_spam,
+		spectate,
+		remote_ragdoll,
+		spectate_notification,
+
+		ceo_kick,
+		ceo_money,
+		clear_wanted_level,
+		fake_deposit,
+		force_mission,
+		force_teleport,
+		kick_from_interior,
+		mc_teleport,
+		personal_vehicle_destroyed,
+		destroy_personal_vehicle,
+		give_collectible,
+		remote_off_radar,
+		rotate_cam,
+		send_to_cutscene,
+		send_to_location,
+		send_to_interior,
+		transaction_error,
+		vehicle_kick,
+		teleport_to_warehouse,
+		start_activity,
+		start_script,
+		trigger_business_raid,
+		turn_into_beast,
+		remote_wanted_level,
+		clear_ped_tasks,
+		report_cash_spawn,
+		request_control_event,
+		remove_weapon,
+		give_weapon
 	};
 }

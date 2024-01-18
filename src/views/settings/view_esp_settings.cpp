@@ -12,7 +12,6 @@ namespace big
 			ImGui::Text("Global Render Distance (min, max)");
 			ImGui::SliderFloat2("###Global Render Distance", g_esp.global_render_distance, 0.f, 1500.f);
 
-			ImGui::Checkbox("Show Player", &g_esp.show_player);
 			ImGui::Checkbox("Player Distance", &g_esp.distance);
 
 			ImGui::Spacing();

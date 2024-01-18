@@ -137,7 +137,7 @@ namespace big
 				}
 			}
 			ImGui::EndGroup();
-			ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+			components::hor_space();
 			ImGui::BeginGroup();
 			{
 				ImGui::BeginGroup();

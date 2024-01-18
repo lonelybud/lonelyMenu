@@ -1,6 +1,6 @@
 #pragma once
+#include "core/data/reactions.hpp"
 #include "core/enums.hpp"
-#include "player_service.hpp"
 #include "rate_limiter.hpp"
 
 #include <unordered_set>
@@ -20,6 +20,10 @@ namespace rage
 
 namespace big
 {
+	class player_service;
+	class player;
+	using player_ptr = std::shared_ptr<player>;
+
 	class player final
 	{
 		friend class player_service;
@@ -79,14 +83,16 @@ namespace big
 		bool m_block_permanent_vehicles = false;
 
 		bool is_modder = false;
-		std::map<int, int> infractions;
-		bool is_blocked          = false;
-		bool join_prevented      = false;
-		bool is_spammer          = false;
-		std::string spam_message = "";
-		bool is_other            = false;
-		bool is_known_player     = false;
-		bool has_joined          = false;
+		std::map<reaction*, int> infractions;
+		bool is_blocked           = false;
+		bool join_prevented       = false;
+		bool is_spammer           = false;
+		std::string spam_message  = "";
+		bool is_other             = false;
+		bool is_known_player      = false;
+		bool has_joined           = false;
+		player_ptr last_killed_by = nullptr;
+		bool is_pain_in_ass       = false;
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
 
@@ -103,8 +109,8 @@ namespace big
 		bool log_network_events = false;
 
 		// prevent spam logging of events in console
-		int last_event_id    = 0;
-		int last_event_count = 1;
+		reaction_sub_type last_event_id = reaction_sub_type::none;
+		int last_event_count            = 1;
 
 		int spectating_player = -1;
 

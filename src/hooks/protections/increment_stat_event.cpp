@@ -1,4 +1,5 @@
 #include "core/data/reactions.hpp"
+#include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
@@ -21,7 +22,7 @@ namespace big
 		case RAGE_JOAAT("MPPLY_TC_HATE"):
 		case RAGE_JOAAT("MPPLY_VC_ANNOYINGME"):
 		case RAGE_JOAAT("MPPLY_VC_HATE"):
-			g_reactions.report.process(g_player_service->get_by_id(sender->m_player_id), false, Infraction::REPORT, false, true);
+			g_reactions.report.process(g_player_service->get_by_id(sender->m_player_id));
 			return true;
 		}
 

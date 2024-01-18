@@ -1,4 +1,5 @@
 #include "backend/player_command.hpp"
+#include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
 #include "core/scr_globals.hpp"
 #include "core/settings/notifications.hpp"
@@ -8,7 +9,6 @@
 #include "services/friends/friends_service.hpp"
 #include "services/known_players.hpp"
 #include "services/players/player_service.hpp"
-#include "util/notify.hpp"
 #include "util/player.hpp"
 
 #include <script/globals/GlobalPlayerBD.hpp>
@@ -93,7 +93,7 @@ namespace big
 						}
 
 						if (is_dev_qa)
-							g_reactions.rockstar_dev.process(plyr, false, Infraction::IS_ROCKSTAR_DEV_OR_QA, false, true);
+							g_reactions.rockstar_dev.process(plyr);
 
 						if (plyr->is_friend())
 						{
@@ -111,10 +111,10 @@ namespace big
 						}
 
 						if (is_cheater)
-							g_reactions.cheater_joined.process(plyr, false, Infraction::IS_CHEATER, false, true);
+							g_reactions.cheater_joined.process(plyr);
 
 						if (is_spoofed_host_token(host_token))
-							g_reactions.spoofed_host_token.process(plyr, false, Infraction::SPOOFED_HOST_TOKEN, true);
+							g_reactions.spoofed_host_token.process(plyr);
 					}
 				});
 		}

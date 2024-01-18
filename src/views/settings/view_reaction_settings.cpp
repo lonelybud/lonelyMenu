@@ -10,7 +10,7 @@ namespace big
 		ImGui::Text(name.data());
 
 		ImGui::PushID(name.data());
-		ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+		components::hor_space();
 		ImGui::Checkbox("Notify", &option.notify);
 		ImGui::SameLine();
 		ImGui::Checkbox("Log", &option.log);
@@ -21,7 +21,7 @@ namespace big
 	{
 		ImGui::PushID(&reaction);
 		ImGui::Text(reaction.m_event_name);
-		ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+		components::hor_space();
 		ImGui::Checkbox("Notify", &reaction.notify);
 		ImGui::SameLine();
 		ImGui::Checkbox("Log", &reaction.log);
@@ -38,7 +38,7 @@ namespace big
 		ImGui::SetNextItemWidth(200);
 		components::input_text_with_hint("###event_name", "event name", event_name);
 
-		for (reaction* i = &g_reactions.end_session_kick; i <= &g_reactions.spoofed_host_token; ++i)
+		for (reaction* i = &g_reactions.end_session_kick; i <= &g_reactions.give_weapon; ++i)
 			if (event_name.length())
 			{
 				std::string lowercaseSearchString = toLowercase(event_name);

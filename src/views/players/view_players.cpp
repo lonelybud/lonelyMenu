@@ -1,4 +1,3 @@
-#include "core/data/infractions.hpp"
 #include "fiber_pool.hpp"
 #include "fonts/fonts.hpp"
 #include "natives.hpp"
@@ -45,8 +44,11 @@ namespace big
 		const ImRect icons_box(icons_pos, icons_pos + icons_size);
 		ImGui::PopFont();
 
-		if (plyr->is_modder)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.1f, 0.1f, 1.f)); // red
+
+		if (plyr->is_pain_in_ass)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.f, 0.f, 1.f)); // red
+		else if (plyr->is_modder)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.2f, 1.f)); // light red
 		else if (plyr->is_spammer)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.67f, 0.f, 1.f)); // more of yellow than orange
 		else if (plyr->is_blocked)
@@ -74,7 +76,7 @@ namespace big
 		{
 			ImGui::BeginTooltip();
 			for (auto infraction : plyr->infractions)
-				ImGui::BulletText(infraction_desc[(Infraction)infraction.first]);
+				ImGui::BulletText(infraction.first->m_notify_message);
 			ImGui::EndTooltip();
 		}
 
@@ -84,7 +86,7 @@ namespace big
 		if (selected_player)
 			ImGui::PopStyleColor();
 
-		if (plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_other || plyr->is_known_player)
+		if (plyr->is_pain_in_ass || plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_other || plyr->is_known_player)
 			ImGui::PopStyleColor();
 
 		// render icons on top of the player button

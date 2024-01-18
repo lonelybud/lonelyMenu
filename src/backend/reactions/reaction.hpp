@@ -1,5 +1,5 @@
 #pragma once
-#include "core/data/infractions.hpp"
+#include "core/enums.hpp"
 
 namespace big
 {
@@ -12,13 +12,16 @@ namespace big
 		bool notify = true;
 		bool log    = true;
 
-		int m_id;
+		reaction_type type;
+		reaction_sub_type sub_type;
 		const char* m_event_name;
 		const char* m_notify_message;
+		bool notify_once;
+		bool is_modder;
+		bool other;
+		int n_events_at_time;
 
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(reaction, notify, log)
-
-		reaction(int id, const char* event_name, const char* notify_message);
-		virtual void process(player_ptr player, bool kick_player, Infraction infraction, bool is_modder, bool other = false);
+		reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, const char* notify_message, bool notify_once, bool is_modder, bool other, int n_events_at_time = 3);
+		virtual void process(player_ptr player);
 	};
 }

@@ -66,8 +66,8 @@
 #include "network/netObject.hpp"
 #include "ped/CPed.hpp"
 #include "services/gta_data/gta_data_service.hpp"
+#include "services/players/player_service.hpp"
 #include "util/model_info.hpp"
-#include "util/notify.hpp"
 #include "util/protection.hpp"
 #include "util/sync_trees.hpp"
 #include "vehicle/CTrainConfig.hpp"
@@ -84,7 +84,7 @@ namespace big
 			return;
 
 		if (!protection::is_valid_player_model(model))
-			g_reactions.modder_detection.process(player, false, Infraction::INVALID_PLAYER_MODEL, true);
+			g_reactions.invalid_player_model.process(player);
 	}
 
 	// the game function does weird stuff that we don't want
@@ -1195,7 +1195,7 @@ namespace big
 				const auto creation_node = (CVehicleCreationDataNode*)(node);
 				if (protection::is_crash_vehicle(creation_node->m_model))
 				{
-					notify::crash_blocked(sender_plyr, 1);
+					g_reactions.crash1.process(sender_plyr);
 					return true;
 				}
 
@@ -1203,7 +1203,7 @@ namespace big
 				{
 					if (vehicle_type_to_object_type(info->m_vehicle_type) != m_syncing_object_type)
 					{
-						notify::crash_blocked(sender_plyr, 2);
+						g_reactions.crash2.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1217,7 +1217,7 @@ namespace big
 				const auto creation_node = (CDoorCreationDataNode*)(node);
 				if (protection::is_crash_object(creation_node->m_model))
 				{
-					notify::crash_blocked(sender_plyr, 3);
+					g_reactions.crash3.process(sender_plyr);
 					return true;
 				}
 				break;
@@ -1227,7 +1227,7 @@ namespace big
 				const auto creation_node = (CPickupCreationDataNode*)(node);
 				if (creation_node->m_custom_model && protection::is_crash_object(creation_node->m_custom_model))
 				{
-					notify::crash_blocked(sender_plyr, 4);
+					g_reactions.crash4.process(sender_plyr);
 					return true;
 				}
 
@@ -1236,7 +1236,7 @@ namespace big
 					uint64_t buffer[20]{};
 					if (!WEAPON::GET_WEAPON_COMPONENT_HUD_STATS(creation_node->m_weapon_component[i], (Any*)buffer)) // trying to save a pointer here
 					{
-						notify::crash_blocked(sender_plyr, 5);
+						g_reactions.crash5.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1253,7 +1253,7 @@ namespace big
 				            attach_node->m_attach_bone,
 				            attach_node->m_other_attach_bone)))
 				{
-					notify::crash_blocked(sender_plyr, 6);
+					g_reactions.crash6.process(sender_plyr);
 					return true;
 				}
 
@@ -1266,7 +1266,7 @@ namespace big
 						{
 							if (entity->m_entity_type != 3)
 							{
-								notify::crash_blocked(sender_plyr, 7);
+								g_reactions.crash7.process(sender_plyr);
 								return true;
 							}
 						}
@@ -1280,12 +1280,12 @@ namespace big
 				const auto creation_node = (CPedCreationDataNode*)(node);
 				if (protection::is_crash_ped(creation_node->m_model))
 				{
-					notify::crash_blocked(sender_plyr, 8);
+					g_reactions.crash8.process(sender_plyr);
 					return true;
 				}
 				else if (creation_node->m_has_prop && protection::is_crash_object(creation_node->m_prop_model))
 				{
-					notify::crash_blocked(sender_plyr, 9);
+					g_reactions.crash9.process(sender_plyr);
 					return true;
 				}
 				break;
@@ -1302,7 +1302,7 @@ namespace big
 				{
 					if (auto game_object = (CPed*)object->GetGameObject())
 						if (!game_object->m_player_info)
-							notify::crash_blocked(sender_plyr, 10); // parachute false positives
+							g_reactions.crash10.process(sender_plyr); // parachute false positives
 
 					return true;
 				}
@@ -1314,7 +1314,7 @@ namespace big
 				const auto creation_node = (CObjectCreationDataNode*)(node);
 				if (protection::is_crash_object(creation_node->m_model))
 				{
-					notify::crash_blocked(sender_plyr, 11);
+					g_reactions.crash11.process(sender_plyr);
 					return true;
 				}
 				break;
@@ -1324,7 +1324,7 @@ namespace big
 				const auto player_appearance_node = (CPlayerAppearanceDataNode*)(node);
 				if (protection::is_crash_ped(player_appearance_node->m_model_hash))
 				{
-					notify::crash_blocked(sender_plyr, 12);
+					g_reactions.crash12.process(sender_plyr);
 					return true;
 				}
 
@@ -1338,7 +1338,7 @@ namespace big
 				const auto player_creation_node = (CPlayerCreationDataNode*)(node);
 				if (protection::is_crash_ped(player_creation_node->m_model))
 				{
-					notify::crash_blocked(sender_plyr, 13);
+					g_reactions.crash13.process(sender_plyr);
 					return true;
 				}
 				check_player_model(sender_plyr, player_creation_node->m_model);
@@ -1359,7 +1359,7 @@ namespace big
 						std::stringstream crash_reason;
 						// crash_reason << "invalid sector position (sector node)"
 						//              << " X: " << posX << " Y: " << posY << " player_sector_pos_x: " << player_sector_pos_x << " player_sector_pos_y: " << player_sector_pos_y;
-						notify::crash_blocked(sender_plyr, 14);
+						g_reactions.crash14.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1372,7 +1372,7 @@ namespace big
 				    && is_invalid_override_pos(game_state_node->m_population_control_sphere_x, game_state_node->m_population_control_sphere_y))
 				{
 					if (gta_util::get_network()->m_game_session_ptr->is_host())
-						notify::crash_blocked(sender_plyr, 15);
+						g_reactions.crash15.process(sender_plyr);
 
 					return true;
 				}
@@ -1382,7 +1382,7 @@ namespace big
 					if (game_state_node->m_super_jump
 					    || (!game_state_node->m_is_max_armor_and_health_default && game_state_node->m_max_health == 0.0f
 					        && game_state_node->m_player_state == 1))
-						g_reactions.modder_detection.process(sender_plyr, false, Infraction::SUPER_JUMP, true);
+						g_reactions.super_jump.process(sender_plyr);
 
 					if (game_state_node->m_is_spectating)
 					{
@@ -1427,7 +1427,7 @@ namespace big
 						if (target->id() != sender_plyr->spectating_player)
 						{
 							if (target->id() == self::id)
-								g_reactions.spectate.process(sender_plyr, false, Infraction::NONE, false);
+								g_reactions.spectate.process(sender_plyr);
 
 							sender_plyr->spectating_player = target->id();
 						}
@@ -1446,7 +1446,7 @@ namespace big
 				int track_id          = train_node->m_track_id;
 				if (track_id != -1 && (track_id < 0 || track_id >= 12))
 				{
-					notify::crash_blocked(sender_plyr, 16);
+					g_reactions.crash16.process(sender_plyr);
 					LOG(INFO) << (int)train_node->m_track_id;
 					return true;
 				}
@@ -1458,7 +1458,7 @@ namespace big
 				{
 					if ((uint32_t)train_config_index >= g_pointers->m_gta.m_train_config_array->size())
 					{
-						notify::crash_blocked(sender_plyr, 17);
+						g_reactions.crash17.process(sender_plyr);
 						return true;
 					}
 
@@ -1467,7 +1467,7 @@ namespace big
 						if ((uint32_t)carriage_config_index
 						    >= (*g_pointers->m_gta.m_train_config_array)[train_config_index].m_carraige_configs.size())
 						{
-							notify::crash_blocked(sender_plyr, 18);
+							g_reactions.crash18.process(sender_plyr);
 							return true;
 						}
 					}
@@ -1514,7 +1514,7 @@ namespace big
 							spoofed_data = true;
 					}
 					if (spoofed_data)
-						g_reactions.modder_detection.process(sender_plyr, false, Infraction::SPOOFED_DATA, true);
+						g_reactions.spoofed_data.process(sender_plyr);
 				}
 				break;
 			}
@@ -1523,14 +1523,14 @@ namespace big
 				const auto game_state_node = (CPedGameStateDataNode*)(node);
 				if (game_state_node->m_on_mount)
 				{
-					notify::crash_blocked(sender_plyr, 19);
+					g_reactions.crash19.process(sender_plyr);
 					return true;
 				}
 				for (int i = 0; i < game_state_node->m_num_equiped_gadgets; i++)
 				{
 					if (game_state_node->m_gadget_hash[i] != RAGE_JOAAT("gadget_parachute") && game_state_node->m_gadget_hash[i] != RAGE_JOAAT("gadget_nightvision"))
 					{
-						notify::crash_blocked(sender_plyr, 20);
+						g_reactions.crash20.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1547,7 +1547,7 @@ namespace big
 						{
 							if (model_info->m_vehicle_type != eVehicleType::VEHICLE_TYPE_SUBMARINECAR)
 							{
-								notify::crash_blocked(sender_plyr, 21);
+								g_reactions.crash21.process(sender_plyr);
 								return true;
 							}
 						}
@@ -1559,7 +1559,7 @@ namespace big
 						{
 							if (model_info->m_vehicle_type != eVehicleType::VEHICLE_TYPE_SUBMARINECAR)
 							{
-								notify::crash_blocked(sender_plyr, 22);
+								g_reactions.crash22.process(sender_plyr);
 								return true;
 							}
 						}
@@ -1578,7 +1578,7 @@ namespace big
 				if (is_invalid_override_pos(camera_node->m_free_cam_pos_x, camera_node->m_free_cam_pos_y))
 				{
 					if (gta_util::get_network()->m_game_session_ptr->is_host())
-						notify::crash_blocked(sender_plyr, 23);
+						g_reactions.crash23.process(sender_plyr);
 					return true;
 				}
 
@@ -1591,7 +1591,7 @@ namespace big
 				{
 					if (gadget_node->m_gadget_data[i].m_gadget_type > 7)
 					{
-						notify::crash_blocked(sender_plyr, 24);
+						g_reactions.crash24.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1607,7 +1607,7 @@ namespace big
 					{
 						if (is_crash_ped_task((eTaskTypeIndex)task_node->m_tasks[i].m_task_type))
 						{
-							notify::crash_blocked(sender_plyr, 25);
+							g_reactions.crash25.process(sender_plyr);
 							return true;
 						}
 					}
@@ -1620,7 +1620,7 @@ namespace big
 				const auto task_node = (CVehicleTaskDataNode*)(node);
 				if (is_crash_vehicle_task((eTaskTypeIndex)task_node->m_task_type))
 				{
-					notify::crash_blocked(sender_plyr, 26);
+					g_reactions.crash26.process(sender_plyr);
 					LOG(VERBOSE) << (int)m_syncing_object_type << " " << get_task_type_string(task_node->m_task_type);
 					return true;
 				}
@@ -1634,7 +1634,7 @@ namespace big
 				{
 					if (script_node->m_script_info.m_local_handle == 0)
 					{
-						notify::crash_blocked(sender_plyr, 27);
+						g_reactions.crash27.process(sender_plyr);
 						return true;
 					}
 				}
@@ -1647,7 +1647,7 @@ namespace big
 				if (is_valid_interior_game(game_state_node->m_interior_index)
 				    && !is_valid_interior_fixed(game_state_node->m_interior_index)) // will crash
 				{
-					notify::crash_blocked(sender_plyr, 28);
+					g_reactions.crash28.process(sender_plyr);
 					return true;
 				}
 			}

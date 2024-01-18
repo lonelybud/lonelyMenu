@@ -7,7 +7,6 @@ namespace big
 	{
 		bool enabled                    = false;
 		float global_render_distance[2] = {0.f, 600.f};
-		bool show_player                = true;
 		bool distance                   = false;
 
 		int tick_count_threshhold = 30;

@@ -1,8 +1,7 @@
 #pragma once
+#include "backend/bool_command.hpp"
 #include "backend/command.hpp"
-#include "backend/looped_command.hpp"
 #include "backend/player_command.hpp"
-#include "fiber_pool.hpp"
 
 #include <imgui.h>
 
@@ -32,6 +31,15 @@ namespace big
 		static bool selectable(const std::string_view, bool, ImGuiSelectableFlags);
 		static void selectable(const std::string_view, bool, std::function<void()>);
 		static void selectable(const std::string_view, bool, ImGuiSelectableFlags, std::function<void()>);
+
+		static inline void ver_space()
+		{
+			ImGui::Dummy(ImVec2(0.0f, ImGui::GetTextLineHeight()));
+		}
+		static inline void hor_space()
+		{
+			ImGui::SameLine(0, 2.0f * ImGui::GetTextLineHeight());
+		}
 
 		static bool script_patch_checkbox(const std::string_view text, bool* option);
 

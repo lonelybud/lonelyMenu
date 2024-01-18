@@ -1,7 +1,7 @@
 #include "ped_animations_service.hpp"
 
 #include "gta/enums.hpp"
-#include "util/notify.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "util/ped.hpp"
 
 namespace big

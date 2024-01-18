@@ -1,11 +1,11 @@
 #pragma once
+#include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
 #include "fiber_pool.hpp"
 #include "gta/enums.hpp"
 #include "hooking/hooking.hpp"
 #include "native_hooks.hpp"
 #include "natives.hpp"
-#include "util/notify.hpp"
 #include "util/scripts.hpp"
 
 namespace big
@@ -16,7 +16,7 @@ namespace big
 		{
 			if (src->get_arg<int>(2) != -1 && src->get_arg<uint32_t>(2) >= 0x100)
 			{
-				notify::crash_blocked(nullptr, 40);
+				g_reactions.crash40.process(nullptr);
 				return;
 			}
 
@@ -27,7 +27,7 @@ namespace big
 		{
 			if (src->get_arg<int>(2) != -1 && src->get_arg<uint32_t>(2) >= 0x100)
 			{
-				notify::crash_blocked(nullptr, 40);
+				g_reactions.crash40.process(nullptr);
 				src->set_return_value<BOOL>(FALSE);
 				return;
 			}

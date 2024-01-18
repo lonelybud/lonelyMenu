@@ -61,12 +61,12 @@ namespace big
 		{
 		case eRemoteEvent::Bounty:
 			if (args[3] == self::id)
-				g_reactions.bounty.process(plyr, false, Infraction::BOUNTY, false, true);
+				g_reactions.bounty.process(plyr);
 			break;
 		case eRemoteEvent::CeoKick:
 			if (player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
 			{
-				g_reactions.ceo_kick.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.ceo_kick.process(plyr);
 				return true;
 			}
 			break;
@@ -74,7 +74,7 @@ namespace big
 			if (g_protections.script_events.ceo_money
 			    && player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
 			{
-				g_reactions.ceo_money.process(plyr, false, Infraction::PLAYED_YOU_POS, true);
+				g_reactions.ceo_money.process(plyr);
 				return true;
 			}
 			break;
@@ -82,17 +82,15 @@ namespace big
 			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level
 			    && !is_player_driver_of_local_vehicle(player->m_player_id))
 			{
-				g_reactions.clear_wanted_level.process(plyr, false, Infraction::PLAYED_YOU_POS, true);
+				g_reactions.clear_wanted_level.process(plyr);
 				return true;
 			}
 			break;
-		case eRemoteEvent::Crash:
-			g_reactions.crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
-			return true;
+		case eRemoteEvent::Crash: g_reactions.scripted_event_crash.process(plyr); return true;
 		case eRemoteEvent::Crash2:
 			if (args[3] > 32) // actual crash condition is if args[2] is above 255
 			{
-				g_reactions.crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
+				g_reactions.scripted_event_crash.process(plyr);
 				return true;
 			}
 			break;
@@ -100,7 +98,7 @@ namespace big
 		{
 			if (isnan(*(float*)&args[4]) || isnan(*(float*)&args[5]))
 			{
-				g_reactions.crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
+				g_reactions.scripted_event_crash.process(plyr);
 				return true;
 			}
 			break;
@@ -111,17 +109,15 @@ namespace big
 			{
 			case eRemoteEvent::NotificationMoneyBanked: // never used
 			case eRemoteEvent::NotificationMoneyRemoved:
-			case eRemoteEvent::NotificationMoneyStolen:
-				g_reactions.fake_deposit.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
-				return true;
-			case eRemoteEvent::NotificationCrash1: // this isn't used by the game
-				g_reactions.stand_user_crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true); // stand user detected
+			case eRemoteEvent::NotificationMoneyStolen: g_reactions.fake_deposit.process(plyr); return true;
+			case eRemoteEvent::NotificationCrash1:          // this isn't used by the game
+				g_reactions.stand_user_crash.process(plyr); // stand user detected
 				return true;
 			case eRemoteEvent::NotificationCrash2:
 				if (!gta_util::find_script_thread(RAGE_JOAAT("gb_salvage")))
 				{
 					// This looks like it's meant to trigger a sound crash by spamming too many notifications. We've already patched it, but the notifications are still annoying
-					g_reactions.stand_user_crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true); // stand user detected
+					g_reactions.stand_user_crash.process(plyr); // stand user detected
 					return true;
 				}
 				break;
@@ -132,21 +128,21 @@ namespace big
 		case eRemoteEvent::ForceMission:
 			if (g_protections.script_events.force_mission)
 			{
-				g_reactions.force_mission.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.force_mission.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::GiveCollectible:
 			if (g_protections.script_events.give_collectible)
 			{
-				g_reactions.give_collectible.process(plyr, false, Infraction::GIVE_COLLECTIBLE, true);
+				g_reactions.give_collectible.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::GtaBanner:
 			if (g_protections.script_events.gta_banner)
 			{
-				g_reactions.gta_banner.process(plyr, false, Infraction::NONE, false);
+				g_reactions.gta_banner.process(plyr);
 				return true;
 			}
 			break;
@@ -157,49 +153,49 @@ namespace big
 				{
 					if (args[5 + i] == NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(self::id))
 					{
-						g_reactions.mc_teleport.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+						g_reactions.mc_teleport.process(plyr);
 						return true;
 					}
 				}
 			}
 			else if (args[4] > 32)
 			{
-				g_reactions.crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
+				g_reactions.scripted_event_crash.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::PersonalVehicleDestroyed:
 			if (g_protections.script_events.personal_vehicle_destroyed)
 			{
-				g_reactions.personal_vehicle_destroyed.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.personal_vehicle_destroyed.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::RemoteOffradar:
 			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && !is_player_driver_of_local_vehicle(plyr->id()))
 			{
-				g_reactions.remote_off_radar.process(plyr, false, Infraction::NONE, false);
+				g_reactions.remote_off_radar.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::TSECommand:
 			if (g_protections.script_events.rotate_cam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandRotateCam && !NETWORK::NETWORK_IS_ACTIVITY_SESSION())
 			{
-				g_reactions.rotate_cam.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.rotate_cam.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::SendToCayoPerico:
 			if (g_protections.script_events.send_to_location && args[4] == 0)
 			{
-				g_reactions.send_to_location.process(plyr, false, Infraction::NONE, false);
+				g_reactions.send_to_location.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::SendToCutscene:
 			if (g_protections.script_events.send_to_cutscene && !is_player_our_boss(plyr->id()))
 			{
-				g_reactions.send_to_cutscene.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.send_to_cutscene.process(plyr);
 				return true;
 			}
 			break;
@@ -218,7 +214,7 @@ namespace big
 
 					if (g_protections.script_events.send_to_location)
 					{
-						g_reactions.send_to_location.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+						g_reactions.send_to_location.process(plyr);
 						return true;
 					}
 				}
@@ -228,7 +224,7 @@ namespace big
 
 					if (g_protections.script_events.send_to_location)
 					{
-						g_reactions.send_to_location.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+						g_reactions.send_to_location.process(plyr);
 						return true;
 					}
 				}
@@ -236,7 +232,7 @@ namespace big
 
 			if (!known_location)
 			{
-				g_reactions.tse_freeze.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
+				g_reactions.tse_freeze.process(plyr);
 				return true;
 			}
 			break;
@@ -246,7 +242,7 @@ namespace big
 			if (g_protections.script_events.sound_spam && (!plyr || plyr->m_invites_rate_limit.process()))
 			{
 				if (plyr->m_invites_rate_limit.exceeded_last_process())
-					g_reactions.sound_spam.process(plyr, false, Infraction::NONE, false);
+					g_reactions.sound_spam.process(plyr);
 				return true;
 			}
 			break;
@@ -254,7 +250,7 @@ namespace big
 		case eRemoteEvent::Spectate:
 			if (g_protections.script_events.spectate)
 			{
-				g_reactions.spectate_notification.process(plyr, false, Infraction::NONE, false);
+				g_reactions.spectate_notification.process(plyr);
 				return true;
 			}
 			break;
@@ -262,27 +258,25 @@ namespace big
 			if (!plyr->is_friend() && g_protections.script_events.force_teleport
 			    && !is_player_driver_of_local_vehicle(player->m_player_id))
 			{
-				g_reactions.force_teleport.process(plyr, false, Infraction::NONE, false);
+				g_reactions.force_teleport.process(plyr);
 				return true;
 			}
 			break;
-		case eRemoteEvent::TransactionError:
-			g_reactions.transaction_error.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
-			return true;
+		case eRemoteEvent::TransactionError: g_reactions.transaction_error.process(plyr); return true;
 		case eRemoteEvent::VehicleKick:
 			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick)
 			{
-				g_reactions.vehicle_kick.process(plyr, false, Infraction::NONE, false);
+				g_reactions.vehicle_kick.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::NetworkBail:
-			g_reactions.network_bail.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
+			g_reactions.network_bail.process(plyr);
 			return true;
 		case eRemoteEvent::TeleportToWarehouse:
 			if (g_protections.script_events.teleport_to_warehouse && !is_player_driver_of_local_vehicle(player->m_player_id))
 			{
-				g_reactions.teleport_to_warehouse.process(plyr, false, Infraction::NONE, false);
+				g_reactions.teleport_to_warehouse.process(plyr);
 				return true;
 			}
 			break;
@@ -293,39 +287,39 @@ namespace big
 			{
 				if (activity == eActivityType::Survival || activity == eActivityType::Mission || activity == eActivityType::Deathmatch || activity == eActivityType::BaseJump || activity == eActivityType::Race)
 				{
-					g_reactions.tse_freeze.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
+					g_reactions.tse_freeze.process(plyr);
 					return true;
 				}
 				else if (activity == eActivityType::Darts)
 				{
-					g_reactions.start_activity.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+					g_reactions.start_activity.process(plyr);
 					return true;
 				}
 				else if (activity == eActivityType::PilotSchool)
 				{
-					g_reactions.start_activity.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+					g_reactions.start_activity.process(plyr);
 					return true;
 				}
 				else if (activity == eActivityType::ImpromptuDeathmatch)
 				{
-					g_reactions.start_activity.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+					g_reactions.start_activity.process(plyr);
 					return true;
 				}
 				else if (activity == eActivityType::DefendSpecialCargo || activity == eActivityType::GunrunningDefend || activity == eActivityType::BikerDefend || args[3] == 238)
 				{
-					g_reactions.trigger_business_raid.process(plyr, false, Infraction::NONE, false);
+					g_reactions.trigger_business_raid.process(plyr);
 					return true;
 				}
 			}
 			else if (activity == eActivityType::Tennis)
 			{
-				g_reactions.crash.process(plyr, false, Infraction::TRIED_CRASH_PLAYER, true);
+				g_reactions.scripted_event_crash.process(plyr);
 				return true;
 			}
 
 			if (g_protections.script_events.start_activity && !is_player_our_goon(player->m_player_id))
 			{
-				g_reactions.start_activity.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.start_activity.process(plyr);
 				return true;
 			}
 
@@ -337,7 +331,7 @@ namespace big
 			if (interior < 0 || interior > 166) // the upper bound will change after an update
 			{
 				if (auto plyr = g_player_service->get_by_id(player->m_player_id))
-					g_reactions.null_function_kick.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
+					g_reactions.null_function_kick.process(plyr);
 				return true;
 			}
 
@@ -361,13 +355,11 @@ namespace big
 
 			break;
 		}
-		case eRemoteEvent::DestroyPersonalVehicle:
-			g_reactions.destroy_personal_vehicle.process(plyr, false, Infraction::NONE, false);
-			return true;
+		case eRemoteEvent::DestroyPersonalVehicle: g_reactions.destroy_personal_vehicle.process(plyr); return true;
 		case eRemoteEvent::KickFromInterior:
 			if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[self::id].SimpleInteriorData.Owner != plyr->id())
 			{
-				g_reactions.kick_from_interior.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+				g_reactions.kick_from_interior.process(plyr);
 				return true;
 			}
 			break;
@@ -378,7 +370,7 @@ namespace big
 				if (script->m_net_component && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host
 				    && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host->m_net_game_player != player)
 				{
-					g_reactions.trigger_business_raid.process(plyr, false, Infraction::NONE, false);
+					g_reactions.trigger_business_raid.process(plyr);
 				}
 			}
 
@@ -392,7 +384,7 @@ namespace big
 				if (script->m_net_component && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host
 				    && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host->m_net_game_player != player)
 				{
-					g_reactions.start_script.process(plyr, false, Infraction::PLAYED_YOU_NEG, true);
+					g_reactions.start_script.process(plyr);
 					return true;
 				}
 			}
@@ -405,7 +397,7 @@ namespace big
 		{
 			LOG(INFO) << "Hash = " << (int)args[0];
 			LOG(INFO) << "Sender = " << args[1];
-			g_reactions.tse_sender_mismatch.process(plyr, true, Infraction::TRIED_KICK_PLAYER, true);
+			g_reactions.tse_sender_mismatch.process(plyr);
 			return true;
 		}
 

@@ -26,15 +26,11 @@ namespace big
 					exit(0);
 				});
 
-				components::button("END_TUTORIAL_SESSION", [] {
+				components::button("End tutorial", [] {
 					NETWORK::NETWORK_END_TUTORIAL_SESSION();
 				});
 
-				components::button("SHUTDOWN_AND_LAUNCH_SP", [] {
-					NETWORK::SHUTDOWN_AND_LAUNCH_SINGLE_PLAYER_GAME();
-				});
-				ImGui::SameLine();
-				components::button("SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE", [] {
+				components::button("Load recent SP save", [] {
 					NETWORK::SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE();
 				});
 			}
