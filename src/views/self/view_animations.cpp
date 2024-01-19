@@ -18,7 +18,7 @@ namespace big
 
 		if (ImGui::BeginPopupModal("##deletepedanimation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text(std::format("Are you sure you want to delete {}", deletion_ped_animation.name).data());
+			ImGui::Text("Are you sure you want to delete %s", deletion_ped_animation.name.c_str());
 
 			ImGui::Spacing();
 
@@ -245,7 +245,7 @@ namespace big
 						if (p.name.length() > 25)
 							ImGui::Text(p.name.data());
 
-						ImGui::Text(std::format("Dict: {}\nAnim: {}", p.dict, p.anim).data());
+						ImGui::Text("Dict: %s\nAnim: %s", p.dict.c_str(), p.anim.c_str());
 
 						ImGui::EndTooltip();
 					}

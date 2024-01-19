@@ -16,7 +16,7 @@ namespace big
 
 			if (g_pointers->m_gta.m_script_threads)
 			{
-				ImGui::Text(std::format("Number of threads: {}", g_pointers->m_gta.m_script_threads->size()).c_str());
+				ImGui::Text("Number of threads: %d", g_pointers->m_gta.m_script_threads->size());
 				ImGui::Checkbox("idle", &idle);
 				ImGui::SameLine();
 				ImGui::Checkbox("running", &running);
@@ -59,7 +59,7 @@ namespace big
 							if (auto host = net_handler->get_host())
 							{
 								ImGui::SameLine();
-								ImGui::Text(std::format("Script Host: {}", host->get_name()).c_str());
+								ImGui::Text("Script Host: %s", host->get_name());
 								if (!net_handler->is_local_player_host())
 								{
 									ImGui::SameLine();

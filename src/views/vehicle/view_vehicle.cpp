@@ -61,7 +61,7 @@ namespace big
 				});
 			}
 
-			ImGui::Text(std::format("No of seat: {}", no_of_seats).c_str());
+			ImGui::Text("No of seat: %d", no_of_seats);
 
 			ImGui::Spacing();
 

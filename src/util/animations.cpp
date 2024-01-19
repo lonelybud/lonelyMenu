@@ -26,8 +26,7 @@ namespace big::animations
 		};
 
 		if (has_anim_list_been_populated())
-			ImGui::Text(std::format("There are {} dictionaries with {} animations in memory", anim_dict_count(), total_anim_count())
-			                .data());
+			ImGui::Text("There are %d dictionaries with %d animations in memory", anim_dict_count(), total_anim_count());
 
 		components::button("Fetch All", [] {
 			fetch_all_anims();

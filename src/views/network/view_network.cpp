@@ -59,9 +59,9 @@ namespace big
 			scripts::get_host_name(RAGE_JOAAT("am_launcher"), am_launcher_sh_name);
 		});
 
-		ImGui::Text(std::format("freemode : {}", freemode_sh_name).c_str());
-		ImGui::Text(std::format("fmmc_launcher : {}", fmmc_launcher_sh_name).c_str());
-		ImGui::Text(std::format("am_launcher : {}", am_launcher_sh_name).c_str());
+		ImGui::Text("freemode : %s", freemode_sh_name.c_str());
+		ImGui::Text("fmmc_launcher : %s", fmmc_launcher_sh_name.c_str());
+		ImGui::Text("am_launcher : %s", am_launcher_sh_name.c_str());
 
 		ImGui::Spacing();
 
@@ -98,7 +98,7 @@ namespace big
 		int hosts_count = 0;
 		for (auto& pair : g_session.next_host_list.list)
 		{
-			ImGui::Text(std::format("{} ({})", pair.second.name.c_str(), pair.second.token).c_str());
+			ImGui::Text("%s (%d)", pair.second.name.c_str(), pair.second.token);
 			if (++hosts_count; hosts_count == 6)
 				break;
 		}

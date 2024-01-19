@@ -112,7 +112,7 @@ namespace big
 		template<ImVec4 green = ImVec4(0.0f, 1.0f, 0.0f, 1.0f), ImVec4 red = ImVec4(1.0f, 0.0f, 0.0f, 1.0f)>
 		static void overlay_indicator(const std::string_view text, bool value)
 		{
-			ImGui::Text(std::format("{}: ", text).data());
+			ImGui::Text("%s: ", text.data());
 			ImGui::SameLine(180);
 			ImGui::TextColored(value ? green : red, value ? "Enabled" : "Disabled");
 		}

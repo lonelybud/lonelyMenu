@@ -198,7 +198,7 @@ namespace big
 			ImGui::OpenPopup("##spawncarmodel2");
 		if (ImGui::BeginPopupModal("##spawncarmodel2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text(std::format("Are you sure you want to spawn {}", selected_vehicle_file).c_str());
+			ImGui::Text("Are you sure you want to spawn %s", selected_vehicle_file.c_str());
 			ImGui::Spacing();
 			if (ImGui::Button("Yes"))
 			{

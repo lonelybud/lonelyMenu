@@ -52,8 +52,7 @@ namespace big
 				ImGui::Text("DEAD");
 			else
 			{
-				ImGui::Text(std::format("Passengers: {}, {}", it->second.passenger_count, it->second.is_locked ? "LOCKED" : "FREE")
-				                .c_str());
+				ImGui::Text("Passengers: %d, %s", it->second.passenger_count, it->second.is_locked ? "LOCKED" : "FREE");
 
 				components::button("TP", [it] {
 					Vector3 location = ENTITY::GET_ENTITY_COORDS(it->first, 0);

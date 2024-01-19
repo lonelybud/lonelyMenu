@@ -93,9 +93,7 @@ namespace big
 					    ImGui::Text("Rockstar dev (dev dlc check, yim): %d", globalplayer_bd.IsRockstarDev);
 
 					    ImGui::Spacing();
-					    ImGui::Text(std::format("NAT Type: {}",
-					        get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type))
-					                    .c_str());
+					    ImGui::Text("NAT Type: %s", get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type));
 
 					    auto ip = (current_player == g_player_service->get_self()) ? current_player->get_net_data()->m_external_ip :
 					                                                                 current_player->get_ip_address();
@@ -132,14 +130,12 @@ namespace big
 						    if (cxn_type == 2)
 						    {
 							    ip = conn_peer->m_relay_address.m_relay_address;
-							    ImGui::Text(std::format("Relay IP Address: {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-							                    .c_str());
+							    ImGui::Text("Relay IP Address: %d.%d.%d.%d", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4);
 						    }
 						    else if (cxn_type == 3)
 						    {
 							    ip = conn_peer->m_peer_address.m_relay_address;
-							    ImGui::Text(std::format("Peer Relay IP : {}.{}.{}.{}", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4)
-							                    .c_str());
+							    ImGui::Text("Peer Relay IP : %d.%d.%d.%d", ip.m_field1, ip.m_field2, ip.m_field3, ip.m_field4);
 						    }
 						    if (cxn_type == 2 || cxn_type == 3)
 						    {
@@ -152,7 +148,7 @@ namespace big
 
 					    if (auto net_data = current_player->get_net_data())
 					    {
-						    ImGui::Text(std::format("Host token: {}", net_data->m_host_token).c_str());
+						    ImGui::Text("Host token: %d", net_data->m_host_token);
 						    ImGui::SameLine();
 						    if (ImGui::SmallButton("copy##copyHtoken"))
 							    ImGui::SetClipboardText(std::format("{}", net_data->m_host_token).c_str());
@@ -191,10 +187,10 @@ namespace big
 							    if (auto vehicle = current_player->get_current_vehicle(); vehicle != nullptr)
 							    {
 								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
-									    ImGui::Text(std::format("Vehicle: {}",
+									    ImGui::Text("Vehicle: %s",
 									        vehicle::get_vehicle_model_name(
-									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash]))
-									                    .c_str());
+									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash])
+									            .c_str());
 
 								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)
 									    ImGui::Text("Vehicle God Mod");
@@ -357,6 +353,12 @@ namespace big
 					persist_car_service::save_vehicle(veh, "", "");
 				else
 					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
+			});
+
+			components::ver_space();
+
+			components::button("Free aiming?", [current_player] {
+				g_notification_service->push(PLAYER::IS_PLAYER_FREE_AIMING(current_player->id()) ? "Free aiming" : "Aimbot", "");
 			});
 		}
 		ImGui::EndGroup();
