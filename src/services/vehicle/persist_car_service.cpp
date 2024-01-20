@@ -30,23 +30,47 @@ namespace big
 		file_stream.close();
 	}
 
-	Vehicle persist_car_service::load_vehicle(const std::filesystem::path file, const std::optional<Vector3>& spawn_coords)
+	void persist_car_service::load_vehicle(const std::optional<Vector3> spawn_coords, Ped ped)
 	{
-		std::ifstream file_stream(file);
-		nlohmann::json vehicle_json;
-
-		try
+		if (!g_vehicle.persist_vehicle_file.empty())
 		{
-			file_stream >> vehicle_json;
-			return spawn_vehicle_full(vehicle_json, spawn_coords);
-		}
-		catch (std::exception& e)
-		{
-			LOG(WARNING) << e.what();
-		}
+			const auto file = persist_car_service::check_vehicle_folder(g_vehicle.persist_vehicle_folder)
+			                      .get_file(g_vehicle.persist_vehicle_file)
+			                      .get_path();
 
-		file_stream.close();
-		return NULL;
+			if (!std::filesystem::exists(file))
+			{
+				g_notification_service->push_warning("Persist Car", "File does not exist.");
+				return;
+			}
+
+			std::ifstream file_stream(file);
+			nlohmann::json vehicle_json;
+			Vehicle vehicle;
+
+			try
+			{
+				file_stream >> vehicle_json;
+				vehicle = spawn_vehicle_full(vehicle_json, spawn_coords, ped);
+			}
+			catch (std::exception& e)
+			{
+				LOG(WARNING) << e.what();
+			}
+
+			file_stream.close();
+
+			if (vehicle == 0)
+				g_notification_service->push_error("Persist Car", std::format("Unable to spawn {}", g_vehicle.persist_vehicle_file), true);
+			else
+			{
+				g_notification_service->push_success("Persist Car", std::format("Spawned {}", g_vehicle.persist_vehicle_file), true);
+				g_vehicle.spawned_vehicles[vehicle] = {g_vehicle.persist_vehicle_file};
+				// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
+			}
+		}
+		else
+			g_notification_service->push_warning("Persist Car", "Select a file first");
 	}
 
 	void persist_car_service::delete_vehicle(std::string_view file_name, std::string folder_name)
@@ -85,7 +109,7 @@ namespace big
 			return;
 
 		std::string model_name = vehicle::get_vehicle_model_name(vehicle);
-		auto veh               = spawn_vehicle_full(get_vehicle_json(vehicle));
+		auto veh               = spawn_vehicle_full(get_vehicle_json(vehicle), std::nullopt, self::ped);
 
 		if (veh == 0)
 			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
@@ -97,86 +121,89 @@ namespace big
 		}
 	}
 
-	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, bool is_networked)
+	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped)
 	{
 		const Hash vehicle_hash = vehicle_json[vehicle_model_hash_key];
-		Vector3 spawn_location = spawn_coords.has_value() ? spawn_coords.value() : vehicle::get_spawn_location(vehicle_hash);
+		Vector3 spawn_location = spawn_coords.has_value() ? spawn_coords.value() : vehicle::get_spawn_location(vehicle_hash, ped);
 
-		auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0, is_networked);
+		auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0);
 
-		script::get_current()->yield();
-
-		VEHICLE::SET_VEHICLE_MOD_KIT(vehicle, 0);
-
-		if (!vehicle_json[tire_can_burst].is_null())
-			VEHICLE::SET_VEHICLE_TYRES_CAN_BURST(vehicle, vehicle_json[tire_can_burst]);
-
-		if (!vehicle_json[drift_tires].is_null())
-			VEHICLE::SET_DRIFT_TYRES(vehicle, vehicle_json[drift_tires]);
-
-		VEHICLE::SET_VEHICLE_COLOURS(vehicle, vehicle_json[primary_color_key], vehicle_json[secondary_color_key]);
-
-		if (!vehicle_json[custom_primary_color_key].is_null())
+		if (vehicle && vehicle != -1)
 		{
-			std::vector<int> primary_custom_color = vehicle_json[custom_primary_color_key];
-			VEHICLE::SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, primary_custom_color[0], primary_custom_color[1], primary_custom_color[2]);
-		}
+			script::get_current()->yield();
 
-		if (!vehicle_json[custom_secondary_color_key].is_null())
-		{
-			std::vector<int> secondary_custom_color = vehicle_json[custom_secondary_color_key];
-			VEHICLE::SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, secondary_custom_color[0], secondary_custom_color[1], secondary_custom_color[2]);
-		}
+			VEHICLE::SET_VEHICLE_MOD_KIT(vehicle, 0);
 
-		VEHICLE::SET_VEHICLE_WINDOW_TINT(vehicle, vehicle_json[vehicle_window_tint_key]);
-		VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, vehicle_json[plate_text_key].get<std::string>().c_str());
-		VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, vehicle_json[plate_text_index_key]);
-		VEHICLE::SET_VEHICLE_EXTRA_COLOURS(vehicle, vehicle_json[pearlescent_color_key], vehicle_json[wheel_color_key]);
+			if (!vehicle_json[tire_can_burst].is_null())
+				VEHICLE::SET_VEHICLE_TYRES_CAN_BURST(vehicle, vehicle_json[tire_can_burst]);
 
-		std::map<int, bool> vehicle_extras = vehicle_json[vehicle_extras_key];
-		for (const auto& [extra, extra_enabled] : vehicle_extras)
-			VEHICLE::SET_VEHICLE_EXTRA(vehicle, extra, extra_enabled);
+			if (!vehicle_json[drift_tires].is_null())
+				VEHICLE::SET_DRIFT_TYRES(vehicle, vehicle_json[drift_tires]);
 
-		if (!vehicle_json[vehicle_livery_key].is_null())
-			VEHICLE::SET_VEHICLE_LIVERY(vehicle, vehicle_json[vehicle_livery_key]);
+			VEHICLE::SET_VEHICLE_COLOURS(vehicle, vehicle_json[primary_color_key], vehicle_json[secondary_color_key]);
 
-		if (VEHICLE::IS_THIS_MODEL_A_CAR(ENTITY::GET_ENTITY_MODEL(vehicle)) || VEHICLE::IS_THIS_MODEL_A_BIKE(ENTITY::GET_ENTITY_MODEL(vehicle)))
-		{
-			VEHICLE::SET_VEHICLE_WHEEL_TYPE(vehicle, vehicle_json[wheel_type_key]);
-			for (int i = MOD_SPOILERS; i < MOD_LIGHTBAR; i++)
+			if (!vehicle_json[custom_primary_color_key].is_null())
 			{
-				const bool has_mod = !vehicle_json[mod_names[i]].is_null();
-				if (has_mod)
-				{
-					if (i == MOD_TYRE_SMOKE)
-					{
-						std::vector<int> tire_smoke_color = vehicle_json[tire_smoke_color_key];
-						VEHICLE::SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, tire_smoke_color[0], tire_smoke_color[1], tire_smoke_color[2]);
-						VEHICLE::TOGGLE_VEHICLE_MOD(vehicle, MOD_TYRE_SMOKE, true);
-					}
-					else if (vehicle_json[mod_names[i]].is_array())
-					{
-						std::vector<int> mod = vehicle_json[mod_names[i]];
-						VEHICLE::SET_VEHICLE_MOD(vehicle, i, mod[0], mod[1]);
-					}
-					else
-						VEHICLE::TOGGLE_VEHICLE_MOD(vehicle, i, true);
-				}
+				std::vector<int> primary_custom_color = vehicle_json[custom_primary_color_key];
+				VEHICLE::SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, primary_custom_color[0], primary_custom_color[1], primary_custom_color[2]);
 			}
 
-			std::vector<bool> neon_lights = vehicle_json[neon_lights_key];
-			for (int i = NEON_LEFT; i <= NEON_BACK; i++)
-				VEHICLE::SET_VEHICLE_NEON_ENABLED(vehicle, i, neon_lights[i]);
+			if (!vehicle_json[custom_secondary_color_key].is_null())
+			{
+				std::vector<int> secondary_custom_color = vehicle_json[custom_secondary_color_key];
+				VEHICLE::SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, secondary_custom_color[0], secondary_custom_color[1], secondary_custom_color[2]);
+			}
 
-			std::vector<int> neon_color = vehicle_json[neon_color_key];
-			VEHICLE::SET_VEHICLE_NEON_COLOUR(vehicle, neon_color[0], neon_color[1], neon_color[2]);
+			VEHICLE::SET_VEHICLE_WINDOW_TINT(vehicle, vehicle_json[vehicle_window_tint_key]);
+			VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, vehicle_json[plate_text_key].get<std::string>().c_str());
+			VEHICLE::SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, vehicle_json[plate_text_index_key]);
+			VEHICLE::SET_VEHICLE_EXTRA_COLOURS(vehicle, vehicle_json[pearlescent_color_key], vehicle_json[wheel_color_key]);
 
-			VEHICLE::SET_VEHICLE_EXTRA_COLOUR_5(vehicle, vehicle_json[interior_color_key]);
-			VEHICLE::SET_VEHICLE_EXTRA_COLOUR_6(vehicle, vehicle_json[dash_color_key]);
-			VEHICLE::SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, vehicle_json[headlight_color_key]);
+			std::map<int, bool> vehicle_extras = vehicle_json[vehicle_extras_key];
+			for (const auto& [extra, extra_enabled] : vehicle_extras)
+				VEHICLE::SET_VEHICLE_EXTRA(vehicle, extra, extra_enabled);
+
+			if (!vehicle_json[vehicle_livery_key].is_null())
+				VEHICLE::SET_VEHICLE_LIVERY(vehicle, vehicle_json[vehicle_livery_key]);
+
+			if (VEHICLE::IS_THIS_MODEL_A_CAR(ENTITY::GET_ENTITY_MODEL(vehicle)) || VEHICLE::IS_THIS_MODEL_A_BIKE(ENTITY::GET_ENTITY_MODEL(vehicle)))
+			{
+				VEHICLE::SET_VEHICLE_WHEEL_TYPE(vehicle, vehicle_json[wheel_type_key]);
+				for (int i = MOD_SPOILERS; i < MOD_LIGHTBAR; i++)
+				{
+					const bool has_mod = !vehicle_json[mod_names[i]].is_null();
+					if (has_mod)
+					{
+						if (i == MOD_TYRE_SMOKE)
+						{
+							std::vector<int> tire_smoke_color = vehicle_json[tire_smoke_color_key];
+							VEHICLE::SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, tire_smoke_color[0], tire_smoke_color[1], tire_smoke_color[2]);
+							VEHICLE::TOGGLE_VEHICLE_MOD(vehicle, MOD_TYRE_SMOKE, true);
+						}
+						else if (vehicle_json[mod_names[i]].is_array())
+						{
+							std::vector<int> mod = vehicle_json[mod_names[i]];
+							VEHICLE::SET_VEHICLE_MOD(vehicle, i, mod[0], mod[1]);
+						}
+						else
+							VEHICLE::TOGGLE_VEHICLE_MOD(vehicle, i, true);
+					}
+				}
+
+				std::vector<bool> neon_lights = vehicle_json[neon_lights_key];
+				for (int i = NEON_LEFT; i <= NEON_BACK; i++)
+					VEHICLE::SET_VEHICLE_NEON_ENABLED(vehicle, i, neon_lights[i]);
+
+				std::vector<int> neon_color = vehicle_json[neon_color_key];
+				VEHICLE::SET_VEHICLE_NEON_COLOUR(vehicle, neon_color[0], neon_color[1], neon_color[2]);
+
+				VEHICLE::SET_VEHICLE_EXTRA_COLOUR_5(vehicle, vehicle_json[interior_color_key]);
+				VEHICLE::SET_VEHICLE_EXTRA_COLOUR_6(vehicle, vehicle_json[dash_color_key]);
+				VEHICLE::SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, vehicle_json[headlight_color_key]);
+			}
+
+			vehicle::repair(vehicle);
 		}
-
-		vehicle::repair(vehicle);
 
 		return vehicle;
 	}

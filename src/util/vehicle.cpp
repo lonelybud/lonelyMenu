@@ -46,6 +46,12 @@ namespace big::vehicle
 		if (!heading)
 			heading = ENTITY::GET_ENTITY_HEADING(self::ped) + 90;
 
+		if (!entity::load_ground_at_3dcoord(location))
+		{
+			g_notification_service->push_warning("Vehicle Spawn", "Unable to load ground");
+			return -1;
+		}
+
 		auto veh = VEHICLE::CREATE_VEHICLE(hash, location.x, location.y, location.z, heading, is_networked, script_veh, false);
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);

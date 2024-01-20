@@ -34,10 +34,10 @@ namespace big
 
 	inline void steal_player_outfit(big::player_ptr plyr, bool save = false)
 	{
-		if (plyr->is_valid())
-		{
-			auto target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id());
+		Ped target;
 
+		if (plyr->is_valid() && (target = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id())))
+		{
 			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
 			{
 				g_notification_service->push_error("Steal Oufit", "Model not same.", true);

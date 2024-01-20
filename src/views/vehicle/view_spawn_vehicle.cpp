@@ -112,7 +112,7 @@ namespace big
 
 					if (g_vehicle.spawn_at_waypoint)
 					{
-						if (auto waypoint_location = blip::get_blip_location((int)BlipIcons::Waypoint, -1, true, true);
+						if (auto waypoint_location = blip::get_blip_location((int)BlipIcons::Waypoint, -1, true);
 						    waypoint_location.has_value())
 							spawn_location = waypoint_location.value();
 						else
@@ -123,6 +123,9 @@ namespace big
 
 					auto veh  = vehicle::spawn(selected_veh.m_hash, spawn_location);
 					auto name = vehicle::get_vehicle_model_name(selected_veh);
+
+					if (veh == -1)
+						return;
 
 					if (veh == 0)
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);

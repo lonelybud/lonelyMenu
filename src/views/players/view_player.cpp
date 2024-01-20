@@ -291,9 +291,11 @@ namespace big
 
 					return g_notification_service->push_error("Failed", "Player in interior. Try open map and try again.");
 				}
-
-				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
-				HUD::SET_NEW_WAYPOINT(location.x, location.y);
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+				{
+					Vector3 location = ENTITY::GET_ENTITY_COORDS(ped, 0);
+					HUD::SET_NEW_WAYPOINT(location.x, location.y);
+				}
 			});
 			ImGui::SameLine();
 			if (ImGui::Checkbox("Highlight", &highlight_player))
@@ -313,13 +315,17 @@ namespace big
 			ImGui::Spacing();
 
 			components::button("TP", [current_player] {
-				Vector3 location = ENTITY::GET_ENTITY_COORDS(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0);
-				teleport::to_coords(location);
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+				{
+					Vector3 location = ENTITY::GET_ENTITY_COORDS(ped, 0);
+					teleport::to_coords(location);
+				}
 			});
 			ImGui::SameLine();
 			components::button("TP IN VEH", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
-					teleport::into_vehicle(veh);
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+						teleport::into_vehicle(veh);
 			});
 		}
 		ImGui::EndGroup();
@@ -342,23 +348,36 @@ namespace big
 			components::ver_space();
 
 			components::button("Copy Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
-					persist_car_service::clone_ped_car(veh, current_player->get_name());
-				else
-					g_notification_service->push_error("Copy Vehicle", "Failed to get veh", false);
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+				{
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+						persist_car_service::clone_ped_car(veh, current_player->get_name());
+					else
+						g_notification_service->push_error("Copy Vehicle", "Failed to get veh", false);
+				}
 			});
 			ImGui::SameLine();
 			components::button("Save Vehicle", [current_player] {
-				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()), 0); veh)
-					persist_car_service::save_vehicle(veh, "", "");
-				else
-					g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+				{
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+						persist_car_service::save_vehicle(veh, "", "");
+					else
+						g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
+				}
 			});
 
 			components::ver_space();
 
 			components::button("Free aiming?", [current_player] {
 				g_notification_service->push(PLAYER::IS_PLAYER_FREE_AIMING(current_player->id()) ? "Free aiming" : "Aimbot", "");
+			});
+
+			components::ver_space();
+
+			components::button("Give Persist Veh", [current_player] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+					persist_car_service::load_vehicle(std::nullopt, ped);
 			});
 		}
 		ImGui::EndGroup();

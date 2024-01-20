@@ -13,9 +13,9 @@ namespace big
 
 		static void clone_ped_car(Vehicle vehicle, const char* ped_name = "");
 		static void save_vehicle(Vehicle vehicle, std::string_view file_name, std::string folder_name);
-		static Vehicle load_vehicle(const std::filesystem::path file, const std::optional<Vector3>& = std::nullopt);
+		static void load_vehicle(const std::optional<Vector3>, Ped);
 		static void delete_vehicle(std::string_view file_name, std::string folder_name);
-		static Vehicle spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords = std::nullopt, bool is_networked = true);
+		static Vehicle spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped);
 		static big::folder check_vehicle_folder(std::string folder_name = "");
 
 	private:

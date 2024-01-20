@@ -14,6 +14,9 @@ namespace big
 		bool vehicle_lock                    = false;
 		bool vehicle_lock_unlock_temporarily = false;
 
+		std::string persist_vehicle_folder;
+		std::string persist_vehicle_file;
+
 		struct SpawnedVehicle
 		{
 			std::string vehicle_name;
