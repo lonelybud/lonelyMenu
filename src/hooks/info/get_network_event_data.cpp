@@ -115,15 +115,16 @@ namespace big
 						if (auto victim_cped = reinterpret_cast<CPed*>(victim); victim_cped->m_player_info)
 							if (damage_data.m_victim_destroyed)
 							{
-								auto victim_player =
-								    g_player_service->get_by_host_token(victim_cped->m_player_info->m_net_player_data.m_host_token);
+								if (auto victim_player = g_player_service->get_by_host_token(
+								        victim_cped->m_player_info->m_net_player_data.m_host_token))
+								{
+									victim_player->last_killed_by = player;
 
-								victim_player->last_killed_by = player;
-
-								if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
-									g_notification_service->push_warning("Friend Killed",
-									    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
-									    true);
+									if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
+										g_notification_service->push_warning("Friend Killed",
+										    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
+										    true);
+								}
 
 								if (is_invincible(player))
 									g_reactions.killed_with_god.process(player);
