@@ -77,7 +77,7 @@ namespace big
 		});
 	}
 
-	static inline void self()
+	static inline void _self()
 	{
 		components::sub_title("Self");
 
@@ -239,7 +239,7 @@ namespace big
 		components::hor_space();
 		ImGui::BeginGroup();
 		{
-			self();
+			_self(); // name_self to avoid calling same
 			components::ver_space();
 			properties();
 		}

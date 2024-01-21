@@ -39,38 +39,6 @@ namespace big
 		}
 	}
 
-	void esp::draw_object(const rage::CDynamicEntity* object, ImDrawList* const draw_list, std::string name)
-	{
-		if (!object || !object->m_navigation)
-			return;
-
-		auto& object_pos = *object->m_navigation->get_position();
-
-		float screen_x, screen_y;
-
-		const float distance = math::calculate_distance_from_game_cam(object_pos);
-		const float multplr  = distance > g_esp.global_render_distance[1] ? -1.f : 6.17757f / distance;
-
-		if (multplr == -1.f || g_esp.global_render_distance[0] > distance)
-			return;
-
-		ImVec2 name_pos;
-
-		if (g_pointers->m_gta.m_get_screen_coords_for_world_coords(object_pos.data, &screen_x, &screen_y))
-		{
-			const auto esp_x = (float)*g_pointers->m_gta.m_resolution_x * screen_x;
-			const auto esp_y = (float)*g_pointers->m_gta.m_resolution_y * screen_y;
-			name_pos         = {esp_x, esp_y};
-		}
-		else
-		{
-			return;
-		}
-
-		draw_list->AddText(name_pos, g_esp.default_color, name.c_str());
-	}
-
-
 	void esp::draw()
 	{
 		if (!g_esp.enabled)

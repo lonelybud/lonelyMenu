@@ -1,19 +1,8 @@
 #pragma once
-#include "esp/view_esp.hpp"
 #include "gui/components/components.hpp"
-
-//Percentage of window space
-constexpr auto listbox_width  = 0.5f;
-constexpr auto listbox_height = 0.2f;
 
 namespace big
 {
-
-	inline ImVec2 get_listbox_dimensions()
-	{
-		return {750 * listbox_width, 1000 * listbox_height};
-	}
-
 	class view
 	{
 		inline static ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;

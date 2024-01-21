@@ -5,6 +5,7 @@
 #include "natives.hpp"
 #include "renderer.hpp"
 #include "script.hpp"
+#include "views/esp/view_esp.hpp"
 #include "views/view.hpp"
 
 #include <imgui.h>
