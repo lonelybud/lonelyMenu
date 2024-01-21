@@ -8,6 +8,7 @@
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
 #include "util/math.hpp"
+#include "util/player.hpp"
 
 #include <network/CNetGamePlayer.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
@@ -15,16 +16,6 @@
 
 namespace big
 {
-	inline bool is_player_driver_of_local_vehicle(Player sender)
-	{
-		auto plyr = g_player_service->get_by_id(sender);
-
-		if (!plyr || !plyr->get_current_vehicle() || !g_player_service->get_self()->get_current_vehicle())
-			return false;
-
-		return g_player_service->get_self()->get_current_vehicle()->m_driver == plyr->get_ped();
-	}
-
 	inline bool is_player_our_goon(Player sender)
 	{
 		auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
@@ -51,9 +42,7 @@ namespace big
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)
 	{
 		const auto args = scripted_game_event->m_args;
-
-		const auto hash        = static_cast<eRemoteEvent>(args[0]);
-		const auto player_name = player->get_name();
+		const auto hash = static_cast<eRemoteEvent>(args[0]);
 
 		auto plyr = g_player_service->get_by_id(player->m_player_id);
 
@@ -79,8 +68,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::ClearWantedLevel:
-			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level
-			    && !is_player_driver_of_local_vehicle(player->m_player_id))
+			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && player_is_not_driver(plyr))
 			{
 				g_reactions.clear_wanted_level.process(plyr);
 				return true;
@@ -172,7 +160,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::RemoteOffradar:
-			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && !is_player_driver_of_local_vehicle(plyr->id()))
+			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && player_is_not_driver(plyr))
 			{
 				g_reactions.remote_off_radar.process(plyr);
 				return true;
@@ -255,8 +243,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::Teleport:
-			if (!plyr->is_friend() && g_protections.script_events.force_teleport
-			    && !is_player_driver_of_local_vehicle(player->m_player_id))
+			if (!plyr->is_friend() && g_protections.script_events.force_teleport && player_is_not_driver(plyr))
 			{
 				g_reactions.force_teleport.process(plyr);
 				return true;
@@ -264,17 +251,15 @@ namespace big
 			break;
 		case eRemoteEvent::TransactionError: g_reactions.transaction_error.process(plyr); return true;
 		case eRemoteEvent::VehicleKick:
-			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick)
+			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick && player_is_not_driver(plyr))
 			{
 				g_reactions.vehicle_kick.process(plyr);
 				return true;
 			}
 			break;
-		case eRemoteEvent::NetworkBail:
-			g_reactions.network_bail.process(plyr);
-			return true;
+		case eRemoteEvent::NetworkBail: g_reactions.network_bail.process(plyr); return true;
 		case eRemoteEvent::TeleportToWarehouse:
-			if (g_protections.script_events.teleport_to_warehouse && !is_player_driver_of_local_vehicle(player->m_player_id))
+			if (!plyr->is_friend() && g_protections.script_events.teleport_to_warehouse && player_is_not_driver(plyr))
 			{
 				g_reactions.teleport_to_warehouse.process(plyr);
 				return true;
@@ -344,7 +329,7 @@ namespace big
 			if (is_player_our_boss(plyr->id()))
 				break;
 
-			if (is_player_driver_of_local_vehicle(plyr->id()))
+			if (!player_is_not_driver(plyr))
 				break;
 
 			if (!plyr->get_ped() || math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()) > 75.0f)

@@ -50,4 +50,20 @@ namespace big
 				outfit::set_self_comps_props({}, {}, target);
 		}
 	}
+
+	inline bool player_is_not_driver(player_ptr target_plyr)
+	{
+		if (!g_local_player->m_vehicle || !g_local_player->m_vehicle->m_driver)
+			return true;
+
+		if (g_local_player->m_vehicle->m_driver->m_player_info               // driver is a player
+		    && g_local_player->m_vehicle->m_driver != target_plyr->get_ped() // target player not driver
+		                                                                     // driver is me or some other player
+		    && (g_local_player->m_vehicle->m_driver == g_local_player
+		        || g_player_service->get_by_host_token(
+		            g_local_player->m_vehicle->m_driver->m_player_info->m_net_player_data.m_host_token)))
+			return true;
+
+		return false;
+	}
 }

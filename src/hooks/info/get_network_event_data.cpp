@@ -40,17 +40,6 @@ namespace big
 		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].CayoPericoFlags & 1;
 	}
 
-	inline bool is_using_rc_vehicle(big::player_ptr player)
-	{
-		if (misc::has_bit_set(&scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[player->id()].PropertyData.PAD_0365, 29))
-			return true; // bandito
-
-		if (misc::has_bit_set(&scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[player->id()].PropertyData.ArcadeData.AppearanceBitset2, 16))
-			return true; // tank
-
-		return false;
-	}
-
 	inline bool is_using_orbital_cannon(big::player_ptr player)
 	{
 		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].OrbitalBitset.IsSet(eOrbitalBitset::kOrbitalCannonActive);
@@ -75,71 +64,36 @@ namespace big
 			    || damage_data.m_weapon_used == RAGE_JOAAT("VEHICLE_WEAPON_MINE_EMP") || damage_data.m_weapon_used == RAGE_JOAAT("VEHICLE_WEAPON_MINE_SPIKE"))
 				break;
 
-			if (auto damager = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_damager_index);
-			    damager && damager->m_entity_type == 4 && reinterpret_cast<CPed*>(damager)->m_player_info)
-			{
-				if (auto player = g_player_service->get_by_host_token(
-				        reinterpret_cast<CPed*>(damager)->m_player_info->m_net_player_data.m_host_token))
-				{
-					if (PLAYER::IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(player->id()))
+			if (auto damager = reinterpret_cast<CPed*>(g_pointers->m_gta.m_handle_to_ptr(damage_data.m_damager_index));
+			    damager && damager->m_entity_type == 4 && damager->m_player_info && damage_data.m_victim_destroyed)
+				if (auto victim = reinterpret_cast<CPed*>(g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index));
+				    victim && victim->m_entity_type == 4 && damager != victim && victim->m_player_info)
+					if (auto player = g_player_service->get_by_host_token(damager->m_player_info->m_net_player_data.m_host_token))
 					{
-						if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].PlayerBlip.PlayerVehicleBlipType == eBlipType::SUBMARINE)
-							break;
+						if (auto victim_player =
+						        g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token))
+						{
+							victim_player->last_killed_by = player;
 
-						if (is_using_rc_vehicle(player))
-							break;
+							if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
+								g_notification_service->push_warning("Friend Killed",
+								    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
+								    true);
+						}
+
+						if (is_invincible(player))
+							g_reactions.killed_with_god.process(player);
+
+						if (is_invisible(player))
+							g_reactions.killed_with_invis.process(player);
+
+						if (is_hidden_from_player_list(player))
+							g_reactions.killed_when_hidden.process(player);
+
+						if (is_using_orbital_cannon(player))
+							g_reactions.Killed_with_orbital.process(player);
 					}
-					else
-					{
-						if (auto vehicle = player->get_current_vehicle())
-							if (auto model_info = vehicle->m_model_info)
-								if (model_info->m_hash == RAGE_JOAAT("rcbandito") || model_info->m_hash == RAGE_JOAAT("minitank")
-								    || model_info->m_hash == RAGE_JOAAT("kosatka"))
-									break;
-					}
 
-					if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
-						break;
-
-					if (!NETWORK::NETWORK_ARE_PLAYERS_IN_SAME_TUTORIAL_SESSION(self::id, player->id()))
-						break;
-
-					if (globals::get_interior_from_player(player->id()) != 0)
-						break;
-
-					if (player->get_player_info() && player->get_player_info()->m_game_state == eGameState::InMPCutscene)
-						break;
-
-					if (auto victim = g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index);
-					    victim && damager != victim && victim->m_entity_type == 4)
-						if (auto victim_cped = reinterpret_cast<CPed*>(victim); victim_cped->m_player_info)
-							if (damage_data.m_victim_destroyed)
-							{
-								if (auto victim_player = g_player_service->get_by_host_token(
-								        victim_cped->m_player_info->m_net_player_data.m_host_token))
-								{
-									victim_player->last_killed_by = player;
-
-									if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
-										g_notification_service->push_warning("Friend Killed",
-										    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
-										    true);
-								}
-
-								if (is_invincible(player))
-									g_reactions.killed_with_god.process(player);
-
-								if (is_invisible(player))
-									g_reactions.killed_with_invis.process(player);
-
-								if (is_hidden_from_player_list(player))
-									g_reactions.killed_when_hidden.process(player);
-
-								if (is_using_orbital_cannon(player))
-									g_reactions.Killed_with_orbital.process(player);
-							}
-				}
-			}
 			break;
 		}
 		}

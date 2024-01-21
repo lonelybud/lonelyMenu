@@ -13,8 +13,7 @@
 namespace big
 {
 	gui::gui() :
-	    m_is_open(false),
-	    m_override_mouse(false)
+	    m_is_open(false)
 	{
 		g_renderer->add_dx_callback(view::gta_data, -1);
 		g_renderer->add_dx_callback(view::notifications, -2);
@@ -50,13 +49,6 @@ namespace big
 	void gui::toggle(bool toggle)
 	{
 		m_is_open = toggle;
-
-		toggle_mouse();
-	}
-
-	void gui::override_mouse(bool override)
-	{
-		m_override_mouse = override;
 
 		toggle_mouse();
 	}
@@ -173,7 +165,7 @@ namespace big
 
 	void gui::script_on_tick()
 	{
-		if (g_gui->m_is_open || g_gui->m_override_mouse)
+		if (g_gui->m_is_open)
 		{
 			for (uint8_t i = 0; i <= 6; i++)
 				PAD::DISABLE_CONTROL_ACTION(2, i, true);
@@ -235,7 +227,7 @@ namespace big
 
 	void gui::toggle_mouse()
 	{
-		if (m_is_open || g_gui->m_override_mouse)
+		if (m_is_open)
 		{
 			ImGui::GetIO().MouseDrawCursor = true;
 			ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;

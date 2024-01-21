@@ -82,7 +82,7 @@ namespace big
 			}
 			//
 
-			auto title = this->type == reaction_type::modder_detection ? "Modder Detection" : "Reaction";
+			auto title = this->type == reaction_type::modder_detection ? "Modder Detection" : m_event_name;
 			if (log && should_log)
 				LOG(WARNING) << title << ": " << str;
 			if (notify)

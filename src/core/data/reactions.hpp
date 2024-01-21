@@ -99,7 +99,7 @@ namespace big
 		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", "Received Transaction Error", true, true, false};
 		reaction vehicle_kick{reaction_type::none, reaction_sub_type::vehicle_kick, "Vehicle Kick", "Received Vehicle Kick", false, true, false, 2};
 		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", "Received Teleport to warehouse", true, true, false};
-		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", "Received Start Activity", true, true, false};
+		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", "Received Start Activity", false, true, false, 1};
 		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", "Received Start Script", true, true, false};
 		reaction trigger_business_raid{reaction_type::none, reaction_sub_type::trigger_business_raid, "Trigger Business Raid", "Tried to Trigger Business Raid", true, true, false};
 		reaction turn_into_beast{reaction_type::none, reaction_sub_type::turn_into_beast, "Turn Into Beast", "Received Turn Into Beast", true, true, false};

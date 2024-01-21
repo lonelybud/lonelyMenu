@@ -81,7 +81,6 @@ namespace self
 	inline Player id;
 	inline Vector3 pos;
 	inline Vehicle veh;
-	inline std::unordered_set<int> spawned_vehicles;
 }
 
 template<size_t N>

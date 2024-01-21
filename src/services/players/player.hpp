@@ -29,8 +29,6 @@ namespace big
 		friend class player_service;
 
 		CNetGamePlayer* m_net_game_player = nullptr;
-		uint64_t m_host_token;
-		std::string m_identifier;
 		bool m_is_friend;
 
 	public:
@@ -82,6 +80,7 @@ namespace big
 
 		bool m_block_permanent_vehicles = false;
 
+		uint64_t m_host_token;
 		bool is_modder = false;
 		std::map<reaction*, int> infractions;
 		bool is_blocked           = false;

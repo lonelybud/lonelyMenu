@@ -315,11 +315,12 @@ namespace big
 			ImGui::Spacing();
 
 			components::button("TP", [current_player] {
-				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
-				{
-					Vector3 location = ENTITY::GET_ENTITY_COORDS(ped, 0);
-					teleport::to_coords(location);
-				}
+				if (globals::get_interior_from_player(current_player->id()) == 0)
+					if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+					{
+						Vector3 location = ENTITY::GET_ENTITY_COORDS(ped, 0);
+						teleport::to_coords(location);
+					}
 			});
 			ImGui::SameLine();
 			components::button("TP IN VEH", [current_player] {
