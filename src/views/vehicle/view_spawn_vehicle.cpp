@@ -4,6 +4,7 @@
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/blip.hpp"
+#include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -131,12 +132,15 @@ namespace big
 						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
 					else
 					{
+						vehicle::repair(veh);
+
+						if (g_vehicle.spawn_inside)
+							teleport::into_vehicle(veh);
+
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
 						g_vehicle.spawned_vehicles[veh] = {name};
+						// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 					}
-
-					vehicle::repair(veh);
-					// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 				});
 
 				open_modal = false;
@@ -163,6 +167,8 @@ namespace big
 		ImGui::Spacing();
 
 		ImGui::Checkbox("Spawn at waypoint", &g_vehicle.spawn_at_waypoint);
+		ImGui::SameLine();
+		ImGui::Checkbox("Tp inside", &g_vehicle.spawn_inside);
 
 		ImGui::Spacing();
 

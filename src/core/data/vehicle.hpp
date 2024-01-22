@@ -7,6 +7,7 @@ namespace big
 		bool god_mode          = false;
 		bool veh_boost         = false;
 		bool spawn_at_waypoint = false;
+		bool spawn_inside      = false;
 		bool force_rocket      = false;
 		bool unlimited_weapons = false;
 		bool block_homing      = false;

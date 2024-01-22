@@ -370,12 +370,6 @@ namespace big
 
 			components::ver_space();
 
-			components::button("Free aiming?", [current_player] {
-				g_notification_service->push(PLAYER::IS_PLAYER_FREE_AIMING(current_player->id()) ? "Free aiming" : "Aimbot", "");
-			});
-
-			components::ver_space();
-
 			components::button("Give Persist Veh", [current_player] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
 					persist_car_service::load_vehicle(std::nullopt, ped);

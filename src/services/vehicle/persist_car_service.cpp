@@ -7,6 +7,7 @@
 #include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/misc.hpp"
+#include "util/teleport.hpp"
 #include "util/time.hpp"
 #include "util/vehicle.hpp"
 #include "vehicle/CVehicle.hpp"
@@ -60,12 +61,19 @@ namespace big
 
 			file_stream.close();
 
+			if (vehicle == -1)
+				return;
+
 			if (vehicle == 0)
 				g_notification_service->push_error("Persist Car", std::format("Unable to spawn {}", g_vehicle.persist_vehicle_file), true);
 			else
 			{
 				g_notification_service->push_success("Persist Car", std::format("Spawned {}", g_vehicle.persist_vehicle_file), true);
 				g_vehicle.spawned_vehicles[vehicle] = {g_vehicle.persist_vehicle_file};
+
+				if (g_vehicle.spawn_inside)
+					teleport::into_vehicle(vehicle);
+
 				// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
 			}
 		}
@@ -110,6 +118,9 @@ namespace big
 
 		std::string model_name = vehicle::get_vehicle_model_name(vehicle);
 		auto veh               = spawn_vehicle_full(get_vehicle_json(vehicle), std::nullopt, self::ped);
+
+		if (veh == -1)
+			return;
 
 		if (veh == 0)
 			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);

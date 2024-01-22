@@ -34,8 +34,8 @@ namespace big
 		{
 			if (current_veh != self::veh)
 			{
-				if (current_veh != -1)
-					selected_slot = -1; // dont change selected slot when refreshing the current vehicle state
+				if (current_veh != -1) // dont change selected slot when refreshing the current vehicle state
+					selected_slot = -1;
 
 				current_veh   = self::veh;
 				preparing_veh = true;

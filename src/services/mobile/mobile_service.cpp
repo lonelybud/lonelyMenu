@@ -4,6 +4,7 @@
 #include "natives.hpp"
 #include "script.hpp"
 #include "util/mobile.hpp"
+#include "util/strings.hpp"
 
 namespace big
 {
@@ -13,7 +14,7 @@ namespace big
 	{
 		m_plate = m_vehicle_idx.at(1).as<char*>();
 		m_hash  = *m_vehicle_idx.at(66).as<Hash*>();
-		m_name = std::format("{} ({})", HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(m_hash)), m_plate);
+		m_name = toLowercase(std::format("{} ({})", HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(m_hash)), m_plate));
 	}
 
 	std::string personal_vehicle::get_display_name() const
@@ -85,50 +86,17 @@ namespace big
 
 	void mobile_service::register_vehicles()
 	{
-		const auto array_size = *scr_globals::vehicle_global.as<int*>();
-		for (int i = 0; i < array_size; i++)
+		m_personal_vehicles.clear();
+
+		for (int i = 0; i < *scr_globals::vehicle_global.as<int*>(); ++i)
 		{
-			if (i % 50 == 0)
-				script::get_current()->yield();
-
 			auto veh_idx_global = scr_globals::vehicle_global.at(i, 142);
-
-			const auto hash   = *veh_idx_global.at(66).as<Hash*>();
-			const auto& it    = m_pv_lookup.find(i);
-			const auto exists = it != m_pv_lookup.end();
+			const auto hash     = *veh_idx_global.at(66).as<Hash*>();
 
 			// double check if model is a vehicle
 			if (STREAMING::IS_MODEL_A_VEHICLE(hash))
-			{
-				auto veh = std::make_unique<personal_vehicle>(i, veh_idx_global);
-
-				if (exists)
-				{
-					// vehicle name is no longer the same, update the vehicle at that index
-					if (veh->get_display_name() != it->second)
-					{
-						m_personal_vehicles.erase(it->second);
-
-						// update & add
-						it->second = veh->get_display_name();
-						m_personal_vehicles.emplace(veh->get_display_name(), std::move(veh));
-					}
-
-					continue;
-				}
-
-				m_pv_lookup.emplace(i, veh->get_display_name());                      // update lookup table
-				m_personal_vehicles.emplace(veh->get_display_name(), std::move(veh)); // add new vehicle
-
-				continue;
-			}
-
-			// vehicle existed at some point but no longer does
-			if (exists)
-			{
-				m_personal_vehicles.erase(it->second);
-				m_pv_lookup.erase(i);
-			}
+				if (auto veh = std::make_unique<personal_vehicle>(i, veh_idx_global); !veh->is_blacklisted_vehicle())
+					m_personal_vehicles.emplace(veh->get_display_name(), std::move(veh));
 		}
 	}
 }

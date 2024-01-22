@@ -10,6 +10,14 @@
 
 namespace big
 {
+	static std::vector<std::string> vehicle_folders, vehicle_files;
+
+	static void refresh_list()
+	{
+		vehicle_folders = persist_car_service::list_sub_folders();
+		vehicle_files   = persist_car_service::list_files(g_vehicle.persist_vehicle_folder);
+	}
+
 	inline void save_vehicle_button(char* vehicle_file_name_input, const char* save_folder)
 	{
 		components::button("Save Vehicle", [vehicle_file_name_input, save_folder] {
@@ -24,6 +32,8 @@ namespace big
 				const auto vehicle_file_name = std::string(vehicle_file_name_input).append(".json");
 				persist_car_service::save_vehicle(self::veh, vehicle_file_name, save_folder);
 				ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
+
+				refresh_list();
 			}
 		});
 		ImGui::SameLine();
@@ -38,7 +48,6 @@ namespace big
 
 	void view::persist_car()
 	{
-		static std::vector<std::string> vehicle_folders, vehicle_files;
 		static std::string file_name_to_delete{};
 
 		if (!file_name_to_delete.empty())
@@ -54,6 +63,7 @@ namespace big
 			{
 				persist_car_service::delete_vehicle(file_name_to_delete, g_vehicle.persist_vehicle_folder);
 				file_name_to_delete.clear();
+				refresh_list();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -67,8 +77,7 @@ namespace big
 		}
 
 		components::button("Refresh List", [] {
-			vehicle_folders = persist_car_service::list_sub_folders();
-			vehicle_files   = persist_car_service::list_files(g_vehicle.persist_vehicle_folder);
+			refresh_list();
 		});
 
 		ImGui::SetNextItemWidth(300.f);
@@ -81,7 +90,10 @@ namespace big
 			for (std::string folder_name : vehicle_folders)
 			{
 				if (ImGui::Selectable(folder_name.c_str(), g_vehicle.persist_vehicle_folder == folder_name))
+				{
 					g_vehicle.persist_vehicle_folder = folder_name;
+					refresh_list();
+				}
 			}
 
 			ImGui::EndCombo();

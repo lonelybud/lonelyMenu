@@ -28,7 +28,6 @@ namespace big
 	class mobile_service final
 	{
 		std::map<std::string, std::unique_ptr<personal_vehicle>> m_personal_vehicles;
-		std::map<int, std::string> m_pv_lookup;
 
 	public:
 		mobile_service();
