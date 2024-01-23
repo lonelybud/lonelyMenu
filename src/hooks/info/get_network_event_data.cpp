@@ -90,7 +90,7 @@ namespace big
 						if (is_hidden_from_player_list(player))
 							g_reactions.killed_when_hidden.process(player);
 
-						if (is_using_orbital_cannon(player))
+						if (is_using_orbital_cannon(player) && globals::get_interior_from_player(player->id()) == 0)
 							g_reactions.Killed_with_orbital.process(player);
 					}
 

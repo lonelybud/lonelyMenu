@@ -25,7 +25,8 @@ namespace big::blip
 
 		if (load_ground && !entity::load_ground_at_3dcoord(location))
 		{
-			g_notification_service->push_warning("Blip", "Unable to load ground");
+			if (notify)
+				g_notification_service->push_warning("Blip", "Unable to load ground");
 			return std::nullopt;
 		}
 

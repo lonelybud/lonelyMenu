@@ -1,3 +1,4 @@
+#include "backend/looped_command.hpp"
 #include "core/data/misc.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/outfit.hpp"
@@ -7,6 +8,8 @@ namespace big
 {
 	static outfit::components_t components;
 	static outfit::props_t props;
+	static std::vector<std::string> outfits_folder, outfits;
+	static std::string selected_folder, selected_file;
 
 	static void refresh_outfit_state()
 	{
@@ -29,9 +32,23 @@ namespace big
 		}
 	}
 
+	static void refresh_list()
+	{
+		outfits_folder.clear();
+		outfits.clear();
+
+		for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder().get_path()))
+			if (directory_entry.is_directory())
+				outfits_folder.push_back(directory_entry.path().filename().generic_string());
+
+		for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder(selected_folder).get_path()))
+			if (directory_entry.path().extension() == ".json")
+				outfits.push_back(directory_entry.path().filename().generic_string());
+	}
+
 	void view::outfit_editor()
 	{
-		ImGui::Checkbox("Disable clothing validation", &g_misc.disable_clothing_validation);
+		components::command_checkbox<"disable_clothing_validation">();
 		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {
@@ -108,9 +125,7 @@ namespace big
 		ImGui::Spacing();
 
 		static char outfit_name[MAX_PATH] = {};
-		static std::string selected_folder, selected_file;
-		static std::vector<std::string> outfits_folder, outfits;
-		auto folder_display = selected_folder.empty() ? "Root" : selected_folder.c_str();
+		auto folder_display               = selected_folder.empty() ? "Root" : selected_folder.c_str();
 
 		ImGui::SetNextItemWidth(300);
 		components::input_text("###outfit_name", outfit_name, sizeof(outfit_name));
@@ -126,21 +141,13 @@ namespace big
 			}
 
 			outfit::save_outfit(self::ped, str + ".json", selected_folder);
+			refresh_list();
 		});
 
 		ImGui::Spacing();
 
 		components::button("Refresh list", [] {
-			outfits_folder.clear();
-			outfits.clear();
-
-			for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder().get_path()))
-				if (directory_entry.is_directory())
-					outfits_folder.push_back(directory_entry.path().filename().generic_string());
-
-			for (const auto& directory_entry : std::filesystem::directory_iterator(outfit::get_folder(selected_folder).get_path()))
-				if (directory_entry.path().extension() == ".json")
-					outfits.push_back(directory_entry.path().filename().generic_string());
+			refresh_list();
 		});
 		ImGui::SameLine();
 		components::button("Apply Selected", [] {
@@ -157,6 +164,8 @@ namespace big
 					if (!g_misc.disable_clothing_validation)
 					{
 						g_misc.disable_clothing_validation = true;
+						// dynamic_cast<looped_command*>(command::get(rage::consteval_joaat("disable_clothing_validation")))
+						//     ->refresh();
 						g_notification_service->push_success("Clothing Validation", "Disabled automatically.");
 					}
 
@@ -180,6 +189,7 @@ namespace big
 					g_notification_service->push_warning("Delete Outfit Failed", "File does not exist.");
 
 				selected_file = "";
+				refresh_list();
 			}
 		});
 

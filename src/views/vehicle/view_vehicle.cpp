@@ -1,3 +1,4 @@
+#include "core/data/auto_drive.hpp"
 #include "core/data/vehicle.hpp"
 #include "core/enums.hpp"
 #include "services/vehicle/persist_car_service.hpp"
@@ -6,6 +7,7 @@
 #include "views/view.hpp"
 
 constexpr int wheelIndexes[4]{0, 1, 4, 5};
+const char* driving_style_names[]{"Law-Abiding", "The Road Is Yours"};
 constexpr auto MAX_VEHICLE_DOORS = 6;
 const char* const doornames[MAX_VEHICLE_DOORS]{
     "D_1",
@@ -140,6 +142,35 @@ namespace big
 			components::hor_space();
 			ImGui::BeginGroup();
 			{
+				ImGui::BeginGroup();
+				{
+					components::sub_title("Auto Drive");
+
+					float auto_drive_speed_in_miph = vehicle::mps_to_miph(g_auto_drive.auto_drive_speed);
+
+					ImGui::PushItemWidth(200);
+					if (ImGui::SliderFloat("Top Speed (mi/h)", &auto_drive_speed_in_miph, 2.2369f, 335.535f, "%.1f"))
+						g_auto_drive.auto_drive_speed = vehicle::miph_to_mps(auto_drive_speed_in_miph);
+
+					if (ImGui::BeginCombo("Driving Style", driving_style_names[(int)g_auto_drive.auto_drive_style]))
+					{
+						for (int i = 0; i < 2; i++)
+							if (ImGui::Selectable(driving_style_names[i], g_auto_drive.auto_drive_style == (AutoDriveStyle)i))
+								g_auto_drive.auto_drive_style = (AutoDriveStyle)i;
+						ImGui::EndCombo();
+					}
+					ImGui::PopItemWidth();
+
+					ImGui::BeginDisabled(g_auto_drive.is_auto_driving);
+					if (components::button("To Objective"))
+						g_auto_drive.auto_drive_destination = AutoDriveDestination::OBJECTITVE;
+					ImGui::SameLine();
+					if (components::button("To Waypoint"))
+						g_auto_drive.auto_drive_destination = AutoDriveDestination::WAYPOINT;
+					ImGui::EndDisabled();
+				}
+				ImGui::EndGroup();
+				components::ver_space();
 				ImGui::BeginGroup();
 				{
 					components::sub_title("Lowrider Controls");

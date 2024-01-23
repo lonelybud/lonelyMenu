@@ -7,6 +7,15 @@
 
 namespace big::vehicle
 {
+	inline float mps_to_miph(float mps)
+	{
+		return mps * 2.2369f;
+	}
+	inline float miph_to_mps(float miph)
+	{
+		return miph / 2.2369f;
+	}
+
 	inline void set_plate(Vehicle veh, const char* plate)
 	{
 		if (!entity::take_control_of(veh))

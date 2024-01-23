@@ -8,9 +8,7 @@ class CVehicleDriveByAnimInfo;
 
 #include <vehicle/CGetPedSeatReturnClass.hpp>
 #include <vehicle/CVehicleDriveByAnimInfo.hpp>
-#include <vehicle/CVehicleDriveByMetadataMgr.hpp>
 #include <vehicle/CVehicleModelInfo.hpp>
-#include <vehicle/CVehicleSeatMetadataMgr.hpp>
 
 namespace big
 {

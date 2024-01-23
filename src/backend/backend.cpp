@@ -12,7 +12,6 @@
 #include "services/context_menu/context_menu_service.hpp"
 #include "services/custom_teleport/custom_teleport_service.hpp"
 #include "services/known_players.hpp"
-#include "services/tunables/tunables_service.hpp"
 #include "util/player.hpp"
 
 namespace big
@@ -47,12 +46,7 @@ namespace big
 		{
 			looped::hud_disable_input();
 
-			if (g_misc.disable_clothing_validation)
-			{
-				*scr_globals::reset_clothing.as<PBOOL>() = FALSE;
-				if (auto tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION")))
-					*tunable = TRUE;
-			}
+			looped::vehicle_auto_drive();
 
 			script::get_current()->yield();
 		}
@@ -131,6 +125,6 @@ namespace big
 
 	void backend::tunables_script()
 	{
-		g_tunables_service->run_script();
+		// g_tunables_service->run_script();
 	}
 }
