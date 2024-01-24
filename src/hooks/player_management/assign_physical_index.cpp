@@ -104,14 +104,6 @@ namespace big
 								known_player_nm::toggle(plyr, true);
 						}
 
-						if (g_session.lock_session && g_player_service->get_self()->is_host() && !plyr->is_friend()
-						    && *g_pointers->m_gta.m_is_session_started)
-						{
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(plyr);
-							g_notification_service->push_warning("Lock Session", std::format("Player {} denied entry.", player_name), true);
-							return;
-						}
-
 						if (is_cheater)
 							g_reactions.cheater_joined.process(plyr);
 

@@ -31,7 +31,7 @@ namespace big
 			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
 			auto name        = net_data->m_name;
 
-			bool kick_player = false;
+			bool kick_player = this->type == reaction_type::kick_player;
 
 			if (!player->infractions.contains(this))
 				player->infractions[this] = 1;

@@ -98,7 +98,7 @@ namespace big
 		int hosts_count = 0;
 		for (auto& pair : g_session.next_host_list.list)
 		{
-			ImGui::Text("%s (%lu)", pair.second.name.c_str(), pair.second.token);
+			ImGui::Text("%s (%llu)", pair.second.name.c_str(), pair.second.token);
 			if (++hosts_count; hosts_count == 6)
 				break;
 		}

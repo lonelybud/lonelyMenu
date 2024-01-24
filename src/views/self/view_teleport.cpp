@@ -1,3 +1,4 @@
+#include "util/mobile.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
 
@@ -15,7 +16,11 @@ namespace big
 		components::button("Objective", [] {
 			teleport::to_objective(false);
 		});
-
+		ImGui::SameLine();
+		components::button("Tp to PV", [] {
+			if (Vehicle veh = mobile::mechanic::get_personal_vehicle(); self::veh != veh)
+				teleport::into_vehicle(veh);
+		});
 		ImGui::SeparatorText("Direction");
 
 		ImGui::Spacing();

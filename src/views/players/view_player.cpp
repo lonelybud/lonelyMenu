@@ -146,7 +146,7 @@ namespace big
 						    }
 					    }
 
-					    ImGui::Text("Host token: %lu", current_player->m_host_token);
+					    ImGui::Text("Host token: %llu", current_player->m_host_token);
 					    ImGui::SameLine();
 					    if (ImGui::SmallButton("copy##copyHtoken"))
 						    ImGui::SetClipboardText(std::format("{}", current_player->m_host_token).c_str());

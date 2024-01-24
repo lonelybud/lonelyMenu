@@ -29,12 +29,6 @@ namespace big
 	{
 		components::sub_title("Game");
 
-		if (const auto network = gta_util::get_network())
-		{
-			ImGui::Text("No of bosses: %d", network->m_num_bosses);
-			ImGui::Spacing();
-		}
-
 		components::command_checkbox<"pedsignore">();
 
 		ImGui::Spacing();

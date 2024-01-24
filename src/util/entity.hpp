@@ -27,7 +27,7 @@ namespace big::entity
 			if (hnd && hnd->m_net_object && network_has_control_of_entity(hnd->m_net_object))
 				return true;
 
-			if (n_of_try > 1)
+			if (n_of_try > 1 && hnd && hnd->m_net_object)
 			{
 				g_pointers->m_gta.m_request_control(hnd->m_net_object);
 				script::get_current()->yield();
