@@ -120,7 +120,6 @@ namespace big
 		static int nt_query_virtual_memory(void* _this, HANDLE handle, PVOID base_addr, int info_class, MEMORY_BASIC_INFORMATION* info, int size, size_t* return_len);
 		static int queue_dependency(void* a1, int a2, int64_t dependency);
 		static bool http_start_request(void* request, const char* uri);
-		static int netfilter_handle_message(__int64 filter, char* message, int flags);
 		static bool send_chat_message(void* team_mgr, rage::rlGamerInfo* local_gamer_info, char* message, bool is_team);
 
 		// toxic

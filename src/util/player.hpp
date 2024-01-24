@@ -51,18 +51,15 @@ namespace big
 		}
 	}
 
-	inline bool player_is_not_driver(player_ptr target_plyr)
+	inline bool player_is_driver(player_ptr target_plyr)
 	{
-		if (!g_local_player->m_vehicle || !g_local_player->m_vehicle->m_driver)
-			return true;
+		auto driver =
+		    g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver;
 
-		if (g_local_player->m_vehicle->m_driver->m_player_info               // driver is a player
-		    && g_local_player->m_vehicle->m_driver != target_plyr->get_ped() // target player not driver
-		                                                                     // driver is me or some other player
-		    && (g_local_player->m_vehicle->m_driver == g_local_player
-		        || g_player_service->get_by_host_token(
-		            g_local_player->m_vehicle->m_driver->m_player_info->m_net_player_data.m_host_token)))
-			return true;
+		// driver is a player present in session
+		if (driver && driver->m_player_info
+		    && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
+			return driver == target_plyr->get_ped();
 
 		return false;
 	}

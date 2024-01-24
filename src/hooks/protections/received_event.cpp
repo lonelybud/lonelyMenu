@@ -176,7 +176,7 @@ namespace big
 			if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() // If we're in Freemode
 			    && !plyr->is_friend() && g_protections.request_control_event && g_local_player->m_vehicle
 			    && g_local_player->m_vehicle->m_net_object && g_local_player->m_vehicle->m_net_object->m_object_id == net_id //The request is for a vehicle we are currently in.
-			    && g_local_player->m_vehicle->m_driver && player_is_not_driver(plyr))
+			    && !player_is_driver(plyr))
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset); // Tell them to get bent.
 				g_reactions.request_control_event.process(plyr);

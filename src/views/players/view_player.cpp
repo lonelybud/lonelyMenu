@@ -146,13 +146,10 @@ namespace big
 						    }
 					    }
 
-					    if (auto net_data = current_player->get_net_data())
-					    {
-						    ImGui::Text("Host token: %d", net_data->m_host_token);
-						    ImGui::SameLine();
-						    if (ImGui::SmallButton("copy##copyHtoken"))
-							    ImGui::SetClipboardText(std::format("{}", net_data->m_host_token).c_str());
-					    }
+					    ImGui::Text("Host token: %lu", current_player->m_host_token);
+					    ImGui::SameLine();
+					    if (ImGui::SmallButton("copy##copyHtoken"))
+						    ImGui::SetClipboardText(std::format("{}", current_player->m_host_token).c_str());
 				    }
 				    ImGui::EndGroup();
 				    ImGui::SameLine();

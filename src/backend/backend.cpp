@@ -96,6 +96,7 @@ namespace big
 				{
 					g_session.notified_as_host = true;
 					g_notification_service->push_success("You are host", "", true);
+					g_session.next_host_list.delete_plyr(g_player_service->get_self()->id());
 				}
 
 				for (auto& [_, player] : g_player_service->players())

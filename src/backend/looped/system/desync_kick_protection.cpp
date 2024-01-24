@@ -18,7 +18,7 @@ namespace big
 		{
 			gta_util::get_network()->m_game_complaint_mgr.m_num_tokens_complained = 1;
 			gta_util::get_network()->m_game_complaint_mgr.m_host_tokens_complained[0] =
-			    g_player_service->m_player_to_use_complaint_kick->get()->get_net_data()->m_host_token;
+			    g_player_service->m_player_to_use_complaint_kick->get()->m_host_token;
 		}
 
 		auto old = gta_util::get_network()->m_game_complaint_mgr.m_host_token;

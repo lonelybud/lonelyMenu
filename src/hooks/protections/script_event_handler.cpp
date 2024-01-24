@@ -68,7 +68,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::ClearWantedLevel:
-			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && player_is_not_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
 			{
 				g_reactions.clear_wanted_level.process(plyr);
 				return true;
@@ -135,7 +135,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::MCTeleport:
-			if (!plyr->is_friend() && g_protections.script_events.mc_teleport && args[4] <= 32 && !is_player_our_boss(plyr->id()))
+			if (!plyr->is_friend() && g_protections.script_events.mc_teleport && args[4] <= 32
+			    && !is_player_our_boss(player->m_player_id))
 			{
 				for (int i = 0; i < 32; i++)
 				{
@@ -160,7 +161,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::RemoteOffradar:
-			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(plyr->id()) && player_is_not_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(player->m_player_id)
+			    && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
 			{
 				g_reactions.remote_off_radar.process(plyr);
 				return true;
@@ -181,7 +183,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::SendToCutscene:
-			if (g_protections.script_events.send_to_cutscene && !is_player_our_boss(plyr->id()))
+			if (g_protections.script_events.send_to_cutscene && !is_player_our_boss(player->m_player_id))
 			{
 				g_reactions.send_to_cutscene.process(plyr);
 				return true;
@@ -189,7 +191,7 @@ namespace big
 			break;
 		case eRemoteEvent::SendToLocation:
 		{
-			if (is_player_our_boss(plyr->id()))
+			if (is_player_our_boss(player->m_player_id))
 				break;
 
 			bool known_location = false;
@@ -243,7 +245,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::Teleport:
-			if (!plyr->is_friend() && g_protections.script_events.force_teleport && player_is_not_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.force_teleport && !is_player_our_boss(player->m_player_id)
+			    && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
 			{
 				g_reactions.force_teleport.process(plyr);
 				return true;
@@ -251,7 +254,7 @@ namespace big
 			break;
 		case eRemoteEvent::TransactionError: g_reactions.transaction_error.process(plyr); return true;
 		case eRemoteEvent::VehicleKick:
-			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick && player_is_not_driver(plyr))
+			if (g_local_player->m_vehicle && !plyr->is_friend() && g_protections.script_events.vehicle_kick && !player_is_driver(plyr))
 			{
 				g_reactions.vehicle_kick.process(plyr);
 				return true;
@@ -259,7 +262,7 @@ namespace big
 			break;
 		case eRemoteEvent::NetworkBail: g_reactions.network_bail.process(plyr); return true;
 		case eRemoteEvent::TeleportToWarehouse:
-			if (!plyr->is_friend() && g_protections.script_events.teleport_to_warehouse && player_is_not_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.teleport_to_warehouse && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
 			{
 				g_reactions.teleport_to_warehouse.process(plyr);
 				return true;
@@ -319,30 +322,11 @@ namespace big
 					g_reactions.null_function_kick.process(plyr);
 				return true;
 			}
-
-			if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
-				break;
-
-			if (!g_local_player)
-				break;
-
-			if (is_player_our_boss(plyr->id()))
-				break;
-
-			if (!player_is_not_driver(plyr))
-				break;
-
-			if (!plyr->get_ped() || math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()) > 75.0f)
-			{
-				// reactions.send_to_interior.process(plyr); false positives
-				return true; // this is fine, the game will reject our false positives anyway
-			}
-
 			break;
 		}
 		case eRemoteEvent::DestroyPersonalVehicle: g_reactions.destroy_personal_vehicle.process(plyr); return true;
 		case eRemoteEvent::KickFromInterior:
-			if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[self::id].SimpleInteriorData.Owner != plyr->id())
+			if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[self::id].SimpleInteriorData.Owner != player->m_player_id)
 			{
 				g_reactions.kick_from_interior.process(plyr);
 				return true;
@@ -359,6 +343,7 @@ namespace big
 				}
 			}
 
+			LOG(WARNING) << "CEO RAID WAS BLOCKED";
 			return true;
 		}
 		case eRemoteEvent::StartScriptProceed:
