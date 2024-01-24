@@ -197,19 +197,30 @@ namespace big
 		if (ImGui::BeginCombo("Folder###folder_list", folder_display))
 		{
 			if (ImGui::Selectable("Root", selected_folder.empty()))
+			{
 				selected_folder.clear();
+				refresh_list();
+			}
 
 			for (auto& folder_name : outfits_folder)
 				if (ImGui::Selectable(folder_name.c_str(), selected_folder == folder_name))
+				{
 					selected_folder = folder_name;
+					refresh_list();
+				}
 
 			ImGui::EndCombo();
 		}
 
+		static std::string search_outfit;
+		ImGui::SetNextItemWidth(200);
+		components::input_text_with_hint("###search_outfit", "search", search_outfit);
+
 		if (ImGui::BeginListBox("###file_list", ImVec2(300, 300)))
 		{
 			for (auto& outfit : outfits)
-				if (ImGui::Selectable(outfit.c_str(), outfit == selected_file))
+				if ((search_outfit.length() ? (outfit.find(search_outfit) != std::string::npos) : true)
+				    && ImGui::Selectable(outfit.c_str(), outfit == selected_file))
 					selected_file = outfit;
 			ImGui::EndListBox();
 		}

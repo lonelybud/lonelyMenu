@@ -85,7 +85,10 @@ namespace big
 		if (ImGui::BeginCombo("Folder", folder_display))
 		{
 			if (ImGui::Selectable("Root", g_vehicle.persist_vehicle_folder == ""))
+			{
 				g_vehicle.persist_vehicle_folder.clear();
+				refresh_list();
+			}
 
 			for (std::string folder_name : vehicle_folders)
 			{
