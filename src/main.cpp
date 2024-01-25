@@ -172,15 +172,10 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    LOG(INFO) << "Destroyed thread pool.";
 
 			    tunables_service_instance.reset();
-			    LOG(INFO) << "Tunables Service reset.";
 			    script_patcher_service_instance.reset();
-			    LOG(INFO) << "Script Patcher Service reset.";
 			    gui_service_instance.reset();
-			    LOG(INFO) << "Gui Service reset.";
 			    gta_data_service_instance.reset();
-			    LOG(INFO) << "GTA Data Service reset.";
 			    player_service_instance.reset();
-			    LOG(INFO) << "Player Service reset.";
 			    LOG(INFO) << "Services uninitialized.";
 
 			    hooking_instance.reset();

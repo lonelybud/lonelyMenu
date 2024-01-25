@@ -10,7 +10,7 @@ namespace big
 
 		if (program->m_code_size && program->m_code_blocks) // ensure that we aren't hooking SHV threads
 		{
-			g_script_patcher_service->on_script_load(program);
+			g_script_patcher_service->on_script_load(program, "init_native_tables");
 			g_native_hooks->hook_program(program);
 		}
 

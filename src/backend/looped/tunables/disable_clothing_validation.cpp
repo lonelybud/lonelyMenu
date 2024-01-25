@@ -1,6 +1,7 @@
 #include "backend/looped_command.hpp"
 #include "core/data/misc.hpp"
 #include "core/scr_globals.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/tunables/tunables_service.hpp"
 
 namespace big
@@ -11,22 +12,33 @@ namespace big
 
 		bool initialized = false;
 		BOOL m_global, m_tunable;
+		PBOOL global, tunable;
+
+		virtual void on_enable() override
+		{
+			auto tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION"));
+			auto global  = scr_globals::reset_clothing.as<PBOOL>();
+
+			if (tunable && global)
+			{
+				m_global    = *global;
+				m_tunable   = *tunable;
+				initialized = true;
+			}
+			else
+			{
+				initialized                        = false;
+				g_misc.disable_clothing_validation = false;
+				g_notification_service->push_error("Clothing Validation", "Failed to switch on");
+			}
+		}
 
 		virtual void on_tick() override
 		{
-			if (auto tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION")))
+			if (initialized)
 			{
-				if (!initialized)
-				{
-					m_global    = *scr_globals::reset_clothing.as<PBOOL>();
-					m_tunable   = *tunable;
-					initialized = true;
-				}
-				else
-				{
-					*scr_globals::reset_clothing.as<PBOOL>() = FALSE;
-					*tunable                                 = TRUE;
-				}
+				*global  = FALSE;
+				*tunable = TRUE;
 			}
 		}
 
@@ -34,10 +46,9 @@ namespace big
 		{
 			if (initialized)
 			{
-				initialized                              = false;
-				*scr_globals::reset_clothing.as<PBOOL>() = m_global;
-				if (auto tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION")))
-					*tunable = m_tunable;
+				*global     = m_global;
+				*tunable    = m_tunable;
+				initialized = false;
 			}
 		}
 	};

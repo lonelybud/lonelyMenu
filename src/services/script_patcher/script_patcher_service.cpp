@@ -70,12 +70,13 @@ namespace big
 		m_script_patches.push_back(std::move(patch));
 	}
 
-	void script_patcher_service::on_script_load(rage::scrProgram* program)
+	void script_patcher_service::on_script_load(rage::scrProgram* program, const char* called_from)
 	{
 		if (get_data_for_script(program->m_name_hash) == nullptr && does_script_have_patches(program->m_name_hash))
 		{
 			create_data_for_script(program);
 			update_all_patches_for_script(program->m_name_hash);
+			LOGF(INFO, "Script patches: update '{}' ({})", program->m_name, called_from);
 		}
 	}
 

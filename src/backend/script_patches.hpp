@@ -27,10 +27,12 @@ namespace big
 		g_script_patcher_service->add_patch({RAGE_JOAAT("shop_controller"), "despawn bypass", "2D 01 04 00 00 2C ? ? ? 56 ? ? 71", 5, {0x71, 0x2E, 0x01, 0x01}, nullptr}); // despawn bypass
 		g_script_patcher_service->add_patch({RAGE_JOAAT("shop_controller"), "godmode/invisibility detection bypass", "2D 01 03 00 00 5D ? ? ? 06 56 ? ? 2E ? ? 2C", 5, {0x2E, 0x01, 0x00}, nullptr}); // godmode/invisibility detection bypass
 
+		LOG(INFO) << "Script patches: registered";
+
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 		{
 			if (entry.m_program)
-				g_script_patcher_service->on_script_load(entry.m_program);
+				g_script_patcher_service->on_script_load(entry.m_program, "m_script_program_table");
 		}
 	}
 }

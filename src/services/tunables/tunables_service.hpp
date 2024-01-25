@@ -1,7 +1,4 @@
 #pragma once
-#include "fiber_pool.hpp"
-#include "script.hpp"
-#include "services/gta_data/cache_file.hpp"
 
 namespace big
 {
@@ -20,16 +17,6 @@ namespace big
 		~tunables_service();
 		void run_script();
 
-		inline bool caching_tunables()
-		{
-			return m_script_started;
-		}
-
-		inline bool initialized()
-		{
-			return m_initialized;
-		}
-
 		inline void register_tunable(rage::joaat_t hash, void* pointer)
 		{
 			m_tunables.emplace(hash, pointer);
@@ -41,22 +28,15 @@ namespace big
 			if (auto it = m_tunables.find(hash); it != m_tunables.end())
 				return reinterpret_cast<T>(it->second);
 
-			LOG(WARNING) << "Tunable 0x" << hash << " not found.";
+			// LOG(WARNING) << "Tunable 0x" << hash << " not found.";
 
 			return nullptr;
 		}
 
 	private:
-		bool m_initialized    = false;
-		bool m_loading        = false;
-		bool m_script_started = false;
-
-		cache_file m_cache_file;
+		bool m_running = false;
 
 		std::unordered_map<rage::joaat_t, void*> m_tunables{};
-
-		void save();
-		void load();
 	};
 
 	inline tunables_service* g_tunables_service;

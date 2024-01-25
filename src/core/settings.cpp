@@ -15,7 +15,7 @@ namespace big
 
 			while (g_running)
 			{
-				std::this_thread::sleep_for(100ms);
+				std::this_thread::sleep_for(10000ms);
 				attempt_save();
 			}
 		});

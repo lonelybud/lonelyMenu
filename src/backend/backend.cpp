@@ -12,6 +12,7 @@
 #include "services/context_menu/context_menu_service.hpp"
 #include "services/custom_teleport/custom_teleport_service.hpp"
 #include "services/known_players.hpp"
+#include "services/tunables/tunables_service.hpp"
 #include "util/player.hpp"
 
 namespace big
@@ -126,6 +127,6 @@ namespace big
 
 	void backend::tunables_script()
 	{
-		// g_tunables_service->run_script();
+		g_tunables_service->run_script();
 	}
 }

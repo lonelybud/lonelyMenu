@@ -98,7 +98,6 @@ namespace big
 
 		add_native_detour(RAGE_JOAAT("am_launcher"), NativeIndex::START_NEW_SCRIPT_WITH_ARGS, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::WAIT, tunables::WAIT);
 		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_INT_HASH, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
 		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
 		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_FLOAT_HASH, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);

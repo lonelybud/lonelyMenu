@@ -21,7 +21,7 @@ namespace big
 		~script_patcher_service();
 
 		void add_patch(script_patch&& patch);
-		void on_script_load(rage::scrProgram* program);
+		void on_script_load(rage::scrProgram* program, const char * called_from);
 		uint8_t** get_script_bytecode(rage::joaat_t script);
 		void update();
 	};
