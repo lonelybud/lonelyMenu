@@ -89,7 +89,6 @@ namespace big
 		std::string spam_message  = "";
 		bool is_other             = false;
 		bool is_known_player      = false;
-		bool has_joined           = false;
 		player_ptr last_killed_by = nullptr;
 		bool is_pain_in_ass       = false;
 

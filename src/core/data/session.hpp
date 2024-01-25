@@ -56,6 +56,7 @@ namespace big
 		bool auto_kick_chat_spammers      = true;
 
 		bool notified_as_host = false;
+		std::unordered_set<uint8_t> joining_players;
 	};
 
 	inline g_session_t g_session{};

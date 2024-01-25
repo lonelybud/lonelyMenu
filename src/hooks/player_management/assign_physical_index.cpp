@@ -35,11 +35,6 @@ namespace big
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
-			auto plyr = g_player_service->get_by_id(player->m_player_id);
-
-			if (!(plyr->is_blocked || plyr->is_spammer) && g_player_service->get_self()->is_host() && !plyr->has_joined)
-				g_notification_service->push_error("Join Failed", std::vformat("{} was unable to join", std::make_format_args(player_name)), true);
-
 			g_player_service->player_leave(player);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
 
@@ -48,6 +43,12 @@ namespace big
 
 			if (g_notifications.player_leave.notify)
 				g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
+
+			if (g_player_service->get_self()->is_host() && g_session.joining_players.contains(player->m_player_id))
+			{
+				g_session.joining_players.erase(player->m_player_id);
+				g_notification_service->push_error("Join Failed", std::vformat("{} was unable to join", std::make_format_args(player_name)), true);
+			}
 
 			return g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 		}
@@ -109,6 +110,9 @@ namespace big
 
 						if (is_spoofed_host_token(host_token))
 							g_reactions.spoofed_host_token.process(plyr);
+
+						if (g_player_service->get_self()->is_host())
+							g_session.joining_players.insert(plyr->id());
 					}
 				});
 		}

@@ -1,6 +1,7 @@
 #pragma once
 #include "core/data/debug.hpp"
 #include "core/data/session.hpp"
+#include "gta/joaat.hpp"
 #include "pointers.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
 

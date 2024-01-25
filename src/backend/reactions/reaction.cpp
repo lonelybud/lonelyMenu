@@ -108,6 +108,8 @@ namespace big
 
 			if (!player->is_friend() && kick_player)
 			{
+				player->is_pain_in_ass = true;
+
 				// player->timeout();
 
 				// block join
