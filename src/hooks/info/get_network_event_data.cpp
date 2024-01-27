@@ -66,7 +66,10 @@ namespace big
 					if (auto player = g_player_service->get_by_host_token(damager->m_player_info->m_net_player_data.m_host_token))
 					{
 						if (victim == g_local_player)
+						{
 							LOG(WARNING) << "You got Killed by: " << player->get_name();
+							g_player_service->get_self()->last_killed_by = player;
+						}
 						else if (auto victim_player =
 						             g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token))
 						{

@@ -3,6 +3,7 @@
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
 #include "util/entity.hpp"
+#include "util/mobile.hpp"
 #include "util/ped.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
@@ -76,6 +77,36 @@ namespace big
 			SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED(RAGE_JOAAT("pausemenu_multiplayer"));
 		});
 	}
+
+	static inline void service_vehicles()
+	{
+		components::sub_title("Request Service Vehicles");
+
+		components::button("Avenger", [] {
+			mobile::services::request_avenger();
+		});
+		ImGui::SameLine();
+		components::button("Kosatka", [] {
+			mobile::services::request_kosatka();
+		});
+		ImGui::SameLine();
+		components::button("M.O.C", [] {
+			mobile::services::request_mobile_operations_center();
+		});
+
+		components::button("Terrorbyte", [] {
+			mobile::services::request_terrorbyte();
+		});
+		ImGui::SameLine();
+		components::button("Acid Lab", [] {
+			mobile::services::request_acidlab();
+		});
+		ImGui::SameLine();
+		components::button("Acid Bike", [] {
+			mobile::services::request_acidlab_bike();
+		});
+	}
+
 
 	static inline void _self()
 	{
@@ -234,6 +265,8 @@ namespace big
 			game();
 			components::ver_space();
 			others();
+			components::ver_space();
+			service_vehicles();
 		}
 		ImGui::EndGroup();
 		components::hor_space();

@@ -56,7 +56,6 @@ namespace big
 		case RAGE_JOAAT("hauler2"):
 		case RAGE_JOAAT("phantom3"):
 		case RAGE_JOAAT("trailersmall2"):
-		case RAGE_JOAAT("khanjali"):
 		case RAGE_JOAAT("chernobog"):
 		case RAGE_JOAAT("riot2"):
 		case RAGE_JOAAT("thruster"):
