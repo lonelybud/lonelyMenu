@@ -130,8 +130,7 @@ namespace big
 
 		const auto file = std::filesystem::path(location.file_name()).filename().string();
 
-		m_console_out << "[" << timestamp << "]" << ADD_COLOR_TO_STREAM(color) << "[" << get_level_string(level) << "/" << file << ":"
-		              << location.line() << "] " << RESET_STREAM_COLOR << msg->Message() << std::flush;
+		m_console_out << ADD_COLOR_TO_STREAM(color) << msg->Message() << RESET_STREAM_COLOR << std::flush;
 	}
 
 	void logger::format_console_simple(const LogMessagePtr msg)
@@ -144,8 +143,7 @@ namespace big
 
 		const auto file = std::filesystem::path(location.file_name()).filename().string();
 
-		m_console_out << "[" << timestamp << "]"
-		              << "[" << get_level_string(level) << "/" << file << ":" << location.line() << "] " << msg->Message() << std::flush;
+		m_console_out << msg->Message() << std::flush;
 	}
 
 	void logger::format_file(const LogMessagePtr msg)

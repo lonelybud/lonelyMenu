@@ -135,7 +135,14 @@ namespace big
 	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped)
 	{
 		const Hash vehicle_hash = vehicle_json[vehicle_model_hash_key];
-		Vector3 spawn_location = spawn_coords.has_value() ? spawn_coords.value() : vehicle::get_spawn_location(vehicle_hash, ped);
+		Vector3 spawn_location;
+
+		if (spawn_coords.has_value())
+			spawn_location = spawn_coords.value();
+		else if (auto loc = vehicle::get_spawn_location(vehicle_hash, ped); loc.has_value())
+			spawn_location = loc.value();
+		else
+			return -1;
 
 		auto vehicle = vehicle::spawn(vehicle_hash, spawn_location, 0);
 

@@ -84,7 +84,6 @@ namespace big
 		bool is_modder = false;
 		std::map<reaction*, int> infractions;
 		bool is_blocked           = false;
-		bool join_prevented       = false;
 		bool is_spammer           = false;
 		std::string spam_message  = "";
 		bool is_other             = false;

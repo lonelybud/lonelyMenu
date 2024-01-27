@@ -211,25 +211,11 @@ namespace big::looped
 
 	inline void players_join_state()
 	{
-		if (g_player_service->get_self()->is_host())
+		if (g_player_service->get_self()->is_host() && !g_session.notified_as_host)
 		{
-			if (!g_session.notified_as_host)
-			{
-				g_session.notified_as_host = true;
-				g_notification_service->push_success("You are host", "", true);
-				g_session.next_host_list.delete_plyr(g_player_service->get_self()->id());
-			}
-
-			std::vector<uint8_t> keys_to_rm;
-
-			for (auto id : g_session.joining_players)
-				if (auto& entry = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[id]; entry.FreemodeState == eFreemodeState::RUNNING
-				    && !(entry.PlayerStateFlags.IsSet(ePlayerStateFlags::kPlayerSwitchStateInClouds)
-				        || entry.PlayerStateFlags.IsSet(ePlayerStateFlags::kPlayerSwitchStateDescent)))
-					keys_to_rm.push_back(id);
-
-			for (auto key : keys_to_rm)
-				g_session.joining_players.erase(key);
+			g_session.notified_as_host = true;
+			g_notification_service->push_success("You are host", "", true);
+			g_session.next_host_list.delete_plyr(g_player_service->get_self()->id());
 		}
 	}
 }

@@ -119,8 +119,10 @@ namespace big
 						else
 							return;
 					}
+					else if (auto loc = vehicle::get_spawn_location(selected_veh.m_hash, self::ped); loc.has_value())
+						spawn_location = loc.value();
 					else
-						spawn_location = vehicle::get_spawn_location(selected_veh.m_hash);
+						return;
 
 					auto veh  = vehicle::spawn(selected_veh.m_hash, spawn_location);
 					auto name = vehicle::get_vehicle_model_name(selected_veh);

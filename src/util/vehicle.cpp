@@ -6,12 +6,18 @@
 
 namespace big::vehicle
 {
-	Vector3 get_spawn_location(Hash hash, Ped ped)
+	std::optional<Vector3> get_spawn_location(Hash hash, Ped ped)
 	{
 		for (int i = 0; !STREAMING::HAS_MODEL_LOADED(hash) && i < 100; i++)
 		{
 			STREAMING::REQUEST_MODEL(hash);
 			script::get_current()->yield();
+		}
+
+		if (!STREAMING::HAS_MODEL_LOADED(hash))
+		{
+			g_notification_service->push_warning("Vehicle Location", "Fail to load model");
+			return std::nullopt;
 		}
 
 		Vector3 min, max, result;

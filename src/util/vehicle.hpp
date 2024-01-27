@@ -33,7 +33,7 @@ namespace big::vehicle
 		}
 	}
 
-	Vector3 get_spawn_location(Hash hash, Ped ped = self::ped);
+	std::optional<Vector3> get_spawn_location(Hash hash, Ped ped);
 
 	Vehicle spawn(Hash hash, Vector3 location, float heading = 0, bool is_networked = true, bool script_veh = false);
 
