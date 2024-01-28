@@ -50,8 +50,8 @@ namespace big
 				case reaction_sub_type::crash1:
 				case reaction_sub_type::crash2:
 				case reaction_sub_type::crash26:
-				case reaction_sub_type::crash31: break;
-				case reaction_sub_type::crash33:
+				case reaction_sub_type::crash31:
+				// case reaction_sub_type::crash33:
 				{
 					kick_player = true;
 					break;

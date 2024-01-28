@@ -1,6 +1,7 @@
 #pragma once
 #include "pointers.hpp"
 #include "script_global.hpp"
+#include "services/players/player_service.hpp"
 #include "thread_pool.hpp"
 
 namespace big
@@ -61,7 +62,11 @@ namespace big
 						this->register_vehicles();
 						if (this->m_personal_vehicles.size())
 						{
-							std::ofstream pv_list(g_file_manager.get_project_file("./pv_list.txt").get_path(), std::ios_base::out | std::ios_base::trunc);
+							std::ofstream pv_list(
+							    g_file_manager
+							        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
+							        .get_path(),
+							    std::ios_base::out | std::ios_base::trunc);
 							for (const auto& it : this->m_personal_vehicles)
 								pv_list << it.first << std::endl;
 							pv_list.close();
