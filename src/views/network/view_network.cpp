@@ -29,17 +29,6 @@ namespace big
 		if (components::button("Restore Host token"))
 			g_session.host_token = g_session.orig_host_token;
 
-		if (g_player_service->get_self()->is_host())
-		{
-			ImGui::Spacing();
-			components::button("Kick all blocked players", [] {
-				g_player_service->iterate([](const player_entry& player) {
-					if (player.second->is_blocked)
-						dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second);
-				});
-			});
-		}
-
 		ImGui::Spacing();
 		components::button("Clear all players infractions", [] {
 			g_player_service->iterate([](const player_entry& player) {

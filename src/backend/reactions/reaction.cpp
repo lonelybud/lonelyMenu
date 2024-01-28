@@ -47,18 +47,18 @@ namespace big
 			if (this->type == reaction_type::crash_player)
 				switch (this->sub_type)
 				{
-				case reaction_sub_type::crash1:
-				case reaction_sub_type::crash2:
-				case reaction_sub_type::crash26:
-				case reaction_sub_type::crash31:
+				// case reaction_sub_type::crash1:
+				// case reaction_sub_type::crash2:
+				// case reaction_sub_type::crash26:
+				// case reaction_sub_type::crash31:
 				// case reaction_sub_type::crash33:
-				{
-					kick_player = true;
-					break;
-				}
+				// {
+				// 	kick_player = true;
+				// 	break;
+				// }
 				default:
 				{
-					if (player->infractions[this] > 5)
+					if (player->infractions[this] > 10)
 						kick_player = true;
 					break;
 				}

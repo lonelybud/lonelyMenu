@@ -24,7 +24,8 @@ namespace big
 		{
 			ImGui::SetNextItemWidth(350);
 			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
-
+			ImGui::PushItemWidth(350);
+			ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
 		}
 

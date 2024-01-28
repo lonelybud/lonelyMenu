@@ -14,12 +14,17 @@
 
 namespace big
 {
-	inline bool is_invincible(big::player_ptr player)
+	static inline bool is_invincible(big::player_ptr player)
 	{
 		return player->get_ped() && (player->get_ped()->m_damage_bits & (1 << 8));
 	}
+	static inline bool is_invincible_veh(big::player_ptr player)
+	{
+		auto vehicle = player->get_current_vehicle();
+		return vehicle && (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD);
+	}
 
-	inline bool is_invisible(big::player_ptr player)
+	static inline bool is_invisible(big::player_ptr player)
 	{
 		if (!player->get_ped())
 			return false;
@@ -35,12 +40,12 @@ namespace big
 		              //return (player->get_ped()->m_flags & (int)rage::fwEntity::EntityFlags::IS_VISIBLE) == 0;
 	}
 
-	inline bool is_hidden_from_player_list(big::player_ptr player)
+	static inline bool is_hidden_from_player_list(big::player_ptr player)
 	{
 		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].CayoPericoFlags & 1;
 	}
 
-	inline bool is_using_orbital_cannon(big::player_ptr player)
+	static inline bool is_using_orbital_cannon(big::player_ptr player)
 	{
 		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].OrbitalBitset.IsSet(eOrbitalBitset::kOrbitalCannonActive);
 	}
@@ -83,9 +88,8 @@ namespace big
 
 						if (is_invincible(player))
 							g_reactions.killed_with_god.process(player);
-
-						if (is_invisible(player))
-							g_reactions.killed_with_invis.process(player);
+						else if (is_invincible_veh(player))
+							g_reactions.killed_with_veh_god.process(player);
 
 						if (is_hidden_from_player_list(player))
 							g_reactions.killed_when_hidden.process(player);

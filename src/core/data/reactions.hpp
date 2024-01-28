@@ -64,6 +64,7 @@ namespace big
 		reaction anti_cheat_modder_detection{reaction_type::modder_detection, reaction_sub_type::anti_cheat_modder_detection, "Anti cheat modder detection", "Detected modder by anti-cheat", true, true, false};
 		reaction spoofed_host_token{reaction_type::modder_detection, reaction_sub_type::spoofed_host_token, "Spoofed host token", "Spoofed their host token", true, true, false};
 		reaction killed_with_god{reaction_type::modder_detection, reaction_sub_type::killed_with_god, "Killed with god", "Killed someone with god", false, true, false};
+		reaction killed_with_veh_god{reaction_type::modder_detection, reaction_sub_type::killed_with_veh_god, "Killed with vehicle god", "Killed someone with vehicle god", false, false, false};
 		reaction killed_with_invis{reaction_type::modder_detection, reaction_sub_type::killed_with_invis, "Killed when invisible", "Killed someone when invisible", false, true, false};
 		reaction killed_when_hidden{reaction_type::modder_detection, reaction_sub_type::killed_when_hidden, "Killed when hidden", "Killed someone while hidden in list", false, true, false};
 		reaction Killed_with_orbital{reaction_type::modder_detection, reaction_sub_type::Killed_with_orbital, "Killed with orbital", "Killed someone with orbital canon", false, true, false};

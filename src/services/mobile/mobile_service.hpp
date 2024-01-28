@@ -2,7 +2,6 @@
 #include "pointers.hpp"
 #include "script_global.hpp"
 #include "services/players/player_service.hpp"
-#include "thread_pool.hpp"
 
 namespace big
 {
@@ -46,35 +45,6 @@ namespace big
 			return m_personal_vehicles;
 		}
 		void register_vehicles();
-
-		inline void auto_save_pv_list()
-		{
-			g_thread_pool->push([this] {
-				while (!g_running)
-					std::this_thread::yield();
-
-				while (g_running)
-				{
-					std::this_thread::sleep_for(60000ms);
-
-					if (*g_pointers->m_gta.m_is_session_started)
-					{
-						this->register_vehicles();
-						if (this->m_personal_vehicles.size())
-						{
-							std::ofstream pv_list(
-							    g_file_manager
-							        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
-							        .get_path(),
-							    std::ios_base::out | std::ios_base::trunc);
-							for (const auto& it : this->m_personal_vehicles)
-								pv_list << it.first << std::endl;
-							pv_list.close();
-						}
-					}
-				}
-			});
-		}
 	};
 
 	inline mobile_service* g_mobile_service{};

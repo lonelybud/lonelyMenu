@@ -3,6 +3,7 @@
 
 // https://github.com/SilentSal0/Silent-Night
 // https://github.com/YimMenu-Lua/Casino-Pacino
+// https://github.com/L7NEG/Ultimate-Menu/blob
 
 namespace big
 {
@@ -15,8 +16,8 @@ namespace big
 		static constexpr int CPFHl                                 = 24333; // cayo perico fingerprint hack local
 		static constexpr int CPPCCl = 30357 + 3; // cayo perico plasma cutter cut local ("DLC_H4_anims_glass_cutter_Sounds")
 		static constexpr int CPSTCl         = 29118;      // cayo perico Drainage Pipe cut local
-		static constexpr int DCFHl          = 52985;      // diamond casino fingerprint hack local
-		static constexpr int DCKHl          = 54047;      // diamond casino keypad hack local
+		static constexpr int STRKM52        = 52985;      // diamond casino fingerprint hack local
+		static constexpr int STRKM51        = 54047;      // diamond casino keypad hack local
 		static constexpr int DCDVDl1        = 10107 + 7;  // diamond casino drill vault door local 1
 		static constexpr int DCDVDl2        = 10107 + 37; // diamond casino drill vault door local 2
 		static auto FMC                     = "fm_mission_controller";
@@ -63,13 +64,15 @@ namespace big
 		}
 		inline void bypass_fingerprint_casino()
 		{
-			if (lua_helper::locals::get_int(FMC, DCFHl) == 4)
-				lua_helper::locals::set_int(FMC, DCFHl, 5);
+			auto v = lua_helper::locals::get_int(FMC, STRKM52);
+			if (v == 3 || v == 4)
+				lua_helper::locals::set_int(FMC, STRKM52, 5);
 		}
 		inline void bypass_keypad_casino()
 		{
-			if (lua_helper::locals::get_int(FMC, DCKHl) != 4)
-				lua_helper::locals::set_int(FMC, DCKHl, 5);
+			auto v = lua_helper::locals::get_int(FMC, STRKM51);
+			if (v != 4 || v >= 3 || v < 100)
+				lua_helper::locals::set_int(FMC, STRKM51, 5);
 		}
 		inline void bypass_drill()
 		{

@@ -312,7 +312,7 @@ namespace big
 	enum class reaction_sub_type
 	{
 		none,
-		
+
 		end_session_kick,
 		network_bail,
 		null_function_kick,
@@ -371,6 +371,7 @@ namespace big
 		anti_cheat_modder_detection,
 		spoofed_host_token,
 		killed_with_god,
+		killed_with_veh_god,
 		killed_with_invis,
 		killed_when_hidden,
 		Killed_with_orbital,

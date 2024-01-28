@@ -5,9 +5,7 @@
 #include "util/entity.hpp"
 
 #include <imgui.h>
-
-constexpr float smoothing_speed = 4.f;
-constexpr float fov             = 90.f;
+#include <numbers>
 
 namespace big
 {
@@ -15,122 +13,87 @@ namespace big
 	{
 		using looped_command::looped_command;
 
-		Vector3 aim_lock;
-		Vector2 mouse_movement;
-
 		virtual void on_tick() override
 		{
 			if (PAD::GET_DISABLED_CONTROL_NORMAL(0, (int)ControllerInputs::INPUT_AIM))
 			{
-				float local_fov_change = fov;
+				Entity ped{};
+				float distance = g_weapons.aimbot.max_dist_to_mid_of_scrn;
+				Vector3 aim_lock;
 
-				for (auto ped : entity::get_entities(false, true))
-					if (!ENTITY::IS_ENTITY_DEAD(ped, 0)) // Tracetype is always 17. LOS check
-					{
-						Vector3 world_position = ENTITY::GET_ENTITY_COORDS(ped, 0);
-
-						if (SYSTEM::VDIST2(self::pos.x,
-						        self::pos.y,
-						        self::pos.z,
-						        world_position.x,
-						        world_position.y,
-						        world_position.z)
-						    > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
-							continue; // If the entity is further than our preset distance then just skip it
-
-						auto is_player = PED::IS_PED_A_PLAYER(ped);
-
-						if (g_weapons.aimbot.player)
-						{
-							if (!is_player)
-								continue;
-						}
-						else if (is_player)
-							continue;
-
-						if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ped, 17))
-							continue;
-
-						// Jump to here to handle instead of continue statements
-						aim_lock = ENTITY::GET_WORLD_POSITION_OF_ENTITY_BONE(ped, PED::GET_PED_BONE_INDEX(ped, 0x796E));
-
-						if ((aim_lock.x != 0) && (aim_lock.y != 0) && (aim_lock.z != 0)) // Ensure none of the coords are = to 0
-						{
-							Vector2 screen_dim, movement;
-							GRAPHICS::GET_SCREEN_COORD_FROM_WORLD_COORD(aim_lock.x,
-							    aim_lock.y,
-							    aim_lock.z,
-							    &screen_dim.x,
-							    &screen_dim.y);
-							if ((screen_dim.x >= 0) && (screen_dim.y >= 0)) // Make sure updated screen dim is greater than 0
-							{
-								auto& io = ImGui::GetIO();
-								ImVec2 center(io.DisplaySize.x / 2.f, io.DisplaySize.y / 2.f); // Use ImGui to get the display size
-								//Screen dim is a float between 0-1, multiply the float by screen coords
-								screen_dim.x *= io.DisplaySize.x;
-								screen_dim.y *= io.DisplaySize.y;
-
-								if (screen_dim.x > center.x) //If the location is greater than the center (right side)
-								{ // Get the amount of distance we need to move, so center of the screen - our location
-									movement.x = -(center.x - screen_dim.x);
-									if (movement.x + center.x > center.x * 2)
-										movement.x = 0;
-								}
-								else
-								{ // if the location is on the left side
-									movement.x = screen_dim.x - center.x;
-									if (movement.x + center.x < 0)
-										movement.x = 0;
-								}
-
-								// Same thing here but for y, so switch right with up and left with down
-								if (screen_dim.y > center.y)
-								{
-									movement.y = -(center.y - screen_dim.y);
-									if (movement.y + center.y > center.y * 2)
-										movement.x = 0;
-								}
-								else
-								{
-									movement.y = screen_dim.y - center.y;
-									if (movement.y + center.y < 0)
-										movement.y = 0;
-								}
-
-								if (sqrt(pow(movement.x, 2) + pow(movement.y, 2)) < local_fov_change)
-								{ // sqrt of movment x and y ^ 2, handles fov math
-									local_fov_change = sqrt(pow(movement.x, 2) + pow(movement.y, 2));
-									mouse_movement.x = movement.x;
-									mouse_movement.y = movement.y;
-								}
-							}
-						}
-					}
-
-				static bool update_time_now = true;
-				static std::chrono::system_clock::time_point current_time;
-
-				if (update_time_now)
+				for (auto ent : entity::get_entities(false, true))
 				{
-					current_time    = std::chrono::system_clock::now();
-					update_time_now = false; //lockout
+					if (ENTITY::IS_ENTITY_DEAD(ent, 0))
+						continue;
+
+					auto is_player = PED::IS_PED_A_PLAYER(ent);
+
+					if (g_weapons.aimbot.player)
+					{
+						if (!is_player)
+							continue;
+					}
+					else if (is_player)
+						continue;
+
+					Vector3 pos      = ENTITY::GET_ENTITY_COORDS(ent, 0);
+					Vector3 bone_pos = PED::GET_PED_BONE_COORDS(ent, (int)PedBones::SKEL_Head, 0, 0, 0);
+
+					float distance_between_target = SYSTEM::VDIST2(self::pos.x, self::pos.y, self::pos.z, pos.x, pos.y, pos.z);
+
+					if (distance_between_target > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
+						continue;
+
+					if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ent, 17))
+						continue;
+
+					rage::fvector2 screen_pos;
+					HUD::GET_HUD_SCREEN_POSITION_FROM_WORLD_POSITION(bone_pos.x,
+					    bone_pos.y,
+					    bone_pos.z,
+					    &screen_pos.x,
+					    &screen_pos.y);
+
+					if (entity::distance_to_middle_of_screen(screen_pos) < distance && ENTITY::IS_ENTITY_ON_SCREEN(ent) && ent != self::ped)
+					{
+						ped      = ent;
+						distance = entity::distance_to_middle_of_screen(screen_pos);
+						aim_lock = bone_pos;
+					}
 				}
 
-				std::chrono::duration<double> elapsed_time = std::chrono::system_clock::now() - current_time;
-				if (elapsed_time.count() > 0.f)
+				if (ped)
 				{
-					INPUT mouse_handle; // MOUSEINPUT mi;
-					mouse_handle.type = INPUT_MOUSE;
-					mouse_handle.mi.dwFlags = MOUSEEVENTF_MOVE; // Type = Mouse movement, and the event  is emulating the mouse movement
+					GRAPHICS::DRAW_MARKER(3, aim_lock.x, aim_lock.y, aim_lock.z + 0.5f, 0, 0, 0, 0, 180, 0, 0.3f, 0.3f, 0.3f, 255, 255, 255, 255, 1, 1, 0, 0, 0, 0, 0);
 
-					// Update the mouse by moving it with how much we need / smoothing speed
-					mouse_handle.mi.dx = mouse_movement.x / smoothing_speed;
-					mouse_handle.mi.dy = mouse_movement.y / smoothing_speed;
-					SendInput(1, &mouse_handle, sizeof(mouse_handle)); //handles the input
+					Vector3 camera_target = aim_lock - CAM::GET_FINAL_RENDERED_CAM_COORD();
 
-					//Reset our variables
-					mouse_movement.x = 0, mouse_movement.y = 0;
-					update_time_now = true; //reset our time
+					float RADPI          = 180.0f / std::numbers::pi;
+					float camera_heading = atan2f(camera_target.x, camera_target.y) * RADPI;
+					float magnitude      = sqrtf(camera_target.x * camera_target.x + camera_target.y * camera_target.y
+                        + camera_target.z * camera_target.z);
+
+					float camera_pitch = asinf(camera_target.z / magnitude) * RADPI;
+					float self_heading = ENTITY::GET_ENTITY_HEADING(self::veh ? self::veh : self::ped);
+					float self_pitch   = ENTITY::GET_ENTITY_PITCH(self::veh ? self::veh : self::ped);
+					if (camera_heading >= 0.0f && camera_heading <= 180.0f)
+					{
+						camera_heading = 360.0f - camera_heading;
+					}
+					else if (camera_heading <= -0.0f && camera_heading >= -180.0f)
+					{
+						camera_heading = -camera_heading;
+					}
+					if (CAM::GET_FOLLOW_PED_CAM_VIEW_MODE() == CameraMode::FIRST_PERSON)
+					{
+						CAM::SET_FIRST_PERSON_SHOOTER_CAMERA_HEADING(camera_heading - self_heading);
+						CAM::SET_FIRST_PERSON_SHOOTER_CAMERA_PITCH(camera_pitch - self_pitch);
+					}
+					else
+					{
+						CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(camera_heading - self_heading);
+						CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(camera_pitch - self_pitch, 1.0f);
+					}
 				}
 			}
 		}

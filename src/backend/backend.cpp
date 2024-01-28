@@ -40,7 +40,6 @@ namespace big
 		LOG(INFO) << "Starting script: Miscellaneous";
 
 		g_tunables_service->run_script(); // blocking until tuneables are loaded
-		g_mobile_service->auto_save_pv_list(); // non-blocking
 
 		while (g_running)
 		{
