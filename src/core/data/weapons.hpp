@@ -10,6 +10,7 @@ namespace big
 
 		struct aimbot
 		{
+			bool enable_old               = false;
 			bool enable                   = false;
 			bool player                   = false;
 			float distance                = 1000.f;
