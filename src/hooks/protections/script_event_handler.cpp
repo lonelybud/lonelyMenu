@@ -36,7 +36,19 @@ namespace big
 
 	inline bool is_player_our_boss(Player sender)
 	{
-		return sender == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss;
+		auto boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
+
+		if (boss_goon.Boss != -1)
+		{
+			if (sender == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
+				return true;
+
+			for (int i = 0; i < boss_goon.Goons.Size; ++i)
+				if (boss_goon.Goons[i] == sender)
+					return true;
+		}
+
+		return false;
 	}
 
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)

@@ -40,12 +40,12 @@ namespace big::teleport
 		return false;
 	}
 
-	inline bool to_objective(bool load_ground = true)
+	inline bool to_objective()
 	{
 		std::optional<Vector3> location = blip::get_objective_location();
 
 		if (location.has_value())
-			return to_coords(location.value(), load_ground);
+			return to_coords(location.value());
 
 		return false;
 	}

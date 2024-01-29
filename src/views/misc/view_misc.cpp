@@ -155,17 +155,17 @@ namespace big
 		components::sub_title("Properties");
 
 		if (*g_pointers->m_gta.m_script_globals && **g_pointers->m_gta.m_script_globals)
-		{
-			auto& gpbd_fm_1 = scr_globals::gpbd_fm_1.as<GPBD_FM*>()->Entries[self::id];
+			if (auto gpbd_fm_1 = scr_globals::gpbd_fm_1.as<GPBD_FM*>(); gpbd_fm_1)
+			{
+				auto& v = gpbd_fm_1->Entries[self::id];
+				ImGui::Text("Nightclub popularity: %f", v.PropertyData.NightclubData.Popularity);
+				ImGui::Text("Nightclub Money: %d", v.PropertyData.NightclubData.SafeCashValue);
+				ImGui::Text("Arcade Money: %d", v.PropertyData.ArcadeData.SafeCashValue);
 
-			ImGui::Text("Nightclub popularity: %f", gpbd_fm_1.PropertyData.NightclubData.Popularity);
-			ImGui::Text("Nightclub Money: %d", gpbd_fm_1.PropertyData.NightclubData.SafeCashValue);
-			ImGui::Text("Arcade Money: %d", gpbd_fm_1.PropertyData.ArcadeData.SafeCashValue);
-
-			components::button("Increase NightClub Popularity", [] {
-				lua_scripts::increase_nightClub_popularity();
-			});
-		}
+				components::button("Increase NightClub Popularity", [] {
+					lua_scripts::increase_nightClub_popularity();
+				});
+			}
 	}
 
 	static inline void daily_collectables()

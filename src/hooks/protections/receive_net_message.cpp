@@ -1,7 +1,6 @@
 #include "backend/command.hpp"
 #include "backend/player_command.hpp"
 #include "core/data/kick_reasons.hpp"
-#include "core/data/packet_types.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
 #include "file_manager/file.hpp"

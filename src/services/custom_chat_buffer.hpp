@@ -1,7 +1,7 @@
 #pragma once
 #include "file_manager.hpp"
 
-constexpr int chat_buffer_size         = 4096;
+constexpr int chat_buffer_size         = 8192;
 constexpr int chat_buffer_content_size = chat_buffer_size - 1;
 
 namespace big

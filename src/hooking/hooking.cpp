@@ -64,6 +64,8 @@ namespace big
 
 		detour_hook_helper::add<hooks::receive_pickup>("RPI", g_pointers->m_gta.m_receive_pickup);
 
+		detour_hook_helper::add<hooks::write_player_camera_data_node>("WPCDN", g_pointers->m_gta.m_write_player_camera_data_node);
+
 		detour_hook_helper::add<hooks::allocate_memory_reliable>("AMR", g_pointers->m_gta.m_allocate_memory_reliable);
 
 		detour_hook_helper::add<hooks::render_ped>("RP", g_pointers->m_gta.m_render_ped);

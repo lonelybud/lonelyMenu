@@ -14,7 +14,7 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("Objective", [] {
-			teleport::to_objective(false);
+			teleport::to_objective();
 		});
 		ImGui::SameLine();
 		components::button("Tp to PV", [] {

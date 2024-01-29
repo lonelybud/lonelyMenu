@@ -27,5 +27,8 @@ namespace big
 
 		if (!is_in_cutscene() && !is_in_interior())
 			node->m_is_invincible = false;
+
+		node->m_is_spectating     = false;
+		node->m_spectating_net_id = 0;
 	}
 }

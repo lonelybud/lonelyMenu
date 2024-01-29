@@ -1,5 +1,6 @@
 #include "core/data/language_codes.hpp"
 #include "core/data/protections.hpp"
+#include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
@@ -205,7 +206,8 @@ namespace big
 				    ImGui::Checkbox("Log Clones", &current_player->log_clones);
 			    }
 		    },
-		    false);
+		    false,
+		    "Info##infobtn");
 	}
 
 	static inline void render_info(player_ptr current_player)
@@ -214,6 +216,8 @@ namespace big
 		{
 			components::sub_title("Info");
 
+			components::command_checkbox<"spectate">();
+			ImGui::Spacing();
 			extra_info_button(current_player);
 			ImGui::SameLine();
 			if (components::button("Copy Name & SC id##copyname"))
@@ -312,12 +316,8 @@ namespace big
 			ImGui::Spacing();
 
 			components::button("TP", [current_player] {
-				if (globals::get_interior_from_player(current_player->id()) == 0)
-					if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
-					{
-						Vector3 location = ENTITY::GET_ENTITY_COORDS(ped, 0);
-						teleport::to_coords(location);
-					}
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+					teleport::to_coords(ENTITY::GET_ENTITY_COORDS(ped, 0));
 			});
 			ImGui::SameLine();
 			components::button("TP IN VEH", [current_player] {

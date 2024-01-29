@@ -86,7 +86,12 @@ namespace big
 							}
 
 							if (!plyr->is_spammer)
+							{
 								g_notification_service->push_warning("Carefull", str, true);
+
+								if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) == 0)
+									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr);
+							}
 						}
 
 						if (is_dev_qa)

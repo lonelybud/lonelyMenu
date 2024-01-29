@@ -129,6 +129,7 @@ namespace big
 		// spoofing
 
 		static void write_player_game_state_data_node(rage::netObject* player, CPlayerGameStateDataNode* node);
+		static void write_player_camera_data_node(rage::netObject* player, CPlayerCameraDataNode* node);
 	};
 
 	class minhook_keepalive

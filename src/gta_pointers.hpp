@@ -181,6 +181,8 @@ namespace big
 
 		PVOID m_receive_pickup;
 
+		PVOID m_write_player_camera_data_node;
+
 		const char* m_game_version;
 		const char* m_online_version;
 

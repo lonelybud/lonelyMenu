@@ -1,6 +1,8 @@
+#include "core/data/session.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
 #include "packet.hpp"
+#include "services/custom_chat_buffer.hpp"
 #include "services/players/player_service.hpp"
 
 namespace big
@@ -25,6 +27,9 @@ namespace big
 			for (auto& player : g_player_service->players())
 				if (player.second && player.second->is_valid())
 					msg.send(player.second->get_net_game_player()->m_msg_id);
+
+		if (g_session.log_chat_messages_to_textbox)
+			g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
 
 		return true;
 	}

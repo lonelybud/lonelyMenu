@@ -660,6 +660,15 @@ namespace big
                 g_pointers->m_gta.m_receive_pickup = ptr.as<PVOID>();
             }
         },
+        // Write Player Camera Data Node
+        {
+            "WPCDN",
+            "48 8B C4 48 89 58 20 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 B0 48 81 EC 50 01 00 00 4C",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_write_player_camera_data_node = ptr.as<PVOID>();
+            }
+        },
         // Game Version + Online Version
         {
             "GVOV",

@@ -44,7 +44,7 @@ namespace big
 					if (distance_between_target > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
 						continue;
 
-					if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ent, 17))
+					if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_ADJUST_FOR_COVER(self::ped, ent, 17))
 						continue;
 
 					rage::fvector2 screen_pos;
@@ -70,8 +70,7 @@ namespace big
 
 					float RADPI          = 180.0f / std::numbers::pi;
 					float camera_heading = atan2f(camera_target.x, camera_target.y) * RADPI;
-					float magnitude      = sqrtf(camera_target.x * camera_target.x + camera_target.y * camera_target.y
-                        + camera_target.z * camera_target.z);
+					float magnitude       = std::hypot(camera_target.x, camera_target.y, camera_target.z);
 
 					float camera_pitch = asinf(camera_target.z / magnitude) * RADPI;
 					float self_heading = ENTITY::GET_ENTITY_HEADING(self::veh ? self::veh : self::ped);

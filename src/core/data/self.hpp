@@ -8,5 +8,7 @@ namespace big
 		bool god_mode         = false;
 		bool off_radar        = false;
 		bool no_idle_kick     = false;
+
+		bool spectating           = false;
 	} g_self{};
 }
