@@ -8,13 +8,12 @@ namespace big
 	public:
 		static constexpr auto vehicle_model_hash_key = "vehicle_model_hash";
 
-		static std::vector<std::string> list_files(std::string folder_name = "");
-		static std::vector<std::string> list_sub_folders();
+		static void refresh_list();
 
 		static void clone_ped_car(Vehicle vehicle, const char* ped_name = "");
 		static void save_vehicle(Vehicle vehicle, std::string_view file_name, std::string folder_name);
 		static void load_vehicle(const std::optional<Vector3>, Ped);
-		static void delete_vehicle(std::string_view file_name, std::string folder_name);
+		static void delete_vehicle(std::string_view file_name);
 		static Vehicle spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped);
 		static big::folder check_vehicle_folder(std::string folder_name = "");
 

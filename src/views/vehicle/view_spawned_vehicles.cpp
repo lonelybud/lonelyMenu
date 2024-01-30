@@ -64,6 +64,16 @@ namespace big
 					HUD::SET_NEW_WAYPOINT(location.x, location.y);
 				});
 				ImGui::SameLine();
+				components::button("Blip", [it] {
+					if (!it->second.blip)
+						vehicle::add_blip_to_spawned_veh(it->first, it->second);
+					else
+					{
+						HUD::REMOVE_BLIP(&it->second.blip);
+						it->second.blip = 0;
+					}
+				});
+				ImGui::SameLine();
 				components::button("Delete", [it] {
 					auto ent = static_cast<Entity>(it->first);
 					if (entity::delete_entity(ent))

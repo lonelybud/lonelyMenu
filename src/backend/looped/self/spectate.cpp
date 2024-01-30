@@ -32,7 +32,7 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			if (!target_player->is_valid())
+			if (!target_player->is_valid() || g_player_service->get_selected() != target_player)
 			{
 				g_self.spectating = false;
 				on_disable();

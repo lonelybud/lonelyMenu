@@ -10,14 +10,6 @@
 
 namespace big
 {
-	static std::vector<std::string> vehicle_folders, vehicle_files;
-
-	static void refresh_list()
-	{
-		vehicle_folders = persist_car_service::list_sub_folders();
-		vehicle_files   = persist_car_service::list_files(g_vehicle.persist_vehicle_folder);
-	}
-
 	inline void save_vehicle_button(char* vehicle_file_name_input, const char* save_folder)
 	{
 		components::button("Save Vehicle", [vehicle_file_name_input, save_folder] {
@@ -33,7 +25,7 @@ namespace big
 				persist_car_service::save_vehicle(self::veh, vehicle_file_name, save_folder);
 				ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
 
-				refresh_list();
+				persist_car_service::refresh_list();
 			}
 		});
 		ImGui::SameLine();
@@ -61,9 +53,9 @@ namespace big
 
 			if (ImGui::Button("Yes"))
 			{
-				persist_car_service::delete_vehicle(file_name_to_delete, g_vehicle.persist_vehicle_folder);
+				persist_car_service::delete_vehicle(file_name_to_delete);
 				file_name_to_delete.clear();
-				refresh_list();
+				persist_car_service::refresh_list();
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -77,25 +69,25 @@ namespace big
 		}
 
 		components::button("Refresh List", [] {
-			refresh_list();
+			persist_car_service::refresh_list();
 		});
 
 		ImGui::SetNextItemWidth(300.f);
-		auto folder_display = g_vehicle.persist_vehicle_folder.empty() ? "Root" : g_vehicle.persist_vehicle_folder.c_str();
+		auto folder_display = g_vehicle.persist_vehicle.folder.empty() ? "Root" : g_vehicle.persist_vehicle.folder.c_str();
 		if (ImGui::BeginCombo("Folder", folder_display))
 		{
-			if (ImGui::Selectable("Root", g_vehicle.persist_vehicle_folder == ""))
+			if (ImGui::Selectable("Root", g_vehicle.persist_vehicle.folder == ""))
 			{
-				g_vehicle.persist_vehicle_folder.clear();
-				refresh_list();
+				g_vehicle.persist_vehicle.folder.clear();
+				persist_car_service::refresh_list();
 			}
 
-			for (std::string folder_name : vehicle_folders)
+			for (std::string folder_name : g_vehicle.persist_vehicle.folders)
 			{
-				if (ImGui::Selectable(folder_name.c_str(), g_vehicle.persist_vehicle_folder == folder_name))
+				if (ImGui::Selectable(folder_name.c_str(), g_vehicle.persist_vehicle.folder == folder_name))
 				{
-					g_vehicle.persist_vehicle_folder = folder_name;
-					refresh_list();
+					g_vehicle.persist_vehicle.folder = folder_name;
+					persist_car_service::refresh_list();
 				}
 			}
 
@@ -113,19 +105,19 @@ namespace big
 		ImGui::Text("Saved Vehicles");
 
 		static const auto over_30 = (30 * ImGui::GetTextLineHeightWithSpacing() + 2);
-		const auto box_height = vehicle_files.size() <= 30 ? (vehicle_files.size() * ImGui::GetTextLineHeightWithSpacing() + 2) : over_30;
+		const auto box_height = g_vehicle.persist_vehicle.files.size() <= 30 ? (g_vehicle.persist_vehicle.files.size() * ImGui::GetTextLineHeightWithSpacing() + 2) : over_30;
 		if (ImGui::BeginListBox("##empty", ImVec2(300, box_height)))
 		{
-			for (const auto& pair : vehicle_files)
+			for (const auto& pair : g_vehicle.persist_vehicle.files)
 			{
 				std::string pair_lower = pair;
 				std::transform(pair_lower.begin(), pair_lower.end(), pair_lower.begin(), tolower);
 				if (pair_lower.contains(lower_search))
 				{
 					auto file_name = pair.c_str();
-					if (ImGui::Selectable(file_name, g_vehicle.persist_vehicle_file == pair, ImGuiSelectableFlags_AllowItemOverlap))
+					if (ImGui::Selectable(file_name, g_vehicle.persist_vehicle.file == pair, ImGuiSelectableFlags_AllowItemOverlap))
 					{
-						g_vehicle.persist_vehicle_file = pair;
+						g_vehicle.persist_vehicle.file = pair;
 						open_modal                     = true;
 					}
 
@@ -153,7 +145,7 @@ namespace big
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Ex: My Cool Car");
 
-		if (g_vehicle.persist_vehicle_folder.empty())
+		if (g_vehicle.persist_vehicle.folder.empty())
 		{
 			static char save_folder[50]{};
 			components::small_text("Vehicle Folder Name");
@@ -167,7 +159,7 @@ namespace big
 			save_vehicle_button(vehicle_file_name_input, save_folder);
 		}
 		else
-			save_vehicle_button(vehicle_file_name_input, g_vehicle.persist_vehicle_folder.c_str());
+			save_vehicle_button(vehicle_file_name_input, g_vehicle.persist_vehicle.folder.c_str());
 
 		ImGui::EndGroup();
 
@@ -175,7 +167,7 @@ namespace big
 			ImGui::OpenPopup("##spawncarmodel2");
 		if (ImGui::BeginPopupModal("##spawncarmodel2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text("Are you sure you want to spawn %s", g_vehicle.persist_vehicle_file.c_str());
+			ImGui::Text("Are you sure you want to spawn %s", g_vehicle.persist_vehicle.file.c_str());
 			ImGui::Spacing();
 			if (ImGui::Button("Yes"))
 			{

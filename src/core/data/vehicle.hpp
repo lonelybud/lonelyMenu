@@ -15,8 +15,11 @@ namespace big
 		bool vehicle_lock                    = false;
 		bool vehicle_lock_unlock_temporarily = false;
 
-		std::string persist_vehicle_folder;
-		std::string persist_vehicle_file;
+		struct persist_vehicle_t
+		{
+			std::string folder, file;
+			std::vector<std::string> folders, files;
+		} persist_vehicle;
 
 		struct SpawnedVehicle
 		{
@@ -24,6 +27,7 @@ namespace big
 			int passenger_count = 0;
 			bool is_locked      = false;
 			bool is_dead        = false;
+			Blip blip;
 		};
 
 		std::map<Vehicle, SpawnedVehicle> spawned_vehicles;

@@ -52,10 +52,7 @@ namespace big
 	player_ptr player_service::get_self()
 	{
 		if (!m_self_ptr || !m_self_ptr->equals(*m_self))
-		{
-			LOG(VERBOSE) << "Creating self player from network player";
 			m_self_ptr = std::make_shared<player>(*m_self, 0);
-		}
 
 		return m_self_ptr;
 	}

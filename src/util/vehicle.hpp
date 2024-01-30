@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/vehicle.hpp"
 #include "entity.hpp"
 #include "gta/enums.hpp"
 #include "natives.hpp"
@@ -98,5 +99,18 @@ namespace big::vehicle
 		}
 		else
 			g_notification_service->push_warning("Toxic", "Failed to take control of vehicle.");
+	}
+
+	inline void add_blip_to_spawned_veh(Vehicle veh, g_vehicle_t::SpawnedVehicle& v)
+	{
+		Blip blip = HUD::ADD_BLIP_FOR_ENTITY(veh);
+		HUD::SET_BLIP_DISPLAY(blip, 2);
+		HUD::SET_BLIP_SPRITE(blip, 225);
+		HUD::SET_BLIP_COLOUR(blip, 46);
+		HUD::SET_BLIP_AS_SHORT_RANGE(blip, FALSE);
+		HUD::BEGIN_TEXT_COMMAND_SET_BLIP_NAME("STRING");
+		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME("Spawned Vehicle");
+		HUD::END_TEXT_COMMAND_SET_BLIP_NAME(blip);
+		v.blip = blip;
 	}
 }

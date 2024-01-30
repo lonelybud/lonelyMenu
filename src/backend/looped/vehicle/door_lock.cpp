@@ -5,12 +5,21 @@
 
 namespace big
 {
+	static int get_passengers_count()
+	{
+		auto passengers = g_local_player->m_vehicle->m_driver && g_local_player->m_vehicle->m_driver->m_health ? 1 : 0;
+		for (int i = 0; i < g_local_player->m_vehicle->m_max_passengers; ++i)
+			if (g_local_player->m_vehicle->m_passengers[i] && g_local_player->m_vehicle->m_passengers[i]->m_health)
+				++passengers;
+
+		return passengers;
+	}
+
 	class vehicle_lock : looped_command
 	{
 		using looped_command::looped_command;
 
-		CVehicle* m_vehicle = nullptr;
-		Vehicle veh;
+		CVehicle* m_vehicle  = nullptr;
 		int passengers_count = 0;
 
 		void lock_veh()
@@ -19,10 +28,7 @@ namespace big
 			m_vehicle                                 = g_local_player->m_vehicle;
 
 			if (m_vehicle)
-			{
 				m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
-				veh                           = g_pointers->m_gta.m_ptr_to_handle(m_vehicle);
-			}
 		}
 
 		virtual void on_enable() override
@@ -41,10 +47,10 @@ namespace big
 					if ((eVehicleLockState)m_vehicle->m_door_lock_status == eVehicleLockState::VEHICLELOCK_LOCKED)
 					{
 						m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_UNLOCKED;
-						passengers_count              = VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(veh, 1, 0);
+						passengers_count              = get_passengers_count();
 					}
 
-					if (passengers_count != VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(veh, 1, 0))
+					if (passengers_count != get_passengers_count())
 						lock_veh();
 				}
 				else if ((eVehicleLockState)m_vehicle->m_door_lock_status != eVehicleLockState::VEHICLELOCK_LOCKED)

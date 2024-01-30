@@ -13,7 +13,7 @@ namespace big::entity
 		return !net_object || !net_object->m_next_owner_id && (net_object->m_control_id == -1);
 	}
 
-	inline bool take_control_of(Entity ent)
+	inline bool take_control_of(rage::CDynamicEntity* hnd)
 	{
 		if (!*g_pointers->m_gta.m_is_session_started)
 			return true;
@@ -22,8 +22,6 @@ namespace big::entity
 
 		for (int i = 0; i < n_of_try; ++i)
 		{
-			auto hnd = g_pointers->m_gta.m_handle_to_ptr(ent);
-
 			if (hnd && hnd->m_net_object && network_has_control_of_entity(hnd->m_net_object))
 				return true;
 
@@ -35,6 +33,11 @@ namespace big::entity
 		}
 
 		return false;
+	}
+
+	inline bool take_control_of(Entity ent)
+	{
+		return take_control_of(g_pointers->m_gta.m_handle_to_ptr(ent));
 	}
 
 	double distance_to_middle_of_screen(const rage::fvector2& screen_pos);

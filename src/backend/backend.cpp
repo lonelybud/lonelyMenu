@@ -45,7 +45,7 @@ namespace big
 		{
 			looped::hud_disable_input();
 			looped::vehicle_auto_drive();
-			looped::players_join_state();
+			looped::self_host_notify();
 
 			script::get_current()->yield();
 		}

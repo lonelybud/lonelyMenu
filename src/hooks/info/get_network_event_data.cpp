@@ -1,10 +1,14 @@
+#include "backend/bool_command.hpp"
 #include "core/data/misc.hpp"
 #include "core/data/reactions.hpp"
+#include "core/data/self.hpp"
+#include "fiber_pool.hpp"
 #include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
+#include "util/entity.hpp"
 #include "util/globals.hpp"
 #include "util/misc.hpp"
 
@@ -71,10 +75,30 @@ namespace big
 					if (auto player = g_player_service->get_by_host_token(damager->m_player_info->m_net_player_data.m_host_token))
 					{
 						if (victim == g_local_player)
-						{
-							LOG(WARNING) << "You got Killed by: " << player->get_name();
-							g_player_service->get_self()->last_killed_by = player;
-						}
+							g_fiber_pool->queue_job([player] {
+								g_player_service->get_self()->last_killed_by = player;
+								std::string str = "You got Killed by: " + std::string(player->get_name());
+
+								if (g_local_player->m_vehicle && entity::take_control_of(g_local_player->m_vehicle))
+								{
+									g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
+									str += " (Veh Locked)";
+								}
+
+								LOG(WARNING) << str;
+
+								if (g_self.spectating)
+								{
+									g_self.spectating = false;
+									dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("spectate")))->refresh();
+								}
+								if (g_self.free_cam)
+								{
+									g_self.free_cam = false;
+									dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("freecam")))->refresh();
+								}
+							});
+
 						else if (auto victim_player =
 						             g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token))
 						{
