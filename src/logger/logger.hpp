@@ -2,6 +2,7 @@
 #include "file_manager.hpp"
 
 #include <AsyncLogger/Logger.hpp>
+#include <source_location>
 using namespace al;
 
 namespace big
@@ -26,11 +27,12 @@ namespace big
 	class logger final
 	{
 	public:
-		logger(std::string_view console_title, file file, bool attach_console = true);
+		logger(std::string_view console_title, file _file, file _file2, bool attach_console = true);
 		virtual ~logger();
 
 		void initialize();
 		void destroy();
+		void log_additional(std::string, std::source_location location = std::source_location::current());
 
 	private:
 		void create_backup();
@@ -53,9 +55,9 @@ namespace big
 		HANDLE m_console_handle;
 
 		std::ofstream m_console_out;
-		std::ofstream m_file_out;
+		std::ofstream m_file_out, m_file_out2;
 
-		file m_file;
+		file m_file, m_file2;
 	};
 
 	inline logger* g_log = nullptr;

@@ -6,14 +6,15 @@
 
 namespace big
 {
-	logger::logger(std::string_view console_title, file file, bool attach_console) :
+	logger::logger(std::string_view console_title, file _file, file _file2, bool attach_console) :
 	    m_attach_console(attach_console),
 	    m_did_console_exist(false),
 	    m_console_logger(&logger::format_console),
 	    m_console_title(console_title),
 	    m_original_console_mode(0),
 	    m_console_handle(nullptr),
-	    m_file(file)
+	    m_file(_file),
+	    m_file2(_file2)
 	{
 		auto module = memory::module("ntdll.dll");
 		if (const auto env_no_color = std::getenv("NO_COLOR"); module.get_export("wine_get_version") || (env_no_color && strlen(env_no_color)))
@@ -83,6 +84,7 @@ namespace big
 	void logger::create_backup()
 	{
 		logger_create_backup(m_file, "backup");
+		logger_create_backup(m_file2, "additional_logs");
 	}
 
 	void logger::open_outstreams()
@@ -91,6 +93,7 @@ namespace big
 			m_console_out.open("CONOUT$", std::ios_base::out | std::ios_base::app);
 
 		m_file_out.open(m_file.get_path(), std::ios_base::out | std::ios_base::trunc);
+		m_file_out2.open(m_file2.get_path(), std::ios_base::out | std::ios_base::trunc);
 	}
 
 	void logger::close_outstreams()
@@ -99,6 +102,7 @@ namespace big
 			m_console_out.close();
 
 		m_file_out.close();
+		m_file_out2.close();
 	}
 
 	const LogColor get_color(const eLogLevel level)
@@ -157,7 +161,18 @@ namespace big
 
 		const auto file = std::filesystem::path(location.file_name()).filename().string();
 
-		m_file_out << "[" << timestamp << "]"
-		           << "[" << get_level_string(level) << "/" << file << ":" << location.line() << "] " << msg->Message() << std::flush;
+		m_file_out << "[" << timestamp << "][" << get_level_string(level) << "/" << file << "](" << location.line() << ':'
+		           << location.column() << ") " << msg->Message() << std::flush;
+	}
+
+	void logger::log_additional(std::string str, std::source_location location)
+	{
+		if (m_file_out2.is_open())
+		{
+			const auto file      = std::filesystem::path(location.file_name()).filename().string();
+			const auto timestamp = std::format("{0:%H:%M:%S}", std::chrono::system_clock::now());
+
+			m_file_out2 << "[" << timestamp << "][" << file << "](" << location.line() << ':' << location.column() << ") " << str << std::flush;
+		}
 	}
 }
