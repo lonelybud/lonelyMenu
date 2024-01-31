@@ -1,5 +1,6 @@
 #include "vehicle.hpp"
 
+#include "entity.hpp"
 #include "gta/vehicle_values.hpp"
 #include "script.hpp"
 #include "services/gta_data/gta_data_service.hpp"
@@ -8,17 +9,8 @@ namespace big::vehicle
 {
 	std::optional<Vector3> get_spawn_location(Hash hash, Ped ped)
 	{
-		for (int i = 0; !STREAMING::HAS_MODEL_LOADED(hash) && i < 100; i++)
-		{
-			STREAMING::REQUEST_MODEL(hash);
-			script::get_current()->yield();
-		}
-
-		if (!STREAMING::HAS_MODEL_LOADED(hash))
-		{
-			g_notification_service->push_warning("Vehicle Location", "Fail to load model");
+		if (!entity::request_model(hash))
 			return std::nullopt;
-		}
 
 		Vector3 min, max, result;
 		MISC::GET_MODEL_DIMENSIONS(hash, &min, &max);
@@ -37,16 +29,8 @@ namespace big::vehicle
 
 	Vehicle spawn(Hash hash, Vector3 location, float heading, bool is_networked, bool script_veh)
 	{
-		for (int i = 0; !STREAMING::HAS_MODEL_LOADED(hash) && i < 100; i++)
-		{
-			STREAMING::REQUEST_MODEL(hash);
-			script::get_current()->yield();
-		}
-
-		if (!STREAMING::HAS_MODEL_LOADED(hash))
-		{
-			return 0;
-		}
+		if (!entity::request_model(hash))
+			return -1;
 
 		if (!heading)
 			heading = ENTITY::GET_ENTITY_HEADING(self::ped) + 90;
