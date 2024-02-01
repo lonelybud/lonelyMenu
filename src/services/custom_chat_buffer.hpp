@@ -8,24 +8,33 @@ namespace big
 {
 	class custom_chat_buffer
 	{
-		int len = 0;
-
-	public:
-		char buf[chat_buffer_size] = {'\0'};
+		int len            = 0;
+		int length_flushed = 0;
 
 		inline void reset_buf()
 		{
 			strcpy(buf, "");
-			len = 0;
+			len = length_flushed = 0;
+			overflow             = false;
 		}
+
+	public:
+		char buf[chat_buffer_size] = {'\0'};
+		bool overflow              = false;
 
 		void flush_buffer()
 		{
-			std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-			log << buf << std::endl;
-			log.close();
+			if (length_flushed != len)
+			{
+				std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
+				std::string str(&buf[length_flushed], len - length_flushed + 1);
 
-			reset_buf();
+				log << buf << std::endl;
+				log.close();
+			}
+
+			if (overflow)
+				reset_buf();
 		}
 
 		void append_msg(const char* player_name, char* msg)
@@ -40,7 +49,7 @@ namespace big
 			if (availableSpace < msg_len)
 			{
 				LOG(WARNING) << "Chat buffer overflow: Flushing buffer to disk..";
-				flush_buffer();
+				overflow = true;
 			}
 
 			len += msg_len;

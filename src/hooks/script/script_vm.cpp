@@ -54,8 +54,6 @@ namespace big
 	{
 		script_vm_guard guard(program);
 
-		g_log->log_additional(std::vformat("{}, {}", std::make_format_args(program->m_name, (int)ctx->m_state)));
-
 		return g_hooking->get_original<hooks::script_vm>()(start_stack, scr_globals, program, ctx);
 	}
 }

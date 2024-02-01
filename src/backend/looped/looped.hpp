@@ -1,14 +1,18 @@
 #pragma once
+#include "backend/player_command.hpp"
 #include "core/data/auto_drive.hpp"
 #include "core/data/hud.hpp"
 #include "core/data/session.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "core/settings.hpp"
 #include "gta/enums.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
-#include "backend/player_command.hpp"
+#include "services/custom_chat_buffer.hpp"
+#include "services/mobile/mobile_service.hpp"
 #include "services/players/player_service.hpp"
+#include "thread_pool.hpp"
 #include "util/blip.hpp"
 #include "util/player.hpp"
 
@@ -224,5 +228,44 @@ namespace big::looped
 					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second);
 			});
 		}
+	}
+
+	inline void custom_thread()
+	{
+		g_thread_pool->push([] {
+			int last_pv_len{};
+
+			while (!g_running)
+				std::this_thread::yield();
+
+			while (g_running)
+			{
+				std::this_thread::sleep_for(5000ms);
+
+				// auto save current settings to disk
+				g_menu_settings.attempt_save();
+
+				// auto flush chat to disk
+				g_custom_chat_buffer.flush_buffer();
+
+				// refresh pvs
+				g_mobile_service->register_vehicles();
+
+				// auto save pv list to disk
+				if (last_pv_len != g_mobile_service->personal_vehicles.size())
+				{
+					last_pv_len = g_mobile_service->personal_vehicles.size();
+
+					std::ofstream pv_list(
+					    g_file_manager
+					        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
+					        .get_path(),
+					    std::ios_base::out | std::ios_base::trunc);
+					for (const auto& it : g_mobile_service->personal_vehicles)
+						pv_list << it.first << std::endl;
+					pv_list.close();
+				}
+			}
+		});
 	}
 }

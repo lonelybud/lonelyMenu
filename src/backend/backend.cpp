@@ -40,6 +40,7 @@ namespace big
 		LOG(INFO) << "Starting script: Miscellaneous";
 
 		g_tunables_service->run_script(); // blocking until tuneables are loaded
+		looped::custom_thread();          // non-blocking
 
 		while (g_running)
 		{

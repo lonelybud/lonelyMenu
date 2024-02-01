@@ -1,6 +1,6 @@
 #include "gui.hpp"
 
-#include "core/settings/settings.hpp"
+#include "core/settings/menu.hpp"
 #include "core/settings/window.hpp"
 #include "natives.hpp"
 #include "renderer.hpp"
@@ -208,7 +208,7 @@ namespace big
 
 	void gui::wndproc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
-		if (msg == WM_KEYUP && wparam == g_settings.hotkeys.menu_toggle)
+		if (msg == WM_KEYUP && wparam == g_menu.menu_toggle)
 		{
 			//Persist and restore the cursor position between menu instances.
 			static POINT cursor_coords{};

@@ -85,7 +85,7 @@ namespace big
 
 	void mobile_service::register_vehicles()
 	{
-		m_personal_vehicles.clear();
+		personal_vehicles.clear();
 
 		for (int i = 0; i < *scr_globals::vehicle_global.as<int*>(); ++i)
 		{
@@ -95,7 +95,7 @@ namespace big
 			// double check if model is a vehicle
 			if (STREAMING::IS_MODEL_A_VEHICLE(hash))
 				if (auto veh = std::make_unique<personal_vehicle>(i, veh_idx_global); !veh->is_blacklisted_vehicle())
-					m_personal_vehicles.emplace(veh->get_display_name(), std::move(veh));
+					personal_vehicles.emplace(veh->get_display_name(), std::move(veh));
 		}
 	}
 }

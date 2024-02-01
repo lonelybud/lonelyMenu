@@ -29,9 +29,9 @@ namespace big
 
 	class mobile_service final
 	{
-		std::map<std::string, std::unique_ptr<personal_vehicle>> m_personal_vehicles;
-
 	public:
+		std::map<std::string, std::unique_ptr<personal_vehicle>> personal_vehicles;
+
 		mobile_service();
 		~mobile_service();
 
@@ -40,10 +40,6 @@ namespace big
 		mobile_service& operator=(const mobile_service&)     = delete;
 		mobile_service& operator=(mobile_service&&) noexcept = delete;
 
-		std::map<std::string, std::unique_ptr<personal_vehicle>>& personal_vehicles()
-		{
-			return m_personal_vehicles;
-		}
 		void register_vehicles();
 	};
 

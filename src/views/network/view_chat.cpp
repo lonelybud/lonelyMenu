@@ -42,11 +42,7 @@ namespace big
 		ImGui::Spacing();
 
 		components::button("Reset Chat", [] {
-			g_custom_chat_buffer.reset_buf();
-		});
-		ImGui::SameLine();
-		components::button("Flush Chat", [] {
-			g_custom_chat_buffer.flush_buffer();
+			g_custom_chat_buffer.overflow = true;
 		});
 		ImGui::InputTextMultiline("##Text", g_custom_chat_buffer.buf, sizeof(g_custom_chat_buffer.buf), {600, 300}, ImGuiInputTextFlags_ReadOnly);
 	}

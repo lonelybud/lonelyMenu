@@ -2,7 +2,6 @@
 #include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
 #include "core/scr_globals.hpp"
-#include "core/settings/notifications.hpp"
 #include "fiber_pool.hpp"
 #include "hooking/hooking.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -38,11 +37,7 @@ namespace big
 			g_player_service->player_leave(player);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
 
-			if (g_notifications.player_leave.log)
-				LOGF(INFO, "Player left '{}', slot #{}. RID: {}", player_name, (int)player->m_player_id, rockstar_id);
-
-			if (g_notifications.player_leave.notify)
-				g_notification_service->push("Player Left", std::vformat("{} freeing slot", std::make_format_args(player_name)));
+			LOGF(INFO, "Player left '{}', slot #{}. RID: {}", player_name, (int)player->m_player_id, rockstar_id);
 
 			return g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
 		}
@@ -56,16 +51,13 @@ namespace big
 
 		if (net_player_data)
 		{
-			if (g_notifications.player_join.log)
-				LOGF(INFO,
-				    "{} joined '{}'{}, slot #{}. RID: {}",
-				    (plyr && plyr->is_friend() ? "*** Friend" : "Player"),
-				    player_name,
-				    player->is_host() ? "(host)" : "",
-				    (int)player->m_player_id,
-				    rockstar_id);
-			if (g_notifications.player_join.notify)
-				g_notification_service->push("Player Joined", std::vformat("{} taking slot", std::make_format_args(player_name)));
+			LOGF(INFO,
+			    "{} joined '{}'{}, slot #{}. RID: {}",
+			    (plyr && plyr->is_friend() ? "*** Friend" : "Player"),
+			    player_name,
+			    player->is_host() ? "(host)" : "",
+			    (int)player->m_player_id,
+			    rockstar_id);
 
 			if (plyr)
 				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa, is_cheater] {

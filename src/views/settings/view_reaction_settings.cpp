@@ -1,22 +1,9 @@
 #include "core/data/reactions.hpp"
-#include "core/settings/notifications.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
 
 namespace big
 {
-	void draw_pair_option(const std::string_view name, decltype(g_notifications.player_join)& option)
-	{
-		ImGui::Text(name.data());
-
-		ImGui::PushID(name.data());
-		components::hor_space();
-		ImGui::Checkbox("Notify", &option.notify);
-		ImGui::SameLine();
-		ImGui::Checkbox("Log", &option.log);
-		ImGui::PopID();
-	}
-
 	void draw_reaction(reaction& reaction)
 	{
 		ImGui::PushID(&reaction);
@@ -47,12 +34,5 @@ namespace big
 			}
 			else
 				draw_reaction(*i);
-
-		ImGui::Separator();
-
-		components::sub_title("Network Player Manager");
-
-		draw_pair_option("Player Join", g_notifications.player_join);
-		draw_pair_option("Player Leave", g_notifications.player_leave);
 	}
 }

@@ -1,7 +1,6 @@
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
-#include "thread_pool.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
 
@@ -40,12 +39,12 @@ namespace big
 		{
 			std::string name = player_name;
 			if (trimString(name).length() && rockstar_id)
-				g_thread_pool->push([] {
-					bad_players_nm::add_player({player_name, rockstar_id, true, save_as_spammer});
-					save_as_spammer = false;
-					strcpy(player_name, "");
-					rockstar_id = 0;
-				});
+			{
+				bad_players_nm::add_player({player_name, rockstar_id, true, save_as_spammer});
+				save_as_spammer = false;
+				strcpy(player_name, "");
+				rockstar_id = 0;
+			}
 			else
 				g_notification_service->push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
 		}

@@ -1,131 +1,50 @@
 #include "settings.hpp"
 
-#include "thread_pool.hpp"
-
 namespace big
 {
-	void menu_settings::init(const file& save_file)
-	{
-		m_save_file = save_file;
-		load();
-
-		g_thread_pool->push([this] {
-			while (!g_running)
-				std::this_thread::yield();
-
-			while (g_running)
-			{
-				std::this_thread::sleep_for(10000ms);
-				attempt_save();
-			}
-		});
-	}
-
 	void menu_settings::attempt_save()
 	{
 		const nlohmann::json j = *this;
-
-		if (deep_compare(m_options, j, true))
+		if (deep_compare(last_settings, j))
 			save();
 	}
 
-	bool menu_settings::load()
+	void menu_settings::init(const file& sv)
 	{
-		m_default_options = *this;
+		save_file = sv;
 
-		std::ifstream file(m_save_file.get_path());
+		std::ifstream file(save_file.get_path());
 
-		if (!m_save_file.exists())
-		{
-			write_default_config();
+		if (save_file.exists())
+			try
+			{
+				file >> last_settings;
+				from_json(last_settings, *this); // load existing settings
+				file.close();
+			}
+			catch (const std::exception& e)
+			{
+				LOG(FATAL) << e.what();
+				file.close();
+				return;
+			}
 
-			file.open(m_save_file.get_path());
-		}
-
-		try
-		{
-			file >> m_options;
-
-			file.close();
-		}
-		catch (const std::exception&)
-		{
-			file.close();
-
-			LOG(WARNING) << "Detected corrupt settings, writing default config...";
-
-			write_default_config();
-
-			return load();
-		}
-
-		const bool should_save = deep_compare(m_options, m_default_options);
-		try
-		{
-			from_json(m_options, *this);
-		}
-		catch (const nlohmann::detail::type_error& e)
-		{
-			LOG(WARNING) << e.what();
-
-			return false;
-		}
-
-		if (should_save)
-		{
-			LOG(INFO) << "Updating settings.";
-			save();
-		}
-
-		return true;
+		save(); // write back to disk
 	}
 
-	bool menu_settings::write_default_config()
+	bool menu_settings::deep_compare(nlohmann::json& _last, const nlohmann::json& _current)
 	{
-		std::ofstream file(m_save_file.get_path(), std::ios::out | std::ios::trunc);
-		file << m_default_options.dump(4);
+		for (auto& e : _current.items())
+			if (const std::string& key = e.key(); _last[key].is_object() ? deep_compare(_last[key], e.value()) : _last[key] != e.value())
+				return true;
+		return false;
+	}
+
+	void menu_settings::save()
+	{
+		std::ofstream file(save_file.get_path(), std::ios::out | std::ios::trunc);
+		last_settings = *this;         // set last settings to existing settings
+		file << last_settings.dump(4); // write existing settings to disk
 		file.close();
-
-		return true;
-	}
-
-	bool menu_settings::deep_compare(nlohmann::json& current_settings, const nlohmann::json& default_settings, bool compare_value)
-	{
-		bool should_save = false;
-
-		for (auto& e : default_settings.items())
-		{
-			const std::string& key = e.key();
-
-			if (current_settings.count(key) == 0 || (compare_value && current_settings[key] != e.value()))
-			{
-				current_settings[key] = e.value();
-
-				should_save = true;
-			}
-			else if (current_settings[key].is_object() && e.value().is_object())
-			{
-				if (deep_compare(current_settings[key], e.value(), compare_value))
-					should_save = true;
-			}
-			else if (!current_settings[key].is_object() && e.value().is_object())
-			{
-				current_settings[key] = e.value();
-
-				should_save = true;
-			}
-		}
-
-		return should_save;
-	}
-
-	bool menu_settings::save()
-	{
-		std::ofstream file(m_save_file.get_path(), std::ios::out | std::ios::trunc);
-		nlohmann::json j = *this;
-		file << j.dump(4);
-		file.close();
-
-		return true;
 	}
 }

@@ -84,7 +84,6 @@ namespace big
 	void logger::create_backup()
 	{
 		logger_create_backup(m_file, "backup");
-		logger_create_backup(m_file2, "additional_logs");
 	}
 
 	void logger::open_outstreams()
@@ -93,7 +92,6 @@ namespace big
 			m_console_out.open("CONOUT$", std::ios_base::out | std::ios_base::app);
 
 		m_file_out.open(m_file.get_path(), std::ios_base::out | std::ios_base::trunc);
-		m_file_out2.open(m_file2.get_path(), std::ios_base::out | std::ios_base::trunc);
 	}
 
 	void logger::close_outstreams()
@@ -102,7 +100,8 @@ namespace big
 			m_console_out.close();
 
 		m_file_out.close();
-		m_file_out2.close();
+		if (m_file_out2.is_open())
+			m_file_out2.close();
 	}
 
 	const LogColor get_color(const eLogLevel level)
@@ -167,6 +166,12 @@ namespace big
 
 	void logger::log_additional(std::string str, std::source_location location)
 	{
+		if (!m_file_out2.is_open())
+		{
+			logger_create_backup(m_file2, "additional_logs");
+			m_file_out2.open(m_file2.get_path(), std::ios_base::out | std::ios_base::trunc);
+		}
+
 		if (m_file_out2.is_open())
 		{
 			const auto file      = std::filesystem::path(location.file_name()).filename().string();

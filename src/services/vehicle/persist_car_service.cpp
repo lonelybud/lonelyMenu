@@ -14,7 +14,7 @@
 
 namespace big
 {
-	void persist_car_service::save_vehicle(Vehicle vehicle, std::string_view file_name, std::string folder_name)
+	void persist_car_service::save_vehicle(Vehicle vehicle, std::string file_name, std::string folder_name)
 	{
 		if (!ENTITY::DOES_ENTITY_EXIST(vehicle) || !ENTITY::IS_ENTITY_A_VEHICLE(vehicle))
 		{

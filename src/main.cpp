@@ -80,7 +80,8 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    base_dir /= "YimMenu";
 			    g_file_manager.init(base_dir);
 
-			    auto logger_instance = std::make_unique<logger>("YimMenu", g_file_manager.get_project_file("./cout.log"), g_file_manager.get_project_file("./additional_log.log"));
+			    auto logger_instance =
+			        std::make_unique<logger>("YimMenu", g_file_manager.get_project_file("./cout.log"), g_file_manager.get_project_file("./additional_log.log"));
 
 			    auto metric_log_file = g_file_manager.get_project_file("./bad_metric.log");
 			    logger_create_backup(metric_log_file, "bad_metrics");
