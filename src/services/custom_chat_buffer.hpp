@@ -31,6 +31,8 @@ namespace big
 
 				log << buf << std::endl;
 				log.close();
+
+				length_flushed = len;
 			}
 
 			if (overflow)
