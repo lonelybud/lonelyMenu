@@ -14,6 +14,8 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
+#include <cstdlib>
+
 static inline void gamer_handle_deserialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
 {
 	constexpr int PC_PLATFORM = 3;
@@ -37,15 +39,42 @@ static inline bool is_kick_instruction(rage::datBitBuffer& buffer)
 
 namespace big
 {
-	static inline bool has_invalid_time_bw_msgs(big::player_ptr player)
+	static inline bool is_spam_interval_diff_there(big::player_ptr player, std::chrono::seconds diff, int limit)
 	{
-		auto currentTime      = std::chrono::system_clock::now();
-		auto diff             = std::chrono::duration_cast<std::chrono::seconds>(currentTime - player->last_msg_time);
+		// the diff bw arrival of last and this message is atmost 1 sec
+		if (abs(player->last_spam_interval_diff - diff).count() <= 1)
+		{
+			if (++player->same_interval_spam_count == limit)
+			{
+				g_log->log_additional(std::format("Chat Spammer {} {}", limit, player->get_name()));
+				return true;
+			}
+		}
+		else
+			player->same_interval_spam_count = 0;
+
+		player->last_spam_interval_diff = diff;
+		return false;
+	}
+
+	static inline bool is_player_spammer(char* msg, big::player_ptr player)
+	{
+		auto currentTime = std::chrono::system_clock::now();
+		auto diff        = std::chrono::duration_cast<std::chrono::seconds>(currentTime - player->last_msg_time);
+
 		player->last_msg_time = currentTime;
 
-		if (diff.count() <= 2.5)
-			return true;
-		return false;
+		if (strlen(msg) > 50)
+		{
+			// it should take atleast 2 seconds: to type or copy and paste
+			if (diff.count() <= 2)
+				return true;
+
+			// should be able to detect spammer at third message, so you will see two messages
+			return is_spam_interval_diff_there(player, diff, 1);
+		}
+
+		return is_spam_interval_diff_there(player, diff, 7);
 	}
 
 	bool get_msg_type(rage::eNetMessage& msgType, rage::datBitBuffer& buffer)
@@ -120,7 +149,7 @@ namespace big
 				char message[256];
 				buffer.ReadString(message, 256);
 
-				if (strlen(message) > 55 && has_invalid_time_bw_msgs(player))
+				if (is_player_spammer(message, player))
 				{
 					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
 					// flag as spammer
