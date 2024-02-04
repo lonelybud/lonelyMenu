@@ -14,6 +14,12 @@ namespace big::teleport
 			return false;
 		}
 
+		if (self::veh && !entity::take_control_of(self::veh))
+		{
+			g_notification_service->push_warning("Teleport", "Unable to take control of veh");
+			return false;
+		}
+
 		auto yaw   = ENTITY::GET_ENTITY_HEADING(self::ped);
 		auto pitch = CAM::GET_GAMEPLAY_CAM_RELATIVE_PITCH();
 		auto roll  = CAM::GET_GAMEPLAY_CAM_RELATIVE_HEADING();

@@ -1,7 +1,5 @@
-#include "backend/bool_command.hpp"
 #include "core/data/misc.hpp"
 #include "core/data/reactions.hpp"
-#include "core/data/self.hpp"
 #include "fiber_pool.hpp"
 #include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
@@ -86,17 +84,6 @@ namespace big
 								}
 
 								LOG(WARNING) << str;
-
-								if (g_self.spectating)
-								{
-									g_self.spectating = false;
-									dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("spectate")))->refresh();
-								}
-								if (g_self.free_cam)
-								{
-									g_self.free_cam = false;
-									dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("freecam")))->refresh();
-								}
 							});
 
 						else if (auto victim_player =

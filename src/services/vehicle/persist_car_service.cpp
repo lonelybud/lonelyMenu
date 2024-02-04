@@ -208,7 +208,6 @@ namespace big
 					if (vehicle_json[mod_names[i]].is_array())
 					{
 						std::vector<int> mod = vehicle_json[mod_names[i]];
-						g_log->log_additional(std::format("SET_VEHICLE_MOD : {} {} {}", i, mod[0], 1));
 						VEHICLE::SET_VEHICLE_MOD(vehicle, i, mod[0], mod[1]);
 					}
 					else
@@ -227,9 +226,9 @@ namespace big
 
 			if (!vehicle_json[vehicle_extras_key].is_null())
 			{
-				std::map<int, bool> vehicle_extras = vehicle_json[vehicle_extras_key];
+				std::map<int, int> vehicle_extras = vehicle_json[vehicle_extras_key];
 				for (const auto& [extra, extra_enabled] : vehicle_extras)
-					VEHICLE::SET_VEHICLE_EXTRA(vehicle, extra, extra_enabled);
+					VEHICLE::SET_VEHICLE_EXTRA(vehicle, extra, extra_enabled ? 0 : 1);
 			}
 
 			vehicle::repair(vehicle);
@@ -244,7 +243,37 @@ namespace big
 		int primary_color, secondary_color;
 		int pearlescent_color, wheel_color;
 		Hash vehicle_hash = ENTITY::GET_ENTITY_MODEL(vehicle);
-		std::map<int, bool> vehicle_extras;
+		std::map<int, int> vehicle_extras;
+
+		auto is_bennys = vehicle::is_bennys(vehicle);
+		for (int slot = MOD_SPOILERS; slot <= MOD_LIGHTBAR; slot++)
+			if (VEHICLE::GET_NUM_VEHICLE_MODS(vehicle, slot) > 0)
+			{
+				auto wheel_custom = VEHICLE::GET_VEHICLE_MOD_VARIATION(vehicle, slot);
+
+				if (wheel_custom && is_bennys)
+					wheel_custom = 0;
+
+				int vehicle_mod[2]            = {VEHICLE::GET_VEHICLE_MOD(vehicle, slot), wheel_custom};
+				vehicle_json[mod_names[slot]] = vehicle_mod;
+			}
+			else if (VEHICLE::IS_TOGGLE_MOD_ON(vehicle, slot))
+			{
+				vehicle_json[mod_names[slot]] = "TOGGLE";
+
+				if (slot == MOD_TYRE_SMOKE)
+				{
+					int tire_smoke_color[3]{};
+					VEHICLE::GET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, &tire_smoke_color[0], &tire_smoke_color[1], &tire_smoke_color[2]);
+					vehicle_json[tire_smoke_color_key] = tire_smoke_color;
+				}
+				else if (slot == MOD_XENON_LIGHTS)
+					vehicle_json[headlight_color_key] = VEHICLE::GET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle);
+			}
+
+		for (int extra = MOD_EXTRA_14; extra <= MOD_EXTRA_0; ++extra)
+			if (auto id = (extra - MOD_EXTRA_0) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
+				vehicle_extras[id] = VEHICLE::IS_VEHICLE_EXTRA_TURNED_ON(vehicle, id);
 
 		VEHICLE::GET_VEHICLE_COLOURS(vehicle, &primary_color, &secondary_color);
 		VEHICLE::GET_VEHICLE_EXTRA_COLOURS(vehicle, &pearlescent_color, &wheel_color);
@@ -298,37 +327,6 @@ namespace big
 			vehicle_json[interior_color_key]   = interior_color;
 			vehicle_json[dash_color_key]       = dashboard_color;
 		}
-
-		auto is_bennys = vehicle::is_bennys(vehicle);
-
-		for (int slot = MOD_SPOILERS; slot <= MOD_LIGHTBAR; slot++)
-			if (VEHICLE::GET_NUM_VEHICLE_MODS(vehicle, slot) > 0)
-			{
-				auto wheel_custom = VEHICLE::GET_VEHICLE_MOD_VARIATION(vehicle, slot);
-
-				if (wheel_custom && is_bennys)
-					wheel_custom = 0;
-
-				int vehicle_mod[2] = {VEHICLE::GET_VEHICLE_MOD(vehicle, slot), wheel_custom};
-				vehicle_json[mod_names[slot]] = vehicle_mod;
-			}
-			else if (VEHICLE::IS_TOGGLE_MOD_ON(vehicle, slot))
-			{
-				vehicle_json[mod_names[slot]] = "TOGGLE";
-
-				if (slot == MOD_TYRE_SMOKE)
-				{
-					int tire_smoke_color[3]{};
-					VEHICLE::GET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, &tire_smoke_color[0], &tire_smoke_color[1], &tire_smoke_color[2]);
-					vehicle_json[tire_smoke_color_key] = tire_smoke_color;
-				}
-				else if (slot == MOD_XENON_LIGHTS)
-					vehicle_json[headlight_color_key] = VEHICLE::GET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle);
-			}
-
-		for (int extra = MOD_EXTRA_11; extra <= MOD_EXTRA_0; ++extra)
-			if (auto id = (extra - MOD_EXTRA_0) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
-				vehicle_extras[id] = !VEHICLE::IS_VEHICLE_EXTRA_TURNED_ON(vehicle, id);
 
 		return vehicle_json;
 	}

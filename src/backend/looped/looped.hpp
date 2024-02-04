@@ -1,7 +1,10 @@
 #pragma once
+#include "backend/bool_command.hpp"
 #include "backend/player_command.hpp"
 #include "core/data/auto_drive.hpp"
+#include "core/data/context_menu.hpp"
 #include "core/data/hud.hpp"
+#include "core/data/self.hpp"
 #include "core/data/session.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
@@ -118,6 +121,25 @@ namespace big::looped
 
 			if (g_local_player && g_local_player->m_player_info)
 				g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
+		}
+	}
+
+	inline void death_check()
+	{
+		if (g_local_player->m_player_info->m_game_state == eGameState::Died)
+		{
+			if (g_self.spectating)
+			{
+				g_self.spectating = false;
+				dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("spectate")))->refresh();
+			}
+			if (g_self.free_cam)
+			{
+				g_self.free_cam = false;
+				dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("freecam")))->refresh();
+			}
+			if (g_context_menu.enabled)
+				g_context_menu.enabled = false;
 		}
 	}
 

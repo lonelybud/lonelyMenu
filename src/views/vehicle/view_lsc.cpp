@@ -51,8 +51,8 @@ namespace big
 
 					model      = ENTITY::GET_ENTITY_MODEL(current_veh);
 					owned_mods = vehicle::get_owned_mods_from_vehicle(current_veh);
-					is_bennys = vehicle::is_bennys(current_veh);
-					veh_name = vehicle::get_vehicle_model_name(current_veh);
+					is_bennys  = vehicle::is_bennys(current_veh);
+					veh_name   = vehicle::get_vehicle_model_name(current_veh);
 
 					VEHICLE::SET_VEHICLE_MOD_KIT(current_veh, 0);
 
@@ -339,6 +339,24 @@ namespace big
 							ImGui::EndGroup();
 						}
 					}
+				}
+				ImGui::SeparatorText("Extras");
+				{
+					for (int extra = MOD_EXTRA_0; extra >= MOD_EXTRA_14; extra--)
+						if (owned_mods.find(extra) != owned_mods.end())
+						{
+							int id                = (extra - MOD_EXTRA_0) * -1;
+							bool is_extra_enabled = owned_mods[extra] == 1;
+							if (ImGui::Checkbox(std::format("{}###extra{}", id, id).c_str(), &is_extra_enabled))
+							{
+								owned_mods[extra] = is_extra_enabled;
+								g_fiber_pool->queue_job([id, is_extra_enabled] {
+									VEHICLE::SET_VEHICLE_EXTRA(current_veh, id, !is_extra_enabled);
+								});
+							}
+							ImGui::SameLine();
+						}
+					ImGui::NewLine();
 				}
 				ImGui::SeparatorText("Neon Light Options");
 				{
