@@ -1,7 +1,6 @@
 #include "vehicle.hpp"
 
 #include "entity.hpp"
-#include "gta/vehicle_values.hpp"
 #include "script.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 
@@ -109,16 +108,8 @@ namespace big::vehicle
 		owned_mods[MOD_REARWHEEL_VAR]  = VEHICLE::GET_VEHICLE_MOD_VARIATION(vehicle, MOD_REARWHEEL);
 
 		for (int slot = MOD_SPOILERS; slot <= MOD_LIGHTBAR; slot++)
-		{
-			int count = VEHICLE::GET_NUM_VEHICLE_MODS(vehicle, slot);
-			if (count > 0)
-			{
-				int32_t val = VEHICLE::GET_VEHICLE_MOD(vehicle, slot);
-
-				if (val != -1)
-					owned_mods[slot] = val;
-			}
-		}
+			if (VEHICLE::GET_NUM_VEHICLE_MODS(vehicle, slot) > 0)
+				owned_mods[slot] = VEHICLE::GET_VEHICLE_MOD(vehicle, slot);
 
 		return owned_mods;
 	}

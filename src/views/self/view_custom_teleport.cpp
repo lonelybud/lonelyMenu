@@ -6,27 +6,28 @@ namespace big
 {
 	void view::custom_teleport()
 	{
-		static std::string new_location_name{};
-		static std::string category = "Default";
-		static telelocation deletion_telelocation;
+		static std::string new_location_name{}, category;
+		static const telelocation* selected_telelocation = nullptr;
+		static bool delete_modal;
 
-		if (!std::string(deletion_telelocation.name).empty())
+		if (delete_modal)
 			ImGui::OpenPopup("##deletelocation");
 
-		if (ImGui::BeginPopupModal("##deletelocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		if (ImGui::BeginPopupModal("##deletelocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text("Are you sure you want to delete %s?", deletion_telelocation.name);
+			ImGui::Text("Are you sure you want to delete %s?", selected_telelocation->name);
 			ImGui::Spacing();
 			if (ImGui::Button("Yes"))
 			{
-				g_custom_teleport_service.delete_saved_location(category, deletion_telelocation.name);
-				deletion_telelocation.name = "";
+				g_custom_teleport_service.delete_saved_location(category, selected_telelocation->name);
+				selected_telelocation = nullptr;
+				delete_modal          = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("No"))
 			{
-				deletion_telelocation.name = "";
+				delete_modal = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -52,9 +53,22 @@ namespace big
 		});
 
 		ImGui::Separator();
-
-		components::small_text("Double click to teleport.");
-		components::small_text("Shift click to delete.");
+		components::button("Teleport", [] {
+			if (selected_telelocation)
+			{
+				g_log->log_additional(std::format("Custom Teleport: {}, {}, {}, {}",
+				    selected_telelocation->name,
+				    selected_telelocation->x,
+				    selected_telelocation->y,
+				    selected_telelocation->z));
+				teleport::to_coords({selected_telelocation->x, selected_telelocation->y, selected_telelocation->z});
+			}
+		});
+		ImGui::SameLine();
+		components::button("Delete", [] {
+			if (selected_telelocation)
+				delete_modal = true;
+		});
 
 		ImGui::Spacing();
 
@@ -75,18 +89,9 @@ namespace big
 		{
 			if (g_custom_teleport_service.all_saved_locations.find(category)
 			    != g_custom_teleport_service.all_saved_locations.end())
-			{
-				for (const auto& l : g_custom_teleport_service.all_saved_locations.at(category))
-					if (ImGui::Selectable(l.name.c_str(), false, ImGuiSelectableFlags_AllowDoubleClick))
-					{
-						if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-							deletion_telelocation = l;
-						else if (ImGui::IsMouseDoubleClicked(0))
-							g_fiber_pool->queue_job([l] {
-								teleport::to_coords({l.x, l.y, l.z});
-							});
-					}
-			}
+				for (const auto& l : g_custom_teleport_service.all_saved_locations[category])
+					if (ImGui::Selectable(l.name.c_str(), selected_telelocation && selected_telelocation->name == l.name))
+						selected_telelocation = &l;
 			ImGui::EndListBox();
 		}
 		ImGui::EndGroup();

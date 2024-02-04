@@ -45,7 +45,7 @@ namespace big
 		if (!file_name_to_delete.empty())
 			ImGui::OpenPopup("##deletepersistcar");
 
-		if (ImGui::BeginPopupModal("##deletepersistcar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		if (ImGui::BeginPopupModal("##deletepersistcar", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
 			ImGui::Text("Are you sure you want to delete %s?", file_name_to_delete.c_str());
 
@@ -165,7 +165,7 @@ namespace big
 
 		if (open_modal)
 			ImGui::OpenPopup("##spawncarmodel2");
-		if (ImGui::BeginPopupModal("##spawncarmodel2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		if (ImGui::BeginPopupModal("##spawncarmodel2", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
 			ImGui::Text("Are you sure you want to spawn %s", g_vehicle.persist_vehicle.file.c_str());
 			ImGui::Spacing();

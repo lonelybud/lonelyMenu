@@ -99,7 +99,7 @@ namespace big
 		}
 	}
 
-	auto animDictCompactObjReducer = [](ptfxEffects::AnimDictCompactObj& v) {
+	static auto animDictCompactObjReducer = [](ptfxEffects::AnimDictCompactObj& v) {
 		return v.DictionaryName;
 	};
 
@@ -299,7 +299,7 @@ namespace big
 
 		if (!std::string(groupToDelete).empty() || customEffectToDeleteIndex != -1)
 			ImGui::OpenPopup("##deleteCustomEffectOrGroup");
-		if (ImGui::BeginPopupModal("##deleteCustomEffectOrGroup", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		if (ImGui::BeginPopupModal("##deleteCustomEffectOrGroup", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
 			ImGui::Text(std::format("Are you sure you want to delete {}", (customEffectToDeleteIndex != -1 ? "effect" : "group"))
 			                .c_str());

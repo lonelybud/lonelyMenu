@@ -1,4 +1,5 @@
 #include "custom_teleport_service.hpp"
+
 #include "services/notifications/notification_service.hpp"
 
 namespace big
@@ -12,21 +13,24 @@ namespace big
 	{
 		all_saved_locations.clear();
 
-		auto path = get_telelocations_file_path();
-		std::ifstream file(path, std::ios::binary);
-
 		try
 		{
-			if (!file.is_open())
-				return;
+			auto filePath = get_telelocations_file_path();
 
-			nlohmann::json j;
-			file >> j;
-			all_saved_locations = j.get<std::map<std::string, std::vector<telelocation>>>();
+			if (std::filesystem::exists(filePath))
+			{
+				std::ifstream f(filePath);
+
+				if (f.is_open())
+				{
+					all_saved_locations = nlohmann::json::parse(f);
+					f.close();
+				}
+			}
 		}
-		catch (const std::exception& e)
+		catch (std::exception e)
 		{
-			LOG(WARNING) << "Failed fetching saved locations: " << e.what() << '\n';
+			LOG(WARNING) << e.what();
 		}
 	}
 

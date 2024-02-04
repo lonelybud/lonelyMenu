@@ -5,6 +5,7 @@
 #include "natives.hpp"
 #include "services/gta_data/vehicle_item.hpp"
 #include "services/notifications/notification_service.hpp"
+#include "gta/vehicle_values.hpp"
 
 namespace big::vehicle
 {
@@ -32,6 +33,12 @@ namespace big::vehicle
 			VEHICLE::SET_VEHICLE_FIXED(veh);
 			VEHICLE::SET_VEHICLE_DIRT_LEVEL(veh, 0.f);
 		}
+	}
+
+	inline bool is_bennys(Vehicle veh)
+	{
+		auto v = VEHICLE::GET_VEHICLE_WHEEL_TYPE(veh);
+		return v == WHEEL_TYPE_BENNYS_ORIGINAL || v == WHEEL_TYPE_BENNYS_BESPOKE || v == WHEEL_TYPE_OPEN_WHEEL || v == WHEEL_TYPE_STREET || v == WHEEL_TYPE_TRACK;
 	}
 
 	std::optional<Vector3> get_spawn_location(Hash hash, Ped ped);

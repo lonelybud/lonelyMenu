@@ -177,7 +177,7 @@ namespace big
 			const auto file      = std::filesystem::path(location.file_name()).filename().string();
 			const auto timestamp = std::format("{0:%H:%M:%S}", std::chrono::system_clock::now());
 
-			m_file_out2 << "[" << timestamp << "][" << file << "](" << location.line() << ':' << location.column() << ") " << str << std::flush;
+			m_file_out2 << "[" << timestamp << "][" << file << "](" << location.line() << ':' << location.column() << ") " << str << std::endl;
 		}
 	}
 }

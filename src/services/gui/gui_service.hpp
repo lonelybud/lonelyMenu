@@ -71,10 +71,9 @@ namespace big
 		            "Vehicle",
 		            view::vehicle,
 		            {
-		                {tabs::LSC, {"LSC", view::lsc}},
 		                {tabs::SPAWN_VEHICLE, {"Spawn Vehicle", view::spawn_vehicle}},
 		                {tabs::PV, {"Personal Vehicles", view::pv}},
-		                {tabs::SPAWNED_VEHICLES, {"Spawned Vehicles", view::spawned_vehicles}},
+		                {tabs::LSC, {"LSC", view::lsc}},
 		            },
 		        },
 		    },
@@ -85,19 +84,15 @@ namespace big
 		            view::misc,
 		            {
 		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
+		                {tabs::SPAWNED_VEHICLES, {"Spawned Vehicles", view::spawned_vehicles}},
+		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
+		                {tabs::CHAT, {"Chat", view::chat}},
 		            },
 		        },
 		    },
 		    {
 		        tabs::NETWORK,
-		        {
-		            "Network",
-		            view::network,
-		            {
-		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
-		                {tabs::CHAT, {"Chat", view::chat}},
-		            },
-		        },
+		        {"Network", view::network},
 		    },
 		    {
 		        tabs::SETTINGS,

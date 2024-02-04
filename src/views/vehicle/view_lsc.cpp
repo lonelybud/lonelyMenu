@@ -15,6 +15,7 @@ namespace big
 	{
 		static Vehicle current_veh;
 		static bool preparing_veh;
+		static std::string veh_name;
 
 		static std::map<int, int32_t> owned_mods;
 		static std::map<int, std::string> slot_display_names;
@@ -50,7 +51,8 @@ namespace big
 
 					model      = ENTITY::GET_ENTITY_MODEL(current_veh);
 					owned_mods = vehicle::get_owned_mods_from_vehicle(current_veh);
-					is_bennys = owned_mods[MOD_WHEEL_TYPE] == WHEEL_TYPE_BENNYS_ORIGINAL || owned_mods[MOD_WHEEL_TYPE] == WHEEL_TYPE_BENNYS_BESPOKE || owned_mods[MOD_WHEEL_TYPE] == WHEEL_TYPE_OPEN_WHEEL || owned_mods[MOD_WHEEL_TYPE] == WHEEL_TYPE_STREET || owned_mods[MOD_WHEEL_TYPE] == WHEEL_TYPE_TRACK;
+					is_bennys = vehicle::is_bennys(current_veh);
+					veh_name = vehicle::get_vehicle_model_name(current_veh);
 
 					VEHICLE::SET_VEHICLE_MOD_KIT(current_veh, 0);
 
@@ -78,8 +80,7 @@ namespace big
 							if (slot_name.empty())
 								continue;
 
-							slot_name.append("##");
-							slot_name.append(std::to_string(slot));
+							slot_name.append("##" + std::to_string(slot));
 							tmp_slot_display_names[slot] = slot_name;
 
 							std::map<int, std::string> mod_names;
@@ -152,6 +153,8 @@ namespace big
 			}
 			else if (!preparing_veh)
 			{
+				ImGui::Text(veh_name.c_str());
+				ImGui::Spacing();
 				{
 					static char plate[9];
 
@@ -248,20 +251,21 @@ namespace big
 
 									if (ImGui::Selectable(name.c_str(), item_selected))
 									{
-										g_fiber_pool->queue_job([&mod, is_wheel_mod, wheel_stock_mod, wheel_custom] {
+										g_fiber_pool->queue_job([&mod, is_wheel_mod, wheel_stock_mod, wheel_custom, name] {
 											entity::take_control_of(self::veh);
 
 											if (selected_slot >= 0)
 											{
 												if (!VEHICLE::IS_VEHICLE_MOD_GEN9_EXCLUSIVE(current_veh, selected_slot, mod))
 												{
-													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, false);
+													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, 0);
 													owned_mods[selected_slot] = mod;
+													g_log->log_additional(std::format("SET_VEHICLE_MOD : {}({}), {}({})", slot_display_names[selected_slot], selected_slot, name, mod));
 
 													if (is_wheel_mod)
 													{
 														*wheel_stock_mod = mod;
-														*wheel_custom    = false;
+														*wheel_custom    = 0;
 													}
 												}
 												else
@@ -275,8 +279,8 @@ namespace big
 											else if (selected_slot == MOD_WHEEL_TYPE)
 											{
 												VEHICLE::SET_VEHICLE_WHEEL_TYPE(current_veh, mod);
-												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_FRONTWHEEL, 0, false);
-												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_REARWHEEL, 0, false);
+												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_FRONTWHEEL, 0, 0);
+												VEHICLE::SET_VEHICLE_MOD(current_veh, MOD_REARWHEEL, 0, 0);
 												current_veh = -1;
 											}
 											else if (selected_slot == MOD_PLATE_STYLE)
@@ -309,21 +313,22 @@ namespace big
 									{
 										int& mod = wheel_mods[i];
 
-										int should_custom = false;
+										int should_custom = 0;
 
 										// bennys fix
 										if (!is_bennys)
 										{
-											if (i == 0 && ImGui::Selectable("Stock", mod == owned_mods[selected_slot] && *wheel_custom == false))
+											if (i == 0 && ImGui::Selectable("Stock", mod == owned_mods[selected_slot] && *wheel_custom == 0))
 												g_fiber_pool->queue_job([&mod] {
-													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, FALSE);
+													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, 0);
 													current_veh = -1;
 												});
-											should_custom = true;
+											should_custom = 1;
 										}
 
 										if (ImGui::Selectable(("Style " + std::to_string(mod)).c_str(), mod == owned_mods[selected_slot] && *wheel_custom == should_custom))
 											g_fiber_pool->queue_job([&mod, should_custom] {
+												g_log->log_additional(std::format("SET_VEHICLE_MOD : {}({}), {}", slot_display_names[selected_slot], selected_slot, mod));
 												VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, should_custom);
 												current_veh = -1;
 											});
@@ -797,6 +802,9 @@ namespace big
 			}
 		}
 		else
+		{
 			ImGui::Text("Please enter a vehicle.");
+			current_veh = 0;
+		}
 	}
 }

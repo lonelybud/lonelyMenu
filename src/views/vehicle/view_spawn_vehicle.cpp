@@ -101,7 +101,7 @@ namespace big
 
 		if (open_modal)
 			ImGui::OpenPopup("##spawncarmodel");
-		if (ImGui::BeginPopupModal("##spawncarmodel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+		if (ImGui::BeginPopupModal("##spawncarmodel", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
 			ImGui::Text("Are you sure you want to spawn %s", selected_veh.m_display_name);
 			ImGui::Spacing();
