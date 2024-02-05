@@ -28,8 +28,8 @@ namespace big
 		for (reaction* i = &g_reactions.end_session_kick; i <= &g_reactions.give_weapon; ++i)
 			if (event_name.length())
 			{
-				std::string lowercaseSearchString = toLowercase(event_name);
-				if (std::string lowercaseStr = toLowercase(i->m_event_name); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+				std::string lowercaseSearchString = to_lower_case(event_name);
+				if (std::string lowercaseStr = to_lower_case(i->m_event_name); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
 					draw_reaction(*i);
 			}
 			else

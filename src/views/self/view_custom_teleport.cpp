@@ -6,9 +6,10 @@ namespace big
 {
 	void view::custom_teleport()
 	{
-		static std::string new_location_name{}, category;
+		static std::string new_location_name{}, category, filter;
 		static const telelocation* selected_telelocation = nullptr;
 		static bool delete_modal;
+		static std::vector<telelocation> search_results;
 
 		if (delete_modal)
 			ImGui::OpenPopup("##deletelocation");
@@ -72,6 +73,15 @@ namespace big
 
 		ImGui::Spacing();
 
+		ImGui::SetNextItemWidth(300);
+		if (components::input_text_with_hint("##filter", "Search", filter))
+		{
+			if (filter.length() > 0)
+				search_results = g_custom_teleport_service.saved_telelocations_filtered_list(filter);
+			else
+				search_results.clear();
+		}
+
 		ImGui::BeginGroup();
 		components::small_text("Categories");
 		if (ImGui::BeginListBox("##categories", {250, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.5)}))
@@ -87,11 +97,14 @@ namespace big
 		components::small_text("Locations");
 		if (ImGui::BeginListBox("##telelocations", {250, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.5)}))
 		{
-			if (g_custom_teleport_service.all_saved_locations.find(category)
-			    != g_custom_teleport_service.all_saved_locations.end())
-				for (const auto& l : g_custom_teleport_service.all_saved_locations[category])
-					if (ImGui::Selectable(l.name.c_str(), selected_telelocation && selected_telelocation->name == l.name))
-						selected_telelocation = &l;
+			auto& objs = filter.length() > 0 ? search_results :
+			                                   (g_custom_teleport_service.all_saved_locations.find(category)
+			                                               != g_custom_teleport_service.all_saved_locations.end() ?
+			                                           g_custom_teleport_service.all_saved_locations[category] :
+			                                           search_results);
+			for (const auto& l : objs)
+				if (ImGui::Selectable(l.name.c_str(), selected_telelocation && selected_telelocation->name == l.name))
+					selected_telelocation = &l;
 			ImGui::EndListBox();
 		}
 		ImGui::EndGroup();

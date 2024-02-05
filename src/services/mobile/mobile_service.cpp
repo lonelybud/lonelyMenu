@@ -14,7 +14,7 @@ namespace big
 	{
 		m_plate = m_vehicle_idx.at(1).as<char*>();
 		m_hash  = *m_vehicle_idx.at(66).as<Hash*>();
-		m_name = toLowercase(std::format("{} ({})", HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(m_hash)), m_plate));
+		m_name = to_lower_case(std::format("{} ({})", HUD::GET_FILENAME_FOR_AUDIO_CONVERSATION(VEHICLE::GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(m_hash)), m_plate));
 	}
 
 	std::string personal_vehicle::get_display_name() const

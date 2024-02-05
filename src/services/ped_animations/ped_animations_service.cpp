@@ -3,6 +3,7 @@
 #include "gta/enums.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/ped.hpp"
+#include "util/strings.hpp"
 
 namespace big
 {
@@ -11,17 +12,13 @@ namespace big
 		return g_file_manager.get_project_file("ped_animations.json").get_path();
 	}
 
-	std::vector<ped_animation> ped_animation_service::saved_animations_filtered_list(std::string filter = "")
+	std::vector<ped_animation> ped_animation_service::saved_animations_filtered_list(std::string& filter)
 	{
 		std::vector<ped_animation> filterlist{};
-
-		static auto to_lower = [=](std::string text) -> std::string {
-			std::transform(text.begin(), text.end(), text.begin(), ::tolower);
-			return text;
-		};
+		auto _filter = to_lower_case(filter);
 
 		for (auto& ped_animation : all_saved_animations | std::views::values | std::views::join)
-			if (to_lower(ped_animation.name).find(to_lower(filter)) != std::string::npos)
+			if (to_lower_case(ped_animation.name).find(_filter) != std::string::npos)
 				filterlist.push_back(ped_animation);
 
 		return filterlist;
@@ -106,7 +103,8 @@ namespace big
 
 	ped_animation* ped_animation_service::get_animation_by_name(std::string name)
 	{
-		for (auto& anim : saved_animations_filtered_list())
+		std::string str = "";
+		for (auto& anim : saved_animations_filtered_list(str))
 			if (anim.name == name)
 				return &anim;
 

@@ -6,58 +6,70 @@ namespace big
 {
 	void view::teleport()
 	{
-		ImGui::SeparatorText("Blips:");
-		ImGui::Spacing();
+		ImGui::BeginGroup();
+		{
+			ImGui::PushItemWidth(200);
+			ImGui::Text("Blips:");
+			{
+				ImGui::Spacing();
 
-		components::button("Waypoint", [] {
-			teleport::to_waypoint();
-		});
-		ImGui::SameLine();
-		components::button("Objective", [] {
-			teleport::to_objective();
-		});
-		ImGui::SameLine();
-		components::button("Tp to PV", [] {
-			if (Vehicle veh = mobile::mechanic::get_personal_vehicle(); self::veh != veh)
-				teleport::into_vehicle(veh);
-		});
-		ImGui::SeparatorText("Direction");
+				components::button("Waypoint", [] {
+					teleport::to_waypoint();
+				});
+				ImGui::SameLine();
+				components::button("Objective", [] {
+					teleport::to_objective();
+				});
+			}
+			ImGui::Text("Relative Position");
+			{
+				ImGui::Spacing();
 
-		ImGui::Spacing();
+				static float relative_pos[3];
 
-		static float relative_pos[3];
-		components::small_text("X for L/R, Y for F/B, Z for U/D");
-		ImGui::InputFloat3("Relative Position", relative_pos);
-		ImGui::SameLine();
-		components::button("TP###relative", [] {
-			auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, relative_pos[0], relative_pos[1], relative_pos[2]);
-			PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
-		});
+				components::small_text("X for L/R, Y for F/B, Z for U/D");
+				ImGui::InputFloat3("###relativepos", relative_pos);
 
-		ImGui::SeparatorText("Coordinates");
+				components::button("TP###relative", [] {
+					auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, relative_pos[0], relative_pos[1], relative_pos[2]);
+					PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+				});
+				ImGui::SameLine();
+				components::button("Reset###relative", [] {
+					relative_pos[0] = relative_pos[1] = relative_pos[2] = 0;
+				});
+			}
+			ImGui::Text("Coordinates");
+			{
+				ImGui::Spacing();
 
-		ImGui::Spacing();
+				float coords[3] = {self::pos.x, self::pos.y, self::pos.z};
+				static float new_location[3];
 
-		components::small_text("Current coordinates");
-		float coords[3] = {self::pos.x, self::pos.y, self::pos.z};
-		static float new_location[3];
+				ImGui::InputFloat3("##currentcoordinates", coords, "%f", ImGuiInputTextFlags_ReadOnly);
+				
+				components::button("Copy to custom", [coords] {
+					std::copy(std::begin(coords), std::end(coords), std::begin(new_location));
+				});
+				ImGui::SameLine();
+				components::button("Copy to Clipboard", [coords] {
+					ImGui::SetClipboardText(
+					    std::format("X: {:.2f}, Y: {:.2f}, Z: {:.2f}", coords[0], coords[1], coords[2]).c_str());
+				});
 
-		ImGui::SetNextItemWidth(400);
-		ImGui::InputFloat3("##currentcoordinates", coords, "%f", ImGuiInputTextFlags_ReadOnly);
+				components::small_text("Custom###teleport");
+				ImGui::InputFloat3("##Customlocation", new_location);
 
-		components::button("Copy to custom", [coords] {
-			std::copy(std::begin(coords), std::end(coords), std::begin(new_location));
-		});
-		ImGui::SameLine();
-		components::button("Copy to Clipboard", [coords] {
-			ImGui::SetClipboardText(std::format("X: {:.2f}, Y: {:.2f}, Z: {:.2f}", coords[0], coords[1], coords[2]).c_str());
-		});
-
-		components::small_text("Custom teleport");
-		ImGui::SetNextItemWidth(400);
-		ImGui::InputFloat3("##Customlocation", new_location);
-		components::button("Teleport", [] {
-			teleport::to_coords({new_location[0], new_location[1], new_location[2]});
-		});
+				components::button("Teleport##customtp", [] {
+					teleport::to_coords({new_location[0], new_location[1], new_location[2]});
+				});
+			}
+			ImGui::PopItemWidth();
+		}
+		ImGui::EndGroup();
+		components::hor_space();
+		ImGui::BeginGroup();
+		view::custom_teleport();
+		ImGui::EndGroup();
 	}
 }

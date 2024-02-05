@@ -3,6 +3,7 @@
 #include "core/enums.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/mobile.hpp"
+#include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
@@ -43,6 +44,18 @@ namespace big
 		ImGui::SameLine();
 		components::button("Copy Vehicle", [] {
 			persist_car_service::clone_ped_car(self::veh);
+		});
+
+		ImGui::Spacing();
+
+		components::button("Tp into PV", [] {
+			if (auto veh = mobile::mechanic::get_personal_vehicle(); self::veh != veh)
+				teleport::into_vehicle(veh);
+		});
+		ImGui::SameLine();
+		components::button("Tp into Last Veh", [] {
+			if (auto veh = PLAYER::GET_PLAYERS_LAST_VEHICLE())
+				teleport::into_vehicle(veh);
 		});
 	}
 

@@ -5,8 +5,6 @@
 
 namespace big
 {
-	static std::vector<big::ped_animation> empty;
-
 	void view::animations()
 	{
 		static std::string category = "", filter;
@@ -186,7 +184,6 @@ namespace big
 						delete_modal = true;
 				});
 
-				components::input_text_with_hint("##filter", "Search", filter);
 				if (components::input_text_with_hint("##filter", "Search", filter))
 				{
 					if (filter.length() > 0)
@@ -216,7 +213,7 @@ namespace big
 				                                   (g_ped_animation_service.all_saved_animations.find(category)
 				                                               != g_ped_animation_service.all_saved_animations.end() ?
 				                                           g_ped_animation_service.all_saved_animations[category] :
-				                                           empty);
+				                                           search_results);
 
 				components::small_text("Animations");
 				if (ImGui::BeginListBox("##animations", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))

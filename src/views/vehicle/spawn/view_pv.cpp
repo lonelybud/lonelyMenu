@@ -20,7 +20,7 @@ namespace big
 
 		ImGui::SetNextItemWidth(200);
 		if (components::input_text_with_hint("###search_pv", "search", search_pv))
-			search_pv = toLowercase(search_pv);
+			search_pv = to_lower_case(search_pv);
 		ImGui::SameLine();
 		ImGui::Text(" Total: %d cars", g_mobile_service->personal_vehicles.size());
 

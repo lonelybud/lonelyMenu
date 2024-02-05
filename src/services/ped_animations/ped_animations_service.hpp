@@ -27,7 +27,7 @@ namespace big
 		bool save_new_animation(const std::string& category, ped_animation);
 		bool delete_saved_animation(const std::string& category, ped_animation);
 		ped_animation* get_animation_by_name(std::string name);
-		std::vector<ped_animation> saved_animations_filtered_list(std::string filter);
+		std::vector<ped_animation> saved_animations_filtered_list(std::string& filter);
 
 		void play_saved_ped_animation(ped_animation p, Ped ped, float* rel_loc, float* rot);
 

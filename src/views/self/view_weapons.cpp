@@ -10,9 +10,9 @@ namespace big
 	static inline std::map<std::string, big::weapon_item> filter_weapons_map(const std::map<std::string, big::weapon_item>& inputMap, const std::string& searchString)
 	{
 		std::map<std::string, big::weapon_item> filteredMap;
-		std::string lowercaseSearchString = toLowercase(searchString);
+		std::string lowercaseSearchString = to_lower_case(searchString);
 		for (auto pair : inputMap)
-			if (std::string lowercaseStr = toLowercase(pair.second.m_display_name); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+			if (std::string lowercaseStr = to_lower_case(pair.second.m_display_name); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
 				filteredMap[pair.first] = pair.second;
 		return filteredMap;
 	}

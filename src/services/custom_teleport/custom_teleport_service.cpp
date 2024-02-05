@@ -1,6 +1,7 @@
 #include "custom_teleport_service.hpp"
 
 #include "services/notifications/notification_service.hpp"
+#include "util/strings.hpp"
 
 namespace big
 {
@@ -70,5 +71,17 @@ namespace big
 		nlohmann::json j = all_saved_locations;
 		file_out << j.dump(4);
 		file_out.close();
+	}
+
+	std::vector<telelocation> custom_teleport_service::saved_telelocations_filtered_list(std::string& filter)
+	{
+		std::vector<telelocation> filterlist{};
+		auto _filter = to_lower_case(filter);
+
+		for (auto& loc : all_saved_locations | std::views::values | std::views::join)
+			if (to_lower_case(loc.name).find(_filter) != std::string::npos)
+				filterlist.push_back(loc);
+
+		return filterlist;
 	}
 }

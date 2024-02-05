@@ -144,8 +144,8 @@ namespace big
 					for (const auto& [_, player] : g_player_service->players())
 						if (search_player_name.length())
 						{
-							std::string lowercaseSearchString = toLowercase(search_player_name);
-							if (std::string lowercaseStr = toLowercase(player->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
+							std::string lowercaseSearchString = to_lower_case(search_player_name);
+							if (std::string lowercaseStr = to_lower_case(player->get_name()); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
 								player_button(player);
 						}
 						else
