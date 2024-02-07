@@ -30,7 +30,6 @@ namespace big
 		auto player_name = net_player_data->m_name;
 		auto host_token  = net_player_data->m_host_token;
 		auto is_dev_qa   = player->m_is_rockstar_dev || player->m_is_rockstar_qa;
-		auto is_cheater  = player->m_is_cheater;
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
@@ -60,12 +59,9 @@ namespace big
 			    rockstar_id);
 
 			if (plyr)
-				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa, is_cheater] {
+				g_fiber_pool->queue_job([plyr, rockstar_id, player_name, host_token, is_dev_qa] {
 					if (plyr && plyr->is_valid())
 					{
-						if (known_player_nm::is_known(rockstar_id))
-							plyr->is_known_player = true;
-
 						if (bad_players_nm::is_blocked(rockstar_id))
 						{
 							auto str = get_blocked_player_joined_log_string(plyr);
@@ -81,13 +77,20 @@ namespace big
 							{
 								g_notification_service->push_warning("Carefull", str, true);
 
-								if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) == 0)
-									dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr);
+								// if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) == 0)
+								// 	dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr);
 							}
 						}
 
 						if (is_dev_qa)
 							g_reactions.rockstar_dev.process(plyr);
+
+						if (known_player_nm::is_known(rockstar_id))
+						{
+							plyr->is_known_player = true;
+							if (!plyr->is_friend())
+								g_notification_service->push_warning("Known Player joined", player_name);
+						}
 
 						if (plyr->is_friend())
 						{
@@ -95,9 +98,6 @@ namespace big
 							if (!plyr->is_known_player)
 								known_player_nm::toggle(plyr, true);
 						}
-
-						if (is_cheater)
-							g_reactions.cheater_joined.process(plyr);
 
 						if (is_spoofed_host_token(host_token))
 							g_reactions.spoofed_host_token.process(plyr);
