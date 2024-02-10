@@ -29,5 +29,6 @@ namespace big
 		bool request_control_event = true;
 		bool clear_ped_tasks       = true;
 		bool receive_pickup        = false;
+		bool stop_traffic          = true;
 	} g_protections{};
 }

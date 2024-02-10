@@ -43,6 +43,7 @@ namespace big
 		ImGui::Checkbox("Receive Pickup", &g_protections.receive_pickup);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("This prevents the collection of pickups such as unwanted money bags\nNote: Normal pickups are also no longer possible to collect with this enabled");
+		ImGui::Checkbox("Block Traffic Manipulation", &g_protections.stop_traffic);
 		ImGui::EndGroup();
 
 		ImGui::SeparatorText("Options");

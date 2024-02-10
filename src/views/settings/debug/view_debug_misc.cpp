@@ -17,8 +17,6 @@ namespace big
 				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
 			}
 
-			}
-
 			components::sub_title("Game");
 			{
 				components::button("Network Bail", [] {
