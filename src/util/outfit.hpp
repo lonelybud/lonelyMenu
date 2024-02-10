@@ -182,8 +182,8 @@ namespace big::outfit
 
 		for (auto& item : components.items)
 		{
-			if (item.id == 2)
-				continue; // dont save hair
+			// if (item.id == 2)
+			// 	continue; // dont save hair
 
 			nlohmann::json tmp;
 			tmp["drawable_id"]                    = item.drawable_id;
