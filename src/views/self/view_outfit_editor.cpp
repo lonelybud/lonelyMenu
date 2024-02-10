@@ -49,6 +49,8 @@ namespace big
 	void view::outfit_editor()
 	{
 		components::command_checkbox<"disable_clothing_validation">();
+		ImGui::SameLine();
+		ImGui::Checkbox("Save blend data", &g_misc.save_outfit_blend_data);
 		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {

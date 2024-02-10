@@ -12,6 +12,24 @@
 
 namespace big
 {
+	static inline void set_fm_event_index(int index)
+	{
+		int idx = index / 32;
+		int bit = index % 32;
+		misc::set_bit(scr_globals::gsbd_fm_events.at(11).at(361).at(idx, 1).as<int*>(), bit);
+		misc::set_bit(scr_globals::gsbd_fm_events.at(11).at(353).at(idx, 1).as<int*>(), bit);
+		misc::set_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
+	}
+
+	static inline void clear_fm_event_index(int index)
+	{
+		int idx = index / 32;
+		int bit = index % 32;
+		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(361).at(idx, 1).as<int*>(), bit);
+		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(353).at(idx, 1).as<int*>(), bit);
+		misc::clear_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
+	}
+
 	static inline void render_time()
 	{
 		components::sub_title("Time");
@@ -29,6 +47,19 @@ namespace big
 	static inline void game()
 	{
 		components::sub_title("Game");
+
+
+		components::button("Add thunder", [] {
+			set_fm_event_index(9);
+			set_fm_event_index(10);
+			set_fm_event_index(11);
+		});
+		ImGui::SameLine();
+		components::button("Remove thunder", [] {
+			clear_fm_event_index(9);
+			clear_fm_event_index(10);
+			clear_fm_event_index(11);
+		});
 
 		components::command_checkbox<"pedsignore">();
 

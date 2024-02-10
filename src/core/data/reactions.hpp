@@ -72,9 +72,6 @@ namespace big
 		reaction invalid_player_model{reaction_type::modder_detection, reaction_sub_type::invalid_player_model, "Invalid player model", "Had used an invalid player model", true, true, false};
 		reaction super_jump{reaction_type::modder_detection, reaction_sub_type::super_jump, "Super jump", "Had used super jump", true, true, false};
 
-		reaction cheater_joined{reaction_type::none, reaction_sub_type::cheater_joined, "Cheater Joined?", "Is cheater marked by rockstar", true, false, true};
-		reaction rockstar_dev{reaction_type::none, reaction_sub_type::rockstar_dev, "Dev Joined?", "Is rockstar DEV or QA", true, false, true};
-
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", "Received GTA Banner", false, false, false, 1};
 		reaction sound_spam{reaction_type::none, reaction_sub_type::sound_spam, "Sound Spam", "Received Sound Spam", false, false, false};
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", "Received Spectate", false, false, false};

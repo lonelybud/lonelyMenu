@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/misc.hpp"
 #include "natives.hpp"
 #include "services/notifications/notification_service.hpp"
 
@@ -18,6 +19,24 @@ namespace big::outfit
 		int drawable_id_max = 0;
 		int texture_id_max  = 0;
 	};
+
+	struct head_blend_data
+	{
+	public:
+		alignas(8) int shape_first_id  = -1;
+		alignas(8) int shape_second_id = -1;
+		alignas(8) int shape_third_id  = -1;
+		alignas(8) int skin_first_id   = -1;
+		alignas(8) int skin_second_id  = -1;
+		alignas(8) int skin_third_id   = -1;
+		alignas(8) float shape_mix     = FLT_MAX;
+		alignas(8) float skin_mix      = FLT_MAX;
+		alignas(8) float third_mix     = FLT_MAX;
+		alignas(8) BOOL is_parent      = FALSE;
+
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(head_blend_data, shape_first_id, shape_second_id, shape_third_id, skin_first_id, skin_second_id, skin_third_id, shape_mix, skin_mix, third_mix, is_parent);
+	};
+	static_assert(sizeof(head_blend_data) == 0x50, "head_blend_data is not sized properly.");
 
 	struct components_t
 	{
@@ -64,8 +83,8 @@ namespace big::outfit
 	{
 		for (auto item : components.items)
 		{
-			if (item.id == 2)
-				continue; // dont apply hair
+			// if (item.id == 2)
+			// 	continue; // dont apply hair
 
 			auto draw    = target ? PED::GET_PED_DRAWABLE_VARIATION(target, item.id) : item.drawable_id;
 			auto texture = target ? PED::GET_PED_TEXTURE_VARIATION(target, item.id) : item.texture_id;
@@ -120,6 +139,22 @@ namespace big::outfit
 			}
 		}
 
+		if (j.contains("blend_data"))
+		{
+			head_blend_data blend_data = j["blend_data"];
+			PED::SET_PED_HEAD_BLEND_DATA(self::ped,
+			    blend_data.shape_first_id,
+			    blend_data.shape_second_id,
+			    blend_data.shape_third_id,
+			    blend_data.skin_first_id,
+			    blend_data.skin_second_id,
+			    blend_data.skin_third_id,
+			    blend_data.shape_mix,
+			    blend_data.skin_mix,
+			    blend_data.third_mix,
+			    blend_data.is_parent);
+		}
+
 		set_self_comps_props(components, props);
 	}
 
@@ -167,6 +202,15 @@ namespace big::outfit
 		j["components"] = j_components;
 		j["props"]      = j_props;
 		j["model"]      = model;
+
+		if (g_misc.save_outfit_blend_data)
+		{
+			head_blend_data blend_data{};
+			PED::GET_PED_HEAD_BLEND_DATA(self::ped, (Any*)&blend_data);
+			j["blend_data"] = blend_data;
+
+			g_misc.save_outfit_blend_data = false;
+		}
 
 		auto path = outfit::get_folder(folder).get_file(filename).get_path();
 		std::ofstream o(path);

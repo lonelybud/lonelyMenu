@@ -12,6 +12,7 @@ namespace big
 
 		bool fm_mission_controller_cart_grab = false;
 		bool disable_clothing_validation     = false;
+		bool save_outfit_blend_data          = false;
 		bool request_control                 = true;
 		bool notify_friend_killed            = true;
 		bool ped_ignore                      = false;

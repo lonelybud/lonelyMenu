@@ -11,9 +11,8 @@ namespace big
 	{
 		components::sub_title("Misc");
 
-		ImGui::BeginDisabled(!g_player_service->get_self()->is_host());
-		ImGui::Checkbox("Lock Session", &g_session.lock_session);
-		ImGui::EndDisabled();
+		ImGui::Checkbox("Block Joins", &g_session.block_joins);
+		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
 

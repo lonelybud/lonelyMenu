@@ -379,9 +379,6 @@ namespace big
 		invalid_player_model,
 		super_jump,
 
-		cheater_joined,
-		rockstar_dev,
-
 		gta_banner,
 		sound_spam,
 		spectate,

@@ -1,3 +1,4 @@
+#include "core/data/debug.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
@@ -352,6 +353,28 @@ namespace big
 		}
 		case eNetworkEvents::EXPLOSION_EVENT:
 		{
+			if (plyr && g_debug.log_explosion_event)
+				LOGF(WARNING,
+				    "Explosion Event: {} (Dist- {})",
+				    plyr->get_name(),
+				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
+
+			if (plyr && plyr->block_explosions)
+			{
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+				return;
+			}
+
+			break;
+		}
+		case eNetworkEvents::NETWORK_PTFX_EVENT:
+		{
+			if (plyr && g_debug.log_explosion_event)
+				LOGF(WARNING,
+				    "PTFX Event: {} (Dist- {})",
+				    plyr->get_name(),
+				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
+
 			if (plyr && plyr->block_explosions)
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);

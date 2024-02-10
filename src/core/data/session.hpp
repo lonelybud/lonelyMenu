@@ -48,7 +48,8 @@ namespace big
 
 		uint64_t orig_host_token = 0;
 		uint64_t host_token      = 0;
-		bool lock_session        = false;
+		bool block_joins         = false;
+		bool block_friend_joins  = false;
 		bool force_script_host   = false;
 
 		bool log_chat_messages_to_textbox = true;

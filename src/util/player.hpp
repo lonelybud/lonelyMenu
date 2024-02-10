@@ -6,22 +6,6 @@
 
 namespace big
 {
-	inline std::string get_blocked_player_joined_log_string(big::player_ptr plyr)
-	{
-		if (auto net_data = plyr->get_net_data())
-		{
-			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-			auto player_name = net_data->m_name;
-
-			plyr->is_blocked = true;
-			plyr->is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;
-
-			return std::format("A Blocked {} {} ({}) has joined.", plyr->is_spammer ? "Spammer" : "Player", player_name, rockstar_id);
-		}
-
-		return "";
-	}
-
 	inline player_ptr get_player_from_ped(Ped ped)
 	{
 		for (auto& p : g_player_service->players())
@@ -53,13 +37,16 @@ namespace big
 
 	inline bool player_is_driver(player_ptr target_plyr)
 	{
-		auto driver =
-		    g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver;
+		if (auto driver =
+		        g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver)
+		{
+			// driver is a player present in session
+			if (driver->m_player_info && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
+				return driver == target_plyr->get_ped();
 
-		// driver is a player present in session
-		if (driver && driver->m_player_info
-		    && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
-			return driver == target_plyr->get_ped();
+			// driver exists but is not a valid player
+			return true;
+		}
 
 		return false;
 	}

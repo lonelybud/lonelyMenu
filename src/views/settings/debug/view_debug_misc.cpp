@@ -14,6 +14,9 @@ namespace big
 			{
 				ImGui::Checkbox("Disable Population Load Balancing", &g_debug.disable_population_load_balancing);
 				ImGui::Checkbox("Freemode Hook G_N_O_T_R_T_S_W_T_H", &g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H);
+				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
+			}
+
 			}
 
 			components::sub_title("Game");
