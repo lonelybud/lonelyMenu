@@ -371,6 +371,10 @@ namespace big
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
 					persist_car_service::load_vehicle(std::nullopt, ped);
 			});
+
+			components::ver_space();
+
+			ImGui::Checkbox("Draw Esp", &current_player->draw_esp);
 		}
 		ImGui::EndGroup();
 	}

@@ -12,17 +12,13 @@ namespace big
 		if (!plyr->is_valid() || !plyr->get_ped() || !plyr->get_ped()->m_navigation)
 			return;
 
-		auto& player_pos = *plyr->get_ped()->m_navigation->get_position();
-
-		float screen_x, screen_y;
-
+		auto& player_pos     = *plyr->get_ped()->m_navigation->get_position();
 		const float distance = math::calculate_distance_from_game_cam(player_pos);
-		const float multplr  = distance > g_esp.global_render_distance[1] ? -1.f : 6.17757f / distance;
-
-		if (multplr == -1.f || g_esp.global_render_distance[0] > distance)
+		if (distance > g_esp.global_render_distance[1] || g_esp.global_render_distance[0] > distance)
 			return;
 
-		uint32_t ped_damage_bits = plyr->get_ped()->m_damage_bits;
+		float screen_x, screen_y;
+		const float multplr = 6.17757f / distance;
 
 		if (g_pointers->m_gta.m_get_screen_coords_for_world_coords(player_pos.data, &screen_x, &screen_y))
 		{
@@ -41,21 +37,9 @@ namespace big
 
 	void esp::draw()
 	{
-		if (!g_esp.enabled)
-			return;
-
-		static int tick_count = 31;
-
-		if (tick_count > g_esp.tick_count_threshhold)
-		{
-			tick_count = 1;
-
-			if (const auto draw_list = ImGui::GetBackgroundDrawList(); draw_list)
-				g_player_service->iterate([draw_list](const player_entry& entry) {
-					draw_player(entry.second, draw_list);
-				});
-		}
-		else
-			++tick_count;
+		if (g_esp.enabled)
+			for (auto& entry : g_player_service->players())
+				if (entry.second->draw_esp)
+					draw_player(entry.second, ImGui::GetBackgroundDrawList());
 	}
 }
