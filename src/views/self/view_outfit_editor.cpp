@@ -51,6 +51,8 @@ namespace big
 		components::command_checkbox<"disable_clothing_validation">();
 		ImGui::SameLine();
 		ImGui::Checkbox("Save blend data", &g_misc.save_outfit_blend_data);
+		ImGui::SameLine();
+		ImGui::Checkbox("Apply hair", &g_misc.apply_outfit_hair);
 		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {

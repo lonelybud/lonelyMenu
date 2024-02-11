@@ -83,8 +83,8 @@ namespace big::outfit
 	{
 		for (auto item : components.items)
 		{
-			// if (item.id == 2)
-			// 	continue; // dont apply hair
+			if (item.id == 2 && !g_misc.apply_outfit_hair)
+				continue; // dont apply hair
 
 			auto draw    = target ? PED::GET_PED_DRAWABLE_VARIATION(target, item.id) : item.drawable_id;
 			auto texture = target ? PED::GET_PED_TEXTURE_VARIATION(target, item.id) : item.texture_id;
