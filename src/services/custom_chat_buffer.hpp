@@ -27,9 +27,9 @@ namespace big
 			if (length_flushed != len)
 			{
 				std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-				std::string str(&buf[length_flushed], len - length_flushed + 1);
+				std::string str(buf + length_flushed, buf + len);
 
-				log << buf << std::endl;
+				log << str;
 				log.close();
 
 				length_flushed = len;
