@@ -17,15 +17,6 @@ namespace big::vehicle
 		return ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.f, (max - min).y, 0.f);
 	}
 
-	static inline void set_mp_bitset(Vehicle veh)
-	{
-		DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
-		auto networkId = NETWORK::VEH_TO_NET(veh);
-		if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
-			NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, TRUE);
-		VEHICLE::SET_VEHICLE_IS_STOLEN(veh, FALSE);
-	}
-
 	Vehicle spawn(Hash hash, Vector3 location, float heading, bool is_networked, bool script_veh)
 	{
 		if (!entity::request_model(hash))
@@ -38,8 +29,24 @@ namespace big::vehicle
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(hash);
 
+		auto network_id = NETWORK::VEH_TO_NET(veh);
+
 		if (*g_pointers->m_gta.m_is_session_started)
-			set_mp_bitset(veh);
+		{
+			DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
+
+			if (NETWORK::NETWORK_GET_ENTITY_IS_NETWORKED(veh))
+				NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, TRUE);
+
+			VEHICLE::SET_VEHICLE_IS_STOLEN(veh, FALSE);
+
+			g_vehicle.spawned_vehicles[network_id]              = {vehicle::get_vehicle_model_name(veh)};
+			g_vehicle.spawned_vehicles[network_id].is_networked = true;
+		}
+		else
+			g_vehicle.spawned_vehicles[veh] = {vehicle::get_vehicle_model_name(veh)};
+
+		LOG(VERBOSE) << "Vehicle Mod kit: " << VEHICLE::GET_VEHICLE_MOD_KIT(veh);
 
 		return veh;
 	}

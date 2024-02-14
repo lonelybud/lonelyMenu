@@ -199,6 +199,32 @@ namespace big
 			}
 	}
 
+	static inline void _vehicles()
+	{
+		components::sub_title("Vehicles");
+
+		components::button("Set veh no longer needed", [] {
+			if (self::veh)
+			{
+				auto veh = self::veh;
+				ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
+			}
+		});
+		components::button("Set as stolen", [] {
+			if (self::veh)
+				VEHICLE::SET_VEHICLE_IS_STOLEN(self::veh, TRUE);
+		});
+
+		static int modkit = 0;
+		ImGui::SetNextItemWidth(100);
+		ImGui::InputInt("###mod_kit_val", &modkit);
+		ImGui::SameLine();
+		components::button("Set veh mod kit", [] {
+			if (self::veh)
+				VEHICLE::SET_VEHICLE_MOD_KIT(self::veh, modkit);
+		});
+	}
+
 	static inline void daily_collectables()
 	{
 		components::sub_title("Daily Collectables");
@@ -281,10 +307,6 @@ namespace big
 		components::button("BP Plasma", [] {
 			lua_scripts::bypass_plasma_cutter();
 		});
-		ImGui::SameLine();
-		components::button("BP Drainage Pipe", [] {
-			lua_scripts::bypass_drainage_pipe();
-		});
 	}
 
 	void view::misc()
@@ -306,6 +328,8 @@ namespace big
 			_self(); // name_self to avoid calling same
 			components::ver_space();
 			properties();
+			components::ver_space();
+			_vehicles();
 		}
 		ImGui::EndGroup();
 		components::hor_space();

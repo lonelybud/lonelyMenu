@@ -114,6 +114,22 @@ namespace big::outfit
 			return;
 		}
 
+		if (j.contains("blend_data"))
+		{
+			head_blend_data blend_data = j["blend_data"];
+			PED::SET_PED_HEAD_BLEND_DATA(self::ped,
+			    blend_data.shape_first_id,
+			    blend_data.shape_second_id,
+			    blend_data.shape_third_id,
+			    blend_data.skin_first_id,
+			    blend_data.skin_second_id,
+			    blend_data.skin_third_id,
+			    blend_data.shape_mix,
+			    blend_data.skin_mix,
+			    blend_data.third_mix,
+			    blend_data.is_parent);
+		}
+
 		for (auto& item : j["components"].items())
 		{
 			std::stringstream ss(item.key());
@@ -139,20 +155,17 @@ namespace big::outfit
 			}
 		}
 
-		if (j.contains("blend_data"))
+		if (g_misc.apply_outfit_blend_data_only)
 		{
-			head_blend_data blend_data = j["blend_data"];
-			PED::SET_PED_HEAD_BLEND_DATA(self::ped,
-			    blend_data.shape_first_id,
-			    blend_data.shape_second_id,
-			    blend_data.shape_third_id,
-			    blend_data.skin_first_id,
-			    blend_data.skin_second_id,
-			    blend_data.skin_third_id,
-			    blend_data.shape_mix,
-			    blend_data.skin_mix,
-			    blend_data.third_mix,
-			    blend_data.is_parent);
+			if (g_misc.apply_outfit_hair)
+				for (auto item : components.items)
+					if (item.id == 2)
+					{
+						auto draw    = item.drawable_id;
+						auto texture = item.texture_id;
+						PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+					}
+			return;
 		}
 
 		set_self_comps_props(components, props);

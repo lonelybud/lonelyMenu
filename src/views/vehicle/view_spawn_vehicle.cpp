@@ -140,8 +140,6 @@ namespace big
 							teleport::into_vehicle(veh);
 
 						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
-						g_vehicle.spawned_vehicles[veh] = {name};
-						// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
 					}
 				});
 

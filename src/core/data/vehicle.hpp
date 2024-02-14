@@ -28,8 +28,9 @@ namespace big
 			bool is_locked      = false;
 			bool is_dead        = false;
 			Blip blip;
+			bool is_networked = false;
 		};
 
-		std::map<Vehicle, SpawnedVehicle> spawned_vehicles;
+		std::map<int, SpawnedVehicle> spawned_vehicles;
 	} g_vehicle{};
 }

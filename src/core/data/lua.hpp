@@ -95,11 +95,6 @@ namespace big
 		{
 			lua_helper::locals::set_float(FMC20, CPPCCl, 100);
 		}
-		inline void bypass_drainage_pipe()
-		{
-			if (auto v = lua_helper::locals::get_int(FMC20, CPSTCl); v >= 3 || v <= 6)
-				lua_helper::locals::set_int(FMC20, CPSTCl, 6);
-		}
 		inline void log_cayo_details()
 		{
 			LOG(WARNING) << "CASH Value: " << lua_helper::stats::get_int("MPX_H4LOOT_CASH_V");

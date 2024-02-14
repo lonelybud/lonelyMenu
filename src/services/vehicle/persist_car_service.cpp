@@ -72,12 +72,9 @@ namespace big
 			else
 			{
 				g_notification_service->push_success("Persist Car", std::format("Spawned {}", g_vehicle.persist_vehicle.file), true);
-				g_vehicle.spawned_vehicles[vehicle] = {g_vehicle.persist_vehicle.file};
 
 				if (g_vehicle.spawn_inside)
 					teleport::into_vehicle(vehicle);
-
-				// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&vehicle);
 			}
 		}
 		else
@@ -121,11 +118,7 @@ namespace big
 		if (veh == 0)
 			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
 		else
-		{
 			g_notification_service->push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
-			g_vehicle.spawned_vehicles[veh] = {model_name};
-			// ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&veh);
-		}
 	}
 
 	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped)

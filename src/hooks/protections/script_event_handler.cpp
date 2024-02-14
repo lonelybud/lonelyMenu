@@ -16,7 +16,7 @@
 
 namespace big
 {
-	inline bool is_player_our_goon(Player sender)
+	inline bool is_player_our_bodyguard(Player sender)
 	{
 		auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
 
@@ -317,7 +317,7 @@ namespace big
 				return true;
 			}
 
-			if (g_protections.script_events.start_activity && !is_player_our_goon(player->m_player_id))
+			if (g_protections.script_events.start_activity && !is_player_our_bodyguard(player->m_player_id))
 			{
 				g_reactions.start_activity.process(plyr);
 				return true;

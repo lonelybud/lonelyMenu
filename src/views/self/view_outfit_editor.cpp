@@ -53,6 +53,8 @@ namespace big
 		ImGui::Checkbox("Save blend data", &g_misc.save_outfit_blend_data);
 		ImGui::SameLine();
 		ImGui::Checkbox("Apply hair", &g_misc.apply_outfit_hair);
+		ImGui::SameLine();
+		ImGui::Checkbox("Apply Blend only", &g_misc.apply_outfit_blend_data_only);
 		ImGui::Spacing();
 
 		components::button("Refresh State for current Outfit", [] {
@@ -225,7 +227,10 @@ namespace big
 			for (auto& outfit : outfits)
 				if ((search_outfit.length() ? (outfit.find(search_outfit) != std::string::npos) : true)
 				    && ImGui::Selectable(outfit.c_str(), outfit == selected_file))
+				{
 					selected_file = outfit;
+					strcpy(outfit_name, outfit.c_str());
+				}
 			ImGui::EndListBox();
 		}
 	}
