@@ -171,7 +171,10 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 
 			    // crash the game if online
 			    if (*g_pointers->m_gta.m_is_session_started)
+			    {
+				    LOG(FATAL) << "Do not inject when online! Crashing ...";
 				    exit(0);
+			    }
 
 			    while (!disable_anticheat_skeleton())
 			    {

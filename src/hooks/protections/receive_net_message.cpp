@@ -39,19 +39,47 @@ static inline bool is_kick_instruction(rage::datBitBuffer& buffer)
 
 namespace big
 {
-	static inline bool is_spam_interval_diff_there(big::player_ptr player, std::chrono::seconds diff, int limit)
+	static inline bool is_spam_interval_diff_there(char* msg, big::player_ptr player, std::chrono::seconds diff, int limit, int type)
 	{
-		// the diff bw arrival of last and this message is atmost 1 sec
-		if (abs(player->last_spam_interval_diff - diff).count() <= 1)
+		if (abs(player->last_spam_interval_diff - diff).count() <= 1 // the diff bw arrival of last and this message is atmost 1 sec
+		    && (type == 0                                            // type is 0
+		        || diff.count() <= 5 // it should take atleast these seconds to receive when type is 1
+		        ))
 		{
-			if (++player->same_interval_spam_count == limit)
+			if (type == 1)
 			{
-				g_log->log_additional(std::format("Chat Spammer {} {}", limit, player->get_name()));
-				return true;
+				if (++player->same_interval_spam_count_high == limit)
+				{
+					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}, m {}",
+					    player->get_name(),
+					    player->last_spam_interval_diff.count(),
+					    diff,
+					    1,
+					    player->same_interval_spam_count_high,
+					    msg));
+					return true;
+				}
+			}
+			else
+			{
+				if (++player->same_interval_spam_count_low == limit)
+				{
+					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}, m {}",
+					    player->get_name(),
+					    player->last_spam_interval_diff.count(),
+					    diff,
+					    0,
+					    player->same_interval_spam_count_low,
+					    msg));
+					return true;
+				}
 			}
 		}
 		else
-			player->same_interval_spam_count = 0;
+		{
+			player->same_interval_spam_count_low  = 0;
+			player->same_interval_spam_count_high = 0;
+		}
 
 		player->last_spam_interval_diff = diff;
 		return false;
@@ -70,11 +98,10 @@ namespace big
 			if (diff.count() <= 2)
 				return true;
 
-			// should be able to detect spammer at third message, so you will see two messages
-			return is_spam_interval_diff_there(player, diff, 1);
+			return is_spam_interval_diff_there(msg, player, diff, 3, 1);
 		}
 
-		return is_spam_interval_diff_there(player, diff, 7);
+		return is_spam_interval_diff_there(msg, player, diff, 15, 0);
 	}
 
 	bool get_msg_type(rage::eNetMessage& msgType, rage::datBitBuffer& buffer)

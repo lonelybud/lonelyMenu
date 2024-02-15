@@ -260,7 +260,6 @@ namespace big
 												{
 													VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, 0);
 													owned_mods[selected_slot] = mod;
-													g_log->log_additional(std::format("SET_VEHICLE_MOD : {}({}), {}({})", slot_display_names[selected_slot], selected_slot, name, mod));
 
 													if (is_wheel_mod)
 													{
@@ -328,7 +327,6 @@ namespace big
 
 										if (ImGui::Selectable(("Style " + std::to_string(mod)).c_str(), mod == owned_mods[selected_slot] && *wheel_custom == should_custom))
 											g_fiber_pool->queue_job([&mod, should_custom] {
-												g_log->log_additional(std::format("SET_VEHICLE_MOD : {}({}), {}", slot_display_names[selected_slot], selected_slot, mod));
 												VEHICLE::SET_VEHICLE_MOD(current_veh, selected_slot, mod, should_custom);
 												current_veh = -1;
 											});

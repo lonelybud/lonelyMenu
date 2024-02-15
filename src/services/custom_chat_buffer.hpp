@@ -8,14 +8,16 @@ namespace big
 {
 	class custom_chat_buffer
 	{
-		int len            = 0;
-		int length_flushed = 0;
+		int len                                         = 0;
+		int length_flushed                              = 0;
+		std::chrono::system_clock::time_point last_time = std::chrono::system_clock::time_point::min();
 
 		inline void reset_buf()
 		{
 			strcpy(buf, "");
 			len = length_flushed = 0;
 			overflow             = false;
+			last_time            = std::chrono::system_clock::time_point::min();
 		}
 
 	public:
@@ -41,8 +43,23 @@ namespace big
 
 		void append_msg(const char* player_name, char* msg)
 		{
-			char new_msg[320]         = {'\0'};
-			std::string formatted_str = std::format("{} : {}\n", player_name, msg);
+			char new_msg[320] = {'\0'};
+
+			int time_diff;
+			auto currentTime = std::chrono::system_clock::now();
+
+			if (last_time == std::chrono::system_clock::time_point::min())
+				time_diff = 0;
+			else
+			{
+				time_diff = std::chrono::duration_cast<std::chrono::seconds>(currentTime - last_time).count();
+				if (time_diff > 99)
+					time_diff = 0;
+			}
+			last_time = currentTime;
+
+			std::string formatted_str = std::format("{} {} : {}\n", time_diff, player_name, msg);
+
 			strcpy(new_msg, formatted_str.c_str());
 
 			auto msg_len          = strlen(new_msg);

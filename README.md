@@ -4,12 +4,13 @@
 
 refer to original readme [here](https://github.com/YimMenu/YimMenu#readme)
 
-the previous version of menu that is not maintained now [mini menu 1](https://github.com/lonelybud/lonelyMenu/releases/tag/mini-menu-v1)
+> Note - This menu is not completely compatible with yim menu especially `settings.json` file. It will override the `settings.json` file or will log fatal error that settings can not be loaded.
 
-## Injecting the menu
+## Installing
 
 check the release section. download the dll from there.
 
-## Before using
+## Before injecting the menu
 
-- make a backup of yim directory. Most importantly the file in it - `settings.json`.
+- make backup of existing yim directory `X:\Users\XXX\AppData\Roaming\YimMenu`
+- remove the existing yim directory

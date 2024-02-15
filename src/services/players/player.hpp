@@ -92,9 +92,10 @@ namespace big
 		bool is_pain_in_ass       = false;
 		bool draw_esp             = false;
 
-		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::from_time_t(0);
+		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
 		std::chrono::seconds last_spam_interval_diff{};
-		int same_interval_spam_count{};
+		int same_interval_spam_count_low{};
+		int same_interval_spam_count_high{};
 
 		std::optional<uint32_t> player_time_value;
 		std::optional<std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>> player_time_value_received_time;
