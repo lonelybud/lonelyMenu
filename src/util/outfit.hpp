@@ -219,7 +219,7 @@ namespace big::outfit
 		if (g_misc.save_outfit_blend_data)
 		{
 			head_blend_data blend_data{};
-			PED::GET_PED_HEAD_BLEND_DATA(self::ped, (Any*)&blend_data);
+			PED::GET_PED_HEAD_BLEND_DATA(ped, (Any*)&blend_data);
 			j["blend_data"] = blend_data;
 
 			g_misc.save_outfit_blend_data = false;

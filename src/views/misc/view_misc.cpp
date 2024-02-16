@@ -214,14 +214,9 @@ namespace big
 			if (self::veh)
 				VEHICLE::SET_VEHICLE_IS_STOLEN(self::veh, TRUE);
 		});
-
-		static int modkit = 0;
-		ImGui::SetNextItemWidth(100);
-		ImGui::InputInt("###mod_kit_val", &modkit);
-		ImGui::SameLine();
-		components::button("Set veh mod kit", [] {
+		components::button("Reset veh mod kit", [] {
 			if (self::veh)
-				VEHICLE::SET_VEHICLE_MOD_KIT(self::veh, modkit);
+				VEHICLE::SET_VEHICLE_MOD_KIT(self::veh, 65535);
 		});
 	}
 

@@ -46,8 +46,6 @@ namespace big::vehicle
 		else
 			g_vehicle.spawned_vehicles[veh] = {vehicle::get_vehicle_model_name(veh)};
 
-		LOG(VERBOSE) << "Vehicle Mod kit: " << VEHICLE::GET_VEHICLE_MOD_KIT(veh);
-
 		return veh;
 	}
 

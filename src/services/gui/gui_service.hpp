@@ -105,7 +105,7 @@ namespace big
 		            {
 		                {tabs::ESP_SETTINGS, {"ESP", view::esp_settings}},
 		                {tabs::GTA_CACHE_SETTINGS, {"GTA Cache", view::gta_cache}},
-		                {tabs::GUI_SETTINGS, {"GUI", view::gui_settings}},
+		                {tabs::GUI_SETTINGS, {"Menu", view::gui_settings}},
 		                {tabs::REACTION_SETTINGS, {"Reactions", view::reaction_settings}},
 		                {tabs::PROTECTION_SETTINGS, {"Protection", view::protection_settings}},
 		                {tabs::DEBUG, {"Debug", view::debug}},
