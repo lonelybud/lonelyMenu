@@ -10,9 +10,11 @@
 #include "core/scr_globals.hpp"
 #include "core/settings.hpp"
 #include "gta/enums.hpp"
+#include "gta/weapons.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "services/custom_chat_buffer.hpp"
+#include "services/gta_data/gta_data_service.hpp"
 #include "services/mobile/mobile_service.hpp"
 #include "services/players/player_service.hpp"
 #include "thread_pool.hpp"
@@ -25,6 +27,12 @@
 
 namespace big::looped
 {
+	struct saved_weapon
+	{
+		Hash hash;
+		std::string name;
+	};
+
 	static std::unordered_map<AutoDriveStyle, int> driving_style_flags = {{AutoDriveStyle::LAW_ABIDING, 443}, {AutoDriveStyle::THE_ROAD_IS_YOURS, 787004}};
 
 	inline void update_globals()
@@ -255,7 +263,7 @@ namespace big::looped
 	inline void custom_thread()
 	{
 		g_thread_pool->push([] {
-			int last_pv_len{};
+			int last_pv_len{}, last_wp_len{};
 
 			while (!g_running)
 				std::this_thread::yield();
@@ -270,22 +278,52 @@ namespace big::looped
 				// auto flush chat to disk
 				g_custom_chat_buffer.flush_buffer();
 
-				// refresh pvs
-				g_mobile_service->register_vehicles();
-
-				// auto save pv list to disk
-				if (last_pv_len != g_mobile_service->personal_vehicles.size())
+				if (*g_pointers->m_gta.m_is_session_started)
 				{
-					last_pv_len = g_mobile_service->personal_vehicles.size();
+					// refresh pvs
+					g_mobile_service->register_vehicles();
 
-					std::ofstream pv_list(
-					    g_file_manager
-					        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
-					        .get_path(),
-					    std::ios_base::out | std::ios_base::trunc);
-					for (const auto& it : g_mobile_service->personal_vehicles)
-						pv_list << it.first << std::endl;
-					pv_list.close();
+					// auto save pv list to disk
+					if (last_pv_len != g_mobile_service->personal_vehicles.size())
+					{
+						last_pv_len = g_mobile_service->personal_vehicles.size();
+
+						std::ofstream pv_list(
+						    g_file_manager
+						        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
+						        .get_path(),
+						    std::ios_base::out | std::ios_base::trunc);
+						for (const auto& it : g_mobile_service->personal_vehicles)
+							pv_list << it.first << std::endl;
+						pv_list.close();
+
+						LOG(VERBOSE) << "PVs save success!";
+					}
+
+					// auto save current weapon loadout when in freemode
+					if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+					{
+						std::vector<saved_weapon> weapons;
+						for (const auto& [name, weapon] : g_gta_data_service->weapons())
+							if (weapon.m_hash != WEAPON_UNARMED && WEAPON::HAS_PED_GOT_WEAPON(self::ped, weapon.m_hash, FALSE))
+								weapons.push_back({weapon.m_hash, name});
+
+						if (last_wp_len != weapons.size())
+						{
+							last_wp_len = weapons.size();
+
+							std::ofstream wp_list(
+							    g_file_manager
+							        .get_project_file(std::format("./wp_list_{}.txt", g_player_service->get_self()->get_name()))
+							        .get_path(),
+							    std::ios_base::out | std::ios_base::trunc);
+							for (const auto& w : weapons)
+								wp_list << w.name << " " << w.hash << std::endl;
+							wp_list.close();
+
+							LOG(VERBOSE) << "Weapons save success!";
+						}
+					}
 				}
 			}
 		});

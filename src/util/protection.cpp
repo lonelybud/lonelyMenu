@@ -9,11 +9,14 @@ namespace big::protection
 	{
 		if (!model_info::get_model(model))
 			return false;
-		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
-			return true;
+
 		for (auto iterator : crash_objects)
 			if (iterator == model)
 				return true;
+
+		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
+			return true;
+
 		return false;
 	}
 

@@ -84,16 +84,12 @@ namespace big::animations
 
 	inline void fetch_all_anims()
 	{
-		if (has_anim_list_been_populated())
-			LOG(WARNING) << "Anim list already contained data, overwriting...";
-
 		all_anims.clear();
 		all_dicts.clear();
 
 		if (!std::filesystem::exists(g_file_manager.get_project_file("animDictsCompact.json").get_path()))
 		{
-			LOG(WARNING) << "Animations file is not in directory. https://raw.githubusercontent.com/DurtyFree/gta-v-data-dumps/master/animDictsCompact.json";
-			g_notification_service->push_warning("Animations", "Please download the appropriate animations json and put it in the mod directory.");
+			g_notification_service->push_warning("Animations", "Animations file is not in directory", true);
 			return;
 		}
 

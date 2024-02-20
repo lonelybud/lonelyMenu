@@ -1,5 +1,6 @@
 #include "base/CBaseModelInfo.hpp"
 #include "base/CObject.hpp"
+#include "core/data/debug.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "core/data/task_types.hpp"
@@ -1187,6 +1188,9 @@ namespace big
 
 			if ((((CProjectBaseSyncDataNode*)node)->flags & 1) == 0)
 				return false;
+
+			if (g_debug.log_clones || (sender_plyr && sender_plyr->log_clones))
+				log_node(node_id, sender_plyr, (CProjectBaseSyncDataNode*)node, object);
 
 			switch (node_id)
 			{

@@ -1,4 +1,5 @@
 #include "backend/player_command.hpp"
+#include "core/data/debug.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
@@ -381,6 +382,21 @@ namespace big
 			LOG(INFO) << "Sender = " << args[1];
 			g_reactions.tse_sender_mismatch.process(plyr);
 			return true;
+		}
+
+		if (g_debug.log_script_events)
+		{
+			std::string script_args = "{ ";
+			for (std::size_t i = 0; i < scripted_game_event->m_args_size; i++)
+			{
+				if (i)
+					script_args += ", ";
+
+				script_args += std::to_string((int)args[i]);
+			}
+			script_args += " };";
+
+			g_log->log_additional(std::format("Script Event: Player: {} | Args: {}", player->get_name(), script_args));
 		}
 
 		return false;

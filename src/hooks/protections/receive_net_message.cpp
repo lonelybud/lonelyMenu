@@ -1,6 +1,8 @@
 #include "backend/command.hpp"
 #include "backend/player_command.hpp"
+#include "core/data/debug.hpp"
 #include "core/data/kick_reasons.hpp"
+#include "core/data/packet_types.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
 #include "file_manager/file.hpp"
@@ -273,6 +275,24 @@ namespace big
 			case rage::eNetMessage::MsgScriptMigrateHost: return true;
 			case rage::eNetMessage::MsgRadioStationSyncRequest: return true;
 			}
+		}
+
+
+		if (g_debug.log_packets && msgType != rage::eNetMessage::MsgCloneSync && msgType != rage::eNetMessage::MsgPackedCloneSyncACKs && msgType != rage::eNetMessage::MsgPackedEvents && msgType != rage::eNetMessage::MsgPackedReliables && msgType != rage::eNetMessage::MsgPackedEventReliablesMsgs && msgType != rage::eNetMessage::MsgNetArrayMgrUpdate && msgType != rage::eNetMessage::MsgNetArrayMgrSplitUpdateAck && msgType != rage::eNetMessage::MsgNetArrayMgrUpdateAck && msgType != rage::eNetMessage::MsgScriptHandshakeAck && msgType != rage::eNetMessage::MsgScriptHandshake && msgType != rage::eNetMessage::MsgScriptJoin && msgType != rage::eNetMessage::MsgScriptJoinAck && msgType != rage::eNetMessage::MsgScriptJoinHostAck && msgType != rage::eNetMessage::MsgRequestObjectIds && msgType != rage::eNetMessage::MsgInformObjectIds && msgType != rage::eNetMessage::MsgNetTimeSync)
+		{
+			const char* packet_type = "<UNKNOWN>";
+			for (const auto& p : packet_types)
+				if (p.second == (int)msgType)
+				{
+					packet_type = p.first;
+					break;
+				}
+
+			g_log->log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
+			    packet_type,
+			    frame->m_length,
+			    (player ? player->get_name() : ""),
+			    (int)msgType));
 		}
 
 		return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);

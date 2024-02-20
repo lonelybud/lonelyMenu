@@ -67,7 +67,7 @@ namespace big
 
 			if (availableSpace < msg_len)
 			{
-				LOG(WARNING) << "Chat buffer overflow: Flushing buffer to disk..";
+				LOG(VERBOSE) << "Chat buffer overflow!";
 				overflow = true;
 			}
 

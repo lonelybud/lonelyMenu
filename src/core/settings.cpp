@@ -46,5 +46,7 @@ namespace big
 		last_settings = *this;         // set last settings to existing settings
 		file << last_settings.dump(4); // write existing settings to disk
 		file.close();
+
+		LOG(VERBOSE) << "Menu settings save success!";
 	}
 }

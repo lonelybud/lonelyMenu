@@ -117,7 +117,7 @@ namespace big
 		            }},
 		        {"RELATION",
 		            [this] {
-			            LOG(WARNING) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
+			            LOG(VERBOSE) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
 		            }},
 		    }};
 

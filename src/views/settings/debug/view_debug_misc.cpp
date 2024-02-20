@@ -14,7 +14,6 @@ namespace big
 			{
 				ImGui::Checkbox("Disable Population Load Balancing", &g_debug.disable_population_load_balancing);
 				ImGui::Checkbox("Freemode Hook G_N_O_T_R_T_S_W_T_H", &g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H);
-				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
 			}
 
 			components::sub_title("Game");
@@ -34,6 +33,18 @@ namespace big
 				components::button("Load recent SP save", [] {
 					NETWORK::SHUTDOWN_AND_LOAD_MOST_RECENT_SAVE();
 				});
+			}
+
+			components::sub_title("Log");
+			{
+				components::button("Is Activity Session?", [] {
+					LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
+				});
+
+				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
+				ImGui::Checkbox("Log packets", &g_debug.log_packets);
+				ImGui::Checkbox("Log script events", &g_debug.log_script_events);
+				ImGui::Checkbox("Log Clones", &g_debug.log_clones);
 			}
 
 			// ImGui::Spacing();

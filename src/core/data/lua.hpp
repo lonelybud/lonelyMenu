@@ -97,11 +97,6 @@ namespace big
 		}
 		inline void log_cayo_details()
 		{
-			LOG(WARNING) << "CASH Value: " << lua_helper::stats::get_int("MPX_H4LOOT_CASH_V");
-			LOG(WARNING) << "WEED Value: " << lua_helper::stats::get_int("MPX_H4LOOT_WEED_V");
-			LOG(WARNING) << "COKE Value: " << lua_helper::stats::get_int("MPX_H4LOOT_COKE_V");
-			LOG(WARNING) << "GOLD Value: " << lua_helper::stats::get_int("MPX_H4LOOT_GOLD_V");
-
 			std::string cayo_island_targets = "";
 			if (lua_helper::stats::get_int("MPX_H4LOOT_CASH_I") > 0)
 				cayo_island_targets += "Cash; ";
@@ -109,7 +104,6 @@ namespace big
 				cayo_island_targets += "Weed; ";
 			if (lua_helper::stats::get_int("MPX_H4LOOT_COKE_I") > 0)
 				cayo_island_targets += "Coke; ";
-			LOG(WARNING) << "Island Targets: " << cayo_island_targets;
 
 			std::string cayo_compound_targets = "";
 			if (lua_helper::stats::get_int("MPX_H4LOOT_CASH_C") > 0)
@@ -118,8 +112,11 @@ namespace big
 				cayo_compound_targets += "Gold; ";
 			if (lua_helper::stats::get_int("MPX_H4LOOT_PAINT") > 0)
 				cayo_compound_targets += "Arts; ";
-			LOG(WARNING) << "Compound Targets: " << cayo_compound_targets;
-			LOG(WARNING) << "Primary Target: " << cayo_targets[get_cayo_target()];
+
+			LOGF(VERBOSE, "Cash:{}, weed:{}, coke:{}, gold:{}", lua_helper::stats::get_int("MPX_H4LOOT_CASH_V"), lua_helper::stats::get_int("MPX_H4LOOT_WEED_V"), lua_helper::stats::get_int("MPX_H4LOOT_COKE_V"), lua_helper::stats::get_int("MPX_H4LOOT_GOLD_V"));
+			LOG(VERBOSE) << "Island Targets: " << cayo_island_targets;
+			LOG(VERBOSE) << "Compound Targets: " << cayo_compound_targets;
+			LOG(VERBOSE) << "Primary Target: " << cayo_targets[get_cayo_target()];
 		}
 		inline void set_compound_and_island_targets()
 		{

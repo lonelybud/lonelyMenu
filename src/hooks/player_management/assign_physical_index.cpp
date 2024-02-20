@@ -63,9 +63,11 @@ namespace big
 						plyr->is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;
 
 						if (!plyr->is_spammer)
+						{
 							g_notification_service->push_warning("Blocked Player Joined", join_str, true);
-						// if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) == 0)
-						// 	dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr);
+							if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) == 0)
+								dynamic_cast<player_command*>(command::get(RAGE_JOAAT("desync")))->call(plyr);
+						}
 					}
 					else if (is_friend)
 					{
