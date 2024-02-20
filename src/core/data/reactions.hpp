@@ -56,6 +56,8 @@ namespace big
 		reaction crash38{reaction_type::crash_player, reaction_sub_type::crash38, "Crash 38", "invalid parachute object type", false, true, false};
 		reaction crash39{reaction_type::crash_player, reaction_sub_type::crash39, "Crash 39", "invalid parachute model", false, true, false};
 		reaction crash40{reaction_type::crash_player, reaction_sub_type::crash40, "Crash 40", "out of bounds instance id", false, true, false};
+		reaction player_ped_removal_crash{reaction_type::crash_player, reaction_sub_type::player_ped_removal_crash, "Player ped removal", "Player ped removal", false, true, false};
+		reaction weapon_crash{reaction_type::crash_player, reaction_sub_type::weapon_crash, "Weapon crash", "Weapon crash", false, true, false};
 
 		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", "Voting to kick you", true, false, true};
 		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", true, false, true};

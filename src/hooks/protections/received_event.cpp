@@ -388,6 +388,19 @@ namespace big
 
 			break;
 		}
+		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
+		{
+			uint32_t weaponType = buffer->Read<uint32_t>(32);
+
+			if (weaponType == RAGE_JOAAT("AMMO_BALL"))
+			{
+				g_reactions.weapon_crash.process(plyr);
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+				return;
+			}
+			break;
+		}
+
 		default: break;
 		}
 

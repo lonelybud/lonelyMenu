@@ -219,6 +219,8 @@ namespace big
 		PVOID m_activate_special_ability_patch;
 
 		functions::get_ped_seat m_get_ped_seat;
+
+		functions::received_clone_remove m_received_clone_remove;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

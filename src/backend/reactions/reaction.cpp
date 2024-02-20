@@ -82,7 +82,15 @@ namespace big
 			}
 			//
 
-			auto title = this->type == reaction_type::modder_detection ? "Modder Detection" : m_event_name;
+			const char* title = nullptr;
+			switch (this->type)
+			{
+			case reaction_type::modder_detection: title = "Modder Detection"; break;
+			case reaction_type::kick_player: title = "Received Kick"; break;
+			case reaction_type::crash_player: title = "Received Crash"; break;
+			default: title = "Event"; break;
+			}
+
 			if (log && should_log)
 				LOG(WARNING) << title << ": " << str;
 			if (notify)

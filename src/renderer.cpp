@@ -34,23 +34,25 @@ namespace big
 		ImGui_ImplDX11_Init(m_d3d_device, m_d3d_device_context);
 		ImGui_ImplWin32_Init(g_pointers->m_hwnd);
 
-		folder windows_fonts(std::filesystem::path(std::getenv("SYSTEMROOT")) / "Fonts");
+		const auto fonts_folder = std::filesystem::path(std::getenv("SYSTEMROOT")) / "Fonts";
 
-		file font_file_path = windows_fonts.get_file("./msyh.ttc");
-		if (!font_file_path.exists())
-			font_file_path = windows_fonts.get_file("./msyh.ttf");
-		if (!font_file_path.exists())
+		file font_file(fonts_folder / "msyh.ttc");
+		if (!font_file.exists())
+			font_file = file(fonts_folder / "msyh.ttf");
+
+		if (!font_file.exists())
 		{
 			LOG(WARNING) << "Failed to find msyh font, falling back to Arial!";
-			font_file_path = windows_fonts.get_file("./arial.ttf");
+			font_file = file(fonts_folder / "arial.ttf");
 		}
-		auto font_file            = std::ifstream(font_file_path.get_path(), std::ios::binary | std::ios::ate);
-		const auto font_data_size = static_cast<int>(font_file.tellg());
+
+		auto font_file_stream     = std::ifstream(font_file.get_path(), std::ios::binary | std::ios::ate);
+		const auto font_data_size = static_cast<int>(font_file_stream.tellg());
 		const auto font_data      = std::make_unique<uint8_t[]>(font_data_size);
 
-		font_file.seekg(0);
-		font_file.read(reinterpret_cast<char*>(font_data.get()), font_data_size);
-		font_file.close();
+		font_file_stream.seekg(0);
+		font_file_stream.read(reinterpret_cast<char*>(font_data.get()), font_data_size);
+		font_file_stream.close();
 
 		auto& io = ImGui::GetIO();
 
@@ -65,7 +67,6 @@ namespace big
 			    &fnt_cfg,
 			    io.Fonts->GetGlyphRangesDefault());
 			fnt_cfg.MergeMode = true;
-			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 20.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
 			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 20.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 			io.Fonts->Build();
 		}
@@ -77,7 +78,6 @@ namespace big
 
 			g_window.font_title = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 28.f, &fnt_cfg);
 			fnt_cfg.MergeMode = true;
-			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 28.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
 			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 28.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 			io.Fonts->Build();
 		}
@@ -89,7 +89,6 @@ namespace big
 
 			g_window.font_sub_title = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 24.f, &fnt_cfg);
 			fnt_cfg.MergeMode = true;
-			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 24.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
 			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 24.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 			io.Fonts->Build();
 		}
@@ -101,7 +100,6 @@ namespace big
 
 			g_window.font_small = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 18.f, &fnt_cfg);
 			fnt_cfg.MergeMode = true;
-			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 18.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon());
 			io.Fonts->AddFontFromMemoryTTF(font_data.get(), font_data_size, 18.f, &fnt_cfg, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 			io.Fonts->Build();
 		}
