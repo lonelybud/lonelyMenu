@@ -42,6 +42,10 @@ namespace big::bad_players_nm
 				o.close();
 			}
 		}
+		catch (const nlohmann::detail::type_error& e)
+		{
+			LOG(WARNING) << e.what();
+		}
 		catch (std::exception e)
 		{
 			LOG(WARNING) << e.what();

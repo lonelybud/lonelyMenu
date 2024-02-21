@@ -179,9 +179,11 @@ namespace big
 				if (!player->whitelist_spammer && is_player_spammer(message, player))
 				{
 					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
+					g_log->log_additional(std::format("Spam Message - p {}, m {}", player->get_name(), message));
+
 					// flag as spammer
 					player->is_spammer   = true;
-					player->spam_message = std::string(message).substr(0, std::min((int)strlen(message), 50));
+					player->spam_message = message;
 					player->is_blocked   = true;
 
 					g_fiber_pool->queue_job([player] {

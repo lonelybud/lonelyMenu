@@ -47,7 +47,7 @@ namespace big::bad_players_nm
 			auto name        = net_data->m_name;
 			auto& bs         = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
 
-			add_player(rockstar_id, {name, block_join, is_spammer, bs.Language, player->spam_message});
+			add_player(rockstar_id, {name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
 		}
 	}
 	inline void toggle_block(uint64_t rockstar_id, bool v)
