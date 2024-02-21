@@ -363,8 +363,8 @@ namespace big
 		crash38,
 		crash39,
 		crash40,
-		player_ped_removal_crash,
-		weapon_crash,
+		player_ped_removal,
+		invalid_weapon_type,
 
 		kick_vote,
 		report,

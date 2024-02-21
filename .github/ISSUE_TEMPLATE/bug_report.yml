@@ -80,12 +80,6 @@ body:
     multiple: false
     options:
       - English (US)
-      - Español (España)
-      - Français (FR)
-      - Portuguese (BR)
-      - Русский (RU)
-      - Chinese (CN)
-      - Chinese (TW)
   validations:
     required: true
 - type: textarea

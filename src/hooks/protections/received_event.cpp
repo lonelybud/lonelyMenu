@@ -6,6 +6,7 @@
 #include "gta/enums.hpp"
 #include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
+#include "gta/weapon_info_manager.hpp"
 #include "hooking/hooking.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/players/player_service.hpp"
@@ -27,6 +28,15 @@ namespace big
 
 		if (buffer.Read<bool>(1))
 			id.m_instance_id = buffer.Read<int32_t>(8);
+	}
+
+	static inline bool is_valid_weapon(rage::joaat_t hash)
+	{
+		for (const auto& info : g_pointers->m_gta.m_weapon_info_manager->m_item_infos)
+			if (info && info->m_name == hash && info->GetClassId() == RAGE_JOAAT("cweaponinfo"))
+				return true;
+
+		return false;
 	}
 
 	void hooks::received_event(rage::netEventMgr* event_manager, CNetGamePlayer* source_player, CNetGamePlayer* target_player, uint16_t event_id, int event_index, int event_handled_bitset, int buffer_size, rage::datBitBuffer* buffer)
@@ -392,9 +402,9 @@ namespace big
 		{
 			uint32_t weaponType = buffer->Read<uint32_t>(32);
 
-			if (weaponType == RAGE_JOAAT("AMMO_BALL"))
+			if (!is_valid_weapon(weaponType))
 			{
-				g_reactions.weapon_crash.process(plyr);
+				g_reactions.invalid_weapon_type.process(plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}

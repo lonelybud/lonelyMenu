@@ -10,7 +10,7 @@ namespace big
 		if (dst->m_player_info->m_ped->m_net_object->m_object_id == object_id)
 		{
 			if (auto plyr = g_player_service->get_by_id(src->m_player_id))
-				g_reactions.player_ped_removal_crash.process(plyr);
+				g_reactions.player_ped_removal.process(plyr);
 
 			return;
 		}
