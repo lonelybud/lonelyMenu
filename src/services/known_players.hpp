@@ -72,7 +72,6 @@ namespace big::known_player_nm
 				known_players_list[rockstar_id] = {name, rockstar_id};
 
 			save_list();
-			player->is_known_player = !player->is_known_player;
 		}
 	}
 	inline bool is_known(uint64_t rockstar_id)

@@ -17,9 +17,6 @@ namespace big
 				return;
 			}
 
-			if ((player->is_modder || player->is_spammer) && !player->is_blocked)
-				bad_players_nm::add_player(player, player->is_modder, player->is_spammer);
-
 			g_notification_service->push_success("Kick", std::format("Host kick to {}", player->get_name()), true);
 			NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
 		}

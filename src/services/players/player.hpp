@@ -85,6 +85,7 @@ namespace big
 		std::map<reaction*, int> infractions;
 		bool is_blocked           = false;
 		bool is_spammer           = false;
+		bool whitelist_spammer    = false;
 		std::string spam_message  = "";
 		bool is_other             = false;
 		bool is_known_player      = false;

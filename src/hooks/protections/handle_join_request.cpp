@@ -27,7 +27,7 @@ namespace big
 
 			if (is_blocked)
 			{
-				if (!bad_players_nm::bad_players_list[rockstar_id].is_spammer)
+				if (!bad_players_nm::bad_players_list[rockstar_id].s)
 					g_notification_service->push_success("Join Blocked", str, true);
 			}
 			else

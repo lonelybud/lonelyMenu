@@ -178,12 +178,12 @@ namespace big
 				char message[256];
 				buffer.ReadString(message, 256);
 
-				if (is_player_spammer(message, player))
+				if (!player->whitelist_spammer && is_player_spammer(message, player))
 				{
 					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
 					// flag as spammer
 					player->is_spammer   = true;
-					player->spam_message = message;
+					player->spam_message = std::string(message).substr(0, std::min((int)strlen(message), 50));
 					player->is_blocked   = true;
 
 					g_fiber_pool->queue_job([player] {

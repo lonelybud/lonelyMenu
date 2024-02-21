@@ -10,6 +10,16 @@
 
 namespace big
 {
+	inline std::string get_infraction_str(std::map<big::reaction*, int>& infractions)
+	{
+		std::string str = "infrac: ";
+
+		for (auto& pair : infractions)
+			str += std::to_string((int)pair.first->sub_type) + ",";
+
+		return str;
+	}
+
 	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, const char* notify_message, bool notify_once, bool is_modder, bool other, int n_events_at_time) :
 	    type(type),
 	    sub_type(sub_type),
@@ -102,7 +112,10 @@ namespace big
 				player->is_modder = true;
 
 				if (!bad_players_nm::does_exist(rockstar_id))
-					bad_players_nm::add_player({name, rockstar_id, false, player->is_spammer});
+				{
+					player->spam_message = get_infraction_str(player->infractions);
+					bad_players_nm::add_player(player, false, player->is_spammer);
+				}
 			}
 			else if (other)
 				player->is_other = true;
@@ -123,8 +136,9 @@ namespace big
 				// block join
 				if (!player->is_blocked)
 				{
-					player->is_blocked = true;
-					bad_players_nm::add_player({name, rockstar_id, true, player->is_spammer});
+					player->is_blocked   = true;
+					player->spam_message = get_infraction_str(player->infractions);
+					bad_players_nm::add_player(player, true, false);
 				}
 
 				if (g_player_service->get_self()->is_host())

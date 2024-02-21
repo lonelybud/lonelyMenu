@@ -59,8 +59,9 @@ namespace big
 
 					if (is_blocked)
 					{
-						plyr->is_blocked = true;
-						plyr->is_spammer = bad_players_nm::bad_players_list[rockstar_id].is_spammer;
+						plyr->is_blocked   = true;
+						plyr->is_spammer   = bad_players_nm::bad_players_list[rockstar_id].s;
+						plyr->spam_message = bad_players_nm::bad_players_list[rockstar_id].m;
 
 						if (!plyr->is_spammer)
 						{
@@ -73,7 +74,10 @@ namespace big
 					{
 						g_notification_service->push_success("Friend Player joined", join_str, true);
 						if (!plyr->is_known_player)
+						{
+							plyr->is_known_player = true;
 							known_player_nm::toggle(plyr, true);
+						}
 					}
 					else if (is_known)
 					{
