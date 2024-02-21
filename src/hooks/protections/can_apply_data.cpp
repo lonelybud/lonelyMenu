@@ -317,24 +317,34 @@ namespace big
 		return true;
 	}
 
-#define LOG_FIELD_H(type, field) LOG(INFO) << "\t" << #field << ": " << HEX_TO_UPPER((((type*)(node))->field));
-#define LOG_FIELD(type, field) LOG(INFO) << "\t" << #field << ": " << ((((type*)(node))->field));
-#define LOG_FIELD_C(type, field) LOG(INFO) << "\t" << #field << ": " << (int)((((type*)(node))->field));
-#define LOG_FIELD_B(type, field) LOG(INFO) << "\t" << #field << ": " << ((((type*)(node))->field) ? "YES" : "NO");
-#define LOG_FIELD_V3(type, field)                                                                                    \
-	LOG(INFO) << "\t" << #field << ": X: " << ((((type*)(node))->field)).x << " Y: " << ((((type*)(node))->field)).y \
-	          << " Z: " << ((((type*)(node))->field)).z;
-#define LOG_FIELD_V4(type, field)                                                                                    \
-	LOG(INFO) << "\t" << #field << ": X: " << ((((type*)(node))->field)).x << " Y: " << ((((type*)(node))->field)).y \
-	          << " Z: " << ((((type*)(node))->field)).z << " W: " << ((((type*)(node))->field)).w;
-#define LOG_FIELD_APPLY(type, field, func) LOG(INFO) << "\t" << #field << ": " << func((((type*)(node))->field));
+
+#define LOG_FIELD(type, field) g_log->log_additional(std::format("{}: {}", #field, (((type*)(node))->field)));
+#define LOG_FIELD_C(type, field) g_log->log_additional(std::format("{}: {}", #field, (int)((((type*)(node))->field))));
+#define LOG_FIELD_B(type, field) \
+	g_log->log_additional(std::format("{}: {}", #field, ((((type*)(node))->field) ? "YES" : "NO")));
+
+#define LOG_FIELD_V3(type, field)                              \
+	g_log->log_additional(std::format("{}: X: {} Y: {} Z: {}", \
+	    #field,                                                \
+	    ((((type*)(node))->field)).x,                          \
+	    ((((type*)(node))->field)).y,                          \
+	    ((((type*)(node))->field)).z));
+#define LOG_FIELD_V4(type, field)                                    \
+	g_log->log_additional(std::format("{}: X: {} Y: {} Z: {} W: {}", \
+	    #field,                                                      \
+	    ((((type*)(node))->field)).x,                                \
+	    ((((type*)(node))->field)).y,                                \
+	    ((((type*)(node))->field)).z,                                \
+	    ((((type*)(node))->field)).w));
+#define LOG_FIELD_APPLY(type, field, func) \
+	g_log->log_additional(std::format("{}: {}", #field, func((((type*)(node))->field))));
 
 #define LOG_FIELD_MH(type, field) LOG_FIELD_APPLY(type, field, get_model_hash_string);
 #define LOG_FIELD_NI(type, field) LOG_FIELD_APPLY(type, field, get_network_id_string);
 #define LOG_FIELD_SI(type, field)                       \
 	LOG_FIELD(type, field.m_local_handle);              \
 	LOG_FIELD_NI(type, field.m_network_handle);         \
-	LOG_FIELD_H(type, field.m_script_id.m_hash);        \
+	LOG_FIELD(type, field.m_script_id.m_hash);          \
 	LOG_FIELD(type, field.m_script_id.m_timestamp);     \
 	LOG_FIELD(type, field.m_script_id.m_position_hash); \
 	LOG_FIELD(type, field.m_script_id.m_instance_id);   \
@@ -343,9 +353,9 @@ namespace big
 	void log_node(const sync_node_id& node_id, player_ptr sender, CProjectBaseSyncDataNode* node, rage::netObject* object)
 	{
 		if (object)
-			LOG(INFO) << sender->get_name() << ": " << node_id.name << ", " << object->m_object_id;
+			g_log->log_additional(std::format("{}: {}, {}", sender->get_name(), node_id.name, object->m_object_id));
 		else
-			LOG(INFO) << sender->get_name() << ": " << node_id.name;
+			g_log->log_additional(std::format("{}: {}", sender->get_name(), node_id.name));
 
 		switch (node_id)
 		{
@@ -375,7 +385,7 @@ namespace big
 			LOG_FIELD_B(CPedCreationDataNode, m_is_respawn_flagged_for_removal);
 			LOG_FIELD_B(CPedCreationDataNode, m_has_attr_damage_to_player);
 			LOG_FIELD_C(CPedCreationDataNode, m_attribute_damage_to_player);
-			LOG_FIELD_H(CPedCreationDataNode, m_voice_hash);
+			LOG_FIELD(CPedCreationDataNode, m_voice_hash);
 			break;
 		case sync_node_id("CObjectCreationDataNode"):
 			LOG_FIELD(CObjectCreationDataNode, unk_00C0);
@@ -432,7 +442,7 @@ namespace big
 			for (int i = 0; i < ((CDynamicEntityGameStateDataNode*)node)->m_decor_count; i++)
 			{
 				LOG_FIELD(CDynamicEntityGameStateDataNode, m_decors[i].m_type);
-				LOG_FIELD_H(CDynamicEntityGameStateDataNode, m_decors[i].m_name_hash);
+				LOG_FIELD(CDynamicEntityGameStateDataNode, m_decors[i].m_name_hash);
 				LOG_FIELD(CDynamicEntityGameStateDataNode, m_decors[i].m_value);
 			}
 			break;
@@ -474,8 +484,8 @@ namespace big
 			LOG_FIELD_B(CEntityScriptGameStateDataNode, m_completely_disabled_collision);
 			break;
 		case sync_node_id("CPedAIDataNode"):
-			LOG_FIELD_H(CPedAIDataNode, m_relationship_group);
-			LOG_FIELD_H(CPedAIDataNode, m_decision_maker_type);
+			LOG_FIELD(CPedAIDataNode, m_relationship_group);
+			LOG_FIELD(CPedAIDataNode, m_decision_maker_type);
 			break;
 		case sync_node_id("CPedAttachDataNode"):
 			LOG_FIELD_V3(CPedAttachDataNode, m_offset);
@@ -501,14 +511,14 @@ namespace big
 			LOG_FIELD_B(CPedGameStateDataNode, unk_011C);
 			LOG_FIELD(CPedGameStateDataNode, m_arrest_state);
 			LOG_FIELD(CPedGameStateDataNode, m_death_state);
-			LOG_FIELD_H(CPedGameStateDataNode, m_weapon_hash);
+			LOG_FIELD(CPedGameStateDataNode, m_weapon_hash);
 			LOG_FIELD(CPedGameStateDataNode, m_num_weapon_components);
 			if (((CPedGameStateDataNode*)node)->m_num_weapon_components <= 12)
 			{
 				for (int i = 0; i < ((CPedGameStateDataNode*)node)->m_num_weapon_components; i++)
 				{
 					LOG_FIELD_B(CPedGameStateDataNode, m_weapon_component_something[i]);
-					LOG_FIELD_H(CPedGameStateDataNode, m_weapon_component_hash[i]);
+					LOG_FIELD(CPedGameStateDataNode, m_weapon_component_hash[i]);
 				}
 			}
 			LOG_FIELD(CPedGameStateDataNode, m_num_equiped_gadgets);
@@ -516,7 +526,7 @@ namespace big
 			{
 				for (int i = 0; i < ((CPedGameStateDataNode*)node)->m_num_equiped_gadgets; i++)
 				{
-					LOG_FIELD_H(CPedGameStateDataNode, m_gadget_hash[i]);
+					LOG_FIELD(CPedGameStateDataNode, m_gadget_hash[i]);
 				}
 			}
 			LOG_FIELD(CPedGameStateDataNode, m_seat);
@@ -576,9 +586,9 @@ namespace big
 			LOG_FIELD(CPedHealthDataNode, m_armor);
 			LOG_FIELD(CPedHealthDataNode, unk_00CC);
 			LOG_FIELD(CPedHealthDataNode, unk_00D0);
-			LOG_FIELD_H(CPedHealthDataNode, m_weapon_damage_hash);
+			LOG_FIELD(CPedHealthDataNode, m_weapon_damage_hash);
 			LOG_FIELD(CPedHealthDataNode, m_hurt_end_time);
-			LOG_FIELD_H(CPedHealthDataNode, m_weapon_damage_component);
+			LOG_FIELD(CPedHealthDataNode, m_weapon_damage_component);
 			LOG_FIELD_NI(CPedHealthDataNode, m_weapon_damage_entity);
 			LOG_FIELD_B(CPedHealthDataNode, m_has_max_health);
 			LOG_FIELD_B(CPedHealthDataNode, m_has_default_armor);
@@ -640,7 +650,7 @@ namespace big
 			LOG_FIELD(CPhysicalHealthDataNode, m_max_health);
 			LOG_FIELD(CPhysicalHealthDataNode, m_current_health);
 			LOG_FIELD_NI(CPhysicalHealthDataNode, m_weapon_damage_entity);
-			LOG_FIELD_H(CPhysicalHealthDataNode, m_weapon_damage_hash);
+			LOG_FIELD(CPhysicalHealthDataNode, m_weapon_damage_hash);
 			LOG_FIELD(CPhysicalHealthDataNode, unk_00D8);
 			break;
 		case sync_node_id("CPhysicalMigrationDataNode"):
@@ -660,7 +670,7 @@ namespace big
 		case sync_node_id("CPickupCreationDataNode"):
 			LOG_FIELD_B(CPickupCreationDataNode, m_has_placement);
 			LOG_FIELD_SI(CPickupCreationDataNode, m_script_object_info);
-			LOG_FIELD_H(CPickupCreationDataNode, m_pickup_hash);
+			LOG_FIELD(CPickupCreationDataNode, m_pickup_hash);
 			LOG_FIELD(CPickupCreationDataNode, m_amount);
 			LOG_FIELD_MH(CPickupCreationDataNode, m_custom_model);
 			LOG_FIELD(CPickupCreationDataNode, m_life_time);
@@ -669,7 +679,7 @@ namespace big
 			{
 				for (int i = 0; i < ((CPickupCreationDataNode*)node)->m_num_weapon_components; i++)
 				{
-					LOG_FIELD_H(CPickupCreationDataNode, m_weapon_component[i]);
+					LOG_FIELD(CPickupCreationDataNode, m_weapon_component[i]);
 				}
 			}
 			LOG_FIELD(CPickupCreationDataNode, m_tint_index);
@@ -682,10 +692,10 @@ namespace big
 			LOG_FIELD_B(CPickupPlacementCreationDataNode, m_has_pickup_data);
 			LOG_FIELD_V3(CPickupPlacementCreationDataNode, m_pickup_pos);
 			LOG_FIELD_V4(CPickupPlacementCreationDataNode, m_pickup_orientation);
-			LOG_FIELD_H(CPickupPlacementCreationDataNode, m_pickup_type);
+			LOG_FIELD(CPickupPlacementCreationDataNode, m_pickup_type);
 			LOG_FIELD(CPickupPlacementCreationDataNode, m_pickup_flags);
 			LOG_FIELD(CPickupPlacementCreationDataNode, m_amount);
-			LOG_FIELD_H(CPickupPlacementCreationDataNode, m_custom_model);
+			LOG_FIELD(CPickupPlacementCreationDataNode, m_custom_model);
 			LOG_FIELD(CPickupPlacementCreationDataNode, m_custom_regeneration_time);
 			LOG_FIELD(CPickupPlacementCreationDataNode, m_team_permits);
 			break;
@@ -704,7 +714,7 @@ namespace big
 			LOG_FIELD_B(CPlayerCameraDataNode, m_is_long_range_target);
 			LOG_FIELD_B(CPlayerCameraDataNode, pad_0110[3]);
 			auto unk_pos = (rage::fvector3*)((__int64)node + 0xF0);
-			LOG(INFO) << unk_pos->x << " " << unk_pos->y << " " << unk_pos->z;
+			g_log->log_additional(std::format("{} {} {}", unk_pos->x, unk_pos->y, unk_pos->z));
 			break;
 		}
 		case sync_node_id("CPlayerCreationDataNode"):
@@ -893,7 +903,7 @@ namespace big
 			{
 				for (int i = 0; i < ((CVehicleGadgetDataNode*)node)->m_gadget_count; i++)
 				{
-					LOG_FIELD(CVehicleGadgetDataNode, m_gadget_data[i].m_gadget_type);
+					LOG_FIELD_C(CVehicleGadgetDataNode, m_gadget_data[i].m_gadget_type);
 				}
 			}
 			break;
@@ -1069,7 +1079,7 @@ namespace big
 			LOG_FIELD_B(CPlayerAppearanceDataNode, m_task_move_active);
 			LOG_FIELD_B(CPlayerAppearanceDataNode, m_mobile_phone_task_active);
 			LOG_FIELD_B(CPlayerAppearanceDataNode, m_mobile_phone_gesture_active);
-			LOG_FIELD_H(CPlayerAppearanceDataNode, m_anim_name_hash);
+			LOG_FIELD(CPlayerAppearanceDataNode, m_anim_name_hash);
 			LOG_FIELD(CPlayerAppearanceDataNode, m_anim_dict_index);
 			LOG_FIELD(CPlayerAppearanceDataNode, m_phone_mode);
 			break;
@@ -1451,7 +1461,7 @@ namespace big
 				if (track_id != -1 && (track_id < 0 || track_id >= 12))
 				{
 					g_reactions.crash16.process(sender_plyr);
-					LOG(INFO) << (int)train_node->m_track_id;
+					g_log->log_additional(std::format("crash16 {}", (int)train_node->m_track_id));
 					return true;
 				}
 
@@ -1625,7 +1635,8 @@ namespace big
 				if (is_crash_vehicle_task((eTaskTypeIndex)task_node->m_task_type))
 				{
 					g_reactions.crash26.process(sender_plyr);
-					LOG(VERBOSE) << (int)m_syncing_object_type << " " << get_task_type_string(task_node->m_task_type);
+					g_log->log_additional(
+					    std::format("crash26 {} {}", (int)m_syncing_object_type, get_task_type_string(task_node->m_task_type)));
 					return true;
 				}
 

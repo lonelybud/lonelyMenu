@@ -52,13 +52,12 @@ namespace big
 			{
 				if (++player->same_interval_spam_count_high == limit)
 				{
-					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}, m {}",
+					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
 					    player->last_spam_interval_diff.count(),
 					    diff,
 					    1,
-					    player->same_interval_spam_count_high,
-					    msg));
+					    player->same_interval_spam_count_high));
 					return true;
 				}
 			}
@@ -66,13 +65,12 @@ namespace big
 			{
 				if (++player->same_interval_spam_count_low == limit)
 				{
-					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}, m {}",
+					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
 					    player->last_spam_interval_diff.count(),
 					    diff,
 					    0,
-					    player->same_interval_spam_count_low,
-					    msg));
+					    player->same_interval_spam_count_low));
 					return true;
 				}
 			}
