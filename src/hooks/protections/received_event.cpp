@@ -331,7 +331,7 @@ namespace big
 			if (plyr && plyr->m_play_sound_rate_limit.process())
 			{
 				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
-					g_reactions.sound_spam.process(plyr);
+					g_reactions.crash41.process(plyr);
 
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
@@ -360,6 +360,7 @@ namespace big
 			if (sound_hash == RAGE_JOAAT("Remote_Ring") && plyr)
 			{
 				g_reactions.sound_spam.process(plyr);
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
 
@@ -400,7 +401,8 @@ namespace big
 		}
 		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
 		{
-			uint32_t weaponType = buffer->Read<uint32_t>(32);
+			auto damageType = buffer->Read<uint8_t>(2);
+			auto weaponType = buffer->Read<uint32_t>(32); // weaponHash
 
 			if (!is_valid_weapon(weaponType))
 			{
@@ -408,6 +410,8 @@ namespace big
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
+
+			buffer->Seek(0);
 			break;
 		}
 

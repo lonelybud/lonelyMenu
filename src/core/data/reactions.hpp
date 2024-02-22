@@ -56,6 +56,7 @@ namespace big
 		reaction crash38{reaction_type::crash_player, reaction_sub_type::crash38, "Crash 38", "invalid parachute object type", false, true, false};
 		reaction crash39{reaction_type::crash_player, reaction_sub_type::crash39, "Crash 39", "invalid parachute model", false, true, false};
 		reaction crash40{reaction_type::crash_player, reaction_sub_type::crash40, "Crash 40", "out of bounds instance id", false, true, false};
+		reaction crash41{reaction_type::crash_player, reaction_sub_type::crash41, "Crash 41", "sound spam", false, true, false};
 		reaction player_ped_removal{reaction_type::crash_player, reaction_sub_type::player_ped_removal, "Player ped removal", "Player ped removal", false, true, false};
 		reaction invalid_weapon_type{reaction_type::crash_player, reaction_sub_type::invalid_weapon_type, "invalid weapon type", "invalid weapon type", false, true, false};
 
@@ -76,6 +77,7 @@ namespace big
 
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", "Received GTA Banner", false, false, false, 1};
 		reaction sound_spam{reaction_type::none, reaction_sub_type::sound_spam, "Sound Spam", "Received Sound Spam", false, false, false};
+		reaction sound_spam_se{reaction_type::none, reaction_sub_type::sound_spam_se, "Sound Spam Scripted", "Received Sound Spam Scripted", false, false, false};
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", "Received Spectate", false, false, false};
 		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", "Received Remote Ragdoll", false, false, false, 1};
 		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", "Received Spectate Notification", false, false, false};

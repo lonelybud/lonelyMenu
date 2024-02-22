@@ -245,7 +245,7 @@ namespace big
 			if (g_protections.script_events.sound_spam && (!plyr || plyr->m_invites_rate_limit.process()))
 			{
 				if (plyr->m_invites_rate_limit.exceeded_last_process())
-					g_reactions.sound_spam.process(plyr);
+					g_reactions.sound_spam_se.process(plyr);
 				return true;
 			}
 			break;

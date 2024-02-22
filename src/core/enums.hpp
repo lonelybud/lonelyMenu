@@ -363,6 +363,7 @@ namespace big
 		crash38,
 		crash39,
 		crash40,
+		crash41,
 		player_ped_removal,
 		invalid_weapon_type,
 
@@ -383,6 +384,7 @@ namespace big
 
 		gta_banner,
 		sound_spam,
+		sound_spam_se,
 		spectate,
 		remote_ragdoll,
 		spectate_notification,
