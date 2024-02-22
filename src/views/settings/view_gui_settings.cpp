@@ -1,7 +1,7 @@
 #include "core/settings/menu.hpp"
 #include "core/settings/window.hpp"
 #include "gui.hpp"
-#include "renderer.hpp"
+#include "renderer/renderer.hpp"
 #include "views/view.hpp"
 #include "widgets/imgui_hotkey.hpp"
 
@@ -14,7 +14,7 @@ namespace big
 
 		components::sub_title("UI Scale");
 		if (ImGui::SliderFloat("##gui-scale", &g_window.gui_scale, 0.75f, 1.5f, "%.2f"))
-			g_renderer->rescale(g_window.gui_scale);
+			g_renderer.rescale(g_window.gui_scale);
 
 		components::sub_title("UI Colors");
 		static ImVec4 col_gui = ImGui::ColorConvertU32ToFloat4(g_window.background_color);

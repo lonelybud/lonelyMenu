@@ -6,7 +6,7 @@ on:
       - master
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: release
   cancel-in-progress: true
 
 jobs:
@@ -59,7 +59,7 @@ jobs:
           response=$(curl -sS -w '\n%{http_code}' "https://api.github.com/repos/lonelybud/lonelyMenu/releases/latest")
           http_code=$(echo "$response" | tail -n1)
           json_data=$(echo "$response" | sed '$d')
-  
+
           # Check if the HTTP request was successful (status code 2xx)
           if [[ "$http_code" =~ ^2[0-9][0-9]$ ]]; then
               # Extract the "id" field from JSON data and save it to a variable

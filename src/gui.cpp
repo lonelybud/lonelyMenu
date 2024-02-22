@@ -3,7 +3,7 @@
 #include "core/settings/menu.hpp"
 #include "core/settings/window.hpp"
 #include "natives.hpp"
-#include "renderer.hpp"
+#include "renderer/renderer.hpp"
 #include "script.hpp"
 #include "views/esp/view_esp.hpp"
 #include "views/view.hpp"
@@ -15,25 +15,25 @@ namespace big
 	gui::gui() :
 	    m_is_open(false)
 	{
-		g_renderer->add_dx_callback(view::gta_data, -1);
-		g_renderer->add_dx_callback(view::notifications, -2);
-		g_renderer->add_dx_callback(
+		g_renderer.add_dx_callback(view::gta_data, -1);
+		g_renderer.add_dx_callback(view::notifications, -2);
+		g_renderer.add_dx_callback(
 		    [this] {
 			    dx_on_tick();
 		    },
 		    -4);
 
-		g_renderer->add_wndproc_callback([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+		g_renderer.add_wndproc_callback([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			wndproc(hwnd, msg, wparam, lparam);
 		});
 
-		g_renderer->add_dx_callback(esp::draw, 2); // TODO: move to ESP service
-		g_renderer->add_dx_callback(view::context_menu, 1);
+		g_renderer.add_dx_callback(esp::draw, 2); // TODO: move to ESP service
+		g_renderer.add_dx_callback(view::context_menu, 1);
 
 		dx_init();
 
 		g_gui = this;
-		g_renderer->rescale(g_window.gui_scale);
+		g_renderer.rescale(g_window.gui_scale);
 	}
 
 	gui::~gui()
