@@ -19,18 +19,24 @@ namespace big
 		rockstar_id     = rid;
 		language        = p.l;
 		save_as_spammer = p.s;
-		block_join = p.block_join;
+		block_join      = p.block_join;
 		strcpy(message, p.m.c_str());
 	}
 
-	static inline std::map<uint64_t, bad_players_nm::bad_player> filter_bad_players(const std::map<uint64_t, bad_players_nm::bad_player>& inputMap, const std::string& searchString)
+	static inline std::map<uint64_t, bad_players_nm::bad_player> filter_bad_players(const std::map<uint64_t, bad_players_nm::bad_player>& inputMap, const std::string& search)
 	{
-		std::map<uint64_t, bad_players_nm::bad_player> filteredMap;
-		std::string lowercaseSearchString = to_lower_case(searchString);
+		std::map<uint64_t, bad_players_nm::bad_player> res;
+
 		for (auto pair : inputMap)
-			if (std::string lowercaseStr = to_lower_case(pair.second.n); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
-				filteredMap[pair.first] = pair.second;
-		return filteredMap;
+		{
+			auto t = pair.second.n;
+			std::transform(t.begin(), t.end(), t.begin(), ::tolower);
+
+			if (t.find(search) != std::string::npos)
+				res[pair.first] = pair.second;
+		}
+
+		return res;
 	}
 
 	void view::bad_players()
@@ -76,7 +82,13 @@ namespace big
 		if (components::input_text_with_hint("###searched_blocked_players", "search blocked player", search_blocked_player_name))
 		{
 			if (search_blocked_player_name.length() > 0)
+			{
+				std::transform(search_blocked_player_name.begin(),
+				    search_blocked_player_name.end(),
+				    search_blocked_player_name.begin(),
+				    ::tolower);
 				searched_blocked_players = filter_bad_players(bad_players_nm::bad_players_list, search_blocked_player_name);
+			}
 			else
 				searched_blocked_players.clear();
 		}

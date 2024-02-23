@@ -1,5 +1,4 @@
 #include "services/mobile/mobile_service.hpp"
-#include "util/strings.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -20,7 +19,8 @@ namespace big
 
 		ImGui::SetNextItemWidth(200);
 		if (components::input_text_with_hint("###search_pv", "search", search_pv))
-			search_pv = to_lower_case(search_pv);
+			std::transform(search_pv.begin(), search_pv.end(), search_pv.begin(), ::tolower);
+
 		ImGui::SameLine();
 		ImGui::Text(" Total: %d cars", g_mobile_service->personal_vehicles.size());
 

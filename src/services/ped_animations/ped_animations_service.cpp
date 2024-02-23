@@ -3,7 +3,6 @@
 #include "gta/enums.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/ped.hpp"
-#include "util/strings.hpp"
 
 namespace big
 {
@@ -15,11 +14,17 @@ namespace big
 	std::vector<ped_animation> ped_animation_service::saved_animations_filtered_list(std::string& filter)
 	{
 		std::vector<ped_animation> filterlist{};
-		auto _filter = to_lower_case(filter);
+		auto _filter = filter;
+		std::transform(_filter.begin(), _filter.end(), _filter.begin(), ::tolower);
 
 		for (auto& ped_animation : all_saved_animations | std::views::values | std::views::join)
-			if (to_lower_case(ped_animation.name).find(_filter) != std::string::npos)
+		{
+			auto pan = ped_animation.name;
+			std::transform(pan.begin(), pan.end(), pan.begin(), ::tolower);
+
+			if (pan.find(_filter) != std::string::npos)
 				filterlist.push_back(ped_animation);
+		}
 
 		return filterlist;
 	}

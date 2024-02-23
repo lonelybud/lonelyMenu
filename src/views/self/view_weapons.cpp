@@ -2,19 +2,24 @@
 #include "gta/weapons.hpp"
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
-#include "util/strings.hpp"
 #include "views/view.hpp"
 
 namespace big
 {
-	static inline std::map<std::string, big::weapon_item> filter_weapons_map(const std::map<std::string, big::weapon_item>& inputMap, const std::string& searchString)
+	static inline std::map<std::string, big::weapon_item> filter_weapons_map(const std::map<std::string, big::weapon_item>& inputMap, const std::string& search)
 	{
-		std::map<std::string, big::weapon_item> filteredMap;
-		std::string lowercaseSearchString = to_lower_case(searchString);
+		std::map<std::string, big::weapon_item> res;
+
 		for (auto pair : inputMap)
-			if (std::string lowercaseStr = to_lower_case(pair.second.m_display_name); lowercaseStr.find(lowercaseSearchString) != std::string::npos)
-				filteredMap[pair.first] = pair.second;
-		return filteredMap;
+		{
+			auto t = pair.second.m_display_name;
+			std::transform(t.begin(), t.end(), t.begin(), ::tolower);
+
+			if (t.find(search) != std::string::npos)
+				res[pair.first] = pair.second;
+		}
+		
+		return res;
 	}
 
 	static inline void render_misc()
@@ -61,7 +66,10 @@ namespace big
 			if (components::input_text_with_hint("###search_weapon_name", "search name", search_weapon_name))
 			{
 				if (search_weapon_name.length() > 0)
+				{
+					std::transform(search_weapon_name.begin(), search_weapon_name.end(), search_weapon_name.begin(), ::tolower);
 					searched_weapons = filter_weapons_map(g_gta_data_service->weapons(), search_weapon_name);
+				}
 				else
 					searched_weapons.clear();
 			}

@@ -1,5 +1,6 @@
 #include "renderer.hpp"
 
+#include "core/settings/window.hpp"
 #include "file_manager.hpp"
 #include "fonts/fonts.hpp"
 #include "gui.hpp"
@@ -14,27 +15,22 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARA
 
 namespace big
 {
-	renderer::renderer() :
-	    m_font_mgr()
-	{
-	}
-
 	bool renderer::init()
 	{
 		if (!g_pointers->m_gta.m_swapchain || !*g_pointers->m_gta.m_swapchain)
 		{
 			LOG(FATAL) << "Invalid swapchain ptr";
-
 			return false;
 		}
+
 		m_dxgi_swapchain = *g_pointers->m_gta.m_swapchain;
 
 		if (m_dxgi_swapchain->GetDevice(__uuidof(ID3D11Device), reinterpret_cast<void**>(&m_d3d_device)) < 0)
 		{
 			LOG(FATAL) << "Failed to get D3D device.";
-
 			return false;
 		}
+
 		m_d3d_device->GetImmediateContext(&m_d3d_device_context);
 
 		auto file_path = g_file_manager.get_project_file("./imgui.ini").get_path();
@@ -46,6 +42,57 @@ namespace big
 
 		ImGui_ImplDX11_Init(m_d3d_device, m_d3d_device_context);
 		ImGui_ImplWin32_Init(g_pointers->m_hwnd);
+
+		// initialize font here
+		auto& io = ImGui::GetIO();
+
+		{
+			ImFontConfig fnt_cfg{};
+			fnt_cfg.FontDataOwnedByAtlas = false;
+			strcpy(fnt_cfg.Name, "Fnt20px");
+
+			io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia),
+			    sizeof(font_storopia),
+			    20.f,
+			    &fnt_cfg,
+			    io.Fonts->GetGlyphRangesDefault());
+			io.Fonts->Build();
+		}
+
+		{
+			ImFontConfig fnt_cfg{};
+			fnt_cfg.FontDataOwnedByAtlas = false;
+			strcpy(fnt_cfg.Name, "Fnt28px");
+
+			g_window.font_title = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 28.f, &fnt_cfg);
+			io.Fonts->Build();
+		}
+
+		{
+			ImFontConfig fnt_cfg{};
+			fnt_cfg.FontDataOwnedByAtlas = false;
+			strcpy(fnt_cfg.Name, "Fnt24px");
+
+			g_window.font_sub_title = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 24.f, &fnt_cfg);
+			io.Fonts->Build();
+		}
+
+		{
+			ImFontConfig fnt_cfg{};
+			fnt_cfg.FontDataOwnedByAtlas = false;
+			strcpy(fnt_cfg.Name, "Fnt18px");
+
+			g_window.font_small = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_storopia), sizeof(font_storopia), 18.f, &fnt_cfg);
+			io.Fonts->Build();
+		}
+
+		{
+			ImFontConfig font_icons_cfg{};
+			font_icons_cfg.FontDataOwnedByAtlas = false;
+			std::strcpy(font_icons_cfg.Name, "Icons");
+			g_window.font_icon = io.Fonts->AddFontFromMemoryTTF(const_cast<uint8_t*>(font_icons), sizeof(font_icons), 24.f, &font_icons_cfg);
+		}
+		//
 
 		return true;
 	}
@@ -75,15 +122,10 @@ namespace big
 
 	void renderer::on_present()
 	{
-		if (m_font_mgr.can_use())
-		{
-			new_frame();
-			for (const auto& cb : m_dx_callbacks | std::views::values)
-				cb();
-			end_frame();
-			
-			m_font_mgr.release_use();
-		}
+		new_frame();
+		for (const auto& cb : m_dx_callbacks | std::views::values)
+			cb();
+		end_frame();
 	}
 
 	void renderer::rescale(float rel_size)

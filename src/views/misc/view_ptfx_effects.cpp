@@ -99,9 +99,21 @@ namespace big
 		}
 	}
 
-	static auto animDictCompactObjReducer = [](ptfxEffects::AnimDictCompactObj& v) {
-		return v.DictionaryName;
-	};
+	auto filterStrings(const std::vector<ptfxEffects::AnimDictCompactObj> vec, const std::string& search_string)
+	{
+		std::vector<ptfxEffects::AnimDictCompactObj> res;
+
+		for (auto some : vec)
+		{
+			std::string dic_name = some.DictionaryName;
+			std::transform(dic_name.begin(), dic_name.end(), dic_name.begin(), ::tolower);
+
+			if (dic_name.find(search_string) != std::string::npos)
+				res.push_back(some);
+		}
+
+		return res;
+	}
 
 	static inline void set_effect(const char* asset, const char* effect)
 	{
@@ -157,7 +169,10 @@ namespace big
 		if (components::input_text_with_hint("##searchDicText", "searchDic", searchDicText))
 		{
 			if (searchDicText.length() > 0)
-				searchedAnimDictCompactObjs = filterStrings<ptfxEffects::AnimDictCompactObj>(animDictCompactObjs, searchDicText, animDictCompactObjReducer);
+			{
+				std::transform(searchDicText.begin(), searchDicText.end(), searchDicText.begin(), ::tolower);
+				searchedAnimDictCompactObjs = filterStrings(animDictCompactObjs, searchDicText);
+			}
 			else
 				searchedAnimDictCompactObjs.clear();
 

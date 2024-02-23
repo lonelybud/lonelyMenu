@@ -195,7 +195,8 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto byte_patch_manager_instance = std::make_unique<byte_patch_manager>();
 			    LOG(INFO) << "Byte Patch Manager initialized.";
 
-			    g_renderer.init();
+			    if (!g_renderer.init())
+				    exit(0);
 			    LOG(INFO) << "Renderer initialized.";
 			    auto gui_instance = std::make_unique<gui>();
 

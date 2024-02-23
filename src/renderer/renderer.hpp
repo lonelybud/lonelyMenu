@@ -1,5 +1,4 @@
 #pragma once
-#include "font_mgr.hpp"
 
 namespace big
 {
@@ -9,13 +8,7 @@ namespace big
 	class renderer final
 	{
 	public:
-		explicit renderer();
 		~renderer() = default;
-
-		font_mgr& get_font_mgr()
-		{
-			return m_font_mgr;
-		}
 
 		bool init();
 		void destroy();
@@ -56,8 +49,6 @@ namespace big
 
 		std::map<uint32_t, dx_callback> m_dx_callbacks;
 		std::vector<wndproc_callback> m_wndproc_callbacks;
-
-		font_mgr m_font_mgr;
 	};
 
 	inline auto g_renderer = renderer();

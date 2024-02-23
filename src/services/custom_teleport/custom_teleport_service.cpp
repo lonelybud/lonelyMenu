@@ -1,7 +1,6 @@
 #include "custom_teleport_service.hpp"
 
 #include "services/notifications/notification_service.hpp"
-#include "util/strings.hpp"
 
 namespace big
 {
@@ -76,11 +75,16 @@ namespace big
 	std::vector<telelocation> custom_teleport_service::saved_telelocations_filtered_list(std::string& filter)
 	{
 		std::vector<telelocation> filterlist{};
-		auto _filter = to_lower_case(filter);
+		std::string _filter = filter;
+		std::transform(_filter.begin(), _filter.end(), _filter.begin(), ::tolower);
 
 		for (auto& loc : all_saved_locations | std::views::values | std::views::join)
-			if (to_lower_case(loc.name).find(_filter) != std::string::npos)
+		{
+			std::string loc_name = loc.name;
+			std::transform(loc_name.begin(), loc_name.end(), loc_name.begin(), ::tolower);
+			if (loc_name.find(_filter) != std::string::npos)
 				filterlist.push_back(loc);
+		}
 
 		return filterlist;
 	}
