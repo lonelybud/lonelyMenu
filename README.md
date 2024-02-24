@@ -4,13 +4,8 @@
 
 refer to original readme [here](https://github.com/YimMenu/YimMenu#readme)
 
-> Note - This menu is not completely compatible with yim menu especially `settings.json` file. It will override the `settings.json` file or will log fatal error that settings can not be loaded.
-
 ## Installing
 
 check the release section. download the dll from there.
 
-## Before injecting the menu
-
-- make backup of existing yim directory `X:\Users\XXX\AppData\Roaming\YimMenu`
-- remove the existing yim directory
+press `NUM0` to open (numpad on) and in order to change key go to settings>menu and change toggle key.
