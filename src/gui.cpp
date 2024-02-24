@@ -12,23 +12,42 @@
 
 namespace big
 {
+	/**
+	 * @brief The later an entry comes in this enum to higher up it comes in the z-index.
+	 */
+	enum eRenderPriority
+	{
+		// low priority
+		ESP,
+		CONTEXT_MENU,
+
+		// medium priority
+		MENU = 0x1000,
+
+		// high priority
+		GTA_DATA_CACHE = 0x3000,
+
+		// should remain in a league of its own
+		NOTIFICATIONS = 0x4000,
+	};
+
 	gui::gui() :
 	    m_is_open(false)
 	{
-		g_renderer.add_dx_callback(view::gta_data, -1);
-		g_renderer.add_dx_callback(view::notifications, -2);
+		g_renderer.add_dx_callback(view::notifications, eRenderPriority::NOTIFICATIONS);
+		g_renderer.add_dx_callback(view::gta_data, eRenderPriority::GTA_DATA_CACHE);
+		g_renderer.add_dx_callback(esp::draw, eRenderPriority::ESP); // TODO: move to ESP service
+		g_renderer.add_dx_callback(view::context_menu, eRenderPriority::CONTEXT_MENU);
 		g_renderer.add_dx_callback(
 		    [this] {
 			    dx_on_tick();
 		    },
-		    -4);
+		    eRenderPriority::MENU);
 
 		g_renderer.add_wndproc_callback([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			wndproc(hwnd, msg, wparam, lparam);
 		});
 
-		g_renderer.add_dx_callback(esp::draw, 2); // TODO: move to ESP service
-		g_renderer.add_dx_callback(view::context_menu, 1);
 
 		dx_init();
 
