@@ -72,9 +72,12 @@ namespace big
 				    victim && victim->m_entity_type == 4 && damager != victim && victim->m_player_info)
 					if (auto player = g_player_service->get_by_host_token(damager->m_player_info->m_net_player_data.m_host_token))
 					{
+						auto victim_player = victim == g_local_player ?
+						    g_player_service->get_self() :
+						    g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token);
+
 						if (victim == g_local_player)
 							g_fiber_pool->queue_job([player] {
-								g_player_service->get_self()->last_killed_by = player;
 								std::string str = "You got Killed by: " + std::string(player->get_name());
 
 								if (g_local_player->m_vehicle && entity::take_control_of(g_local_player->m_vehicle))
@@ -85,28 +88,23 @@ namespace big
 
 								LOG(WARNING) << str;
 							});
+						else if (g_misc.notify_friend_killed && victim_player->is_friend())
+							g_notification_service->push_warning("Friend Killed",
+							    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
+							    true);
 
-						else if (auto victim_player =
-						             g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token))
-						{
-							victim_player->last_killed_by = player;
-
-							if (g_misc.notify_friend_killed && victim_player && victim_player->is_friend())
-								g_notification_service->push_warning("Friend Killed",
-								    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
-								    true);
-						}
+						victim_player->last_killed_by = player;
 
 						if (is_invincible(player))
-							g_reactions.killed_with_god.process(player);
+							g_reactions.killed_with_god.process(player, victim_player);
 						else if (is_invincible_veh(player))
-							g_reactions.killed_with_veh_god.process(player);
+							g_reactions.killed_with_veh_god.process(player, victim_player);
 
 						if (is_hidden_from_player_list(player))
-							g_reactions.killed_when_hidden.process(player);
+							g_reactions.killed_when_hidden.process(player, victim_player);
 
 						if (is_using_orbital_cannon(player) && globals::get_interior_from_player(player->id()) == 0)
-							g_reactions.Killed_with_orbital.process(player);
+							g_reactions.Killed_with_orbital.process(player, victim_player);
 					}
 
 			break;

@@ -37,6 +37,14 @@ namespace big
 
 	inline bool player_is_driver(player_ptr target_plyr)
 	{
+		// player was last driver
+		if (g_local_player->m_vehicle->m_last_driver && g_local_player->m_vehicle->m_last_driver == target_plyr->get_ped())
+			return true;
+
+		// you are driver
+		if (g_local_player->m_vehicle->m_driver && g_local_player->m_vehicle->m_driver == g_local_player)
+			return false;
+
 		if (auto driver =
 		        g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver)
 		{

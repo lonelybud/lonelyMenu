@@ -55,6 +55,7 @@ namespace big
 		}
 
 		auto plyr = g_player_service->get_by_id(source_player->m_player_id);
+		auto tar_plyr = g_player_service->get_by_id(target_player->m_player_id);
 
 		if (plyr && plyr->block_net_events)
 		{
@@ -98,13 +99,13 @@ namespace big
 				if ((action >= 15 && action <= 18) || action == 33)
 				{
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-					g_reactions.crash31.process(plyr);
+					g_reactions.crash31.process(plyr, tar_plyr);
 					return;
 				}
 			}
 			else if (type > ScriptEntityChangeType::SetVehicleExclusiveDriver || type < ScriptEntityChangeType::BlockingOfNonTemporaryEvents)
 			{
-				g_reactions.crash32.process(plyr);
+				g_reactions.crash32.process(plyr, tar_plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -220,7 +221,7 @@ namespace big
 				if (type == 0 || initial_length < min_length) // https://docs.fivem.net/natives/?_0xE832D760399EB220
 				{
 					g_log.log_additional(std::format("Rope Crash: {}, {}, {}", type, initial_length, min_length));
-					g_reactions.crash33.process(plyr);
+					g_reactions.crash33.process(plyr, tar_plyr);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}
@@ -233,14 +234,14 @@ namespace big
 
 				if (pop_group == 0 && (percentage == 0 || percentage == 103))
 				{
-					g_reactions.crash34.process(plyr);
+					g_reactions.crash34.process(plyr, tar_plyr);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}
 			}
 			else if (type > WorldStateDataType::VehiclePlayerLocking || type < WorldStateDataType::CarGen)
 			{
-				g_reactions.crash35.process(plyr);
+				g_reactions.crash35.process(plyr, tar_plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -260,7 +261,7 @@ namespace big
 
 			if (hash == RAGE_JOAAT("WEAPON_UNARMED"))
 			{
-				g_reactions.crash36.process(plyr);
+				g_reactions.crash36.process(plyr, tar_plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -309,7 +310,7 @@ namespace big
 
 				if (object_type < eNetObjType::NET_OBJ_TYPE_AUTOMOBILE || object_type > eNetObjType::NET_OBJ_TYPE_TRAIN)
 				{
-					g_reactions.crash37.process(plyr);
+					g_reactions.crash37.process(plyr, tar_plyr);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;
 				}
@@ -331,7 +332,7 @@ namespace big
 			if (plyr && plyr->m_play_sound_rate_limit.process())
 			{
 				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
-					g_reactions.crash41.process(plyr);
+					g_reactions.crash41.process(plyr, tar_plyr);
 
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;

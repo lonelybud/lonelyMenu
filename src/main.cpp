@@ -137,9 +137,6 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 
 			    g_log.initialize("YimMenu", g_file_manager.get_project_file("./cout.log"), g_file_manager.get_project_file("./additional_log.log"));
 
-			    g_menu_settings.init(g_file_manager.get_project_file("./settings.json"));
-			    LOG(INFO) << "Settings Loaded.";
-
 			    //
 			    auto metric_log_file = g_file_manager.get_project_file("./bad_metric.log");
 			    logger_create_backup(metric_log_file, "bad_metrics");
@@ -156,6 +153,9 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto current_build = ReadRegistryKeySZ(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild");
 			    auto UBR = ReadRegistryKeyDWORD(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "UBR");
 			    LOG(INFO) << GetWindowsVersion() << " Version " << display_version << " (OS Build " << current_build << "." << UBR << ")";
+
+			    g_menu_settings.init(g_file_manager.get_project_file("./settings.json"));
+			    LOG(INFO) << "Settings Loaded.";
 
 #ifndef NDEBUG
 			    LOG(FATAL) << "Debug Build. Switch to RelWithDebInfo or Release Build for a more stable experience";

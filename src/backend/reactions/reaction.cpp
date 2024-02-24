@@ -32,7 +32,7 @@ namespace big
 	{
 	}
 
-	void reaction::process(player_ptr player)
+	void reaction::process(player_ptr player, player_ptr target)
 	{
 		rage::rlGamerInfo* net_data;
 
@@ -75,6 +75,9 @@ namespace big
 				}
 
 			auto str = std::format("{} from '{}'", m_notify_message, name);
+
+			if (target)
+				str += std::format("to {}", target->get_name());
 
 			// dont log same event more than n time from the same player. This will keep console logs short and concise.
 			bool should_log = true;
