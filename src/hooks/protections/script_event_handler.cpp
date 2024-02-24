@@ -396,7 +396,7 @@ namespace big
 			}
 			script_args += " };";
 
-			g_log->log_additional(std::format("Script Event: Player: {} | Args: {}", player->get_name(), script_args));
+			g_log.log_additional(std::format("Script Event: Player: {} | Args: {}", player->get_name(), script_args));
 		}
 
 		return false;

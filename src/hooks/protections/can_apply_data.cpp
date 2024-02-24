@@ -318,26 +318,26 @@ namespace big
 	}
 
 
-#define LOG_FIELD(type, field) g_log->log_additional(std::format("{}: {}", #field, (((type*)(node))->field)));
-#define LOG_FIELD_C(type, field) g_log->log_additional(std::format("{}: {}", #field, (int)((((type*)(node))->field))));
+#define LOG_FIELD(type, field) g_log.log_additional(std::format("{}: {}", #field, (((type*)(node))->field)));
+#define LOG_FIELD_C(type, field) g_log.log_additional(std::format("{}: {}", #field, (int)((((type*)(node))->field))));
 #define LOG_FIELD_B(type, field) \
-	g_log->log_additional(std::format("{}: {}", #field, ((((type*)(node))->field) ? "YES" : "NO")));
+	g_log.log_additional(std::format("{}: {}", #field, ((((type*)(node))->field) ? "YES" : "NO")));
 
 #define LOG_FIELD_V3(type, field)                              \
-	g_log->log_additional(std::format("{}: X: {} Y: {} Z: {}", \
+	g_log.log_additional(std::format("{}: X: {} Y: {} Z: {}", \
 	    #field,                                                \
 	    ((((type*)(node))->field)).x,                          \
 	    ((((type*)(node))->field)).y,                          \
 	    ((((type*)(node))->field)).z));
 #define LOG_FIELD_V4(type, field)                                    \
-	g_log->log_additional(std::format("{}: X: {} Y: {} Z: {} W: {}", \
+	g_log.log_additional(std::format("{}: X: {} Y: {} Z: {} W: {}", \
 	    #field,                                                      \
 	    ((((type*)(node))->field)).x,                                \
 	    ((((type*)(node))->field)).y,                                \
 	    ((((type*)(node))->field)).z,                                \
 	    ((((type*)(node))->field)).w));
 #define LOG_FIELD_APPLY(type, field, func) \
-	g_log->log_additional(std::format("{}: {}", #field, func((((type*)(node))->field))));
+	g_log.log_additional(std::format("{}: {}", #field, func((((type*)(node))->field))));
 
 #define LOG_FIELD_MH(type, field) LOG_FIELD_APPLY(type, field, get_model_hash_string);
 #define LOG_FIELD_NI(type, field) LOG_FIELD_APPLY(type, field, get_network_id_string);
@@ -353,9 +353,9 @@ namespace big
 	void log_node(const sync_node_id& node_id, player_ptr sender, CProjectBaseSyncDataNode* node, rage::netObject* object)
 	{
 		if (object)
-			g_log->log_additional(std::format("{}: {}, {}", sender->get_name(), node_id.name, object->m_object_id));
+			g_log.log_additional(std::format("{}: {}, {}", sender->get_name(), node_id.name, object->m_object_id));
 		else
-			g_log->log_additional(std::format("{}: {}", sender->get_name(), node_id.name));
+			g_log.log_additional(std::format("{}: {}", sender->get_name(), node_id.name));
 
 		switch (node_id)
 		{
@@ -714,7 +714,7 @@ namespace big
 			LOG_FIELD_B(CPlayerCameraDataNode, m_is_long_range_target);
 			LOG_FIELD_B(CPlayerCameraDataNode, pad_0110[3]);
 			auto unk_pos = (rage::fvector3*)((__int64)node + 0xF0);
-			g_log->log_additional(std::format("{} {} {}", unk_pos->x, unk_pos->y, unk_pos->z));
+			g_log.log_additional(std::format("{} {} {}", unk_pos->x, unk_pos->y, unk_pos->z));
 			break;
 		}
 		case sync_node_id("CPlayerCreationDataNode"):
@@ -1461,7 +1461,7 @@ namespace big
 				if (track_id != -1 && (track_id < 0 || track_id >= 12))
 				{
 					g_reactions.crash16.process(sender_plyr);
-					g_log->log_additional(std::format("crash16 {}", (int)train_node->m_track_id));
+					g_log.log_additional(std::format("crash16 {}", (int)train_node->m_track_id));
 					return true;
 				}
 
@@ -1635,7 +1635,7 @@ namespace big
 				if (is_crash_vehicle_task((eTaskTypeIndex)task_node->m_task_type))
 				{
 					g_reactions.crash26.process(sender_plyr);
-					g_log->log_additional(
+					g_log.log_additional(
 					    std::format("crash26 {} {}", (int)m_syncing_object_type, get_task_type_string(task_node->m_task_type)));
 					return true;
 				}

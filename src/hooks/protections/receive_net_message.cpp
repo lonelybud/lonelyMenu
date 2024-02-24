@@ -52,7 +52,7 @@ namespace big
 			{
 				if (++player->same_interval_spam_count_high == limit)
 				{
-					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
+					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
 					    player->last_spam_interval_diff.count(),
 					    diff,
@@ -65,7 +65,7 @@ namespace big
 			{
 				if (++player->same_interval_spam_count_low == limit)
 				{
-					g_log->log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
+					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
 					    player->last_spam_interval_diff.count(),
 					    diff,
@@ -179,7 +179,7 @@ namespace big
 				if (!player->whitelist_spammer && is_player_spammer(message, player))
 				{
 					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
-					g_log->log_additional(std::format("Spam Message - p {}, m {}", player->get_name(), message));
+					g_log.log_additional(std::format("Spam Message - p {}, m {}", player->get_name(), message));
 
 					// flag as spammer
 					player->is_spammer   = true;
@@ -288,7 +288,7 @@ namespace big
 					break;
 				}
 
-			g_log->log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
+			g_log.log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
 			    packet_type,
 			    frame->m_length,
 			    (player ? player->get_name() : ""),

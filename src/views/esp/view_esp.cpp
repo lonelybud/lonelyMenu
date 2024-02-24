@@ -1,13 +1,12 @@
 #include "view_esp.hpp"
 
-#include "core/scr_globals.hpp"
 #include "core/settings/esp.hpp"
-#include "gta/enums.hpp"
+#include "services/players/player_service.hpp"
 #include "util/math.hpp"
 
-namespace big
+namespace big::esp
 {
-	void esp::draw_player(const player_ptr& plyr, ImDrawList* const draw_list)
+	static inline void draw_player(const player_ptr& plyr, ImDrawList* const draw_list)
 	{
 		if (!plyr->is_valid() || !plyr->get_ped() || !plyr->get_ped()->m_navigation)
 			return;
@@ -31,15 +30,14 @@ namespace big
 			if (g_esp.distance)
 				name_str += " | " + std::to_string((int)distance) + "m";
 
-			draw_list->AddText(name_pos, g_esp.default_color, name_str.c_str());
+			draw_list->AddText(name_pos, plyr->esp_enemy ? g_esp.enemy_color : g_esp.default_color, name_str.c_str());
 		}
 	}
 
-	void esp::draw()
+	void draw()
 	{
 		if (g_esp.enabled)
 			for (auto& entry : g_player_service->players())
-				if (entry.second->draw_esp)
-					draw_player(entry.second, ImGui::GetBackgroundDrawList());
+				draw_player(entry.second, ImGui::GetBackgroundDrawList());
 	}
 }

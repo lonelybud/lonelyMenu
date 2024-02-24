@@ -57,7 +57,7 @@ namespace big
 		components::button("Teleport", [] {
 			if (selected_telelocation)
 			{
-				g_log->log_additional(std::format("Custom Teleport: {}, {}, {}, {}",
+				g_log.log_additional(std::format("Custom Teleport: {}, {}, {}, {}",
 				    selected_telelocation->name,
 				    selected_telelocation->x,
 				    selected_telelocation->y,

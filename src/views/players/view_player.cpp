@@ -371,7 +371,7 @@ namespace big
 
 			components::ver_space();
 
-			ImGui::Checkbox("Draw Esp", &current_player->draw_esp);
+			ImGui::Checkbox("Esp Enemy", &current_player->esp_enemy);
 		}
 		ImGui::EndGroup();
 	}

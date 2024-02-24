@@ -91,7 +91,7 @@ namespace big
 		bool is_known_player      = false;
 		player_ptr last_killed_by = nullptr;
 		bool is_pain_in_ass       = false;
-		bool draw_esp             = false;
+		bool esp_enemy            = false;
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
 		std::chrono::seconds last_spam_interval_diff{};
