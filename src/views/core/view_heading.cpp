@@ -1,4 +1,5 @@
 #include "backend/looped_command.hpp"
+#include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
 #include "fiber_pool.hpp"
 #include "script_mgr.hpp"
@@ -8,15 +9,15 @@ namespace big
 {
 	void view::heading()
 	{
-		ImGui::SetNextWindowSize({300.f * g_window.gui_scale, 80.f * g_window.gui_scale});
-		ImGui::SetNextWindowPos({10.f, 10.f});
+		ImGui::SetNextWindowSize({g_gui_info.nav_window_width, 80.f * g_window.gui_scale});
+		ImGui::SetNextWindowPos({g_gui_info.nav_window_pos_x, g_gui_info.nav_window_pos_x});
 		if (ImGui::Begin("menu_heading", nullptr, window_flags | ImGuiWindowFlags_NoScrollbar))
 		{
 			ImGui::Text("Welcome");
 			ImGui::SameLine();
 			ImGui::SetCursorPos(
-			    {(300.f * g_window.gui_scale) - ImGui::CalcTextSize("Unload").x - ImGui::GetStyle().ItemSpacing.x,
-			        ImGui::GetStyle().WindowPadding.y / 2 + ImGui::GetStyle().ItemSpacing.y + (ImGui::CalcTextSize("W").y / 2)});
+			    {g_gui_info.nav_window_width - ImGui::CalcTextSize("Unload").x - (window_padding.x * g_window.gui_scale),
+			        window_padding.y * g_window.gui_scale});
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.69f, 0.29f, 0.29f, 1.00f));
 			if (components::nav_button("Unload"))
 			{

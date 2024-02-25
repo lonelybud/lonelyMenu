@@ -1,3 +1,4 @@
+#include "core/data/gui_info.hpp"
 #include "gui/components/components.hpp"
 #include "pointers.hpp"
 
@@ -9,11 +10,10 @@ namespace big
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.f, 0.5f});
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 5});
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 2});
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, {0, 0});
-		bool result = ImGui::Button(text.data(), {((float)*g_pointers->m_gta.m_resolution_x * 0.15f) - 30, 0});
-		ImGui::PopStyleVar(4);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, g_gui_info.nav_btn_padding_y});
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, g_gui_info.nav_btn_spacing_y});
+		bool result = ImGui::Button(text.data(), {-1, 0});
+		ImGui::PopStyleVar(3);
 		ImGui::PopStyleColor(3);
 
 		return result;

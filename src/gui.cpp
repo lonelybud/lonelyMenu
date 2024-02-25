@@ -1,5 +1,6 @@
 #include "gui.hpp"
 
+#include "core/data/gui_info.hpp"
 #include "core/settings/menu.hpp"
 #include "core/settings/window.hpp"
 #include "natives.hpp"
@@ -70,6 +71,8 @@ namespace big
 		m_is_open = toggle;
 
 		toggle_mouse();
+
+		g_gui_info.update_gui_info();
 	}
 
 	void gui::dx_init()
@@ -80,12 +83,12 @@ namespace big
 		static auto whiteBroken = ImVec4(0.792f, 0.784f, 0.827f, 1.f);
 
 		auto& style             = ImGui::GetStyle();
-		style.WindowPadding     = ImVec2(15, 15);
+		style.WindowPadding     = window_padding;
 		style.WindowRounding    = 10.f;
 		style.WindowBorderSize  = 0.f;
-		style.FramePadding      = ImVec2(5, 5);
+		style.FramePadding      = frame_padding;
 		style.FrameRounding     = 4.0f;
-		style.ItemSpacing       = ImVec2(12, 8);
+		style.ItemSpacing       = item_spacing;
 		style.ItemInnerSpacing  = ImVec2(8, 6);
 		style.IndentSpacing     = 25.0f;
 		style.ScrollbarSize     = 15.0f;

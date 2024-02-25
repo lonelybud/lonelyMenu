@@ -1,5 +1,6 @@
 #include "player_service.hpp"
 
+#include "core/data/gui_info.hpp"
 #include "gta_util.hpp"
 
 #include <network/CNetworkPlayerMgr.hpp>
@@ -27,6 +28,7 @@ namespace big
 		m_player_to_use_complaint_kick.reset();
 		m_selected_player = m_dummy;
 		m_players.clear();
+		g_gui_info.update_gui_info();
 	}
 
 	player_ptr player_service::get_by_id(uint32_t id) const
@@ -61,6 +63,7 @@ namespace big
 	{
 		auto plyr = std::make_shared<player>(net_game_player, host_token);
 		auto itr  = m_players.insert({plyr->id(), std::move(plyr)});
+		g_gui_info.update_gui_info();
 
 		return itr->second;
 	}
@@ -88,6 +91,8 @@ namespace big
 
 			m_players.erase(it);
 		}
+
+		g_gui_info.update_gui_info();
 	}
 
 	void player_service::set_selected(player_ptr plyr)

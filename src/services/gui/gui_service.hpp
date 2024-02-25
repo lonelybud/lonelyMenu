@@ -124,14 +124,10 @@ namespace big
 		gui_service();
 		virtual ~gui_service();
 
-		int nav_ctr = 0;
-
 		navigation_struct* get_selected();
 		std::vector<tabs>& get_selected_tab();
 		void set_selected(tabs);
-		void set_nav_size(int);
-		void increment_nav_size();
-		void reset_nav_size();
+		int get_rendered_navs_count();
 		std::map<tabs, navigation_struct>& get_navigation();
 		void remove_from_nav(tabs existing_tab_id);
 	};

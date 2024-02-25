@@ -50,20 +50,21 @@ namespace big
 		}
 	}
 
-	void gui_service::set_nav_size(int nav_size)
+	// assuming only from level 1 to 2 navigations
+	int gui_service::get_rendered_navs_count()
 	{
-		nav_ctr = nav_size;
-	}
-
-	void gui_service::increment_nav_size()
-	{
-		nav_ctr++;
-	}
-
-
-	void gui_service::reset_nav_size()
-	{
-		nav_ctr = 0;
+		auto count = 0;
+		for (std::pair<tabs, navigation_struct> nav_item : nav)
+			if (nav_item.first == tabs::PLAYER)
+				continue;
+			else
+			{
+				++count;
+				auto& tab = get_selected_tab();
+				if (!tab.empty() && nav_item.first == tab.at(0))
+					count += nav_item.second.sub_nav.size();
+			}
+		return count;
 	}
 
 	std::map<tabs, navigation_struct>& gui_service::get_navigation()

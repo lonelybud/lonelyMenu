@@ -1,3 +1,5 @@
+#include "core/data/gui_info.hpp"
+#include "core/settings/window.hpp"
 #include "fiber_pool.hpp"
 #include "fonts/fonts.hpp"
 #include "natives.hpp"
@@ -14,8 +16,6 @@
 
 namespace big
 {
-	static bool has_scrollbar = false;
-
 	static void player_button(const player_ptr& plyr)
 	{
 		if (plyr == nullptr)
@@ -63,13 +63,11 @@ namespace big
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.0, 0.5});
 		ImGui::PushID(plyr->id());
 
-		const auto style = ImGui::GetStyle();
-		// branchless conditional calculation
-		const auto plyr_btn_width = 300.f - (style.ItemInnerSpacing.x * 2) - (has_scrollbar * style.ScrollbarSize);
-		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->get_name(), {plyr_btn_width, 0.f}))
+		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->get_name(), {-1, 0.f}))
 		{
 			g_player_service->set_selected(plyr);
 			g_gui_service->set_selected(tabs::PLAYER);
+			g_gui_info.update_gui_info();
 		}
 		if (ImGui::IsItemHovered() && !plyr->infractions.empty())
 		{
@@ -96,67 +94,39 @@ namespace big
 
 	void view::players()
 	{
-		// player count does not include ourself that's why +1
-		const auto player_count = g_player_service->players().size() + 1;
-
-		if (!*g_pointers->m_gta.m_is_session_started && player_count < 2)
+		if (!*g_pointers->m_gta.m_is_session_started)
 			return;
 
-		const auto style = ImGui::GetStyle();
-		float window_pos = 110.f + g_gui_service->nav_ctr * ImGui::CalcTextSize("W").y
-		    + g_gui_service->nav_ctr * style.ItemSpacing.y + g_gui_service->nav_ctr * style.ItemInnerSpacing.y
-		    + style.WindowPadding.y;
-
-		ImGui::SetNextWindowSize({300.f, 0.f});
-		ImGui::SetNextWindowPos({10.f, window_pos});
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {2.0f, 2.0f});
-
+		ImGui::SetNextWindowSize({g_gui_info.nav_window_width, 0.f});
+		ImGui::SetNextWindowPos({g_gui_info.nav_window_pos_x, g_gui_info.plrs_wind_pos_y});
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {g_gui_info.plrs_wind_padding, g_gui_info.plrs_wind_padding});
 		if (ImGui::Begin("playerlist", nullptr, window_flags))
 		{
 			ImGui::PushStyleColor(ImGuiCol_FrameBg, {0.f, 0.f, 0.f, 0.f});
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarBg, {0.f, 0.f, 0.f, 0.f});
-			
-			const auto style = ImGui::GetStyle();
-			auto window_width = ImGui::GetWindowSize().x - style.WindowPadding.x * 2;
 
 			// render search
 			static std::string search_player_name;
-			ImGui::SetNextItemWidth(window_width);
+			ImGui::SetNextItemWidth(g_gui_info.plrs_wind_content_width);
 			if (components::input_text_with_hint("###search_player_name", "search name", search_player_name))
 				std::transform(search_player_name.begin(), search_player_name.end(), search_player_name.begin(), ::tolower);
-			auto search_height = ImGui::GetItemRectSize().y; // Get the size of the last element
 			//
 
-			float raw_height = (ImGui::CalcTextSize("A").y + style.FramePadding.y * 2.0f + style.ItemSpacing.y) // button size
-			        * player_count                                       // amount of players
-			    + (player_count > 1) * ((style.ItemSpacing.y * 2) + 1.f) // account for ImGui::Separator spacing
-			    + (player_count == 1) * 2.f;                             // some arbitrary height to make it fit
-			// used to account for scrollbar width
-			has_scrollbar = raw_height + window_pos > (float)*g_pointers->m_gta.m_resolution_y - 10.f;
-			// when scrollbar is there compute available space otherwise use raw height
-			float window_height = has_scrollbar ? (float)*g_pointers->m_gta.m_resolution_y - (window_pos + search_height + 40.f) : raw_height;
-
-			if (ImGui::BeginListBox("##players", {window_width, window_height}))
+			if (ImGui::BeginListBox("##players", {g_gui_info.plrs_wind_content_width, g_gui_info.plrs_list_height}))
 			{
-				ImGui::SetScrollX(0);
 				player_button(g_player_service->get_self());
 
-				if (player_count > 1)
-				{
-					ImGui::Separator();
+				for (const auto& [_, player] : g_player_service->players())
+					if (search_player_name.length())
+					{
+						std::string lower_case_name = player->get_name();
+						std::transform(lower_case_name.begin(), lower_case_name.end(), lower_case_name.begin(), ::tolower);
 
-					for (const auto& [_, player] : g_player_service->players())
-						if (search_player_name.length())
-						{
-							std::string lower_case_name = player->get_name();
-							std::transform(lower_case_name.begin(), lower_case_name.end(), lower_case_name.begin(), ::tolower);
-
-							if (lower_case_name.find(search_player_name) != std::string::npos)
-								player_button(player);
-						}
-						else
+						if (lower_case_name.find(search_player_name) != std::string::npos)
 							player_button(player);
-				}
+					}
+					else
+						player_button(player);
 
 				ImGui::EndListBox();
 			}
