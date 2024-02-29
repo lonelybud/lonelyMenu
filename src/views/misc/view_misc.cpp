@@ -5,7 +5,6 @@
 #include "util/entity.hpp"
 #include "util/mobile.hpp"
 #include "util/ped.hpp"
-#include "util/teleport.hpp"
 #include "views/view.hpp"
 
 #include <script/globals/GPBD_FM.hpp>
@@ -232,9 +231,7 @@ namespace big
 		ImGui::Text(combination_retn.c_str());
 
 		components::button("TP to G'cache object", [] {
-			if (*g_pointers->m_gta.m_script_globals && **g_pointers->m_gta.m_script_globals)
-				if (auto gs_cache_box_entity = *scr_globals::pickups.at(605).as<Entity*>(); gs_cache_box_entity != 0)
-					teleport::tp_on_top(gs_cache_box_entity);
+			lua_scripts::tp_to_g_cache_coords();
 		});
 	}
 

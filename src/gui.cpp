@@ -91,7 +91,7 @@ namespace big
 		style.ItemSpacing       = item_spacing;
 		style.ItemInnerSpacing  = ImVec2(8, 6);
 		style.IndentSpacing     = 25.0f;
-		style.ScrollbarSize     = 15.0f;
+		style.ScrollbarSize     = scroll_bar_size;
 		style.ScrollbarRounding = 9.0f;
 		style.GrabMinSize       = 5.0f;
 		style.GrabRounding      = 3.0f;

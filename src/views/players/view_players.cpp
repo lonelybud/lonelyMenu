@@ -39,10 +39,10 @@ namespace big
 		const auto window = ImGui::GetCurrentWindow();
 		ImGui::PushFont(g_window.font_icon);
 		const auto icons_size = ImGui::CalcTextSize(player_iconsc, player_icons_end);
-		const ImVec2 icons_pos(window->DC.CursorPos.x + 300.0f - 32.0f - icons_size.x, window->DC.CursorPos.y + 2.0f);
+		const ImVec2 icons_pos(window->DC.CursorPos.x + g_gui_info.plr_btn_width - icons_size.x - frame_padding.x,
+		    window->DC.CursorPos.y + 2.0f);
 		const ImRect icons_box(icons_pos, icons_pos + icons_size);
 		ImGui::PopFont();
-
 
 		if (plyr->is_pain_in_ass)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.f, 0.f, 1.f)); // red
@@ -63,7 +63,7 @@ namespace big
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.0, 0.5});
 		ImGui::PushID(plyr->id());
 
-		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->get_name(), {-1, 0.f}))
+		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->get_name(), {g_gui_info.plr_btn_width, 0.f}))
 		{
 			g_player_service->set_selected(plyr);
 			g_gui_service->set_selected(tabs::PLAYER);

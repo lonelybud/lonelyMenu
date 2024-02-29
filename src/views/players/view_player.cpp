@@ -1,4 +1,5 @@
 #include "core/data/language_codes.hpp"
+#include "core/data/lua.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
@@ -232,6 +233,8 @@ namespace big
 		{
 			components::sub_title("Flags");
 
+			ImGui::Checkbox("Esp Enemy", &current_player->esp_enemy);
+
 			if (ImGui::Checkbox("Is Blocked", &current_player->is_blocked))
 			{
 				if (bad_players_nm::does_exist(rockstar_id))
@@ -326,6 +329,26 @@ namespace big
 		ImGui::EndGroup();
 	}
 
+	static inline void render_good_options(player_ptr current_player)
+	{
+		ImGui::BeginGroup();
+		{
+			components::sub_title("Good Options");
+
+			components::button("Give Persist Veh", [current_player] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
+					persist_car_service::load_vehicle(std::nullopt, ped);
+			});
+
+			components::ver_space();
+
+			components::button("** Gift Veh **", [current_player] {
+				lua_scripts::gift_veh(current_player);
+			});
+		}
+		ImGui::EndGroup();
+	}
+
 	static inline void render_misc(player_ptr current_player)
 	{
 		ImGui::BeginGroup();
@@ -361,17 +384,6 @@ namespace big
 						g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
 				}
 			});
-
-			components::ver_space();
-
-			components::button("Give Persist Veh", [current_player] {
-				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(current_player->id()))
-					persist_car_service::load_vehicle(std::nullopt, ped);
-			});
-
-			components::ver_space();
-
-			ImGui::Checkbox("Esp Enemy", &current_player->esp_enemy);
 		}
 		ImGui::EndGroup();
 	}
@@ -486,6 +498,10 @@ namespace big
 				components::ver_space();
 
 				render_misc(current_player);
+
+				components::ver_space();
+
+				render_good_options(current_player);
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine(0, 50);

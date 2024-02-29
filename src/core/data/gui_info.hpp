@@ -8,9 +8,10 @@
 
 namespace big
 {
-	constexpr auto window_padding = ImVec2(15, 15);
-	constexpr auto frame_padding  = ImVec2(5, 5);
-	constexpr auto item_spacing   = ImVec2(8, 6);
+	constexpr auto window_padding  = ImVec2(15, 15);
+	constexpr auto frame_padding   = ImVec2(5, 5);
+	constexpr auto item_spacing    = ImVec2(8, 6);
+	constexpr auto scroll_bar_size = 15.0f;
 
 	class gui_info
 	{
@@ -31,6 +32,7 @@ namespace big
 		float plrs_wind_padding;
 		float plrs_wind_content_width;
 		float plrs_wind_pos_y;
+		float plr_btn_width;
 		float plrs_list_height;
 
 		inline void update_gui_info()
@@ -64,6 +66,8 @@ namespace big
 			auto plrs_wind_max_height = (float)*g_pointers->m_gta.m_resolution_y - (plrs_wind_pos_y + button_height + plrs_wind_padding_total + plrs_wind_margin);
 			auto plrs_wind_has_scrollbar = plrs_wind_raw_height > plrs_wind_max_height;
 			plrs_list_height             = plrs_wind_has_scrollbar ? plrs_wind_max_height : plrs_wind_raw_height;
+
+			plr_btn_width = nav_window_width - plrs_wind_padding_total - (plrs_wind_has_scrollbar * scroll_bar_size);
 		}
 	};
 

@@ -1,12 +1,44 @@
 #pragma once
 #include "util/lua_helper.hpp"
+#include "util/teleport.hpp"
 
 // https://github.com/SilentSal0/Silent-Night
 // https://github.com/YimMenu-Lua/Casino-Pacino
 // https://github.com/L7NEG/Ultimate-Menu/blob
+// https://github.com/YimMenu-Lua/DailyCollectibles
+// https://github.com/Deadlineem/Extras-Addon-for-YimMenu
 
 namespace big
 {
+	static std::optional<Vector3> dead_drop_coords(int area, int location)
+	{
+		constexpr float a_l_c[15][5][3] = {
+		    {{1113.557, -645.957, 56.091}, {1142.874, -662.951, 57.135}, {1146.691, -703.717, 56.167}, {1073.542, -678.236, 56.583}, {1046.454, -722.915, 56.419}},
+		    {{2064.713, 3489.88, 44.223}, {2081.859, 3553.254, 42.157}, {2014.72, 3551.499, 42.726}, {1997.019, 3507.838, 39.666}, {2045.597, 3564.346, 39.343}},
+		    {{-1317.344, -1481.97, 3.923}, {-1350.041, -1478.273, 4.567}, {-1393.87, -1445.139, 3.437}, {-1367.034, -1413.992, 2.611}, {-1269.861, -1426.272, 3.556}},
+		    {{-295.468, 2787.385, 59.864}, {-284.69, 2848.234, 53.266}, {-329.193, 2803.404, 57.787}, {-306.847, 2825.6, 58.219}, {-336.046, 2829.988, 55.448}},
+		    {{-1725.245, 233.946, 57.685}, {-1639.892, 225.521, 60.336}, {-1648.48, 212.049, 59.777}, {-1693.318, 156.665, 63.855}, {-1699.193, 179.574, 63.185}},
+		    {{-949.714, -710.658, 19.604}, {-938.774, -781.817, 19.657}, {-884.91, -786.863, 15.043}, {-895.257, -729.943, 19.143}, {-932.986, -746.452, 19.008}},
+		    {{-425.948, 1213.342, 324.936}, {-387.267, 1137.65, 321.704}, {-477.999, 1135.36, 320.123}, {-431.822, 1119.449, 325.964}, {-387.902, 1161.655, 324.529}},
+		    {{-3381.278, 965.534, 7.426}, {-3427.724, 979.944, 7.526}, {-3413.606, 961.845, 11.038}, {-3419.585, 977.595, 11.167}, {-3425.687, 961.215, 7.536}},
+		    {{-688.732, 5828.4, 16.696}, {-673.425, 5799.744, 16.467}, {-710.348, 5769.631, 16.75}, {-699.926, 5801.619, 16.504}, {-660.359, 5781.733, 18.774}},
+		    {{38.717, 6264.173, 32.88}, {84.67, 6292.286, 30.731}, {97.17, 6288.558, 38.447}, {14.453, 6243.932, 35.445}, {67.52, 6261.744, 32.029}},
+		    {{2954.598, 4671.458, 50.106}, {2911.146, 4637.608, 49.3}, {2945.212, 4624.044, 49.078}, {2941.139, 4617.117, 52.114}, {2895.884, 4686.396, 48.094}},
+		    {{1332.319, 4271.446, 30.646}, {1353.332, 4387.911, 43.541}, {1337.892, 4321.563, 38.093}, {1386.603, 4366.511, 42.236}, {1303.193, 4313.509, 36.939}},
+		    {{2720.03, 1572.762, 20.204}, {2663.161, 1581.395, 24.418}, {2661.482, 1641.057, 24.001}, {2671.003, 1561.394, 23.882}, {2660.104, 1606.54, 28.61}},
+		    {{211.775, -934.269, 23.466}, {198.265, -884.039, 30.696}, {189.542, -919.726, 29.96}, {169.504, -934.841, 29.228}, {212.376, -934.807, 29.007}},
+		    {{1330.113, -2520.754, 46.365}, {1328.954, -2538.302, 46.976}, {1237.506, -2572.335, 39.791}, {1244.602, -2563.721, 42.646}, {1278.421, -2565.117, 43.544}},
+		};
+
+		if (area >= 0 && area <= 14 && location >= 0 && location <= 4)
+		{
+			auto loc_arr = a_l_c[area][location];
+			return Vector3(loc_arr[0], loc_arr[1], loc_arr[2]);
+		}
+
+		return std::nullopt;
+	}
+
 	namespace lua_scripts
 	{
 		// ******************************************************************************** variables & consts
@@ -141,6 +173,40 @@ namespace big
 			lua_helper::stats::set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215);
 			lua_helper::stats::set_int("MPX_H4LOOT_CASH_I_SCOPED", 0);
 			lua_helper::stats::set_int("MPX_H4LOOT_WEED_I_SCOPED", 0);
+		}
+		inline void tp_to_g_cache_coords()
+		{
+			// https://github.com/YimMenu-Lua/DailyCollectibles
+			auto is_dead_drop_collected = lua_helper::stats::get_packed_stat_bool(36628);
+			auto dead_drop_area         = lua_helper::stats::get_packed_stat_int(41214);
+			auto dead_drop_loc          = lua_helper::stats::get_packed_stat_int(41213);
+
+			if (!is_dead_drop_collected)
+			{
+				std::optional<Vector3> location = dead_drop_coords(dead_drop_area, dead_drop_loc);
+				if (location.has_value())
+					teleport::to_coords(location.value());
+			}
+		}
+		// store npcs car in 2 veh garage. Gift Veh to player and ask him to replace the car
+		// https://github.com/Deadlineem/Extras-Addon-for-YimMenu
+		inline void gift_veh(player_ptr plyr)
+		{
+			if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(plyr->id()))
+			{
+				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
+				{
+					auto netHash = NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(plyr->id());
+
+					DECORATOR::DECOR_SET_INT(veh, "MPBitset", 8);
+					DECORATOR::DECOR_SET_INT(veh, "Previous_Owner", netHash);
+					DECORATOR::DECOR_SET_INT(veh, "Veh_Modded_By_Player", netHash);
+					DECORATOR::DECOR_SET_INT(veh, "Not_Allow_As_Saved_Veh", 0);
+					DECORATOR::DECOR_SET_INT(veh, "Player_Vehicle", netHash);
+				}
+				else
+					g_notification_service->push_error("Gift Vehicle", "Failed to get veh", false);
+			}
 		}
 	}
 }
