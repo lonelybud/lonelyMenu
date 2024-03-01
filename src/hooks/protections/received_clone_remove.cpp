@@ -15,8 +15,6 @@ namespace big
 
 			return;
 		}
-		else
-			g_log.log_additional(std::format("Player ped removal from {} to {}", src->get_name(), dst->get_name()));
 
 		g_hooking->get_original<hooks::received_clone_remove>()(mgr, src, dst, object_id, ownership_token);
 	}

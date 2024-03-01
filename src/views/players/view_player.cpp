@@ -255,8 +255,8 @@ namespace big
 			{
 				if (current_player->whitelist_spammer && current_player->is_spammer)
 				{
-					current_player->spam_message = false;
-					current_player->is_blocked   = false;
+					current_player->is_spammer = false;
+					current_player->is_blocked = false;
 					if (bad_players_nm::does_exist(rockstar_id))
 						bad_players_nm::toggle_block(rockstar_id, false);
 				}

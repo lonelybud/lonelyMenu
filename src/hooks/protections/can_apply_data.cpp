@@ -69,6 +69,7 @@
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/model_info.hpp"
+#include "util/player.hpp"
 #include "util/protection.hpp"
 #include "util/sync_trees.hpp"
 #include "vehicle/CTrainConfig.hpp"
@@ -136,28 +137,11 @@ namespace big
 		return false;
 	}
 
-	inline bool is_in_vehicle(CPed* ped, CVehicle* vehicle)
-	{
-		if (!ped || !vehicle)
-			return false;
-
-		if (ped == vehicle->m_driver)
-			return true;
-
-		for (int i = 0; i < 15; i++)
-			if (vehicle->m_passengers[i] == ped)
-				return true;
-
-		return false;
-	}
-
 	inline bool is_local_player_an_occupant(CVehicleProximityMigrationDataNode* node)
 	{
 		for (int i = 0; i < 16; i++)
-		{
 			if (node->m_has_occupants[i] && node->m_occupants[i] == g_local_player->m_net_object->m_object_id)
 				return true;
-		}
 
 		return false;
 	}
@@ -323,18 +307,18 @@ namespace big
 #define LOG_FIELD_B(type, field) \
 	g_log.log_additional(std::format("{}: {}", #field, ((((type*)(node))->field) ? "YES" : "NO")));
 
-#define LOG_FIELD_V3(type, field)                              \
+#define LOG_FIELD_V3(type, field)                             \
 	g_log.log_additional(std::format("{}: X: {} Y: {} Z: {}", \
-	    #field,                                                \
-	    ((((type*)(node))->field)).x,                          \
-	    ((((type*)(node))->field)).y,                          \
+	    #field,                                               \
+	    ((((type*)(node))->field)).x,                         \
+	    ((((type*)(node))->field)).y,                         \
 	    ((((type*)(node))->field)).z));
-#define LOG_FIELD_V4(type, field)                                    \
+#define LOG_FIELD_V4(type, field)                                   \
 	g_log.log_additional(std::format("{}: X: {} Y: {} Z: {} W: {}", \
-	    #field,                                                      \
-	    ((((type*)(node))->field)).x,                                \
-	    ((((type*)(node))->field)).y,                                \
-	    ((((type*)(node))->field)).z,                                \
+	    #field,                                                     \
+	    ((((type*)(node))->field)).x,                               \
+	    ((((type*)(node))->field)).y,                               \
+	    ((((type*)(node))->field)).z,                               \
 	    ((((type*)(node))->field)).w));
 #define LOG_FIELD_APPLY(type, field, func) \
 	g_log.log_additional(std::format("{}: {}", #field, func((((type*)(node))->field))));
@@ -1499,9 +1483,10 @@ namespace big
 					    || g_local_player->m_vehicle->m_net_object->m_object_id != object->m_object_id
 					    || !is_in_vehicle(g_local_player, g_local_player->m_vehicle))
 					{
-						if (is_local_player_an_occupant(migration_node))
+						if (is_local_player_an_occupant(migration_node)) // remote teleport
 						{
-							return true; // remote teleport
+							LOG(WARNING) << "CVehProxMigDataNode from " << sender_plyr->get_name();
+							return true;
 						}
 					}
 				}

@@ -58,4 +58,16 @@ namespace big
 
 		return false;
 	}
+
+	inline bool is_in_vehicle(CPed* ped, CVehicle* vehicle)
+	{
+		if (ped == vehicle->m_driver)
+			return true;
+
+		for (int i = 0; i < 15; i++)
+			if (vehicle->m_passengers[i] == ped)
+				return true;
+
+		return false;
+	}
 }

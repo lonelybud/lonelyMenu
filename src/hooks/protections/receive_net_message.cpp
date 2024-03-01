@@ -54,7 +54,7 @@ namespace big
 				{
 					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
-					    player->last_spam_interval_diff.count(),
+					    player->last_spam_interval_diff,
 					    diff,
 					    1,
 					    player->same_interval_spam_count_high));
@@ -67,7 +67,7 @@ namespace big
 				{
 					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
 					    player->get_name(),
-					    player->last_spam_interval_diff.count(),
+					    player->last_spam_interval_diff,
 					    diff,
 					    0,
 					    player->same_interval_spam_count_low));
@@ -90,6 +90,12 @@ namespace big
 		auto currentTime = std::chrono::system_clock::now();
 		auto diff        = std::chrono::duration_cast<std::chrono::seconds>(currentTime - player->last_msg_time);
 
+		// first message should be allowed
+		if (player->last_msg_time == std::chrono::system_clock::time_point::min())
+		{
+			player->last_msg_time = currentTime;
+			return false;
+		}
 		player->last_msg_time = currentTime;
 
 		if (strlen(msg) > 50)

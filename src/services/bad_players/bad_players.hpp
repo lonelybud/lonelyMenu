@@ -53,7 +53,9 @@ namespace big::bad_players_nm
 	inline void toggle_block(uint64_t rockstar_id, bool v)
 	{
 		bad_players_list[rockstar_id].block_join = v;
-		save_blocked_list();
+		big::g_thread_pool->push([] {
+			save_blocked_list();
+		});
 	}
 	inline bool is_blocked(uint64_t rockstar_id)
 	{
