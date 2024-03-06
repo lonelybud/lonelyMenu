@@ -32,7 +32,7 @@ namespace big
 
 				components::button("TP###relative", [] {
 					auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, relative_pos[0], relative_pos[1], relative_pos[2]);
-					PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z);
+					teleport::to_coords(location);
 				});
 				ImGui::SameLine();
 				components::button("Reset###relative", [] {
@@ -47,7 +47,7 @@ namespace big
 				static float new_location[3];
 
 				ImGui::InputFloat3("##currentcoordinates", coords, "%f", ImGuiInputTextFlags_ReadOnly);
-				
+
 				components::button("Copy to custom", [coords] {
 					std::copy(std::begin(coords), std::end(coords), std::begin(new_location));
 				});
