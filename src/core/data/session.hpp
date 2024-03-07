@@ -46,11 +46,13 @@ namespace big
 	{
 		next_host_list next_host_list;
 
-		uint64_t orig_host_token = 0;
-		uint64_t host_token      = 0;
-		bool block_joins         = false;
-		bool block_friend_joins  = false;
-		bool force_script_host   = false;
+		uint64_t orig_host_token      = 0;
+		uint64_t host_token           = 0;
+		bool block_joins              = false;
+		bool block_friend_joins       = false;
+		bool force_freemode_host      = false;
+		bool force_fmmc_launcher_host = false;
+		bool force_am_launcher_host   = false;
 
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;

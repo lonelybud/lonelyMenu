@@ -228,13 +228,21 @@ namespace big
 				CGameScriptId script;
 				script_id_deserialize(script, buffer);
 
-				if (g_session.force_script_host)
-					switch (script.m_hash)
-					{
-					case RAGE_JOAAT("freemode"):
-					case RAGE_JOAAT("fmmc_launcher"):
-					case RAGE_JOAAT("am_launcher"): return true;
-					}
+				switch (script.m_hash)
+				{
+				case RAGE_JOAAT("freemode"):
+					if (g_session.force_freemode_host)
+						return true;
+					break;
+				case RAGE_JOAAT("fmmc_launcher"):
+					if (g_session.force_fmmc_launcher_host)
+						return true;
+					break;
+				case RAGE_JOAAT("am_launcher"):
+					if (g_session.force_am_launcher_host)
+						return true;
+					break;
+				}
 
 				break;
 			}

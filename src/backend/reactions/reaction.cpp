@@ -15,7 +15,7 @@ namespace big
 		std::string str = "infrac: ";
 
 		for (auto& pair : infractions)
-			str += std::to_string((int)pair.first->sub_type) + ",";
+			str += std::string(pair.first->m_event_name) + ",";
 
 		return str;
 	}
@@ -50,22 +50,32 @@ namespace big
 				if (this->notify_once)
 					return;
 
-				++player->infractions[this];
+				if (this->sub_type != reaction_sub_type::crash41)
+					++player->infractions[this];
 			}
 
 			// auto-kick crashing player
 			if (this->type == reaction_type::crash_player)
 				switch (this->sub_type)
 				{
-				// case reaction_sub_type::crash1:
-				// case reaction_sub_type::crash2:
-				// case reaction_sub_type::crash26:
-				// case reaction_sub_type::crash31:
-				// case reaction_sub_type::crash33:
-				// {
-				// 	kick_player = true;
-				// 	break;
-				// }
+				case reaction_sub_type::crash1:
+				case reaction_sub_type::crash3:
+				case reaction_sub_type::crash19:
+				case reaction_sub_type::crash21:
+				case reaction_sub_type::crash22:
+				case reaction_sub_type::scripted_event_crash:
+				case reaction_sub_type::stand_user_crash:
+				case reaction_sub_type::crash12:
+				case reaction_sub_type::crash13:
+				case reaction_sub_type::crash39:
+				case reaction_sub_type::crash40:
+				case reaction_sub_type::sound_spam:
+				case reaction_sub_type::player_ped_removal:
+				case reaction_sub_type::invalid_weapon_type:
+				{
+					kick_player = true;
+					break;
+				}
 				default:
 				{
 					if (player->infractions[this] > 10)

@@ -18,7 +18,7 @@ namespace big
 		ImGui::BeginGroup();
 		ImGui::Checkbox("Send to Cutscene", &g_protections.script_events.send_to_cutscene);
 		ImGui::Checkbox("Send to Location", &g_protections.script_events.send_to_location);
-		ImGui::Checkbox("Sound Spam", &g_protections.script_events.sound_spam);
+		ImGui::Checkbox("Sound Spam Scripted", &g_protections.script_events.sound_spam);
 		ImGui::Checkbox("Personal Vehicle Destroyed", &g_protections.script_events.personal_vehicle_destroyed);
 		ImGui::Checkbox("Remote Off Radar", &g_protections.script_events.remote_off_radar);
 		ImGui::Checkbox("Rotate Cam", &g_protections.script_events.rotate_cam);

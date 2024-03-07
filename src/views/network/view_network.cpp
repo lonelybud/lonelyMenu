@@ -53,13 +53,12 @@ namespace big
 
 		ImGui::Spacing();
 
-		ImGui::Checkbox("Force Script Host", &g_session.force_script_host);
-
-		components::button("Migrate scripts host", [] {
-			scripts::force_migration("freemode", RAGE_JOAAT("freemode"), g_session.force_script_host);
-			scripts::force_migration("fmmc_launcher", RAGE_JOAAT("fmmc_launcher"), g_session.force_script_host);
-			scripts::force_migration("am_launcher", RAGE_JOAAT("am_launcher"), g_session.force_script_host);
-		});
+		if (ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host))
+			scripts::force_migration("freemode", RAGE_JOAAT("freemode"), g_session.force_freemode_host);
+		if (ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host))
+			scripts::force_migration("fmmc_launcher", RAGE_JOAAT("fmmc_launcher"), g_session.force_fmmc_launcher_host);
+		if (ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host))
+			scripts::force_migration("am_launcher", RAGE_JOAAT("am_launcher"), g_session.force_am_launcher_host);
 	}
 
 	static inline void render_host_list()

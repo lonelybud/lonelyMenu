@@ -220,12 +220,6 @@ namespace big
 
 				if (type < 1 || initial_length < min_length) // https://docs.fivem.net/natives/?_0xE832D760399EB220
 				{
-					g_log.log_additional(std::format("Rope Crash: {}, {}, {}, {} to {}",
-					    type,
-					    initial_length,
-					    min_length,
-					    source_player->get_name(),
-					    target_player->get_name()));
 					g_reactions.crash33.process(plyr, tar_plyr);
 					g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 					return;

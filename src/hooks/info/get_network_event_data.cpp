@@ -18,7 +18,10 @@ namespace big
 {
 	static inline bool is_invincible(big::player_ptr player)
 	{
-		return player->get_ped() && (player->get_ped()->m_damage_bits & (1 << 8));
+		if (auto ped = player->get_ped())
+			return ped->m_damage_bits & (uint32_t)eEntityProofs::GOD || ped->m_damage_bits & (uint32_t)eEntityProofs::BULLET || ped->m_damage_bits & (uint32_t)eEntityProofs::EXPLOSION;
+
+		return false;
 	}
 	static inline bool is_invincible_veh(big::player_ptr player)
 	{
