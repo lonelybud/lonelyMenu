@@ -35,6 +35,7 @@ namespace big
 			{
 				if (!script_running)
 				{
+					m_running = false;
 					g_script_patcher_service->update();
 					LOGF(INFO, "Tunables processing: ended! ({} tunables found)", m_tunables.size());
 					return;
@@ -55,7 +56,7 @@ namespace big
 					SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED(tp_hash);
 					m_running = true;
 
-					g_script_patcher_service->add_patch({tp_hash, "tuneables_processing1", "2E ? ? 55 ? ? 38 06", 0, std::vector<uint8_t>(17, 0x0), nullptr}); // bool tunables registration hack
+					g_script_patcher_service->add_patch({tp_hash, "tuneables_processing1", "2E ? ? 55 ? ? 38 06", 0, std::vector<uint8_t>(17, 0x0), &m_running}); // bool tunables registration hack
 					if (auto program = gta_util::find_script_program(tp_hash))
 						g_script_patcher_service->on_script_load(program, "tunables_service");
 
