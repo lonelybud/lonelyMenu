@@ -1527,7 +1527,7 @@ namespace big
 				}
 				for (int i = 0; i < game_state_node->m_num_equiped_gadgets; i++)
 				{
-					if (game_state_node->m_gadget_hash[i] != RAGE_JOAAT("gadget_parachute") && game_state_node->m_gadget_hash[i] != RAGE_JOAAT("gadget_nightvision"))
+					if (game_state_node->m_gadget_hash[i] != "gadget_parachute"_J && game_state_node->m_gadget_hash[i] != "gadget_nightvision"_J)
 					{
 						g_reactions.crash20.process(sender_plyr);
 						return true;

@@ -49,7 +49,7 @@ namespace big
 		components::button("Remove Current Weapon", [] {
 			Hash weaponHash;
 			WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weaponHash, 1);
-			if (weaponHash != RAGE_JOAAT("WEAPON_UNARMED"))
+			if (weaponHash != "WEAPON_UNARMED"_J)
 				WEAPON::REMOVE_WEAPON_FROM_PED(self::ped, weaponHash);
 		});
 	}

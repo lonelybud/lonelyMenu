@@ -48,7 +48,7 @@ namespace big
 		template<template_str cmd_str, ImVec2 size = ImVec2(0, 0), ImVec4 color = ImVec4(0.24f, 0.23f, 0.29f, 1.00f)>
 		static void command_button(const std::vector<uint64_t> args = {}, std::optional<const std::string_view> label_override = std::nullopt)
 		{
-			static command* command = command::get(rage::consteval_joaat(cmd_str.value));
+			static command* command = command::get(rage::joaat(cmd_str.value));
 			if (command == nullptr)
 				return ImGui::Text("INVALID COMMAND");
 
@@ -63,7 +63,7 @@ namespace big
 		template<template_str cmd_str, ImVec2 size = ImVec2(0, 0), ImVec4 color = ImVec4(0.24f, 0.23f, 0.29f, 1.00f)>
 		static void player_command_button(player_ptr player = g_player_service->get_selected(), const std::vector<uint64_t> args = {}, std::optional<const std::string_view> label_override = std::nullopt)
 		{
-			static player_command* command = dynamic_cast<player_command*>(command::get(rage::consteval_joaat(cmd_str.value)));
+			static player_command* command = dynamic_cast<player_command*>(command::get(rage::joaat(cmd_str.value)));
 			if (command == nullptr)
 				return ImGui::Text("INVALID COMMAND");
 
@@ -77,7 +77,7 @@ namespace big
 		template<template_str cmd_str>
 		static bool command_checkbox(std::optional<const std::string_view> label_override = std::nullopt)
 		{
-			static bool_command* command = dynamic_cast<bool_command*>(command::get(rage::consteval_joaat(cmd_str.value)));
+			static bool_command* command = dynamic_cast<bool_command*>(command::get(rage::joaat(cmd_str.value)));
 			if (command == nullptr)
 			{
 				ImGui::Text("INVALID COMMAND");
@@ -107,14 +107,6 @@ namespace big
 			if constexpr (color.x != 0.24f || color.y != 0.23f || color.z != 0.29f || color.w != 1.0f)
 				ImGui::PopStyleColor(1);
 			return status;
-		}
-
-		template<ImVec4 green = ImVec4(0.0f, 1.0f, 0.0f, 1.0f), ImVec4 red = ImVec4(1.0f, 0.0f, 0.0f, 1.0f)>
-		static void overlay_indicator(const std::string_view text, bool value)
-		{
-			ImGui::Text("%s: ", text.data());
-			ImGui::SameLine(180);
-			ImGui::TextColored(value ? green : red, value ? "Enabled" : "Disabled");
 		}
 
 		template<ImVec2 size = ImVec2(0, 0), ImVec4 color = ImVec4(0.24f, 0.23f, 0.29f, 1.00f)>

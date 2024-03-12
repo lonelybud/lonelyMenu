@@ -89,14 +89,14 @@ namespace big
 
 		ImGui::Spacing();
 		components::button("Start New Public Session", [] {
-			if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(RAGE_JOAAT("maintransition")) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
+			if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
 			{
 				g_notification_service->push_error("Failed", "Player switch in progress, wait a bit.");
 				return;
 			}
 
-			SCRIPT::REQUEST_SCRIPT_WITH_NAME_HASH(RAGE_JOAAT("pausemenu_multiplayer"));
-			while (!SCRIPT::HAS_SCRIPT_WITH_NAME_HASH_LOADED(RAGE_JOAAT("pausemenu_multiplayer")))
+			SCRIPT::REQUEST_SCRIPT_WITH_NAME_HASH("pausemenu_multiplayer"_J);
+			while (!SCRIPT::HAS_SCRIPT_WITH_NAME_HASH_LOADED("pausemenu_multiplayer"_J))
 				script::get_current()->yield();
 
 			*scr_globals::session2.as<int*>() = (int)eSessionType::NEW_PUBLIC;
@@ -104,7 +104,7 @@ namespace big
 			script::get_current()->yield(200ms);
 			*scr_globals::session.as<int*>() = 0;
 
-			SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED(RAGE_JOAAT("pausemenu_multiplayer"));
+			SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED("pausemenu_multiplayer"_J);
 		});
 	}
 

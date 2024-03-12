@@ -139,12 +139,12 @@ namespace big::looped
 			if (g_self.spectating)
 			{
 				g_self.spectating = false;
-				dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("spectate")))->refresh();
+				dynamic_cast<bool_command*>(command::get("spectate"_J))->refresh();
 			}
 			if (g_self.free_cam)
 			{
 				g_self.free_cam = false;
-				dynamic_cast<bool_command*>(command::get(RAGE_JOAAT("freecam")))->refresh();
+				dynamic_cast<bool_command*>(command::get("freecam"_J))->refresh();
 			}
 			if (g_context_menu.enabled)
 				g_context_menu.enabled = false;
@@ -255,7 +255,7 @@ namespace big::looped
 			// kick all blocked players
 			g_player_service->iterate([](const player_entry& player) {
 				if (player.second->is_blocked)
-					dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player.second);
+					dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player.second);
 			});
 		}
 	}

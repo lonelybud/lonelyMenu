@@ -42,9 +42,9 @@ namespace big
 		static std::string freemode_sh_name, fmmc_launcher_sh_name, am_launcher_sh_name;
 
 		components::button("Identify all Script Hosts", [] {
-			scripts::get_host_name(RAGE_JOAAT("freemode"), freemode_sh_name);
-			scripts::get_host_name(RAGE_JOAAT("fmmc_launcher"), fmmc_launcher_sh_name);
-			scripts::get_host_name(RAGE_JOAAT("am_launcher"), am_launcher_sh_name);
+			scripts::get_host_name("freemode"_J, freemode_sh_name);
+			scripts::get_host_name("fmmc_launcher"_J, fmmc_launcher_sh_name);
+			scripts::get_host_name("am_launcher"_J, am_launcher_sh_name);
 		});
 
 		ImGui::Text("freemode : %s", freemode_sh_name.c_str());
@@ -55,15 +55,15 @@ namespace big
 
 		if (ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("freemode", RAGE_JOAAT("freemode"), g_session.force_freemode_host);
+				scripts::force_migration("freemode", "freemode"_J, g_session.force_freemode_host);
 			});
 		if (ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("fmmc_launcher", RAGE_JOAAT("fmmc_launcher"), g_session.force_fmmc_launcher_host);
+				scripts::force_migration("fmmc_launcher", "fmmc_launcher"_J, g_session.force_fmmc_launcher_host);
 			});
 		if (ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("am_launcher", RAGE_JOAAT("am_launcher"), g_session.force_am_launcher_host);
+				scripts::force_migration("am_launcher", "am_launcher"_J, g_session.force_am_launcher_host);
 			});
 	}
 

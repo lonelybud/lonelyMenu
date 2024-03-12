@@ -27,7 +27,7 @@ namespace big
 					current_weapon = weapon_mgr->m_weapon_info;
 
 					WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weapon_hash, FALSE);
-					if (weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+					if (weapon_hash == "WEAPON_FLAREGUN"_J)
 						current_weapon_tint = original_weapon_tint = WEAPON::GET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash);
 				}
 
@@ -42,7 +42,7 @@ namespace big
 					auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
 					Vector3 end           = camera_position + camera_direction * 2000.0;
 
-					if (weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+					if (weapon_hash == "WEAPON_FLAREGUN"_J)
 					{
 						WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, current_weapon_tint++);
 						if (current_weapon_tint > 7)
@@ -60,7 +60,7 @@ namespace big
 
 		virtual void on_disable() override
 		{
-			if (current_weapon && weapon_hash == RAGE_JOAAT("WEAPON_FLAREGUN"))
+			if (current_weapon && weapon_hash == "WEAPON_FLAREGUN"_J)
 				WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, original_weapon_tint);
 
 			current_weapon = nullptr;

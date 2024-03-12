@@ -16,7 +16,7 @@ namespace big
 
 		virtual void on_enable() override
 		{
-			tunable = g_tunables_service->get_tunable<PBOOL>(RAGE_JOAAT("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION"));
+			tunable = g_tunables_service->get_tunable<PBOOL>("DISABLE_CLOTHING_SAVE_SLOT_VALIDATION"_J);
 			global  = scr_globals::reset_clothing.as<PBOOL>();
 
 			if (tunable && global)

@@ -79,7 +79,7 @@ namespace big
 		}
 	}
 
-	constexpr auto ALL_SCRIPT_HASH = RAGE_JOAAT("ALL_SCRIPTS");
+	constexpr auto ALL_SCRIPT_HASH = "ALL_SCRIPTS"_J;
 
 	native_hooks::native_hooks()
 	{
@@ -90,17 +90,17 @@ namespace big
 		add_native_detour(NativeIndex::UNREGISTER_SCRIPT_VARIABLE, all_scripts::DO_NOTHING);
 		add_native_detour(NativeIndex::FORCE_CHECK_SCRIPT_VARIABLES, all_scripts::DO_NOTHING);
 
-		add_native_detour(RAGE_JOAAT("shop_controller"), NativeIndex::IS_PED_SHOOTING, all_scripts::RETURN_FALSE); // prevent exploit reports
-		add_native_detour(RAGE_JOAAT("shop_controller"), NativeIndex::SET_WARNING_MESSAGE_WITH_HEADER, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
+		add_native_detour("shop_controller"_J, NativeIndex::IS_PED_SHOOTING, all_scripts::RETURN_FALSE); // prevent exploit reports
+		add_native_detour("shop_controller"_J, NativeIndex::SET_WARNING_MESSAGE_WITH_HEADER, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
 
-		add_native_detour(RAGE_JOAAT("freemode"), NativeIndex::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
-		add_native_detour(RAGE_JOAAT("freemode"), NativeIndex::IS_PLAYER_PLAYING, freemode::IS_PLAYER_PLAYING);
+		add_native_detour("freemode"_J, NativeIndex::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH, freemode::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH);
+		add_native_detour("freemode"_J, NativeIndex::IS_PLAYER_PLAYING, freemode::IS_PLAYER_PLAYING);
 
-		add_native_detour(RAGE_JOAAT("am_launcher"), NativeIndex::START_NEW_SCRIPT_WITH_ARGS, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
+		add_native_detour("am_launcher"_J, NativeIndex::START_NEW_SCRIPT_WITH_ARGS, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_INT_HASH, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
-		add_native_detour(RAGE_JOAAT("tuneables_processing"), NativeIndex::NETWORK_ACCESS_TUNABLE_FLOAT_HASH, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
+		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_INT_HASH, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
+		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
+		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_FLOAT_HASH, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)

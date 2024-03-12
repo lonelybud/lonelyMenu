@@ -20,7 +20,7 @@ namespace big
 			rage::scrThread* freemode = nullptr;
 
 			if (state == eTransitionState::TRANSITION_STATE_FM_TRANSITION_CREATE_PLAYER
-			    && (freemode = gta_util::find_script_thread(RAGE_JOAAT("freemode")), freemode && freemode->m_net_component))
+			    && (freemode = gta_util::find_script_thread("freemode"_J), freemode && freemode->m_net_component))
 			{
 				int num_array_handlers{};
 				int received_array_handlers{};

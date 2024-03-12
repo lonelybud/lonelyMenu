@@ -9,7 +9,7 @@
 
 namespace big
 {
-	static auto tp_hash = RAGE_JOAAT("tuneables_processing");
+	static auto tp_hash = "tuneables_processing"_J;
 
 	tunables_service::tunables_service()
 	{

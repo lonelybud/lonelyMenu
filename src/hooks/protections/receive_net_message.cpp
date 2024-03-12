@@ -195,7 +195,7 @@ namespace big
 					g_fiber_pool->queue_job([player] {
 						bad_players_nm::add_player(player, true, true);
 						if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
-							dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(player);
+							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
 					});
 
 					return true;
@@ -230,15 +230,15 @@ namespace big
 
 				switch (script.m_hash)
 				{
-				case RAGE_JOAAT("freemode"):
+				case "freemode"_J:
 					if (g_session.force_freemode_host)
 						return true;
 					break;
-				case RAGE_JOAAT("fmmc_launcher"):
+				case "fmmc_launcher"_J:
 					if (g_session.force_fmmc_launcher_host)
 						return true;
 					break;
-				case RAGE_JOAAT("am_launcher"):
+				case "am_launcher"_J:
 					if (g_session.force_am_launcher_host)
 						return true;
 					break;

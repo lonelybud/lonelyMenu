@@ -52,22 +52,22 @@ namespace big
 	{
 		switch (m_hash)
 		{
-		case RAGE_JOAAT("avenger"):
-		case RAGE_JOAAT("avenger3"):
-		case RAGE_JOAAT("hauler2"):
-		case RAGE_JOAAT("phantom3"):
-		case RAGE_JOAAT("trailersmall2"):
-		case RAGE_JOAAT("chernobog"):
-		case RAGE_JOAAT("riot2"):
-		case RAGE_JOAAT("thruster"):
-		case RAGE_JOAAT("brickade2"):
-		case RAGE_JOAAT("manchez3"):
-		case RAGE_JOAAT("terbyte"):
-		case RAGE_JOAAT("speedo4"):
-		case RAGE_JOAAT("mule4"):
-		case RAGE_JOAAT("pounder2"):
-		case RAGE_JOAAT("rcbandito"):
-		case RAGE_JOAAT("minitank"): return true;
+		case "avenger"_J:
+		case "avenger3"_J:
+		case "hauler2"_J:
+		case "phantom3"_J:
+		case "trailersmall2"_J:
+		case "chernobog"_J:
+		case "riot2"_J:
+		case "thruster"_J:
+		case "brickade2"_J:
+		case "manchez3"_J:
+		case "terbyte"_J:
+		case "speedo4"_J:
+		case "mule4"_J:
+		case "pounder2"_J:
+		case "rcbandito"_J:
+		case "minitank"_J: return true;
 		}
 		return false;
 	}

@@ -8,7 +8,7 @@ namespace big::local_player
 
 	inline int get_active_character_slot() // also known as get_character_index in lua yimmenu
 	{
-		STATS::STAT_GET_INT(RAGE_JOAAT("MPPLY_LAST_MP_CHAR"), &character_slot, true);
+		STATS::STAT_GET_INT("MPPLY_LAST_MP_CHAR"_J, &character_slot, true);
 		return character_slot;
 	}
 

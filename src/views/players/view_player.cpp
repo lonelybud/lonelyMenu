@@ -74,7 +74,7 @@ namespace big
 			bad_players_nm::toggle_block(rockstar_id, false);
 
 		if (v && g_player_service->get_self()->is_host())
-			dynamic_cast<player_command*>(command::get(RAGE_JOAAT("hostkick")))->call(last_selected_player);
+			dynamic_cast<player_command*>(command::get("hostkick"_J))->call(last_selected_player);
 	}
 
 	static void extra_info_button()

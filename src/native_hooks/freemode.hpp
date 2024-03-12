@@ -10,7 +10,7 @@ namespace big
 		{
 			const auto hash = src->get_arg<rage::joaat_t>(0);
 
-			if (g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H && hash == RAGE_JOAAT("main"))
+			if (g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H && hash == "main"_J)
 			{
 				src->set_return_value(0);
 				return;
