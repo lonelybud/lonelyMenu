@@ -286,6 +286,18 @@ namespace big
 		{
 			switch (msgType)
 			{
+			case rage::eNetMessage::MsgTextMessage:
+			case rage::eNetMessage::MsgTextMessage2:
+			{
+				if (g_session.log_chat_messages_to_textbox)
+				{
+					char message[256];
+					buffer.ReadString(message, 256);
+					g_custom_chat_buffer.append_msg("?", message);
+				}
+
+				break;
+			}
 			case rage::eNetMessage::MsgScriptMigrateHost: return true;
 			case rage::eNetMessage::MsgRadioStationSyncRequest: return true;
 			}
@@ -305,7 +317,7 @@ namespace big
 			g_log.log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
 			    packet_type,
 			    frame->m_length,
-			    (player ? player->get_name() : ""),
+			    (player ? player->get_name() : "?"),
 			    (int)msgType));
 		}
 

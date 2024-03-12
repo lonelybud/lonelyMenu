@@ -217,6 +217,10 @@ namespace big
 			if (self::veh)
 				VEHICLE::SET_VEHICLE_MOD_KIT(self::veh, 65535);
 		});
+		components::button("Unlock last vehicle", [] {
+			if (auto veh = PLAYER::GET_PLAYERS_LAST_VEHICLE(); veh && entity::take_control_of(veh))
+				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_UNLOCKED);
+		});
 	}
 
 	static inline void daily_collectables()

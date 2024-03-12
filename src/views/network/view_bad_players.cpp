@@ -12,6 +12,7 @@ namespace big
 	static int language;
 	static bool save_as_spammer, block_join;
 	static char message[50];
+	static bool exist_already;
 
 	static void set_selected(uint64_t rid, bad_players_nm::bad_player p)
 	{
@@ -19,7 +20,7 @@ namespace big
 		rockstar_id     = rid;
 		language        = p.l;
 		save_as_spammer = p.s;
-		block_join      = p.block_join;
+		exist_already = block_join = p.block_join;
 		strcpy(message, p.m.c_str());
 	}
 
@@ -61,7 +62,12 @@ namespace big
 
 		ImGui::Spacing();
 
-		if (components::button("Add to block list"))
+		if (exist_already && components::button("Un-block"))
+		{
+			bad_players_nm::toggle_block(rockstar_id, false);
+			exist_already = false;
+		}
+		else if (components::button("Add to block list"))
 		{
 			std::string name = player_name;
 			if (trimString(name).length() && rockstar_id)

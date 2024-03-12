@@ -83,10 +83,15 @@ namespace big
 							g_fiber_pool->queue_job([player] {
 								std::string str = "You got Killed by: " + std::string(player->get_name());
 
-								if (g_local_player->m_vehicle && entity::take_control_of(g_local_player->m_vehicle))
+								if (g_local_player->m_vehicle)
 								{
-									g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
-									str += " (Veh Locked)";
+									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
+									if (!DECORATOR::DECOR_GET_INT(veh, "MPBitset") && !DECORATOR::DECOR_GET_INT(veh, "Player_Vehicle")
+									    && entity::take_control_of(g_local_player->m_vehicle))
+									{
+										g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
+										str += " (Veh Locked)";
+									}
 								}
 
 								LOG(WARNING) << str;

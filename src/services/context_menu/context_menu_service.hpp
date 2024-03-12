@@ -80,6 +80,10 @@ namespace big
 		            [this] {
 			            teleport::into_vehicle(m_handle);
 		            }},
+		        {"LOG DECORS",
+		            [this] {
+			            LOG(VERBOSE) << "Veh Decors" << DECORATOR::DECOR_GET_INT(m_handle, "MPBitset") << " " << DECORATOR::DECOR_GET_INT(m_handle, "Player_Vehicle");
+		            }},
 		    }};
 
 		s_context_menu player_menu{ContextEntityType::PLAYER, 0, {}, {}};
