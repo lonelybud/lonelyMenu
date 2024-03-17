@@ -2,33 +2,17 @@
 #include "core/data/misc.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "fiber_pool.hpp"
 #include "util/entity.hpp"
 #include "util/mobile.hpp"
 #include "util/ped.hpp"
+#include "util/session.hpp"
 #include "views/view.hpp"
 
 #include <script/globals/GPBD_FM.hpp>
 
 namespace big
 {
-	static inline void set_fm_event_index(int index)
-	{
-		int idx = index / 32;
-		int bit = index % 32;
-		misc::set_bit(scr_globals::gsbd_fm_events.at(11).at(361).at(idx, 1).as<int*>(), bit);
-		misc::set_bit(scr_globals::gsbd_fm_events.at(11).at(353).at(idx, 1).as<int*>(), bit);
-		misc::set_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
-	}
-
-	static inline void clear_fm_event_index(int index)
-	{
-		int idx = index / 32;
-		int bit = index % 32;
-		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(361).at(idx, 1).as<int*>(), bit);
-		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(353).at(idx, 1).as<int*>(), bit);
-		misc::clear_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
-	}
-
 	static inline void render_time()
 	{
 		components::sub_title("Time");
@@ -49,15 +33,15 @@ namespace big
 
 
 		components::button("Add thunder", [] {
-			set_fm_event_index(9);
-			set_fm_event_index(10);
-			set_fm_event_index(11);
+			session::set_fm_event_index(9);
+			session::set_fm_event_index(10);
+			session::set_fm_event_index(11);
 		});
 		ImGui::SameLine();
 		components::button("Remove thunder", [] {
-			clear_fm_event_index(9);
-			clear_fm_event_index(10);
-			clear_fm_event_index(11);
+			session::clear_fm_event_index(9);
+			session::clear_fm_event_index(10);
+			session::clear_fm_event_index(11);
 		});
 
 		components::command_checkbox<"pedsignore">();
@@ -84,28 +68,31 @@ namespace big
 	{
 		components::sub_title("Others");
 
-		ImGui::Checkbox("Request Control", &g_misc.request_control);
+		ImGui::Checkbox("Request Control of Entity", &g_misc.request_control);
 		ImGui::Checkbox("Notify friend killed", &g_misc.notify_friend_killed);
 
 		ImGui::Spacing();
-		components::button("Start New Public Session", [] {
-			if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
-			{
-				g_notification_service->push_error("Failed", "Player switch in progress, wait a bit.");
-				return;
-			}
-
-			SCRIPT::REQUEST_SCRIPT_WITH_NAME_HASH("pausemenu_multiplayer"_J);
-			while (!SCRIPT::HAS_SCRIPT_WITH_NAME_HASH_LOADED("pausemenu_multiplayer"_J))
-				script::get_current()->yield();
-
-			*scr_globals::session2.as<int*>() = (int)eSessionType::NEW_PUBLIC;
-			*scr_globals::session.as<int*>()  = 1;
-			script::get_current()->yield(200ms);
-			*scr_globals::session.as<int*>() = 0;
-
-			SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED("pausemenu_multiplayer"_J);
+		
+		components::button("Start New Public", [] {
+			session::join_type(eSessionType::NEW_PUBLIC);
 		});
+		ImGui::SameLine();
+		components::button("Leave Online", [] {
+			session::join_type(eSessionType::LEAVE_ONLINE);
+		});
+
+		ImGui::Spacing();
+		
+		static bool is_sex_change_allowed = false;
+		if (ImGui::Checkbox("Allow gender change", &is_sex_change_allowed))
+			g_fiber_pool->queue_job([] {
+				lua_scripts::allow_sex_change(is_sex_change_allowed);
+			});
+		static bool is_chang_app_cooldwn_enab = false;
+		if (ImGui::Checkbox("Disable Change Appearance Cooldown", &is_chang_app_cooldwn_enab))
+			g_fiber_pool->queue_job([] {
+				lua_scripts::change_appearance_cooldown(is_chang_app_cooldwn_enab);
+			});
 	}
 
 	static inline void service_vehicles()
@@ -136,7 +123,6 @@ namespace big
 			mobile::services::request_acidlab_bike();
 		});
 	}
-
 
 	static inline void _self()
 	{
@@ -172,11 +158,12 @@ namespace big
 		ImGui::SameLine();
 		components::button("Remove stickies", [] {
 			Entity entity = self::veh ? self::veh : self::ped;
-			NETWORK::REMOVE_ALL_STICKY_BOMBS_FROM_ENTITY(entity, self::ped);
+			NETWORK::REMOVE_ALL_STICKY_BOMBS_FROM_ENTITY(entity, 0);
 		});
 		ImGui::SameLine();
 		components::button("Get Wet", [] {
 			PED::SET_PED_WETNESS_HEIGHT(self::ped, 1);
+			PED::SET_PED_WETNESS_ENABLED_THIS_FRAME(self::ped);
 		});
 	}
 
@@ -220,6 +207,15 @@ namespace big
 		components::button("Unlock last vehicle", [] {
 			if (auto veh = PLAYER::GET_PLAYERS_LAST_VEHICLE(); veh && entity::take_control_of(veh))
 				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_UNLOCKED);
+		});
+		components::button("Set God", [] {
+			if (self::veh && entity::take_control_of(self::veh))
+				ENTITY::SET_ENTITY_INVINCIBLE(self::veh, TRUE);
+		});
+		ImGui::SameLine();
+		components::button("Unset God", [] {
+			if (self::veh && entity::take_control_of(self::veh))
+				ENTITY::SET_ENTITY_INVINCIBLE(self::veh, FALSE);
 		});
 	}
 

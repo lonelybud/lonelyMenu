@@ -117,10 +117,6 @@ namespace big
 
 	static inline void set_effect(const char* asset, const char* effect)
 	{
-		g_fiber_pool->queue_job([current_asset = g_ptfx_effects.asset] {
-			STREAMING::REMOVE_NAMED_PTFX_ASSET(current_asset);
-		});
-
 		g_ptfx_effects.asset  = asset;
 		g_ptfx_effects.effect = effect;
 	}

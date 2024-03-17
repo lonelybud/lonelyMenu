@@ -43,6 +43,8 @@ namespace big
 	{
 		// ******************************************************************************** variables & consts
 
+		static constexpr int FMg = 262145; // free mode global ("CASH_MULTIPLIER")
+		static constexpr int SCCg = FMg + 19321; // sex changer change appearance cooldown global ("CHARACTER_APPEARANCE_COOLDOWN")
 		static constexpr int fm_mission_controller_cart_grab       = 10253;
 		static constexpr int fm_mission_controller_cart_grab_speed = 14;
 		static constexpr int CPFHl                                 = 24333; // cayo perico fingerprint hack local
@@ -207,6 +209,14 @@ namespace big
 				else
 					g_notification_service->push_error("Gift Vehicle", "Failed to get veh", false);
 			}
+		}
+		inline void allow_sex_change(bool is_sex_change_allowed)
+		{
+			lua_helper::stats::set_int("MPX_ALLOW_GENDER_CHANGE", is_sex_change_allowed ? 52 : 0);
+		}
+		inline void change_appearance_cooldown(bool v)
+		{
+			lua_helper::globals::set_int(SCCg, v ? 0 : 2880000);
 		}
 	}
 }

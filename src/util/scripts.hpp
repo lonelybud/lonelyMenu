@@ -38,4 +38,22 @@ namespace big::scripts
 
 		return true;
 	}
+
+	inline const std::optional<uint32_t> get_code_location_by_pattern(rage::scrProgram* program, const memory::pattern& pattern)
+	{
+		uint32_t code_size = program->m_code_size;
+		for (uint32_t i = 0; i < (code_size - pattern.m_bytes.size()); i++)
+		{
+			for (uint32_t j = 0; j < pattern.m_bytes.size(); j++)
+				if (pattern.m_bytes[j].has_value())
+					if (pattern.m_bytes[j].value() != *program->get_code_address(i + j))
+						goto incorrect;
+
+			return i;
+		incorrect:
+			continue;
+		}
+
+		return std::nullopt;
+	}
 }

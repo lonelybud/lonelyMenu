@@ -13,6 +13,8 @@ namespace big
 
 		const char* ptfx_vehicle_pos[4] = {"wheel_lf", "wheel_lr", "wheel_rf", "wheel_rr"};
 
+		const char* current_fx_name = nullptr;
+
 		void show_player_ptfx_effect(const char* fx_name, const char* name)
 		{
 			STREAMING::REQUEST_NAMED_PTFX_ASSET(fx_name);
@@ -59,6 +61,12 @@ namespace big
 
 		virtual void on_tick() override
 		{
+			if (current_fx_name != g_ptfx_effects.asset)
+			{
+				STREAMING::REMOVE_PTFX_ASSET();
+				current_fx_name = g_ptfx_effects.asset;
+			}
+
 			if (self::veh == 0)
 				show_player_ptfx_effect(g_ptfx_effects.asset, g_ptfx_effects.effect);
 			else

@@ -9,6 +9,7 @@
 #include "util/entity.hpp"
 #include "util/globals.hpp"
 #include "util/misc.hpp"
+#include "util/vehicle.hpp"
 
 #include <entities/CDynamicEntity.hpp>
 #include <script/globals/GPBD_FM.hpp>
@@ -26,7 +27,7 @@ namespace big
 	static inline bool is_invincible_veh(big::player_ptr player)
 	{
 		auto vehicle = player->get_current_vehicle();
-		return vehicle && (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD);
+		return vehicle && vehicle->m_driver == player->get_ped() && (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD);
 	}
 
 	static inline bool is_invisible(big::player_ptr player)
@@ -86,8 +87,7 @@ namespace big
 								if (g_local_player->m_vehicle)
 								{
 									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-									if (!DECORATOR::DECOR_GET_INT(veh, "MPBitset") && !DECORATOR::DECOR_GET_INT(veh, "Player_Vehicle")
-									    && entity::take_control_of(g_local_player->m_vehicle))
+									if (!vehicle::is_player_veh(veh) && entity::take_control_of(g_local_player->m_vehicle))
 									{
 										g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
 										str += " (Veh Locked)";

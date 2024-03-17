@@ -2,6 +2,7 @@
 #include "gta_util.hpp"
 #include "local_player.hpp"
 #include "natives.hpp"
+#include "script_global.hpp"
 #include "script_local.hpp"
 
 namespace big::lua_helper
@@ -62,7 +63,7 @@ namespace big::lua_helper
 		{
 			return set_masked_int(stat_text_to_hash(stat_name), new_value, bit_start, bit_size);
 		}
-		
+
 		static int get_packed_stat_int(int index)
 		{
 			return STATS::GET_PACKED_STAT_INT_CODE(index, big::local_player::get_active_character_slot());
@@ -102,6 +103,18 @@ namespace big::lua_helper
 		inline void set_float(const std::string& script, int index, float val)
 		{
 			*get<float*>(script, index) = val;
+		}
+	}
+
+	namespace globals
+	{
+		inline int get_int(int global)
+		{
+			return *big::script_global(global).as<int*>();
+		}
+		inline void set_int(int global, int val)
+		{
+			*big::script_global(global).as<int*>() = val;
 		}
 	}
 }

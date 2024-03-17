@@ -8,8 +8,8 @@
 
 namespace big::animations
 {
-	inline static std::multimap<std::string, std::string> all_anims;
-	inline static std::vector<std::string> all_dicts;
+	inline std::multimap<std::string, std::string> all_anims;
+	inline std::vector<std::string> all_dicts;
 
 	enum class anim_flags
 	{

@@ -146,6 +146,10 @@ namespace big
 
 			            entity::delete_entity(m_handle);
 		            }},
+		        {"GET ANIMATION",
+		            [this] {
+			            ped::get_anim(m_handle);
+		            }},
 		    }};
 
 		std::unordered_map<ContextEntityType, s_context_menu> options = {

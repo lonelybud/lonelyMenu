@@ -6,9 +6,7 @@
 #include "memory/batch.hpp"
 #include "memory/byte_patch.hpp"
 #include "memory/module.hpp"
-#include "sc_pointers.hpp"
 #include "services/gta_data/cache_file.hpp"
-#include "socialclub/ScInfo.hpp"
 #include "util/compile_time_helpers.hpp"
 
 namespace big
@@ -100,7 +98,6 @@ namespace big
 		}
 
 		static constexpr auto get_gta_batch();
-		static constexpr auto get_sc_batch();
 
 		template<cstxpr_str batch_name, size_t N>
 		void run_batch(const memory::batch<N>& batch, const memory::module& mem_region)
@@ -125,7 +122,6 @@ namespace big
 		HWND m_hwnd{};
 
 		gta_pointers m_gta;
-		socialclub_pointers m_sc;
 	};
 
 	inline pointers* g_pointers{};

@@ -1,6 +1,7 @@
 #include "core/data/debug.hpp"
 #include "gui/components/components.hpp"
 #include "natives.hpp"
+#include "util/ped.hpp"
 
 namespace big
 {
@@ -12,7 +13,6 @@ namespace big
 
 			components::sub_title("Experiments");
 			{
-				ImGui::Checkbox("Disable Population Load Balancing", &g_debug.disable_population_load_balancing);
 				ImGui::Checkbox("Freemode Hook G_N_O_T_R_T_S_W_T_H", &g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H);
 			}
 

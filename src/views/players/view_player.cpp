@@ -11,6 +11,7 @@
 #include "services/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
+#include "util/delete_entity.hpp"
 #include "util/globals.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
@@ -429,6 +430,29 @@ namespace big
 			ImGui::SameLine();
 			components::button("Un-timeout", [] {
 				last_selected_player->timeout(false);
+			});
+
+			components::ver_space();
+
+			components::button("Delete Vehicle", [] {
+				if (auto c_veh = last_selected_player->get_current_vehicle())
+				{
+					auto veh = g_pointers->m_gta.m_ptr_to_handle(c_veh);
+					if (!vehicle::is_player_veh(veh))
+					{
+						if (entity::take_control_of(c_veh))
+						{
+							auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id());
+							if (ped && PED::GET_VEHICLE_PED_IS_IN(ped, 0))
+								dynamic_cast<player_command*>(command::get("vehkick"_J))->call(last_selected_player);
+							entity::delete_entity(veh);
+						}
+						else
+							g_notification_service->push_error("Delete Vehicle", "Unable to take control", false);
+					}
+					else
+						g_notification_service->push_error("Delete Vehicle", "Its a PV", false);
+				}
 			});
 		}
 		ImGui::EndGroup();

@@ -2,7 +2,6 @@
 
 #include "gta_pointers_layout_info.hpp"
 #include "memory/all.hpp"
-#include "sc_pointers_layout_info.hpp"
 
 namespace big
 {
@@ -969,28 +968,6 @@ namespace big
 		return batch_and_hash;
 	}
 
-	constexpr auto pointers::get_sc_batch()
-	{
-		// clang-format off
-
-        constexpr auto batch_and_hash = memory::make_batch<
-        // Read Attribute Patch
-        {
-            "RAP",
-            "75 70 EB 23",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_sc.m_read_attribute_patch = ptr.as<PVOID>();
-                g_pointers->m_sc.m_read_attribute_patch_2 = ptr.add(0x72).as<PVOID>();
-            }
-        }
-        >();
-
-		// clang-format on
-
-		return batch_and_hash;
-	}
-
 	void pointers::load_pointers_from_cache(const cache_file& cache_file, const uintptr_t pointer_to_cacheable_data_start, const memory::module& mem_region)
 	{
 		// fill pointers instance fields by reading the file data into it
@@ -1040,20 +1017,6 @@ namespace big
 		    gta_pointers_layout_info::offset_of_cache_begin_field,
 		    gta_pointers_layout_info::offset_of_cache_end_field,
 		    gta_batch_and_hash.m_batch>(m_gta_pointers_cache, mem_region);
-
-		auto sc_module = memory::module("socialclub.dll");
-		if (sc_module.wait_for_module())
-		{
-			constexpr auto sc_batch_and_hash = pointers::get_sc_batch();
-			constexpr cstxpr_str sc_batch_name{"Social Club"};
-			write_to_cache_or_read_from_cache<sc_batch_name,
-			    sc_batch_and_hash.m_hash,
-			    sc_pointers_layout_info::offset_of_cache_begin_field,
-			    sc_pointers_layout_info::offset_of_cache_end_field,
-			    sc_batch_and_hash.m_batch>(m_sc_pointers_cache, sc_module);
-		}
-		else
-			LOG(WARNING) << "socialclub.dll module was not loaded within the time limit.";
 
 		m_hwnd = FindWindowW(L"grcWindow", nullptr);
 
