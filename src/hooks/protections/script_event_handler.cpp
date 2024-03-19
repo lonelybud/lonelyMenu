@@ -54,10 +54,10 @@ namespace big
 
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)
 	{
-		const auto args = scripted_game_event->m_args;
-		const auto hash = static_cast<eRemoteEvent>(args[0]);
-
-		auto plyr = g_player_service->get_by_id(player->m_player_id);
+		const auto args       = scripted_game_event->m_args;
+		const auto args_count = scripted_game_event->m_args_size / 8;
+		const auto hash       = static_cast<eRemoteEvent>(args[0]);
+		auto plyr             = g_player_service->get_by_id(player->m_player_id);
 
 		switch (hash)
 		{
@@ -387,7 +387,7 @@ namespace big
 		if (g_debug.log_script_events)
 		{
 			std::string script_args = "{ ";
-			for (std::size_t i = 0; i < scripted_game_event->m_args_size; i++)
+			for (int i = 0; i < args_count; i++)
 			{
 				if (i)
 					script_args += ", ";
