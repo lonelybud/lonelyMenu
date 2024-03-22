@@ -67,32 +67,20 @@ namespace big
 					GRAPHICS::DRAW_MARKER(3, aim_lock.x, aim_lock.y, aim_lock.z + 0.5f, 0, 0, 0, 0, 180, 0, 0.3f, 0.3f, 0.3f, 255, 255, 255, 255, 1, 1, 0, 0, 0, 0, 0);
 
 					Vector3 camera_target = aim_lock - CAM::GET_FINAL_RENDERED_CAM_COORD();
+					float RADPI           = 180.0f / std::numbers::pi;
 
-					float RADPI          = 180.0f / std::numbers::pi;
 					float camera_heading = atan2f(camera_target.x, camera_target.y) * RADPI;
-					float magnitude       = std::hypot(camera_target.x, camera_target.y, camera_target.z);
-
-					float camera_pitch = asinf(camera_target.z / magnitude) * RADPI;
-					float self_heading = ENTITY::GET_ENTITY_HEADING(self::veh ? self::veh : self::ped);
-					float self_pitch   = ENTITY::GET_ENTITY_PITCH(self::veh ? self::veh : self::ped);
 					if (camera_heading >= 0.0f && camera_heading <= 180.0f)
-					{
 						camera_heading = 360.0f - camera_heading;
-					}
 					else if (camera_heading <= -0.0f && camera_heading >= -180.0f)
-					{
 						camera_heading = -camera_heading;
-					}
-					if (CAM::GET_FOLLOW_PED_CAM_VIEW_MODE() == CameraMode::FIRST_PERSON)
-					{
-						CAM::SET_FIRST_PERSON_SHOOTER_CAMERA_HEADING(camera_heading - self_heading);
-						CAM::SET_FIRST_PERSON_SHOOTER_CAMERA_PITCH(camera_pitch - self_pitch);
-					}
-					else
-					{
-						CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(camera_heading - self_heading);
-						CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(camera_pitch - self_pitch, 1.0f);
-					}
+					float self_heading = ENTITY::GET_ENTITY_HEADING(self::veh ? self::veh : self::ped);
+					CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(camera_heading - self_heading);
+
+					float magnitude    = std::hypot(camera_target.x, camera_target.y, camera_target.z);
+					float camera_pitch = asinf(camera_target.z / magnitude) * RADPI;
+					float self_pitch   = ENTITY::GET_ENTITY_PITCH(self::veh ? self::veh : self::ped);
+					CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(camera_pitch - self_pitch, 1.0f);
 				}
 			}
 		}

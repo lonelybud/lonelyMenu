@@ -30,12 +30,12 @@ namespace big
 				components::small_text("X for L/R, Y for F/B, Z for U/D");
 				ImGui::InputFloat3("###relativepos", relative_pos);
 
-				components::button("TP###relative", [] {
+				components::button("TP##relative", [] {
 					auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, relative_pos[0], relative_pos[1], relative_pos[2]);
 					teleport::to_coords(location);
 				});
 				ImGui::SameLine();
-				components::button("Reset###relative", [] {
+				components::button("Reset##relative", [] {
 					relative_pos[0] = relative_pos[1] = relative_pos[2] = 0;
 				});
 			}
@@ -57,7 +57,7 @@ namespace big
 					    std::format("X: {:.2f}, Y: {:.2f}, Z: {:.2f}", coords[0], coords[1], coords[2]).c_str());
 				});
 
-				components::small_text("Custom###teleport");
+				components::small_text("Custom##teleport");
 				ImGui::InputFloat3("##Customlocation", new_location);
 
 				components::button("Teleport##customtp", [] {

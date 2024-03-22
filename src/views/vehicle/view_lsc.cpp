@@ -42,6 +42,9 @@ namespace big
 				preparing_veh = true;
 
 				g_fiber_pool->queue_job([] {
+					front_wheel_stock_mod = -1;
+					rear_wheel_stock_mod  = -1;
+
 					if (!HUD::HAS_THIS_ADDITIONAL_TEXT_LOADED("MOD_MNU", 10))
 					{
 						HUD::CLEAR_ADDITIONAL_TEXT(10, TRUE);
