@@ -11,12 +11,12 @@ namespace big::entity
 
 		if (!(ent && ENTITY::DOES_ENTITY_EXIST(ent)))
 		{
-			g_notification_service->push_error("Deletion failed", std::format("Entity does not exist {}", ent));
+			g_notification_service.push_error("Deletion failed", std::format("Entity does not exist {}", ent));
 			return true;
 		}
 		if (!take_control_of(ent))
 		{
-			g_notification_service->push_error("Deletion failed", std::format("failed to take_control_of {}", ent));
+			g_notification_service.push_error("Deletion failed", std::format("failed to take_control_of {}", ent));
 			return false;
 		}
 
@@ -25,13 +25,13 @@ namespace big::entity
 			if (*g_pointers->m_gta.m_is_session_started)
 				if (Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle(); personal_vehicle == ent)
 				{
-					g_notification_service->push_error("Deletion failed", "It is a personal Vehicle");
+					g_notification_service.push_error("Deletion failed", "It is a personal Vehicle");
 					return false;
 				}
 
 			if (!vehicle::clear_all_peds(ent))
 			{
-				g_notification_service->push_error("Deletion failed", std::format("vehicle {} is not empty.", ent));
+				g_notification_service.push_error("Deletion failed", std::format("vehicle {} is not empty.", ent));
 				return false;
 			}
 		}
@@ -52,7 +52,7 @@ namespace big::entity
 
 		if (ENTITY::DOES_ENTITY_EXIST(temp))
 		{
-			g_notification_service->push_error("Deletion failed", std::format("Entity {} exists even after deleting", temp));
+			g_notification_service.push_error("Deletion failed", std::format("Entity {} exists even after deleting", temp));
 			ent = temp;
 			return false;
 		}

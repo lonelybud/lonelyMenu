@@ -35,7 +35,7 @@ namespace big
 	{
 		components::button("Mors Mutual Fix All Vehicles", [] {
 			int amount_fixed = mobile::mors_mutual::fix_all();
-			g_notification_service->push_success("Mobile", std::vformat("{} vehicle{} been fixed.", std::make_format_args(amount_fixed, amount_fixed == 1 ? " has" : "s have")));
+			g_notification_service.push_success("Mobile", std::vformat("{} vehicle{} been fixed.", std::make_format_args(amount_fixed, amount_fixed == 1 ? " has" : "s have")));
 		});
 		ImGui::SameLine();
 		components::button("Repair", [] {

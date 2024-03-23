@@ -249,7 +249,7 @@ namespace big::looped
 		if (g_player_service->get_self()->is_host() && !g_session.notified_as_host)
 		{
 			g_session.notified_as_host = true;
-			g_notification_service->push_success("You are host", "", true);
+			g_notification_service.push_success("You are host", "", true);
 			g_session.next_host_list.delete_plyr(g_player_service->get_self()->id());
 
 			// kick all blocked players

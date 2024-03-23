@@ -271,7 +271,7 @@ namespace big
 													}
 												}
 												else
-													g_notification_service->push_error("LSC", "Selected mod is invalid");
+													g_notification_service.push_error("LSC", "Selected mod is invalid");
 											}
 											else if (selected_slot == MOD_WINDOW_TINT)
 											{

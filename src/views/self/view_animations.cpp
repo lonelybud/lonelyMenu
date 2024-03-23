@@ -160,17 +160,17 @@ namespace big
 				ImGui::SameLine();
 				components::button("Save", [] {
 					if (!STREAMING::DOES_ANIM_DICT_EXIST(g_ped_animation_service.current_animation.dict.data()))
-						g_notification_service->push_warning("Animations",
+						g_notification_service.push_warning("Animations",
 						    std::format("Dict with the name {} does not exist",
 						        g_ped_animation_service.current_animation.dict));
 					else if (g_ped_animation_service.get_animation_by_name(g_ped_animation_service.current_animation.name))
-						g_notification_service->push_warning("Animations",
+						g_notification_service.push_warning("Animations",
 						    std::format("Animation with the name {} already exists",
 						        g_ped_animation_service.current_animation.name));
 					else if (category.empty())
-						g_notification_service->push_warning("Animations", "Category can't be empty");
+						g_notification_service.push_warning("Animations", "Category can't be empty");
 					else if (g_ped_animation_service.current_animation.anim.empty())
-						g_notification_service->push_warning("Animations", "Animation name can't be empty");
+						g_notification_service.push_warning("Animations", "Animation name can't be empty");
 					else
 						g_ped_animation_service.save_new_animation(category, g_ped_animation_service.current_animation);
 				});

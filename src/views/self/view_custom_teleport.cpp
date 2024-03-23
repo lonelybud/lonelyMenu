@@ -41,7 +41,7 @@ namespace big
 
 		components::button("Save Current Location", [] {
 			if (category.empty() || new_location_name.empty())
-				g_notification_service->push_warning("Custom Teleport", "category or name is empty");
+				g_notification_service.push_warning("Custom Teleport", "category or name is empty");
 			else
 			{
 				auto coords = ENTITY::GET_ENTITY_COORDS(self::ped, 0);

@@ -79,7 +79,7 @@ namespace big
 				searched_blocked_players.clear();
 			}
 			else
-				g_notification_service->push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
+				g_notification_service.push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
 		}
 
 		ImGui::Spacing();

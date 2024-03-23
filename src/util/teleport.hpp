@@ -10,13 +10,13 @@ namespace big::teleport
 	{
 		if (load_ground && !entity::load_ground_at_3dcoord(location))
 		{
-			g_notification_service->push_warning("Teleport", "Unable to load ground");
+			g_notification_service.push_warning("Teleport", "Unable to load ground");
 			return false;
 		}
 
 		if (self::veh && !entity::take_control_of(self::veh))
 		{
-			g_notification_service->push_warning("Teleport", "Unable to take control of veh");
+			g_notification_service.push_warning("Teleport", "Unable to take control of veh");
 			return false;
 		}
 
@@ -72,7 +72,7 @@ namespace big::teleport
 	inline void into_vehicle(Vehicle veh)
 	{
 		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
-			return g_notification_service->push_warning("Teleport", "Invalid Vehicle");
+			return g_notification_service.push_warning("Teleport", "Invalid Vehicle");
 
 		for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(veh); i++)
 			if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i, TRUE))
@@ -86,6 +86,6 @@ namespace big::teleport
 				return;
 			}
 
-		g_notification_service->push_warning("Teleport", "No seat available");
+		g_notification_service.push_warning("Teleport", "No seat available");
 	}
 }

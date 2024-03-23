@@ -19,7 +19,7 @@ namespace big
 	{
 		if (!ENTITY::DOES_ENTITY_EXIST(vehicle) || !ENTITY::IS_ENTITY_A_VEHICLE(vehicle))
 		{
-			g_notification_service->push_warning("Persist Car", "Tried to save a vehicle which does not exist");
+			g_notification_service.push_warning("Persist Car", "Tried to save a vehicle which does not exist");
 			return;
 		}
 
@@ -42,7 +42,7 @@ namespace big
 
 			if (!std::filesystem::exists(file))
 			{
-				g_notification_service->push_warning("Persist Car", "File does not exist.");
+				g_notification_service.push_warning("Persist Car", "File does not exist.");
 				return;
 			}
 
@@ -66,19 +66,19 @@ namespace big
 				return;
 
 			if (vehicle == 0)
-				g_notification_service->push_error("Persist Car",
+				g_notification_service.push_error("Persist Car",
 				    std::format("Unable to spawn {}", g_vehicle.persist_vehicle.file),
 				    true);
 			else
 			{
-				g_notification_service->push_success("Persist Car", std::format("Spawned {}", g_vehicle.persist_vehicle.file), true);
+				g_notification_service.push_success("Persist Car", std::format("Spawned {}", g_vehicle.persist_vehicle.file), true);
 
 				if (g_vehicle.spawn_inside)
 					teleport::into_vehicle(vehicle);
 			}
 		}
 		else
-			g_notification_service->push_warning("Persist Car", "Select a file first");
+			g_notification_service.push_warning("Persist Car", "Select a file first");
 	}
 
 	void persist_car_service::delete_vehicle(std::string_view file_name)
@@ -116,9 +116,9 @@ namespace big
 			return;
 
 		if (veh == 0)
-			g_notification_service->push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
+			g_notification_service.push_error("Clone Car", std::format("Failed to clone '{}'({})", model_name, ped_name), true);
 		else
-			g_notification_service->push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
+			g_notification_service.push_success("Clone Car", std::format("Cloned '{}'({})", model_name, ped_name), true);
 	}
 
 	Vehicle persist_car_service::spawn_vehicle_full(nlohmann::json vehicle_json, const std::optional<Vector3>& spawn_coords, Ped ped)

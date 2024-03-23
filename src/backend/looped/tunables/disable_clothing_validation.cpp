@@ -29,7 +29,7 @@ namespace big
 			{
 				initialized                        = false;
 				g_misc.disable_clothing_validation = false;
-				g_notification_service->push_error("Clothing Validation", "Failed to switch on");
+				g_notification_service.push_error("Clothing Validation", "Failed to switch on");
 			}
 		}
 

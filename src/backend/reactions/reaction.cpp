@@ -117,7 +117,7 @@ namespace big
 			if (log && should_log)
 				LOG(WARNING) << title << ": " << str;
 			if (notify)
-				g_notification_service->push_warning(title, str);
+				g_notification_service.push_warning(title, str);
 
 			// add modder to bad players temporary list
 			if (is_modder)
@@ -159,6 +159,6 @@ namespace big
 			}
 		}
 		else
-			g_notification_service->push_warning("Reaction", std::format("{} from '{}'", m_notify_message, "?"), true);
+			g_notification_service.push_warning("Reaction", std::format("{} from '{}'", m_notify_message, "?"), true);
 	}
 }

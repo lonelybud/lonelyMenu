@@ -62,7 +62,7 @@ namespace big
 		{
 		case rage::eEventNetworkType::CEventNetworkRemovedFromSessionDueToComplaints:
 		{
-			g_notification_service->push_warning("Kicked", "You have been desync kicked.", true);
+			g_notification_service.push_warning("Kicked", "You have been desync kicked.", true);
 			break;
 		}
 		case rage::eEventNetworkType::CEventNetworkEntityDamage:
@@ -97,7 +97,7 @@ namespace big
 								LOG(WARNING) << str;
 							});
 						else if (g_misc.notify_friend_killed && victim_player->is_friend())
-							g_notification_service->push_warning("Friend Killed",
+							g_notification_service.push_warning("Friend Killed",
 							    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
 							    true);
 

@@ -142,7 +142,7 @@ namespace big
 
 			if (folder.get_file(str + ".json").exists())
 			{
-				g_notification_service->push_error("Save Outfit Failed", "File with same name already exists", true);
+				g_notification_service.push_error("Save Outfit Failed", "File with same name already exists", true);
 				return;
 			}
 
@@ -171,7 +171,7 @@ namespace big
 					{
 						g_misc.disable_clothing_validation = true;
 						dynamic_cast<looped_command*>(command::get(rage::joaat("disable_clothing_validation")))->refresh();
-						g_notification_service->push_success("Clothing Validation", "Disabled automatically.");
+						g_notification_service.push_success("Clothing Validation", "Disabled automatically.");
 					}
 
 					outfit::apply_outfit(j);
@@ -179,7 +179,7 @@ namespace big
 					i.close();
 				}
 				else
-					g_notification_service->push_warning("Apply Outfit Failed", "File does not exist.");
+					g_notification_service.push_warning("Apply Outfit Failed", "File does not exist.");
 			}
 		});
 		ImGui::SameLine();
@@ -191,7 +191,7 @@ namespace big
 				if (std::filesystem::exists(filePath))
 					std::filesystem::remove(filePath);
 				else
-					g_notification_service->push_warning("Delete Outfit Failed", "File does not exist.");
+					g_notification_service.push_warning("Delete Outfit Failed", "File does not exist.");
 
 				selected_file = "";
 				refresh_list();

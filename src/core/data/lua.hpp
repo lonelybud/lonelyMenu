@@ -208,7 +208,7 @@ namespace big
 					DECORATOR::DECOR_SET_INT(veh, "Player_Vehicle", netHash);
 				}
 				else
-					g_notification_service->push_error("Gift Vehicle", "Failed to get veh", false);
+					g_notification_service.push_error("Gift Vehicle", "Failed to get veh", false);
 			}
 		}
 		inline void allow_sex_change(bool is_sex_change_allowed)

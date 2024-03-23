@@ -11,7 +11,7 @@ namespace big
 		{
 			if (auto entry_line = src->get_arg<const char*>(1); !strcmp(entry_line, "CTALERT_F_2"))
 			{
-				g_notification_service->push_warning("Transaction Rate Limit", "Whatever you're doing do it less.", true);
+				g_notification_service.push_warning("Transaction Rate Limit", "Whatever you're doing do it less.", true);
 				*scr_globals::transaction_overlimit.as<PBOOL>() = FALSE;
 				return;
 			}

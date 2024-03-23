@@ -251,7 +251,7 @@ namespace big
 				KickReason reason = buffer.Read<KickReason>(3);
 
 				if (auto itr = kick_reasons.find(reason); itr != kick_reasons.end())
-					g_notification_service->push_warning("Kick Player Message",
+					g_notification_service.push_warning("Kick Player Message",
 					    std::format("Received \"{}\" from {} ({})", itr->second, player->get_name(), player->is_host() ? "host" : "non-host"),
 					    true);
 

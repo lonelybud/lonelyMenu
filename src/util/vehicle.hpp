@@ -96,16 +96,16 @@ namespace big::vehicle
 			if (door_locked_state == eVehicleLockState::VEHICLELOCK_LOCKED)
 			{
 				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_UNLOCKED);
-				g_notification_service->push_success("Vehicle", "Vehicle is un-locked");
+				g_notification_service.push_success("Vehicle", "Vehicle is un-locked");
 			}
 			else
 			{
 				VEHICLE::SET_VEHICLE_DOORS_LOCKED(veh, (int)eVehicleLockState::VEHICLELOCK_LOCKED);
-				g_notification_service->push_success("Vehicle", "Vehicle is locked");
+				g_notification_service.push_success("Vehicle", "Vehicle is locked");
 			}
 		}
 		else
-			g_notification_service->push_warning("Toxic", "Failed to take control of vehicle.");
+			g_notification_service.push_warning("Toxic", "Failed to take control of vehicle.");
 	}
 
 	inline void add_blip_to_spawned_veh(Vehicle veh, g_vehicle_t::SpawnedVehicle& v)

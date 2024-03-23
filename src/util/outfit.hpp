@@ -110,7 +110,7 @@ namespace big::outfit
 
 		if (j["model"] != ENTITY::GET_ENTITY_MODEL(self::ped))
 		{
-			g_notification_service->push_error("Apply Oufit", "Model not same.", true);
+			g_notification_service.push_error("Apply Oufit", "Model not same.", true);
 			return;
 		}
 

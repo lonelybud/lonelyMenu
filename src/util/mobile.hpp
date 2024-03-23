@@ -83,13 +83,13 @@ namespace big::mobile
 		{
 			if (*scr_globals::freemode_global.at(985).as<int*>() != -1)
 			{
-				g_notification_service->push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
+				g_notification_service.push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
 				return;
 			}
 
 			if (auto veh = get_personal_vehicle(); (veh && ENTITY::IS_ENTITY_A_VEHICLE(veh)))
 			{
-				g_notification_service->push_warning("Vehicle", "PV already exists.");
+				g_notification_service.push_warning("Vehicle", "PV already exists.");
 				return;
 			}
 

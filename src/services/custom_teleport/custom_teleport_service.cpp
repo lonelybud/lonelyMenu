@@ -47,7 +47,7 @@ namespace big
 		file_out << j.dump(4);
 		file_out.close();
 
-		g_notification_service->push_success("Custom Teleport", std::format("Succesfully saved location {}", t.name));
+		g_notification_service.push_success("Custom Teleport", std::format("Succesfully saved location {}", t.name));
 	}
 
 	void custom_teleport_service::delete_saved_location(const std::string& category, const std::string& location_name)

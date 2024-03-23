@@ -89,7 +89,7 @@ namespace big::animations
 
 		if (!std::filesystem::exists(g_file_manager.get_project_file("animDictsCompact.json").get_path()))
 		{
-			g_notification_service->push_warning("Animations", "Animations file is not in directory", true);
+			g_notification_service.push_warning("Animations", "Animations file is not in directory", true);
 			return;
 		}
 

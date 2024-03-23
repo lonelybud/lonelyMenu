@@ -24,7 +24,7 @@ namespace big
 		{
 			if (ENTITY::GET_ENTITY_MODEL(target) != ENTITY::GET_ENTITY_MODEL(self::ped))
 			{
-				g_notification_service->push_error("Steal Oufit", "Model not same.", true);
+				g_notification_service.push_error("Steal Oufit", "Model not same.", true);
 				return;
 			}
 

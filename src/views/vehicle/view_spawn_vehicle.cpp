@@ -131,7 +131,7 @@ namespace big
 						return;
 
 					if (veh == 0)
-						g_notification_service->push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
+						g_notification_service.push_error("Spawn Vehicle", std::format("Unable to spawn {}", name), true);
 					else
 					{
 						vehicle::repair(veh);
@@ -139,7 +139,7 @@ namespace big
 						if (g_vehicle.spawn_inside)
 							teleport::into_vehicle(veh);
 
-						g_notification_service->push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
+						g_notification_service.push_success("Spawn Vehicle", std::format("Spawned {}", name), true);
 					}
 				});
 

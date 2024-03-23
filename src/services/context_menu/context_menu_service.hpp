@@ -140,7 +140,7 @@ namespace big
 			            if (m_pointer->m_model_info->m_model_type == eModelType::Ped
 			                && reinterpret_cast<CPed*>(m_pointer)->m_player_info)
 			            {
-				            g_notification_service->push_warning("Failed", "Cannot delete a player");
+				            g_notification_service.push_warning("Failed", "Cannot delete a player");
 				            return;
 			            }
 

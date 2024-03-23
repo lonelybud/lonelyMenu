@@ -17,7 +17,7 @@ namespace big::blip
 		if (!HUD::DOES_BLIP_EXIST(blip) || (color != -1 && HUD::GET_BLIP_COLOUR(blip) != color))
 		{
 			if (notify)
-				g_notification_service->push_warning("Blip", "No waypoint found");
+				g_notification_service.push_warning("Blip", "No waypoint found");
 			return std::nullopt;
 		}
 
@@ -26,7 +26,7 @@ namespace big::blip
 		if (load_ground && !entity::load_ground_at_3dcoord(location))
 		{
 			if (notify)
-				g_notification_service->push_warning("Blip", "Unable to load ground");
+				g_notification_service.push_warning("Blip", "Unable to load ground");
 			return std::nullopt;
 		}
 
@@ -44,7 +44,7 @@ namespace big::blip
 		if (location = get_blip_location((int)BlipIcons::Circle, (int)BlipColors::Mission, false); location != std::nullopt)
 			return location;
 
-		g_notification_service->push_warning("Blip", "No objective found");
+		g_notification_service.push_warning("Blip", "No objective found");
 		return std::nullopt;
 	}
 }

@@ -13,11 +13,11 @@ namespace big
 		{
 			if (!g_player_service->get_self()->is_host())
 			{
-				g_notification_service->push_error("Host kick", std::format("Host kick failed on {}", player->get_name()), true);
+				g_notification_service.push_error("Host kick", std::format("Host kick failed on {}", player->get_name()), true);
 				return;
 			}
 
-			g_notification_service->push_success("Kick", std::format("Host kick to {}", player->get_name()), true);
+			g_notification_service.push_success("Kick", std::format("Host kick to {}", player->get_name()), true);
 			NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
 		}
 	};

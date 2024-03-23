@@ -32,7 +32,7 @@ namespace big
 				if (has_ability(vehicle, CVehicleModelInfoFlags::HAS_ROCKET_BOOST))
 				{
 					g_vehicle.force_rocket = false;
-					g_notification_service->push_error("Force Vehicle Boost", "The vehicle already has this ability.");
+					g_notification_service.push_error("Force Vehicle Boost", "The vehicle already has this ability.");
 					return;
 				}
 

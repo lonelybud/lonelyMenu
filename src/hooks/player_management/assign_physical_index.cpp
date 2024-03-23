@@ -67,14 +67,14 @@ namespace big
 
 						if (!plyr->is_spammer)
 						{
-							g_notification_service->push_warning("Blocked Player Joined", join_str, true);
+							g_notification_service.push_warning("Blocked Player Joined", join_str, true);
 							// if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 							// 	dynamic_cast<player_command*>(command::get("desync"_J))->call(plyr);
 						}
 					}
 					else if (is_friend)
 					{
-						g_notification_service->push_success("Friend Player joined", join_str, true);
+						g_notification_service.push_success("Friend Player joined", join_str, true);
 						if (!plyr->is_known_player)
 						{
 							plyr->is_known_player = true;
@@ -84,7 +84,7 @@ namespace big
 					else if (is_known)
 					{
 						plyr->is_known_player = true;
-						g_notification_service->push_warning("Known Player Joined", join_str, true);
+						g_notification_service.push_warning("Known Player Joined", join_str, true);
 					}
 					else
 						LOG(INFO) << "Player joined : " << join_str;

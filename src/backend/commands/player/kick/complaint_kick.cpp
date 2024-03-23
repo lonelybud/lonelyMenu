@@ -11,7 +11,7 @@ namespace big
 
 		virtual void execute(player_ptr player) override
 		{
-			g_notification_service->push_success("Kick", std::format("Desync kick to {}", player->get_name()), true);
+			g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->get_name()), true);
 
 			if (gta_util::get_network()->m_game_session_ptr->is_host())
 			{

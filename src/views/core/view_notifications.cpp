@@ -5,22 +5,32 @@
 
 namespace big
 {
-	float draw_notification(float start_pos, ImDrawList* dl, std::string title, std::string message, ImVec4 color)
+	// developer made, developer left, new developer too scared to touch
+	float draw_notification(float start_pos, ImDrawList* dl, const notification& notif)
 	{
+		auto color = notif.color();
+
 		ImColor textCol   = ImGui::ColorConvertFloat4ToU32({1.f, 1.f, 1.f, 1.f});
 		color.w           = 0.5f;
 		ImColor fadeBegin = ImGui::ColorConvertFloat4ToU32(color);
 		color.w           = 0.f;
 		ImColor fadeEnd   = ImGui::ColorConvertFloat4ToU32(color);
 
+		const auto alpha = notif.alpha();
+		// actually make use of the fadeout
+		textCol.Value.w *= alpha;
+		fadeBegin.Value.w *= alpha;
+		fadeEnd.Value.w *= alpha;
+
 		int j            = 0;
 		int prevSpace    = 0;
 		float total_size = 0.f;
 		std::vector<std::string> split_points;
+
+		auto message = notif.message();
 		for (int i = 0; i <= message.size(); i++)
 		{
-			std::string current_message = message.substr(j, i - j);
-
+			const auto current_message = message.substr(j, i - j);
 			if (message.substr(i, 1) == " ")
 			{
 				prevSpace = i;
@@ -52,6 +62,8 @@ namespace big
 		    fadeEnd,
 		    fadeBegin);
 
+		const auto count = notif.counter();
+		auto title = count > 1 ? std::format("{} ({})", notif.title(), count < 100 ? std::to_string(count) : "+99") : notif.title();
 		dl->AddText(g_window.font_sub_title,
 		    22.f,
 		    {(float)*g_pointers->m_gta.m_resolution_x - 350.f, 15.f + start_pos},
@@ -69,18 +81,13 @@ namespace big
 
 	void view::notifications()
 	{
-		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-
-		std::vector<notification> notifications = g_notification_service->get();
+		const auto draw_list = ImGui::GetBackgroundDrawList();
+		const auto notifications = g_notification_service.get();
 
 		float prev_pos = 0.f;
-		for (int i = 0; i < notifications.size(); i++)
+		for (const auto& notif : notifications)
 		{
-			notification& n = notifications[i];
-
-			prev_pos =
-			    draw_notification(prev_pos, draw_list, n.title, n.message, g_notification_service->notification_colors.at(n.type));
+			prev_pos = draw_notification(prev_pos, draw_list, notif);
 		}
-
 	}
 }

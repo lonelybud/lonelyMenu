@@ -32,7 +32,7 @@ namespace big
 				{
 					initialized         = false;
 					g_self.no_idle_kick = false;
-					g_notification_service->push_error("Idle Kick", "Failed to switch on");
+					g_notification_service.push_error("Idle Kick", "Failed to switch on");
 					return;
 				}
 

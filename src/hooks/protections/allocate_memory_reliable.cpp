@@ -74,7 +74,7 @@ namespace big
 		if (memory)
 			return memory;
 
-		g_notification_service->push_error("Protections", "The network message allocator is out of memory"); // this never reaches here but why not
+		g_notification_service.push_error("Protections", "The network message allocator is out of memory"); // this never reaches here but why not
 
 		return nullptr;
 	}

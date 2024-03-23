@@ -56,7 +56,7 @@ namespace big::entity
 
 		if (!STREAMING::HAS_MODEL_LOADED(hash))
 		{
-			g_notification_service->push_warning("Failed", "Failed to load modal");
+			g_notification_service.push_warning("Failed", "Failed to load modal");
 			return false;
 		}
 

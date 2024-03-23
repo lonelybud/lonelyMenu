@@ -14,10 +14,10 @@ namespace big
 	{
 		components::button("Save Vehicle", [vehicle_file_name_input, save_folder] {
 			if (!trimString(vehicle_file_name_input).size())
-				return g_notification_service->push_warning("Persist Car", "Filename empty!");
+				return g_notification_service.push_warning("Persist Car", "Filename empty!");
 
 			if (!self::veh)
-				return g_notification_service->push_warning("Persist Car", "You must be in a vehicle. Please enter a vehicle before using load.");
+				return g_notification_service.push_warning("Persist Car", "You must be in a vehicle. Please enter a vehicle before using load.");
 
 			if (ENTITY::DOES_ENTITY_EXIST(self::veh))
 			{

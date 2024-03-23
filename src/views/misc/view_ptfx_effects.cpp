@@ -49,7 +49,7 @@ namespace big
 					}
 				}
 				else
-					big::g_notification_service->push_warning("Sorry", "Please download particleEffectsCompact.json.");
+					big::g_notification_service.push_warning("Sorry", "Please download particleEffectsCompact.json.");
 			}
 			catch (std::exception e)
 			{

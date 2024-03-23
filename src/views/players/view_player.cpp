@@ -299,7 +299,7 @@ namespace big
 						    blip && blip->m_message && !strcmp(blip->m_message, last_selected_player->get_name()))
 							return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
 
-					return g_notification_service->push_error("Failed", "Player in interior. Try open map and try again.");
+					return g_notification_service.push_error("Failed", "Player in interior. Try open map and try again.");
 				}
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
 				{
@@ -380,7 +380,7 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
 						persist_car_service::clone_ped_car(veh, last_selected_player->get_name());
 					else
-						g_notification_service->push_error("Copy Vehicle", "Failed to get veh", false);
+						g_notification_service.push_error("Copy Vehicle", "Failed to get veh", false);
 				}
 			});
 			ImGui::SameLine();
@@ -390,7 +390,7 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
 						persist_car_service::save_vehicle(veh, "", "");
 					else
-						g_notification_service->push_error("Save Vehicle", "Failed to get veh", false);
+						g_notification_service.push_error("Save Vehicle", "Failed to get veh", false);
 				}
 			});
 		}
@@ -448,10 +448,10 @@ namespace big
 							entity::delete_entity(veh);
 						}
 						else
-							g_notification_service->push_error("Delete Vehicle", "Unable to take control", false);
+							g_notification_service.push_error("Delete Vehicle", "Unable to take control", false);
 					}
 					else
-						g_notification_service->push_error("Delete Vehicle", "Its a PV", false);
+						g_notification_service.push_error("Delete Vehicle", "Its a PV", false);
 				}
 			});
 		}
