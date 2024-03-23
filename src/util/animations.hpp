@@ -2,7 +2,6 @@
 
 #include "file_manager.hpp"
 #include "file_manager/file.hpp"
-#include "notify.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "thread_pool.hpp"
 

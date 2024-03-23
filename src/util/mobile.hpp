@@ -5,7 +5,6 @@
 #include "gta_util.hpp"
 #include "misc.hpp"
 #include "natives.hpp"
-#include "notify.hpp"
 #include "script.hpp"
 #include "script_local.hpp"
 #include "services/notifications/notification_service.hpp"

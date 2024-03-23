@@ -1,7 +1,6 @@
 #include "core/data/reactions.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
-#include "util/notify.hpp"
 
 namespace big
 {

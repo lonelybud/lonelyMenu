@@ -1,8 +1,11 @@
 #pragma once
+#include "core/scr_globals.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/players/player.hpp"
 #include "util/outfit.hpp"
 #include "util/time.hpp"
+
+#include <script/globals/GPBD_FM_3.hpp>
 
 namespace big
 {
@@ -69,5 +72,67 @@ namespace big
 				return true;
 
 		return false;
+	}
+
+	inline bool is_player_our_bodyguard(Player sender)
+	{
+		auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
+
+		if (boss_goon.Boss != self::id)
+			return false;
+
+		for (int i = 0; i < boss_goon.Goons.Size; i++)
+		{
+			if (boss_goon.Goons[i] == sender)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	inline bool is_player_our_boss(Player sender)
+	{
+		auto boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
+
+		if (boss_goon.Boss != -1)
+		{
+			if (sender == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
+				return true;
+
+			for (int i = 0; i < boss_goon.Goons.Size; ++i)
+				if (boss_goon.Goons[i] == sender)
+					return true;
+		}
+
+		return false;
+	}
+
+	inline bool is_player_same_team(uint8_t player_id)
+	{
+		if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+			// mission
+			return PLAYER::GET_PLAYER_TEAM(player_id) == PLAYER::GET_PLAYER_TEAM(self::id);
+		else
+		{
+			auto boss_goon = &scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
+
+			if (boss_goon->Boss == -1)
+				return false;
+
+			if (boss_goon->Boss == player_id)
+				return true;
+
+			if (boss_goon->Boss != self::id)
+				boss_goon = &scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[boss_goon->Boss].BossGoon; // get their structure
+
+			// bypass some P2Cs
+			for (int i = 0; i < boss_goon->Goons.Size; i++)
+				if (boss_goon->Goons[i] == player_id)
+					return true;
+
+			return false;
+		}
 	}
 }

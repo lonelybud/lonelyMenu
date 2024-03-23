@@ -3,6 +3,7 @@
 #include "core/data/protections.hpp"
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
+#include "gui.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
@@ -11,6 +12,7 @@
 #include "services/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
+#include "util/chat.hpp"
 #include "util/delete_entity.hpp"
 #include "util/globals.hpp"
 #include "util/player.hpp"
@@ -473,6 +475,28 @@ namespace big
 		}
 	}
 
+	static inline void render_chat()
+	{
+		ImGui::BeginGroup();
+		components::sub_title("Chat");
+
+		static char msg[256];
+
+		ImGui::SetNextItemWidth(200);
+		components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
+		ImGui::SameLine();
+		if (components::button("Send Message"))
+		{
+			g_gui->toggle(false); // trying to prevent game crash?
+			g_fiber_pool->queue_job([] {
+				chat::send_message(msg, last_selected_player, false);
+				strcpy(msg, "");
+			});
+		};
+
+		ImGui::EndGroup();
+	}
+
 	void view::view_player()
 	{
 		ImGui::Spacing();
@@ -541,6 +565,10 @@ namespace big
 			ImGui::BeginGroup();
 			{
 				render_toxic();
+
+				components::ver_space();
+
+				render_chat();
 			}
 			ImGui::EndGroup();
 		}

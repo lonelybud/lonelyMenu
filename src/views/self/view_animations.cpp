@@ -1,3 +1,4 @@
+#include "natives.hpp"
 #include "pointers.hpp"
 #include "services/ped_animations/ped_animations_service.hpp"
 #include "util/animations.hpp"

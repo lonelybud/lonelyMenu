@@ -8,7 +8,6 @@
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
-#include "util/math.hpp"
 #include "util/player.hpp"
 
 #include <network/CNetGamePlayer.hpp>
@@ -17,41 +16,6 @@
 
 namespace big
 {
-	inline bool is_player_our_bodyguard(Player sender)
-	{
-		auto& boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
-
-		if (boss_goon.Boss != self::id)
-			return false;
-
-		for (int i = 0; i < boss_goon.Goons.Size; i++)
-		{
-			if (boss_goon.Goons[i] == sender)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	inline bool is_player_our_boss(Player sender)
-	{
-		auto boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
-
-		if (boss_goon.Boss != -1)
-		{
-			if (sender == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
-				return true;
-
-			for (int i = 0; i < boss_goon.Goons.Size; ++i)
-				if (boss_goon.Goons[i] == sender)
-					return true;
-		}
-
-		return false;
-	}
-
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)
 	{
 		const auto args       = scripted_game_event->m_args;
