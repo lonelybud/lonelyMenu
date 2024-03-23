@@ -48,7 +48,7 @@ namespace big::chat
 		buf.Write<uint8_t>(hnd.unk_0009, 8);
 	}
 
-	inline void send_message(char* message, player_ptr target = nullptr, bool is_team = false)
+	inline void send_message(char* message, player_ptr target, bool is_team, bool draw)
 	{
 		if (!*g_pointers->m_gta.m_is_session_started)
 			return;
@@ -67,8 +67,12 @@ namespace big::chat
 		if (g_session.log_chat_messages_to_textbox)
 			g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
 
-		g_fiber_pool->queue_job([message, is_team] {
-			draw_chat(message, g_player_service->get_self()->get_name(), is_team);
-		});
+		if (draw)
+			g_fiber_pool->queue_job([message, is_team] {
+				draw_chat(message, g_player_service->get_self()->get_name(), is_team);
+				strcpy(message, "");
+			});
+		else
+			strcpy(message, "");
 	}
 }

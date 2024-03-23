@@ -23,8 +23,7 @@ namespace big
 		{
 			g_gui->toggle(false); // trying to prevent game crash?
 			g_fiber_pool->queue_job([] {
-				chat::send_message(msg, nullptr, is_team);
-				strcpy(msg, "");
+				chat::send_message(msg, nullptr, is_team, true);
 			});
 		};
 

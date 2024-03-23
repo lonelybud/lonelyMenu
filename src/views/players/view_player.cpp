@@ -489,8 +489,7 @@ namespace big
 		{
 			g_gui->toggle(false); // trying to prevent game crash?
 			g_fiber_pool->queue_job([] {
-				chat::send_message(msg, last_selected_player, false);
-				strcpy(msg, "");
+				chat::send_message(msg, last_selected_player, false, true);
 			});
 		};
 
