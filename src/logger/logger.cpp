@@ -1,6 +1,5 @@
 #include "logger.hpp"
 
-#include "memory/module.hpp"
 #include "util/logger.hpp"
 
 namespace big

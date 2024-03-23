@@ -1,11 +1,9 @@
 #pragma once
+#include "core/data/player.hpp"
 #include "core/enums.hpp"
 
 namespace big
 {
-	class player;
-	using player_ptr = std::shared_ptr<player>;
-
 	class reaction
 	{
 	public:

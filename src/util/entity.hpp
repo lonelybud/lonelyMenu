@@ -2,7 +2,7 @@
 #include "core/data/misc.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
-#include "scripts.hpp"
+#include "script.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big::entity

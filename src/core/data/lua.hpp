@@ -1,4 +1,5 @@
 #pragma once
+#include "services/players/player.hpp"
 #include "util/lua_helper.hpp"
 #include "util/teleport.hpp"
 

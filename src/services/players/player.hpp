@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/player.hpp"
 #include "core/data/reactions.hpp"
 #include "core/enums.hpp"
 #include "rate_limiter.hpp"
@@ -21,8 +22,6 @@ namespace rage
 namespace big
 {
 	class player_service;
-	class player;
-	using player_ptr = std::shared_ptr<player>;
 
 	class player final
 	{
