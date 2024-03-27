@@ -60,12 +60,16 @@ namespace big::chat
 		msg.write<bool>(is_team, 1);
 
 		for (auto& player : g_player_service->players())
-			if (player.second && player.second->is_valid() && (!target || target == player.second)
-			    && (!is_team || is_player_same_team(player.second->id())))
-				msg.send(player.second->get_net_game_player()->m_msg_id);
+			if (player.second && player.second->is_valid())
+			{
+				if (target && player.second != target)
+					continue;
 
-		if (g_session.log_chat_messages_to_textbox)
-			g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
+				if (!target && is_team && !is_player_same_team(player.second->id()))
+					continue;
+
+				msg.send(player.second->get_net_game_player()->m_msg_id);
+			}
 
 		if (draw)
 			g_fiber_pool->queue_job([message, is_team] {

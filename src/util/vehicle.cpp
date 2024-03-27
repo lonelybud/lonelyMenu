@@ -1,7 +1,6 @@
 #include "vehicle.hpp"
 
 #include "entity.hpp"
-#include "script.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 
 namespace big::vehicle
