@@ -40,12 +40,14 @@ namespace big::chat
 		HUD::CLOSE_MP_TEXT_CHAT();
 	}
 
-	static inline void gamer_handle_serialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
+	static void gamer_handle_serialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
 	{
-		constexpr int PC_PLATFORM = 3;
-		buf.Write<uint8_t>(PC_PLATFORM, 8);
-		buf.WriteInt64(*(int64_t*)&hnd.m_rockstar_id, 64);
-		buf.Write<uint8_t>(hnd.unk_0009, 8);
+		buf.Write<uint8_t>(hnd.m_platform, sizeof(hnd.m_platform));
+		if (hnd.m_platform == rage::rlPlatforms::PC)
+		{
+			buf.WriteQWord(hnd.m_rockstar_id, sizeof(hnd.m_rockstar_id));
+			buf.Write<uint8_t>(hnd.m_padding, sizeof(hnd.m_padding));
+		}
 	}
 
 	inline void send_message(char* message, player_ptr target, bool is_team, bool draw)

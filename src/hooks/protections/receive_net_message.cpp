@@ -18,27 +18,6 @@
 
 #include <cstdlib>
 
-static inline void gamer_handle_deserialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
-{
-	constexpr int PC_PLATFORM = 3;
-	if ((hnd.m_platform = buf.Read<uint8_t>(8)) != PC_PLATFORM)
-		return;
-
-	buf.ReadInt64((int64_t*)&hnd.m_rockstar_id, 64);
-	hnd.unk_0009 = buf.Read<uint8_t>(8);
-}
-
-static inline bool is_kick_instruction(rage::datBitBuffer& buffer)
-{
-	rage::rlGamerHandle sender, receiver;
-	char name[18];
-	gamer_handle_deserialize(sender, buffer);
-	gamer_handle_deserialize(receiver, buffer);
-	buffer.ReadString(name, 17);
-	int instruction = buffer.Read<int>(32);
-	return instruction == 8;
-}
-
 namespace big
 {
 	static inline bool is_spam_interval_diff_there(char* msg, big::player_ptr player, std::chrono::seconds diff, int limit, int type)
@@ -180,7 +159,7 @@ namespace big
 					return true;
 
 				char message[256];
-				buffer.ReadString(message, 256);
+				buffer.ReadString(message, sizeof(message));
 
 				if (!player->whitelist_spammer && is_player_spammer(message, player))
 				{
