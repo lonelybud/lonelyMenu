@@ -25,4 +25,12 @@ namespace big
 
 		return std::string(start, end);
 	}
+
+	inline void strcpy_safe(char* dest, const char* src)
+	{
+		auto len = strlen(dest) - 1;
+		strncpy(dest, src, len);
+		if (strlen(src) > len)
+			dest[len] = '\0';
+	}
 }

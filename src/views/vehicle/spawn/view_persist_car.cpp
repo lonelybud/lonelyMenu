@@ -135,7 +135,7 @@ namespace big
 		ImGui::SameLine();
 
 		ImGui::BeginGroup();
-		static char vehicle_file_name_input[50]{};
+		static char vehicle_file_name_input[64]{};
 
 		components::small_text("Vehicle File Name");
 		ImGui::SetNextItemWidth(250);

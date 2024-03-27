@@ -1,5 +1,6 @@
 #pragma once
 #include "file_manager.hpp"
+#include "util/strings.hpp"
 
 constexpr int chat_buffer_size         = 8192;
 constexpr int chat_buffer_content_size = chat_buffer_size - 1;
@@ -21,7 +22,7 @@ namespace big
 		}
 
 	public:
-		char buf[chat_buffer_size] = {'\0'};
+		char buf[chat_buffer_size] = "";
 		bool overflow              = false;
 
 		void flush_buffer()
@@ -43,7 +44,7 @@ namespace big
 
 		void append_msg(const char* player_name, char* msg)
 		{
-			char new_msg[320] = {'\0'};
+			char new_msg[320] = "";
 
 			int time_diff;
 			auto currentTime = std::chrono::system_clock::now();
@@ -60,7 +61,7 @@ namespace big
 
 			std::string formatted_str = std::format("{} {} : {}\n", time_diff, player_name, msg);
 
-			strcpy(new_msg, formatted_str.c_str());
+			strcpy_safe(new_msg, formatted_str.c_str());
 
 			auto msg_len          = strlen(new_msg);
 			size_t availableSpace = chat_buffer_content_size - len;

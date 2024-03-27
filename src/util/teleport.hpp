@@ -20,18 +20,19 @@ namespace big::teleport
 			return false;
 		}
 
-		auto yaw   = ENTITY::GET_ENTITY_HEADING(self::ped);
+		Entity ent = self::veh ? self::veh : self::ped;
+
+		auto yaw   = ENTITY::GET_ENTITY_HEADING(ent);
 		auto pitch = CAM::GET_GAMEPLAY_CAM_RELATIVE_PITCH();
 		auto roll  = CAM::GET_GAMEPLAY_CAM_RELATIVE_HEADING();
 
 		PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z + 1.f);
 
-		if (self::veh)
-		{
-			ENTITY::SET_ENTITY_HEADING(self::veh, yaw);
-			CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(pitch, 1.f);
-			CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(roll);
-		}
+		script::get_current()->yield();
+
+		ENTITY::SET_ENTITY_HEADING(ent, yaw);
+		CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(pitch, 1.f);
+		CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(roll);
 
 		return true;
 	}
