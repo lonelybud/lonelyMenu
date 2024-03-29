@@ -127,23 +127,31 @@ namespace big
 		static std::map<std::string, std::vector<ptfxEffects::Effect>> savedEffects;
 		static std::string searchDicText;
 		static int selecDicIndex = -1;
+		static std::string groupToDelete;
+		static int customEffectToDeleteIndex = -1;
+		static std::string groupName, customEffectName, selectedGroupName;
 
-		ImGui::BeginGroup();
-		components::command_checkbox<"ptfx">();
+		ImGui::Checkbox("Enable PTFX", &g_ptfx_effects.show);
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(400);
 		ImGui::SliderFloat("PTFX Size", &g_ptfx_effects.size, 0.1f, 2.f);
 
+		ImGui::PushItemWidth(200);
+		ImGui::InputInt("PTFX Delay", &g_ptfx_effects.delay);
+		ImGui::SameLine();
+		ImGui::Checkbox("Center##ptfx", &g_ptfx_effects.center);
+
 		ImGui::Spacing();
 		static float custom_location[3];
-		ImGui::InputFloat3("##Customlocation", custom_location);
-		components::button("Set current coordinates", [&] {
+		ImGui::InputFloat3("###Customlocation", custom_location);
+		ImGui::SameLine();
+		components::button("Set curr. coord", [&] {
 			custom_location[0] = self::pos.x;
 			custom_location[1] = self::pos.y;
 			custom_location[2] = self::pos.z;
 		});
 		ImGui::SameLine();
-		components::button("Trigger ptfx effect at coord", [&] {
+		components::button("Trigger ptfx", [&] {
 			STREAMING::REQUEST_NAMED_PTFX_ASSET(g_ptfx_effects.asset);
 			GRAPHICS::USE_PARTICLE_FX_ASSET(g_ptfx_effects.asset);
 			GRAPHICS::START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(g_ptfx_effects.effect,
@@ -159,154 +167,157 @@ namespace big
 			    0.f,
 			    0);
 		});
+
 		ImGui::Spacing();
-
-		ImGui::SetNextItemWidth(200);
-		if (components::input_text_with_hint("##searchDicText", "searchDic", searchDicText))
-		{
-			if (searchDicText.length() > 0)
-			{
-				std::transform(searchDicText.begin(), searchDicText.end(), searchDicText.begin(), ::tolower);
-				searchedAnimDictCompactObjs = filterStrings(animDictCompactObjs, searchDicText);
-			}
-			else
-				searchedAnimDictCompactObjs.clear();
-
-			selecDicIndex = -1;
-		}
-		ImGui::SameLine();
-		components::button("Load ptfx effects", [&] {
-			ptfxEffects::loadEffects(animDictCompactObjs);
-		});
 
 		auto& objs = searchDicText.length() > 0 ? searchedAnimDictCompactObjs : animDictCompactObjs;
 
 		ImGui::BeginGroup();
-		components::small_text("DictionaryName");
-		if (ImGui::BeginListBox("##dictionaries", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 		{
-			unsigned i = 0;
-			for (auto& dicObj : objs)
+			ImGui::SetNextItemWidth(200);
+			if (components::input_text_with_hint("##searchDicText", "searchDic", searchDicText))
 			{
-				if (ImGui::Selectable(dicObj.DictionaryName.c_str(), selecDicIndex == i))
-					selecDicIndex = i;
-				++i;
-			}
-
-			ImGui::EndListBox();
-		}
-		ImGui::EndGroup();
-		ImGui::SameLine();
-		ImGui::BeginGroup();
-		components::small_text("EffectNames");
-		if (selecDicIndex != -1 && ImGui::BeginListBox("##effectNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
-		{
-			for (auto& effectName : objs[selecDicIndex].EffectNames)
-				if (ImGui::Selectable(effectName.c_str(), effectName == g_ptfx_effects.effect))
-					set_effect(objs[selecDicIndex].DictionaryName.c_str(), effectName.c_str());
-
-			ImGui::EndListBox();
-		}
-		ImGui::EndGroup();
-
-		ImGui::SeparatorText("Save an effect");
-
-		static std::string groupName, customEffectName, selectedGroupName;
-
-		ImGui::PushItemWidth(200);
-		components::input_text_with_hint("##groupName", "groupName", groupName);
-		components::input_text_with_hint("##customEffectName", "customEffectName", customEffectName);
-		ImGui::PopItemWidth();
-		components::button("save", [&] {
-			std::string _groupName = trimString(groupName);
-			std::string effectName = trimString(customEffectName);
-			std::string currDict   = g_ptfx_effects.asset;
-			std::string currEffect = g_ptfx_effects.effect;
-
-			if (_groupName.size() > 0 && effectName.size() > 0 && currDict.size() > 0 && currEffect.size() > 0)
-			{
-				ptfxEffects::Effect effect = {effectName, currDict, currEffect, g_ptfx_effects.size};
-
-				if (savedEffects.size() == 0)
-					ptfxEffects::loadSavedEffects(savedEffects);
-
-				if (savedEffects.find(_groupName) != savedEffects.end())
+				if (searchDicText.length() > 0)
 				{
-					auto& effects = savedEffects[_groupName];
-
-					auto it = std::find_if(effects.begin(), effects.end(), [&effectName](const ptfxEffects::Effect& effect) {
-						return effect.name == effectName;
-					});
-
-					// if effect already present
-					if (it != effects.end())
-						*it = effect;
-					else
-						savedEffects[_groupName].push_back(effect);
+					std::transform(searchDicText.begin(), searchDicText.end(), searchDicText.begin(), ::tolower);
+					searchedAnimDictCompactObjs = filterStrings(animDictCompactObjs, searchDicText);
 				}
 				else
-					savedEffects[_groupName] = std::vector({effect});
+					searchedAnimDictCompactObjs.clear();
 
-				ptfxEffects::saveEffects(savedEffects);
+				selecDicIndex = -1;
 			}
-		});
-		ImGui::SameLine();
-		components::button("Load saved effects", [&] {
-			ptfxEffects::loadSavedEffects(savedEffects);
-		});
+			ImGui::SameLine();
+			components::button("Load ptfx effects", [&] {
+				ptfxEffects::loadEffects(animDictCompactObjs);
+			});
 
-		components::small_text("Shift click to delete a groupName or effect inside it");
-
-		static std::string groupToDelete;
-		static int customEffectToDeleteIndex = -1;
-
-		ImGui::BeginGroup();
-		components::small_text("groupNames");
-		if (ImGui::BeginListBox("##groupNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
-		{
-			for (auto& obj : savedEffects)
-				if (ImGui::Selectable(obj.first.c_str(), obj.first == selectedGroupName))
-				{
-					if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-					{
-						groupToDelete             = obj.first;
-						customEffectToDeleteIndex = -1;
-					}
-					else
-						selectedGroupName = groupName = obj.first;
-				}
-			ImGui::EndListBox();
-		}
-		ImGui::EndGroup();
-		ImGui::SameLine();
-		ImGui::BeginGroup();
-		components::small_text("customEffectNames");
-		if (selectedGroupName.length()
-		    && ImGui::BeginListBox("##customEffectNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
-		{
-			for (int i = 0; i < savedEffects[selectedGroupName].size(); ++i)
+			ImGui::BeginGroup();
+			components::small_text("DictionaryName");
+			if (ImGui::BeginListBox("##dictionaries", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 			{
-				auto& effect = savedEffects[selectedGroupName][i];
-
-				if (ImGui::Selectable(effect.name.c_str(), effect.effect.c_str() == g_ptfx_effects.effect))
+				unsigned i = 0;
+				for (auto& dicObj : objs)
 				{
-					if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
-					{
-						groupToDelete             = selectedGroupName;
-						customEffectToDeleteIndex = i;
-					}
-					else
-					{
-						customEffectName = effect.name;
-						set_effect(effect.dict.c_str(), effect.effect.c_str());
-						g_ptfx_effects.size = effect.size;
-					}
+					if (ImGui::Selectable(dicObj.DictionaryName.c_str(), selecDicIndex == i))
+						selecDicIndex = i;
+					++i;
 				}
+
+				ImGui::EndListBox();
 			}
-			ImGui::EndListBox();
+			ImGui::EndGroup();
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			components::small_text("EffectNames");
+			if (selecDicIndex != -1 && ImGui::BeginListBox("##effectNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
+			{
+				for (auto& effectName : objs[selecDicIndex].EffectNames)
+					if (ImGui::Selectable(effectName.c_str(), effectName == g_ptfx_effects.effect))
+						set_effect(objs[selecDicIndex].DictionaryName.c_str(), effectName.c_str());
+
+				ImGui::EndListBox();
+			}
+			ImGui::EndGroup();
 		}
 		ImGui::EndGroup();
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		{
+			ImGui::SeparatorText("Save an effect");
 
+			ImGui::PushItemWidth(200);
+			components::input_text_with_hint("##groupName", "groupName", groupName);
+			components::input_text_with_hint("##customEffectName", "customEffectName", customEffectName);
+			ImGui::PopItemWidth();
+			components::button("save", [&] {
+				std::string _groupName = trimString(groupName);
+				std::string effectName = trimString(customEffectName);
+				std::string currDict   = g_ptfx_effects.asset;
+				std::string currEffect = g_ptfx_effects.effect;
+
+				if (_groupName.size() > 0 && effectName.size() > 0 && currDict.size() > 0 && currEffect.size() > 0)
+				{
+					ptfxEffects::Effect effect = {effectName, currDict, currEffect, g_ptfx_effects.size};
+
+					if (savedEffects.size() == 0)
+						ptfxEffects::loadSavedEffects(savedEffects);
+
+					if (savedEffects.find(_groupName) != savedEffects.end())
+					{
+						auto& effects = savedEffects[_groupName];
+
+						auto it = std::find_if(effects.begin(), effects.end(), [&effectName](const ptfxEffects::Effect& effect) {
+							return effect.name == effectName;
+						});
+
+						// if effect already present
+						if (it != effects.end())
+							*it = effect;
+						else
+							savedEffects[_groupName].push_back(effect);
+					}
+					else
+						savedEffects[_groupName] = std::vector({effect});
+
+					ptfxEffects::saveEffects(savedEffects);
+				}
+			});
+			ImGui::SameLine();
+			components::button("Load saved effects", [&] {
+				ptfxEffects::loadSavedEffects(savedEffects);
+			});
+
+			components::small_text("Shift click to delete a groupName or effect inside it");
+
+			ImGui::BeginGroup();
+			components::small_text("groupNames");
+			if (ImGui::BeginListBox("##groupNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
+			{
+				for (auto& obj : savedEffects)
+					if (ImGui::Selectable(obj.first.c_str(), obj.first == selectedGroupName))
+					{
+						if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+						{
+							groupToDelete             = obj.first;
+							customEffectToDeleteIndex = -1;
+						}
+						else
+							selectedGroupName = groupName = obj.first;
+					}
+				ImGui::EndListBox();
+			}
+			ImGui::EndGroup();
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			components::small_text("customEffectNames");
+			if (selectedGroupName.length()
+			    && ImGui::BeginListBox("##customEffectNames", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
+			{
+				for (int i = 0; i < savedEffects[selectedGroupName].size(); ++i)
+				{
+					auto& effect = savedEffects[selectedGroupName][i];
+
+					if (ImGui::Selectable(effect.name.c_str(), effect.effect.c_str() == g_ptfx_effects.effect))
+					{
+						if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+						{
+							groupToDelete             = selectedGroupName;
+							customEffectToDeleteIndex = i;
+						}
+						else
+						{
+							customEffectName = effect.name;
+							set_effect(effect.dict.c_str(), effect.effect.c_str());
+							g_ptfx_effects.size = effect.size;
+						}
+					}
+				}
+				ImGui::EndListBox();
+			}
+			ImGui::EndGroup();
+		}
+		ImGui::EndGroup();
 
 		if (!std::string(groupToDelete).empty() || customEffectToDeleteIndex != -1)
 			ImGui::OpenPopup("##deleteCustomEffectOrGroup");
@@ -340,8 +351,5 @@ namespace big
 			}
 			ImGui::EndPopup();
 		}
-
-
-		ImGui::EndGroup();
 	}
 }

@@ -29,8 +29,6 @@ namespace big
 
 	void backend::misc_loop()
 	{
-		LOG(INFO) << "Starting script: Miscellaneous";
-
 		g_tunables_service->run_script(); // blocking until tuneables are loaded
 		looped::custom_thread();          // non-blocking
 
@@ -47,12 +45,19 @@ namespace big
 
 	void backend::disable_control_action_loop()
 	{
-		LOG(INFO) << "Starting script: Disable Control Action";
-
 		while (g_running)
 		{
 			context_menu_service::disable_control_action_loop();
 
+			script::get_current()->yield();
+		}
+	}
+
+	void backend::ptfx_loop()
+	{
+		while (g_running)
+		{
+			looped::ptfx_loop();
 			script::get_current()->yield();
 		}
 	}

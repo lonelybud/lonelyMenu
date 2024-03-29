@@ -18,7 +18,7 @@ namespace big
 			if (t.find(search) != std::string::npos)
 				res[pair.first] = pair.second;
 		}
-		
+
 		return res;
 	}
 
@@ -33,10 +33,10 @@ namespace big
 		ImGui::EndDisabled();
 		if (g_weapons.aimbot.enable || g_weapons.aimbot.enable_old)
 		{
-			ImGui::SetNextItemWidth(350);
-			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
 			ImGui::PushItemWidth(350);
+			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
 			ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
+			ImGui::PopItemWidth();
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
 		}
 
@@ -117,7 +117,7 @@ namespace big
 		components::command_checkbox<"modify_weapon_values">();
 		if (g_weapons.modify_weapon_values.enable)
 		{
-			ImGui::PushItemWidth(200);
+			ImGui::SetNextItemWidth(200);
 			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
 		}
 
@@ -126,7 +126,7 @@ namespace big
 		components::command_checkbox<"rapidfire">();
 		if (g_weapons.rapid_fire)
 		{
-			ImGui::PushItemWidth(200);
+			ImGui::SetNextItemWidth(200);
 			ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
 		}
 	}

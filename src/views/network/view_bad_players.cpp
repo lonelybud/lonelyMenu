@@ -48,11 +48,8 @@ namespace big
 
 		ImGui::PushItemWidth(300);
 		components::input_text("Player Name", player_name, sizeof(player_name));
-
 		ImGui::InputScalar("Rockstar Id", ImGuiDataType_U64, &rockstar_id);
-
 		ImGui::InputScalar("Language", ImGuiDataType_U32, &language);
-
 		ImGui::PopItemWidth();
 
 		ImGui::Checkbox("Save as spammer", &save_as_spammer);

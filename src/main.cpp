@@ -207,6 +207,7 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::loop, "Backend Loop", false));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::misc_loop, "Miscellaneous"));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::disable_control_action_loop, "Disable Controls"));
+			    g_script_mgr.add_script(std::make_unique<script>(&backend::ptfx_loop, "Ptfx Loop"));
 			    g_script_mgr.add_script(std::make_unique<script>(&context_menu_service::context_menu, "Context Menu"));
 			    LOG(INFO) << "Scripts registered.";
 

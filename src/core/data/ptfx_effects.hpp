@@ -8,5 +8,7 @@ namespace big
 		float size         = 0.2f;
 		const char* asset  = "scr_agencyheist";
 		const char* effect = "scr_fbi_mop_drips";
+		int delay          = 500;
+		bool center        = false;
 	} g_ptfx_effects{};
 }

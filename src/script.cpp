@@ -94,6 +94,8 @@ namespace big
 
 	void script::fiber_func()
 	{
+		LOG(INFO) << "Starting script: " << m_name;
+
 		m_func();
 
 		m_done = true;
