@@ -2,8 +2,9 @@
 #include "file_manager.hpp"
 #include "util/strings.hpp"
 
-constexpr int chat_buffer_size         = 8192;
-constexpr int chat_buffer_content_size = chat_buffer_size - 1;
+static constexpr int chat_buffer_size         = 8192;
+static constexpr int chat_buffer_content_size = chat_buffer_size - 1;
+static constexpr int msg_size                 = 320;
 
 namespace big
 {
@@ -44,7 +45,7 @@ namespace big
 
 		void append_msg(const char* player_name, char* msg)
 		{
-			char new_msg[320] = "";
+			char new_msg[msg_size] = "";
 
 			int time_diff;
 			auto currentTime = std::chrono::system_clock::now();
@@ -61,7 +62,7 @@ namespace big
 
 			std::string formatted_str = std::format("{} {} : {}\n", time_diff, player_name, msg);
 
-			strcpy_safe(new_msg, formatted_str.c_str());
+			strcpy_safe(new_msg, formatted_str.c_str(), msg_size);
 
 			auto msg_len          = strlen(new_msg);
 			size_t availableSpace = chat_buffer_content_size - len;

@@ -4,13 +4,15 @@
 #include "util/strings.hpp"
 #include "views/view.hpp"
 
+static constexpr int msg_size = 320;
+
 namespace big
 {
 	static char player_name[64];
 	static uint64_t rockstar_id;
 	static int language;
 	static bool save_as_spammer, block_join;
-	static char message[128];
+	static char message[msg_size];
 	static bool exist_already;
 
 	static void set_selected(uint64_t rid, bad_players_nm::bad_player p)
@@ -20,7 +22,7 @@ namespace big
 		language        = p.l;
 		save_as_spammer = p.s;
 		exist_already = block_join = p.block_join;
-		strcpy_safe(message, p.m.c_str());
+		strcpy_safe(message, p.m.c_str(), msg_size);
 	}
 
 	static inline std::map<uint64_t, bad_players_nm::bad_player> filter_bad_players(const std::map<uint64_t, bad_players_nm::bad_player>& inputMap, const std::string& search)
