@@ -15,7 +15,7 @@ namespace big
 	static char message[msg_size];
 	static bool exist_already;
 
-	static void set_selected(uint64_t rid, bad_players_nm::bad_player p)
+	static void set_selected(uint64_t rid, bad_player p)
 	{
 		strcpy(player_name, p.n.c_str());
 		rockstar_id     = rid;
@@ -25,9 +25,9 @@ namespace big
 		strcpy_safe(message, p.m.c_str(), msg_size);
 	}
 
-	static inline std::map<uint64_t, bad_players_nm::bad_player> filter_bad_players(const std::map<uint64_t, bad_players_nm::bad_player>& inputMap, const std::string& search)
+	static inline std::map<uint64_t, bad_player> filter_bad_players(const std::map<uint64_t, bad_player>& inputMap, const std::string& search)
 	{
-		std::map<uint64_t, bad_players_nm::bad_player> res;
+		std::map<uint64_t, bad_player> res;
 
 		for (auto pair : inputMap)
 		{
@@ -43,7 +43,7 @@ namespace big
 
 	void view::bad_players()
 	{
-		static std::map<uint64_t, bad_players_nm::bad_player> searched_blocked_players;
+		static std::map<uint64_t, bad_player> searched_blocked_players;
 		static std::string search_blocked_player_name;
 
 		ImGui::PushItemWidth(300);
@@ -65,7 +65,7 @@ namespace big
 
 		if (exist_already && components::button("Un-block"))
 		{
-			bad_players_nm::toggle_block(rockstar_id, false);
+			g_bad_players_service.toggle_block(rockstar_id, false);
 			exist_already = false;
 		}
 		else if (components::button("Add to block list"))
@@ -73,7 +73,7 @@ namespace big
 			std::string name = player_name;
 			if (trimString(name).length() && rockstar_id)
 			{
-				bad_players_nm::add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
+				g_bad_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
 				save_as_spammer = false;
 				strcpy(player_name, "");
 				rockstar_id = 0;
@@ -94,7 +94,7 @@ namespace big
 				    search_blocked_player_name.end(),
 				    search_blocked_player_name.begin(),
 				    ::tolower);
-				searched_blocked_players = filter_bad_players(bad_players_nm::bad_players_list, search_blocked_player_name);
+				searched_blocked_players = filter_bad_players(g_bad_players_service.bad_players_list, search_blocked_player_name);
 			}
 			else
 				searched_blocked_players.clear();
@@ -107,7 +107,7 @@ namespace big
 			ImGui::Text("Joins Not blocked -");
 			if (ImGui::BeginListBox("##bad_players", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
-				for (auto& pair : bad_players_nm::bad_players_list)
+				for (auto& pair : g_bad_players_service.bad_players_list)
 					if (!pair.second.block_join && ImGui::Selectable(pair.second.n.c_str(), rockstar_id && rockstar_id == pair.first))
 						set_selected(pair.first, pair.second);
 
@@ -121,7 +121,8 @@ namespace big
 			ImGui::Text("Joins blocked -");
 			if (ImGui::BeginListBox("##bad_players_blocked", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
-				for (auto& pair : (search_blocked_player_name.length() > 0 ? searched_blocked_players : bad_players_nm::bad_players_list))
+				for (auto& pair :
+				    (search_blocked_player_name.length() > 0 ? searched_blocked_players : g_bad_players_service.bad_players_list))
 					if (pair.second.block_join && ImGui::Selectable(pair.second.n.c_str(), rockstar_id && rockstar_id == pair.first))
 						set_selected(pair.first, pair.second);
 
@@ -132,16 +133,16 @@ namespace big
 
 		components::button("Reset Non Blocked List", [] {
 			set_selected(0, {});
-			for (auto it = bad_players_nm::bad_players_list.begin(); it != bad_players_nm::bad_players_list.end();)
+			for (auto it = g_bad_players_service.bad_players_list.begin(); it != g_bad_players_service.bad_players_list.end();)
 				if (!it->second.block_join)
-					it = bad_players_nm::bad_players_list.erase(it);
+					it = g_bad_players_service.bad_players_list.erase(it);
 				else
 					++it;
 		});
 		ImGui::SameLine();
 		components::button("Reset All", [] {
 			set_selected(0, {});
-			bad_players_nm::load_blocked_list();
+			g_bad_players_service.load_blocked_list();
 		});
 	}
 }

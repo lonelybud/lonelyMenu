@@ -6,7 +6,7 @@
 #include "hooking/hooking.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/friends/friends_service.hpp"
-#include "services/known_players.hpp"
+#include "services/known_players/known_players.hpp"
 #include "services/players/player_service.hpp"
 #include "util/player.hpp"
 
@@ -51,8 +51,8 @@ namespace big
 			g_fiber_pool->queue_job([plyr, rockstar_id, host_token, is_host] {
 				if (plyr && plyr->is_valid())
 				{
-					auto is_blocked  = bad_players_nm::is_blocked(rockstar_id);
-					auto is_known    = known_player_nm::is_known(rockstar_id);
+					auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
+					auto is_known    = g_known_players_service.is_known(rockstar_id);
 					auto is_friend   = plyr->is_friend();
 					auto player_name = plyr->get_name();
 					auto id          = plyr->id();
@@ -62,8 +62,8 @@ namespace big
 					if (is_blocked)
 					{
 						plyr->is_blocked   = true;
-						plyr->is_spammer   = bad_players_nm::bad_players_list[rockstar_id].s;
-						plyr->spam_message = bad_players_nm::bad_players_list[rockstar_id].m;
+						plyr->is_spammer   = g_bad_players_service.bad_players_list[rockstar_id].s;
+						plyr->spam_message = g_bad_players_service.bad_players_list[rockstar_id].m;
 
 						if (!plyr->is_spammer)
 						{
@@ -78,7 +78,7 @@ namespace big
 						if (!plyr->is_known_player)
 						{
 							plyr->is_known_player = true;
-							known_player_nm::toggle(plyr, true);
+							g_known_players_service.add(plyr);
 						}
 					}
 					else if (is_known)

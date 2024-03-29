@@ -124,10 +124,10 @@ namespace big
 			{
 				player->is_modder = true;
 
-				if (!bad_players_nm::does_exist(rockstar_id))
+				if (!g_bad_players_service.does_exist(rockstar_id))
 				{
 					player->spam_message = get_infraction_str(player->infractions);
-					bad_players_nm::add_player(player, false, player->is_spammer);
+					g_bad_players_service.add_player(player, false, player->is_spammer);
 				}
 			}
 			else if (other)
@@ -151,7 +151,7 @@ namespace big
 				{
 					player->is_blocked   = true;
 					player->spam_message = get_infraction_str(player->infractions);
-					bad_players_nm::add_player(player, true, false);
+					g_bad_players_service.add_player(player, true, false);
 				}
 
 				if (g_player_service->get_self()->is_host())

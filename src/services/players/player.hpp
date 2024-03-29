@@ -60,7 +60,7 @@ namespace big
 		[[nodiscard]] bool is_host() const;
 		[[nodiscard]] bool is_valid() const;
 
-		void timeout(bool value = true);
+		void timeout();
 
 		bool off_radar    = false;
 		bool never_wanted = false;
@@ -102,6 +102,7 @@ namespace big
 		std::optional<uint32_t> time_difference;
 		uint32_t num_time_syncs_sent = 9999;
 
+		bool timed_out          = false;
 		bool block_explosions   = false;
 		bool block_clone_create = false;
 		bool block_clone_sync   = false;

@@ -171,11 +171,9 @@ namespace big
 					player->spam_message = message;
 					player->is_blocked   = true;
 
-					g_fiber_pool->queue_job([player] {
-						bad_players_nm::add_player(player, true, true);
-						if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
-							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
-					});
+					g_bad_players_service.add_player(player, true, true);
+					if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
+						dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
 
 					return true;
 				}

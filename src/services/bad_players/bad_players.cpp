@@ -1,15 +1,60 @@
 #pragma once
 #include "bad_players.hpp"
 
-namespace big::bad_players_nm
-{
-	std::map<uint64_t, bad_player> bad_players_list;
+#include "core/scr_globals.hpp"
 
-	void load_blocked_list()
+#include <script/globals/GPBD_FM_3.hpp>
+
+using json = nlohmann::json;
+
+namespace big
+{
+	std::filesystem::path bad_players_service::get_file_path()
+	{
+		return g_file_manager.get_project_file("blocked_players.json").get_path();
+	}
+
+	void bad_players_service::add_player(uint64_t rockstar_id, bad_player player)
+	{
+		bad_players_list[rockstar_id] = player;
+		++save_count;
+	}
+
+	void bad_players_service::add_player(player_ptr player, bool block_join, bool is_spammer)
+	{
+		if (auto net_data = player->get_net_data())
+		{
+			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
+			auto name        = net_data->m_name;
+			auto& bs         = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
+
+			add_player(rockstar_id, {name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
+		}
+	}
+
+	void bad_players_service::toggle_block(uint64_t rockstar_id, bool v)
+	{
+		bad_players_list[rockstar_id].block_join = v;
+		++save_count;
+	}
+
+	bool bad_players_service::is_blocked(uint64_t rockstar_id)
+	{
+		auto bad_player = bad_players_list.find(rockstar_id);
+		return bad_player != bad_players_list.end() && bad_player->second.block_join;
+	}
+
+	bool bad_players_service::does_exist(uint64_t rockstar_id)
+	{
+		auto bad_player = bad_players_list.find(rockstar_id);
+		return bad_player != bad_players_list.end();
+	}
+
+	void bad_players_service::load_blocked_list()
 	{
 		try
 		{
-			if (auto filePath = getSavedFilePath(); std::filesystem::exists(filePath))
+			if (auto filePath = get_file_path(); std::filesystem::exists(filePath))
 			{
 				std::ifstream f(filePath);
 
@@ -26,7 +71,7 @@ namespace big::bad_players_nm
 		}
 	}
 
-	void save_blocked_list()
+	void bad_players_service::save_blocked_list()
 	{
 		std::map<uint64_t, bad_player> filtered_map;
 		for (const auto& entry : bad_players_list)
@@ -36,7 +81,7 @@ namespace big::bad_players_nm
 		try
 		{
 			json j = filtered_map;
-			if (std::ofstream o(getSavedFilePath()); o.is_open())
+			if (std::ofstream o(get_file_path()); o.is_open())
 			{
 				o << std::setw(4) << j << std::endl;
 				o.close();

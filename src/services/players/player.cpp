@@ -151,13 +151,13 @@ namespace big
 		return lower;
 	}
 
-	void player::timeout(bool v)
+	void player::timeout()
 	{
-		this->block_net_events   = v;
-		this->block_clone_sync   = v;
-		this->block_clone_create = v;
-		this->block_explosions   = v;
+		this->block_net_events   = this->timed_out;
+		this->block_clone_sync   = this->timed_out;
+		this->block_clone_create = this->timed_out;
+		this->block_explosions   = this->timed_out;
 
-		LOGF(WARNING, "Timeout player '{}' : {}", this->get_name(), v ? "true" : "false");
+		LOGF(WARNING, "Timeout player '{}' : {}", this->get_name(), this->timed_out ? "true" : "false");
 	}
 }

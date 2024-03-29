@@ -20,12 +20,9 @@ namespace big
 		ImGui::Checkbox("Is Team Message", &is_team);
 		ImGui::SameLine();
 		if (components::button("Send Message"))
-		{
-			g_gui->toggle(false); // trying to prevent game crash?
 			g_fiber_pool->queue_job([] {
 				chat::send_message(msg, nullptr, is_team, true);
 			});
-		};
 
 		ImGui::Spacing();
 

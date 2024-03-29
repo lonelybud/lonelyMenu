@@ -9,7 +9,7 @@
 #include "services/bad_players/bad_players.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
-#include "services/known_players.hpp"
+#include "services/known_players/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/chat.hpp"
@@ -67,14 +67,14 @@ namespace big
 
 	static void toggle_block(bool v)
 	{
-		if (!bad_players_nm::does_exist(rockstar_id))
-			bad_players_nm::add_player(last_selected_player, false, last_selected_player->is_spammer);
+		if (!g_bad_players_service.does_exist(rockstar_id))
+			g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
 
-		if (v && !bad_players_nm::is_blocked(rockstar_id))
-			bad_players_nm::toggle_block(rockstar_id, true);
+		if (v && !g_bad_players_service.is_blocked(rockstar_id))
+			g_bad_players_service.toggle_block(rockstar_id, true);
 
-		if (!v && bad_players_nm::is_blocked(rockstar_id))
-			bad_players_nm::toggle_block(rockstar_id, false);
+		if (!v && g_bad_players_service.is_blocked(rockstar_id))
+			g_bad_players_service.toggle_block(rockstar_id, false);
 
 		if (v && g_player_service->get_self()->is_host())
 			dynamic_cast<player_command*>(command::get("hostkick"_J))->call(last_selected_player);
@@ -260,7 +260,8 @@ namespace big
 			ImGui::Checkbox("Is Modder", &last_selected_player->is_modder);
 
 			if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
-				known_player_nm::toggle(last_selected_player);
+				last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
+				                                        g_known_players_service.remove(last_selected_player);
 
 			if (ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer))
 			{
@@ -268,10 +269,15 @@ namespace big
 				{
 					last_selected_player->is_spammer = false;
 					last_selected_player->is_blocked = false;
-					if (bad_players_nm::does_exist(rockstar_id))
-						bad_players_nm::toggle_block(rockstar_id, false);
+					if (g_bad_players_service.does_exist(rockstar_id))
+						g_bad_players_service.toggle_block(rockstar_id, false);
 				}
 			}
+
+			if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
+				g_fiber_pool->queue_job([] {
+					last_selected_player->timeout();
+				});
 
 			if (ImGui::BeginListBox("##message", ImVec2(350, 100)))
 			{
@@ -426,16 +432,6 @@ namespace big
 
 			components::sub_title("Other");
 
-			components::button("Timeout", [] {
-				last_selected_player->timeout();
-			});
-			ImGui::SameLine();
-			components::button("Un-timeout", [] {
-				last_selected_player->timeout(false);
-			});
-
-			components::ver_space();
-
 			components::button("Delete Vehicle", [] {
 				if (auto c_veh = last_selected_player->get_current_vehicle())
 				{
@@ -484,14 +480,10 @@ namespace big
 
 		ImGui::SetNextItemWidth(200);
 		components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
-		ImGui::SameLine();
 		if (components::button("Send Message"))
-		{
-			g_gui->toggle(false); // trying to prevent game crash?
 			g_fiber_pool->queue_job([] {
 				chat::send_message(msg, last_selected_player, false, true);
 			});
-		};
 
 		ImGui::EndGroup();
 	}

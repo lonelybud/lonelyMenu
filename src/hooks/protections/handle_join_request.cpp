@@ -15,7 +15,7 @@ namespace big
 	{
 		auto rockstar_id = player_info->m_gamer_handle.m_rockstar_id;
 		auto block_join = g_session.block_joins && (g_session.block_friend_joins || !friends_service::is_friend(rockstar_id));
-		auto is_blocked = bad_players_nm::is_blocked(rockstar_id);
+		auto is_blocked = g_bad_players_service.is_blocked(rockstar_id);
 
 		if (block_join || is_blocked)
 		{
@@ -27,7 +27,7 @@ namespace big
 
 			if (is_blocked)
 			{
-				if (!bad_players_nm::bad_players_list[rockstar_id].s)
+				if (!g_bad_players_service.bad_players_list[rockstar_id].s)
 					g_notification_service.push_success("Join Blocked", str, true);
 			}
 			else
