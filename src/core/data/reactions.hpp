@@ -60,7 +60,7 @@ namespace big
 		reaction player_ped_removal{reaction_type::crash_player, reaction_sub_type::player_ped_removal, "Player ped removal", "Player ped removal", false, true, false};
 		reaction invalid_weapon_type{reaction_type::crash_player, reaction_sub_type::invalid_weapon_type, "invalid weapon type", "invalid weapon type", false, true, false};
 
-		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", "Voting to kick you", true, false, true};
+		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", "Voting to kick you", false, false, true};
 		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", true, false, true};
 		reaction bounty{reaction_type::none, reaction_sub_type::bounty, "Bounty", "Set bounty on you", true, false, true};
 
@@ -95,17 +95,17 @@ namespace big
 		reaction give_collectible{reaction_type::none, reaction_sub_type::give_collectible, "Give Collectible", "Given you Collectible", false, true, false, 1};
 		reaction remote_off_radar{reaction_type::none, reaction_sub_type::remote_off_radar, "Remote Off Radar", "Given you Remote Off Radar", false, true, false, 1};
 		reaction rotate_cam{reaction_type::none, reaction_sub_type::rotate_cam, "Rotate Cam", "Rotated your Camera", true, true, false};
-		reaction send_to_cutscene{reaction_type::none, reaction_sub_type::send_to_cutscene, "Send To Cutscene", "Received Send To Cutscene", true, true, false};
-		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", "Received Send To Location", true, true, false};
-		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", true, true, false};
+		reaction send_to_cutscene{reaction_type::none, reaction_sub_type::send_to_cutscene, "Send To Cutscene", "Received Send To Cutscene", false, true, false};
+		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", "Received Send To Location", false, true, false};
+		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", false, true, false};
 		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", "Received Transaction Error", true, true, false};
 		reaction vehicle_kick{reaction_type::none, reaction_sub_type::vehicle_kick, "Vehicle Kick", "Received Vehicle Kick", false, true, false, 2};
-		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", "Received Teleport to warehouse", true, true, false};
+		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", "Received Teleport to warehouse", false, true, false};
 		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", "Received Start Activity", false, true, false, 1};
-		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", "Received Start Script", true, true, false};
+		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", "Received Start Script", false, true, false};
 		reaction trigger_business_raid{reaction_type::none, reaction_sub_type::trigger_business_raid, "Trigger Business Raid", "Tried to Trigger Business Raid", true, true, false};
 		reaction turn_into_beast{reaction_type::none, reaction_sub_type::turn_into_beast, "Turn Into Beast", "Received Turn Into Beast", true, true, false};
-		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", "Received Remote Wanted Level", true, true, false};
+		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", "Received Remote Wanted Level", false, true, false};
 		reaction clear_ped_tasks{reaction_type::none, reaction_sub_type::clear_ped_tasks, "Clear Ped Tasks", "Received Clear Ped Tasks", false, true, false, 2};
 		reaction report_cash_spawn{reaction_type::none, reaction_sub_type::report_cash_spawn, "Cash Spawn", "Received Cash Spawn", true, true, false};
 		reaction request_control_event{reaction_type::none, reaction_sub_type::request_control_event, "Request Control Event", "Received Request Control Event", false, true, false, 2};

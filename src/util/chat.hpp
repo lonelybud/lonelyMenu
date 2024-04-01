@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/debug.hpp"
 #include "core/data/session.hpp"
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
@@ -45,7 +46,7 @@ namespace big::chat
 		buf.Write<uint8_t>(hnd.m_platform, sizeof(hnd.m_platform) * 8);
 		if (hnd.m_platform == rage::rlPlatforms::PC)
 		{
-			buf.WriteQWord(hnd.m_rockstar_id, sizeof(hnd.m_rockstar_id) * 8);
+			buf.WriteInt64(hnd.m_rockstar_id, sizeof(hnd.m_rockstar_id) * 8);
 			buf.Write<uint8_t>(hnd.m_padding, sizeof(hnd.m_padding) * 8);
 		}
 	}
@@ -73,12 +74,12 @@ namespace big::chat
 				msg.send(player.second->get_net_game_player()->m_msg_id);
 			}
 
+		if (g_session.log_chat_messages_to_textbox)
+			g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
+
 		if (draw)
 			g_fiber_pool->queue_job([message, is_team] {
 				draw_chat(message, g_player_service->get_self()->get_name(), is_team);
-				strcpy(message, "");
 			});
-		else
-			strcpy(message, "");
 	}
 }
