@@ -6,7 +6,7 @@ namespace big
 	struct known_player
 	{
 		std::string name;
-		uint64_t rockstar_id;
+		int64_t rockstar_id;
 	};
 
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(known_player, name, rockstar_id);
@@ -15,7 +15,7 @@ namespace big
 	{
 	public:
 		int save_count;
-		std::unordered_map<uint64_t, known_player> known_players_list;
+		std::unordered_map<int64_t, known_player> known_players_list;
 
 		std::filesystem::path get_file_path();
 		void load_list();

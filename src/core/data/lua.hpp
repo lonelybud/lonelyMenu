@@ -191,7 +191,9 @@ namespace big
 					teleport::to_coords(location.value());
 			}
 		}
-		// store npcs car in 2 veh garage. Gift Veh to player and ask him to replace the car
+		// no pv should be out
+		// Gift Veh to player and ask him to replace the car in the garage (garage must be full)
+		// ask him to add insurance afterwards he gets the car
 		// https://github.com/Deadlineem/Extras-Addon-for-YimMenu
 		inline void gift_veh(player_ptr plyr)
 		{
@@ -201,7 +203,7 @@ namespace big
 				{
 					auto netHash = NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(plyr->id());
 
-					DECORATOR::DECOR_SET_INT(veh, "MPBitset", 8);
+					DECORATOR::DECOR_SET_INT(veh, "MPBitset", 3);
 					DECORATOR::DECOR_SET_INT(veh, "Previous_Owner", netHash);
 					DECORATOR::DECOR_SET_INT(veh, "Veh_Modded_By_Player", netHash);
 					DECORATOR::DECOR_SET_INT(veh, "Not_Allow_As_Saved_Veh", 0);

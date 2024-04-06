@@ -16,15 +16,15 @@ namespace big
 	void looped::custom_thread()
 	{
 		g_thread_pool->push([] {
-			int last_pv_len{}, last_wp_len{}, bad_players_count = g_bad_players_service.save_count,
-			                                  known_players_count = g_known_players_service.save_count;
-
 			while (!g_running)
 				std::this_thread::yield();
 
 			g_bad_players_service.load_blocked_list();
 			g_known_players_service.load_list();
 			g_custom_teleport_service.fetch_saved_locations();
+
+			int last_pv_len{}, last_wp_len{}, bad_players_count = g_bad_players_service.save_count,
+			                                  known_players_count = g_known_players_service.save_count;
 
 			while (g_running)
 			{
