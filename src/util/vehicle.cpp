@@ -30,7 +30,7 @@ namespace big::vehicle
 
 		auto network_id = NETWORK::VEH_TO_NET(veh);
 
-		if (*g_pointers->m_gta.m_is_session_started)
+		if (*g_pointers->m_gta.m_is_session_started && is_networked)
 		{
 			DECORATOR::DECOR_SET_INT(veh, "MPBitset", 0);
 
