@@ -416,6 +416,8 @@ namespace big
 		report_cash_spawn,
 		request_control_event,
 		remove_weapon,
-		give_weapon
+		give_weapon,
+		cage,
+		ptfx_spam
 	};
 }

@@ -383,22 +383,6 @@ namespace big
 
 			break;
 		}
-		case eNetworkEvents::NETWORK_PTFX_EVENT:
-		{
-			if (plyr && g_debug.log_explosion_event)
-				LOGF(WARNING,
-				    "PTFX Event: {} (Dist- {})",
-				    plyr->get_name(),
-				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
-
-			if (plyr && plyr->block_explosions)
-			{
-				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-				return;
-			}
-
-			break;
-		}
 		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
 		{
 			auto damageType = buffer->Read<uint8_t>(2);
@@ -407,6 +391,20 @@ namespace big
 			if (!is_valid_weapon(weaponType))
 			{
 				g_reactions.invalid_weapon_type.process(plyr);
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+				return;
+			}
+
+			buffer->Seek(0);
+			break;
+		}
+		case eNetworkEvents::NETWORK_PTFX_EVENT:
+		{
+			if (plyr && !plyr->whitelist_ptfx && plyr->m_ptfx_ratelimit.process())
+			{
+				if (plyr->m_ptfx_ratelimit.exceeded_last_process())
+					g_reactions.ptfx_spam.process(plyr);
+
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}

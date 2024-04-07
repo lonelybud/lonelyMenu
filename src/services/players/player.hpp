@@ -71,6 +71,7 @@ namespace big
 		rate_limiter m_play_sound_rate_limit{1s, 10};
 		rate_limiter m_invites_rate_limit{10s, 2};
 		rate_limiter m_radio_request_rate_limit{5s, 2};
+		rate_limiter m_ptfx_ratelimit{1s, 3};
 
 		bool block_radio_requests     = false;
 		bool block_host_migr_requests = false;
@@ -85,6 +86,7 @@ namespace big
 		bool is_blocked           = false;
 		bool is_spammer           = false;
 		bool whitelist_spammer    = false;
+		bool whitelist_ptfx       = false;
 		std::string spam_message  = "";
 		bool is_other             = false;
 		bool is_known_player      = false;

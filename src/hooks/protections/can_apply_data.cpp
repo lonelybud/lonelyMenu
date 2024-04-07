@@ -1311,6 +1311,11 @@ namespace big
 					g_reactions.crash11.process(sender_plyr);
 					return true;
 				}
+				if (protection::is_cage_object(creation_node->m_model))
+				{ // This will trigger for any player caging any player, Due to a issue with m_dummy_position data
+					g_reactions.cage.process(sender_plyr);
+					return true;
+				}
 				break;
 			}
 			case sync_node_id("CPlayerAppearanceDataNode"):

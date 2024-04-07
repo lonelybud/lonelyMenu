@@ -274,6 +274,8 @@ namespace big
 				}
 			}
 
+			ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
+
 			if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
 				g_fiber_pool->queue_job([] {
 					last_selected_player->timeout();
