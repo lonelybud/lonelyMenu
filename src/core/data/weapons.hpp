@@ -12,6 +12,7 @@ namespace big
 		{
 			bool enable_old               = false;
 			bool enable                   = false;
+			bool enable_new               = false;
 			bool player                   = false;
 			float distance                = 1000.f;
 			float max_dist_to_mid_of_scrn = 0.05f;
