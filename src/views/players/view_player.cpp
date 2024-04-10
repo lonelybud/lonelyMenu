@@ -33,6 +33,7 @@ namespace big
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 	static big::player_ptr last_selected_player;
 	static uint64_t rockstar_id;
+	static bool open_gift_veh_model = false;
 
 	static inline const char* get_nat_type_str(int type)
 	{
@@ -354,6 +355,26 @@ namespace big
 		{
 			components::sub_title("Good Options");
 
+			components::button("Set Veh God", [] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
+					{
+						ENTITY::SET_ENTITY_INVINCIBLE(veh, TRUE);
+						g_notification_service.push_error("Success", "Entity is invincible now", false);
+					}
+			});
+			ImGui::SameLine();
+			components::button("Unset Veh God", [] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
+					{
+						ENTITY::SET_ENTITY_INVINCIBLE(veh, FALSE);
+						g_notification_service.push_error("Success", "Entity is not invincible now", false);
+					}
+			});
+
+			components::ver_space();
+
 			components::button("Give Persist Veh", [] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
 					persist_car_service::load_vehicle(std::nullopt, ped);
@@ -361,9 +382,8 @@ namespace big
 
 			components::ver_space();
 
-			components::button("** Gift Veh **", [] {
-				lua_scripts::gift_veh(last_selected_player);
-			});
+			if (components::button("** Gift Veh **"))
+				open_gift_veh_model = true;
 		}
 		ImGui::EndGroup();
 	}
@@ -564,6 +584,30 @@ namespace big
 				render_chat();
 			}
 			ImGui::EndGroup();
+
+			if (open_gift_veh_model)
+				ImGui::OpenPopup("##gift_veh_model");
+			if (ImGui::BeginPopupModal("##gift_veh_model", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
+			{
+				ImGui::Text("Are you sure you want to gift veh");
+				ImGui::Spacing();
+				if (ImGui::Button("Yes"))
+				{
+					g_fiber_pool->queue_job([] {
+						lua_scripts::gift_veh(last_selected_player);
+					});
+
+					open_gift_veh_model = false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("No"))
+				{
+					open_gift_veh_model = false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
 		}
 	}
 }
