@@ -86,5 +86,5 @@ namespace big
 		}
 	};
 
-	aimbot g_aimbot("aimbot", "Aimbot", "", g_weapons.aimbot.enable);
+	aimbot g_aimbot("aimbot", "Aimbot", "Lock on and kill", g_weapons.aimbot.enable);
 }

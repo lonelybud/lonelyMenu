@@ -24,17 +24,14 @@ namespace big
 
 	static inline void render_misc()
 	{
-		ImGui::BeginDisabled(g_weapons.aimbot.enable_old || g_weapons.aimbot.enable);
-		components::command_checkbox<"aimbot2">();
-		ImGui::EndDisabled();
-		ImGui::BeginDisabled(g_weapons.aimbot.enable_old || g_weapons.aimbot.enable_new);
+		ImGui::BeginDisabled(g_weapons.aimbot.enable_old);
 		components::command_checkbox<"aimbot">();
 		ImGui::EndDisabled();
 		ImGui::SameLine();
-		ImGui::BeginDisabled(g_weapons.aimbot.enable || g_weapons.aimbot.enable_new);
+		ImGui::BeginDisabled(g_weapons.aimbot.enable);
 		components::command_checkbox<"aimbot_old">();
 		ImGui::EndDisabled();
-		if (g_weapons.aimbot.enable || g_weapons.aimbot.enable_old || g_weapons.aimbot.enable_new)
+		if (g_weapons.aimbot.enable || g_weapons.aimbot.enable_old)
 		{
 			ImGui::PushItemWidth(350);
 			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");

@@ -224,9 +224,6 @@ namespace big
 		functions::received_clone_remove m_received_clone_remove;
 
 		CWeaponInfoManager* m_weapon_info_manager;
-
-		uintptr_t* m_cam_gameplay_director;
-		functions::cam_gameplay_directory_update m_cam_gameplay_director_update;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");
