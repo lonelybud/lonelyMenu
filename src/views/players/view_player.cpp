@@ -377,7 +377,10 @@ namespace big
 
 			components::button("Give Persist Veh", [] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
+				{
+					g_vehicle.spawn_inside = false;
 					persist_car_service::load_vehicle(std::nullopt, ped);
+				}
 			});
 
 			components::ver_space();

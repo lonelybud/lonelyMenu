@@ -8,6 +8,8 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
+			components::ver_space();
+			components::ver_space();
 			ImGui::PushItemWidth(200);
 			ImGui::Text("Blips:");
 			{
@@ -21,6 +23,8 @@ namespace big
 					teleport::to_objective();
 				});
 			}
+			components::ver_space();
+			components::ver_space();
 			ImGui::Text("Relative Position");
 			{
 				ImGui::Spacing();
@@ -39,6 +43,8 @@ namespace big
 					relative_pos[0] = relative_pos[1] = relative_pos[2] = 0;
 				});
 			}
+			components::ver_space();
+			components::ver_space();
 			ImGui::Text("Coordinates");
 			{
 				ImGui::Spacing();

@@ -90,7 +90,12 @@ namespace big
 						LOG(INFO) << "Player joined : " << join_str;
 
 					if (is_spoofed_host_token(host_token))
+					{
 						g_reactions.spoofed_host_token.process(plyr);
+
+						if (g_player_service->get_self()->is_host() && !is_friend)
+							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
+					}
 				}
 			});
 

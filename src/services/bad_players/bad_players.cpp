@@ -17,7 +17,8 @@ namespace big
 	void bad_players_service::add_player(uint64_t rockstar_id, bad_player player)
 	{
 		bad_players_list[rockstar_id] = player;
-		++save_count;
+		if (player.block_join)
+			++save_count;
 	}
 
 	void bad_players_service::add_player(player_ptr player, bool block_join, bool is_spammer)
