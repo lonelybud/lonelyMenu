@@ -502,25 +502,24 @@ namespace big
 		}
 	}
 
-	static inline void render_chat()
-	{
-		ImGui::BeginGroup();
-		components::sub_title("Chat");
+	// static inline void render_chat()
+	// {
+	// 	ImGui::BeginGroup();
+	// 	components::sub_title("Chat");
 
-		static char temp[256];
-		static char msg[256 - sizeof(priv)];
+	// 	static char temp[256];
+	// 	static char msg[256 - sizeof(priv)];
 
-		ImGui::SetNextItemWidth(200);
-		components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
-		if (components::button("Send Message"))
-			g_fiber_pool->queue_job([] {
-				strcpy(temp, priv);
-				strcat(temp, msg);
-				chat::send_message(temp, last_selected_player, false, true);
-			});
-
-		ImGui::EndGroup();
-	}
+	// 	ImGui::SetNextItemWidth(200);
+	// 	components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
+	// 	if (components::button("Send Message"))
+	// 		g_fiber_pool->queue_job([] {
+	// 			strcpy(temp, priv);
+	// 			strcat(temp, msg);
+	// 			chat::send_message(temp, last_selected_player, false, true);
+	// 		});
+	// 	ImGui::EndGroup();
+	// }
 
 	void view::view_player()
 	{
@@ -591,9 +590,8 @@ namespace big
 			{
 				render_toxic();
 
-				components::ver_space();
-
-				render_chat();
+				// components::ver_space();
+				// render_chat();
 			}
 			ImGui::EndGroup();
 

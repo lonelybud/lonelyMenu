@@ -13,16 +13,16 @@ namespace big
 
 		ImGui::Checkbox("Log Messages (to textbox)", &g_session.log_chat_messages_to_textbox);
 
-		ImGui::Spacing();
+		// ImGui::Spacing();
 
-		ImGui::SetNextItemWidth(300);
-		components::input_text_with_hint("##message", "Message", msg, sizeof(msg));
-		ImGui::Checkbox("Is Team Message", &is_team);
-		ImGui::SameLine();
-		if (components::button("Send Message"))
-			g_fiber_pool->queue_job([] {
-				chat::send_message(msg, nullptr, is_team, true);
-			});
+		// ImGui::SetNextItemWidth(300);
+		// components::input_text_with_hint("##message", "Message", msg, sizeof(msg));
+		// ImGui::Checkbox("Is Team Message", &is_team);
+		// ImGui::SameLine();
+		// if (components::button("Send Message"))
+		// 	g_fiber_pool->queue_job([] {
+		// 		chat::send_message(msg, nullptr, is_team, true);
+		// 	});
 
 		ImGui::Spacing();
 

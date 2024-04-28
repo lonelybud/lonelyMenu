@@ -41,45 +41,45 @@ namespace big::chat
 		HUD::CLOSE_MP_TEXT_CHAT();
 	}
 
-	static void gamer_handle_serialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
-	{
-		buf.Write<uint8_t>(hnd.m_platform, sizeof(hnd.m_platform) * 8);
-		if (hnd.m_platform == rage::rlPlatforms::PC)
-		{
-			buf.WriteRockstarId(hnd.m_rockstar_id);
-			buf.Write<uint8_t>(hnd.m_padding, sizeof(hnd.m_padding) * 8);
-		}
-	}
+	// static void gamer_handle_serialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
+	// {
+	// 	buf.Write<uint8_t>(hnd.m_platform, sizeof(hnd.m_platform) * 8);
+	// 	if (hnd.m_platform == rage::rlPlatforms::PC)
+	// 	{
+	// 		buf.WriteRockstarId(hnd.m_rockstar_id);
+	// 		buf.Write<uint8_t>(hnd.m_padding, sizeof(hnd.m_padding) * 8);
+	// 	}
+	// }
 
-	inline void send_message(char* message, player_ptr target, bool is_team, bool draw)
-	{
-		if (!*g_pointers->m_gta.m_is_session_started)
-			return;
+	// inline void send_message(char* message, player_ptr target, bool is_team, bool draw)
+	// {
+	// 	if (!*g_pointers->m_gta.m_is_session_started)
+	// 		return;
 
-		packet msg{};
-		msg.write_message(rage::eNetMessage::MsgTextMessage);
-		msg.m_buffer.WriteString(message, 256);
-		gamer_handle_serialize(g_player_service->get_self()->get_net_data()->m_gamer_handle, msg.m_buffer);
-		msg.write<bool>(is_team, 1);
+	// 	packet msg{};
+	// 	msg.write_message(rage::eNetMessage::MsgTextMessage);
+	// 	msg.m_buffer.WriteString(message, 256);
+	// 	gamer_handle_serialize(g_player_service->get_self()->get_net_data()->m_gamer_handle, msg.m_buffer);
+	// 	msg.write<bool>(is_team, 1);
 
-		for (auto& player : g_player_service->players())
-			if (player.second && player.second->is_valid())
-			{
-				if (target && player.second != target)
-					continue;
+	// 	for (auto& player : g_player_service->players())
+	// 		if (player.second && player.second->is_valid())
+	// 		{
+	// 			if (target && player.second != target)
+	// 				continue;
 
-				if (!target && is_team && !is_player_same_team(player.second->id()))
-					continue;
+	// 			if (!target && is_team && !is_player_same_team(player.second->id()))
+	// 				continue;
 
-				msg.send(player.second->get_net_game_player()->m_msg_id);
-			}
+	// 			msg.send(player.second->get_net_game_player()->m_msg_id);
+	// 		}
 
-		if (g_session.log_chat_messages_to_textbox)
-			g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
+	// 	if (g_session.log_chat_messages_to_textbox)
+	// 		g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
 
-		if (draw)
-			g_fiber_pool->queue_job([message, is_team] {
-				draw_chat(message, g_player_service->get_self()->get_name(), is_team);
-			});
-	}
+	// 	if (draw)
+	// 		g_fiber_pool->queue_job([message, is_team] {
+	// 			draw_chat(message, g_player_service->get_self()->get_name(), is_team);
+	// 		});
+	// }
 }
