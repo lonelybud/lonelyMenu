@@ -14,7 +14,7 @@ namespace big
 		return g_file_manager.get_project_file("blocked_players.json").get_path();
 	}
 
-	void bad_players_service::add_player(uint64_t rockstar_id, bad_player player)
+	void bad_players_service::add_player(int64_t rockstar_id, bad_player player)
 	{
 		bad_players_list[rockstar_id] = player;
 		if (player.block_join)
@@ -33,19 +33,19 @@ namespace big
 		}
 	}
 
-	void bad_players_service::toggle_block(uint64_t rockstar_id, bool v)
+	void bad_players_service::toggle_block(int64_t rockstar_id, bool v)
 	{
 		bad_players_list[rockstar_id].block_join = v;
 		++save_count;
 	}
 
-	bool bad_players_service::is_blocked(uint64_t rockstar_id)
+	bool bad_players_service::is_blocked(int64_t rockstar_id)
 	{
 		auto bad_player = bad_players_list.find(rockstar_id);
 		return bad_player != bad_players_list.end() && bad_player->second.block_join;
 	}
 
-	bool bad_players_service::does_exist(uint64_t rockstar_id)
+	bool bad_players_service::does_exist(int64_t rockstar_id)
 	{
 		auto bad_player = bad_players_list.find(rockstar_id);
 		return bad_player != bad_players_list.end();

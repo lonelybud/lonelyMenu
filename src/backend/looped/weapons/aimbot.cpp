@@ -37,14 +37,15 @@ namespace big
 						continue;
 
 					Vector3 pos      = ENTITY::GET_ENTITY_COORDS(ent, 0);
-					Vector3 bone_pos = PED::GET_PED_BONE_COORDS(ent, (int)PedBones::SKEL_Head, 0, 0, 0);
+					Vector3 bone_pos = PED::GET_PED_BONE_COORDS(ent, (int)g_weapons.aimbot.bone, 0, 0, 0);
 
 					float distance_between_target = SYSTEM::VDIST2(self::pos.x, self::pos.y, self::pos.z, pos.x, pos.y, pos.z);
 
 					if (distance_between_target > (g_weapons.aimbot.distance * g_weapons.aimbot.distance))
 						continue;
 
-					if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY_ADJUST_FOR_COVER(self::ped, ent, 17))
+					constexpr int trace_flags = eTraceFlags::IntersectWorld | eTraceFlags::IntersectObject;
+					if (!ENTITY::HAS_ENTITY_CLEAR_LOS_TO_ENTITY(self::ped, ent, trace_flags))
 						continue;
 
 					rage::fvector2 screen_pos;

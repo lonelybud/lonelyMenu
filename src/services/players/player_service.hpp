@@ -6,7 +6,7 @@
 namespace big
 {
 	using player_entry = std::pair<uint8_t, player_ptr>;
-	using players      = std::multimap<uint8_t, player_ptr>;
+	using players      = std::map<uint8_t, player_ptr>;
 
 	class player_service final
 	{
@@ -36,7 +36,7 @@ namespace big
 		[[nodiscard]] player_ptr get_by_host_token(uint64_t token) const;
 		[[nodiscard]] player_ptr get_selected() const;
 
-		player_ptr player_join(CNetGamePlayer* net_game_player, uint64_t host_token);
+		void player_join(CNetGamePlayer* net_game_player, uint64_t host_token);
 		void player_leave(CNetGamePlayer* net_game_player);
 
 		players& players()

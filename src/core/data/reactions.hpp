@@ -111,7 +111,7 @@ namespace big
 		reaction request_control_event{reaction_type::none, reaction_sub_type::request_control_event, "Request Control Event", "Received Request Control Event", false, true, false, 2};
 		reaction remove_weapon{reaction_type::none, reaction_sub_type::remove_weapon, "Remove Weapon", "Received Remove Weapon", true, true, false};
 		reaction give_weapon{reaction_type::none, reaction_sub_type::give_weapon, "Give Weapon", "Received Give Weapon", true, true, false};
-		reaction cage{reaction_type::none, reaction_sub_type::cage, "Cage", "Received Cage", true, true, false};
-		reaction ptfx_spam{reaction_type::none, reaction_sub_type::ptfx_spam, "Ptfx Spam", "Received Ptfx Spam", true, true, false};
+		reaction cage{reaction_type::none, reaction_sub_type::cage, "Cage", "Received Cage", true, false, false};
+		reaction ptfx_spam{reaction_type::none, reaction_sub_type::ptfx_spam, "Ptfx Spam", "Received Ptfx Spam", true, false, false};
 	} g_reactions{};
 }

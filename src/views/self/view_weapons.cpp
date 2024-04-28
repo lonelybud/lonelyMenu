@@ -38,6 +38,10 @@ namespace big
 			ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
 			ImGui::PopItemWidth();
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
+
+			static bool head = g_weapons.aimbot.bone == PedBones::SKEL_Head;
+			if (ImGui::Checkbox("Aimbot Head", &head))
+				g_weapons.aimbot.bone = head ? PedBones::SKEL_Head : PedBones::SKEL_Spine3;
 		}
 
 		ImGui::Spacing();

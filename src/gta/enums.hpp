@@ -2074,3 +2074,18 @@ enum ComponentId : int
 	DECALS,
 	AUXILIARY
 };
+
+enum eTraceFlags : uint32_t
+{
+	IntersectNone               = 0,
+	IntersectWorld              = 1 << 0,
+	IntersectVehicle            = 1 << 1,
+	IntersectPedSimpleCollision = 1 << 2,
+	IntersectPed                = 1 << 3,
+	IntersectObject             = 1 << 4,
+	IntersectPickup             = 1 << 5,
+	IntersectGlass              = 1 << 6,
+	IntersectWater              = 1 << 7,
+	IntersectFoliage            = 1 << 8,
+	IntersectEverything         = eTraceFlags(-1),
+};

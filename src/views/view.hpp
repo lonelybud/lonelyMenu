@@ -24,6 +24,7 @@ namespace big
 		static void ptfx_effects();
 		static void network();
 		static void bad_players();
+		static void known_players();
 		static void chat();
 		static void vehicle();
 		static void lsc();

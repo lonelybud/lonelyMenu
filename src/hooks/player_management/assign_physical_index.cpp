@@ -28,7 +28,6 @@ namespace big
 
 		auto rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
 		auto host_token  = net_player_data->m_host_token;
-		bool is_host     = player->is_host();
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
@@ -41,23 +40,33 @@ namespace big
 		}
 
 		const auto result = g_hooking->get_original<hooks::assign_physical_index>()(netPlayerMgr, player, new_index);
+		auto id           = player->m_player_id;
 
-		auto plyr = (player == g_player_service->get_self()->get_net_game_player()) ? nullptr : g_player_service->player_join(player, host_token);
-
-		if (!plyr || !is_host)
-			g_session.next_host_list.insert_plyr(player->m_player_id, host_token, net_player_data->m_name);
-
-		if (plyr)
-			g_fiber_pool->queue_job([plyr, rockstar_id, host_token, is_host] {
-				if (plyr && plyr->is_valid())
+		if (player == g_player_service->get_self()->get_net_game_player())
+		{
+			g_session.next_host_list.insert_plyr(id, host_token, net_player_data->m_name);
+			LOG(INFO) << "You joined the session.";
+		}
+		else
+		{
+			g_player_service->player_join(player, host_token);
+			g_fiber_pool->queue_job([id, rockstar_id, host_token] {
+				if (auto plyr = g_player_service->get_by_id(id); plyr && plyr->is_valid())
 				{
 					auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
 					auto is_known    = g_known_players_service.is_known(rockstar_id);
 					auto is_friend   = plyr->is_friend();
 					auto player_name = plyr->get_name();
 					auto id          = plyr->id();
+					auto is_host     = plyr->is_host();
+
+					if (!plyr->is_host())
+						g_session.next_host_list.insert_plyr(id, host_token, plyr->get_name());
 
 					auto join_str = std::format("'{}'{}, slot #{}, RID: {}", player_name, is_host ? "(host)" : "", id, rockstar_id);
+
+					if (is_known)
+						plyr->is_known_player = true;
 
 					if (is_blocked)
 					{
@@ -82,12 +91,9 @@ namespace big
 						}
 					}
 					else if (is_known)
-					{
-						plyr->is_known_player = true;
 						g_notification_service.push_warning("Known Player Joined", join_str, true);
-					}
 					else
-						LOG(INFO) << "Player joined : " << join_str;
+						LOG(INFO) << "Player joined: " << join_str;
 
 					if (is_spoofed_host_token(host_token))
 					{
@@ -98,6 +104,7 @@ namespace big
 					}
 				}
 			});
+		}
 
 		return result;
 	}

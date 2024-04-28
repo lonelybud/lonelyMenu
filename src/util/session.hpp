@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/session.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "script.hpp"
@@ -6,6 +7,7 @@
 #include "util/globals.hpp"
 #include "util/misc.hpp"
 
+#include <network/CCommunications.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 
 namespace big::session
@@ -68,5 +70,36 @@ namespace big::session
 		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(361).at(idx, 1).as<int*>(), bit);
 		misc::clear_bit(scr_globals::gsbd_fm_events.at(11).at(353).at(idx, 1).as<int*>(), bit);
 		misc::clear_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
+	}
+
+	inline void set_host_tokens()
+	{
+		auto token                = *g_pointers->m_gta.m_host_token;
+		g_session.orig_host_token = g_session.host_token = token;
+		LOGF(VERBOSE, "Your host token is: {}", token);
+	}
+
+	inline void change_host_token()
+	{
+		auto host_token = g_session.host_token;
+
+		LOG(VERBOSE) << "Last host token: " << *g_pointers->m_gta.m_host_token;
+
+		if (host_token == g_session.orig_host_token)
+			LOG(VERBOSE) << "Using original host token: " << host_token;
+		else
+			LOG(VERBOSE) << "Using custom host token: " << host_token;
+
+		*g_pointers->m_gta.m_host_token = host_token;
+
+		if (gta_util::get_network()->m_game_session_ptr)
+			gta_util::get_network()->m_game_session_ptr->m_local_player.m_player_data.m_host_token = host_token;
+
+		g_pointers->m_gta.m_profile_gamer_info->m_host_token                                       = host_token;
+		g_pointers->m_gta.m_player_info_gamer_info->m_host_token                                   = host_token;
+		(*g_pointers->m_gta.m_communications)->m_voice.m_connections[0]->m_gamer_info.m_host_token = host_token;
+
+		if (g_local_player->m_player_info)
+			g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
 	}
 }

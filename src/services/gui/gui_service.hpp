@@ -24,6 +24,7 @@ namespace big
 
 		NETWORK,
 		BAD_PLAYERS,
+		KNOWN_PLAYERS,
 		CHAT,
 		SETTINGS,
 		ESP_SETTINGS,
@@ -87,6 +88,7 @@ namespace big
 		            {
 		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
 		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
+		                {tabs::KNOWN_PLAYERS, {"Known Players", view::known_players}},
 		                {tabs::CHAT, {"Chat", view::chat}},
 		            },
 		        },

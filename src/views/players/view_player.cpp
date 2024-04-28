@@ -30,9 +30,10 @@
 
 namespace big
 {
+	static constexpr char priv[]           = "[PRIVATE]: ";
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 	static big::player_ptr last_selected_player;
-	static uint64_t rockstar_id;
+	static int64_t rockstar_id;
 	static bool open_gift_veh_model = false;
 
 	static inline const char* get_nat_type_str(int type)
@@ -115,10 +116,10 @@ namespace big
 					    ImGui::Spacing();
 					    ImGui::Text("NAT Type: %s", get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type));
 
-					    auto ip   = (last_selected_player == g_player_service->get_self()) ?
+					    auto ip   = last_selected_player == g_player_service->get_self() ?
 					          last_selected_player->get_net_data()->m_external_ip :
 					          last_selected_player->get_ip_address();
-					    auto port = (last_selected_player == g_player_service->get_self()) ?
+					    auto port = last_selected_player == g_player_service->get_self() ?
 					        last_selected_player->get_net_data()->m_external_port :
 					        last_selected_player->get_port();
 
@@ -132,13 +133,12 @@ namespace big
 						        port);
 						    ImGui::SameLine();
 						    if (ImGui::SmallButton("copy##copyip"))
-							    ImGui::SetClipboardText(std::format("{}{}.{}.{}.{}:{}",
+							    ImGui::SetClipboardText(std::format("{}{}.{}.{}.{}",
 							        ip_viewer_link,
 							        ip.value().m_field1,
 							        ip.value().m_field2,
 							        ip.value().m_field3,
-							        ip.value().m_field4,
-							        port)
+							        ip.value().m_field4)
 							                                .c_str());
 					    }
 					    else if (auto net_player_data = last_selected_player->get_net_data())
@@ -168,10 +168,13 @@ namespace big
 						    }
 					    }
 
-					    ImGui::Text("Host token: %llu", last_selected_player->m_host_token);
-					    ImGui::SameLine();
-					    if (ImGui::SmallButton("copy##copyHtoken"))
-						    ImGui::SetClipboardText(std::format("{}", last_selected_player->m_host_token).c_str());
+					    if (last_selected_player != g_player_service->get_self())
+					    {
+						    ImGui::Text("Host token: %llu", last_selected_player->m_host_token);
+						    ImGui::SameLine();
+						    if (ImGui::SmallButton("copy##copyHtoken"))
+							    ImGui::SetClipboardText(std::format("{}", last_selected_player->m_host_token).c_str());
+					    }
 				    }
 				    ImGui::EndGroup();
 				    ImGui::SameLine();
@@ -220,11 +223,14 @@ namespace big
 
 				    ImGui::Separator();
 
-				    ImGui::Checkbox("Block Explosions", &last_selected_player->block_explosions);
-				    ImGui::Checkbox("Block Clone Creates", &last_selected_player->block_clone_create);
-				    ImGui::Checkbox("Block Clone Syncs", &last_selected_player->block_clone_sync);
-				    ImGui::Checkbox("Block Network Events", &last_selected_player->block_net_events);
-				    ImGui::Checkbox("Log Clones", &last_selected_player->log_clones);
+				    if (last_selected_player != g_player_service->get_self())
+				    {
+					    ImGui::Checkbox("Block Explosions", &last_selected_player->block_explosions);
+					    ImGui::Checkbox("Block Clone Creates", &last_selected_player->block_clone_create);
+					    ImGui::Checkbox("Block Clone Syncs", &last_selected_player->block_clone_sync);
+					    ImGui::Checkbox("Block Network Events", &last_selected_player->block_net_events);
+					    ImGui::Checkbox("Log Clones", &last_selected_player->log_clones);
+				    }
 			    }
 		    },
 		    false,
@@ -501,13 +507,16 @@ namespace big
 		ImGui::BeginGroup();
 		components::sub_title("Chat");
 
-		static char msg[256];
+		static char temp[256];
+		static char msg[256 - sizeof(priv)];
 
 		ImGui::SetNextItemWidth(200);
 		components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
 		if (components::button("Send Message"))
 			g_fiber_pool->queue_job([] {
-				chat::send_message(msg, last_selected_player, false, true);
+				strcpy(temp, priv);
+				strcat(temp, msg);
+				chat::send_message(temp, last_selected_player, false, true);
 			});
 
 		ImGui::EndGroup();

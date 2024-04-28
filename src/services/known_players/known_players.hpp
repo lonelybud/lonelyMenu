@@ -20,9 +20,11 @@ namespace big
 		std::filesystem::path get_file_path();
 		void load_list();
 		void save_list();
+		inline void add(std::string name, int64_t rockstar_id);
 		void add(player_ptr player);
+		inline void remove(int64_t rockstar_id);
 		void remove(player_ptr player);
-		bool is_known(uint64_t rockstar_id);
+		bool is_known(int64_t rockstar_id);
 	};
 
 	inline known_players_service g_known_players_service;

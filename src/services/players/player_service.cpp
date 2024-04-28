@@ -59,13 +59,21 @@ namespace big
 		return m_self_ptr;
 	}
 
-	player_ptr player_service::player_join(CNetGamePlayer* net_game_player, uint64_t host_token)
+	void player_service::player_join(CNetGamePlayer* net_game_player, uint64_t host_token)
 	{
-		auto plyr = std::make_shared<player>(net_game_player, host_token);
-		auto itr  = m_players.insert({plyr->id(), std::move(plyr)});
-		g_gui_info.update_gui_info();
+		if (net_game_player == nullptr)
+		{
+			LOG(WARNING) << "net_game_player is nullptr";
+			return;
+		}
 
-		return itr->second;
+		auto plyr = std::make_shared<player>(net_game_player, host_token);
+
+		const auto [pair, inserted] = m_players.insert({plyr->id(), std::move(plyr)});
+		if (!inserted)
+			LOG(WARNING) << plyr->id() << " alreay exists. Not adding new player - " << net_game_player->get_name();
+
+		g_gui_info.update_gui_info();
 	}
 
 	void player_service::player_leave(CNetGamePlayer* net_game_player)

@@ -48,28 +48,31 @@ namespace big
 		}
 	}
 
+	inline void known_players_service::add(std::string name, int64_t rockstar_id)
+	{
+		known_players_list[rockstar_id] = {name, rockstar_id};
+		++save_count;
+	}
+
 	void known_players_service::add(player_ptr player)
 	{
 		if (auto net_data = player->get_net_data())
-		{
-			auto rockstar_id                = net_data->m_gamer_handle.m_rockstar_id;
-			auto name                       = net_data->m_name;
-			known_players_list[rockstar_id] = {name, rockstar_id};
-			++save_count;
-		}
+			add(net_data->m_name, net_data->m_gamer_handle.m_rockstar_id);
+	}
+
+	inline void known_players_service::remove(int64_t rockstar_id)
+	{
+		known_players_list.erase(rockstar_id);
+		++save_count;
 	}
 
 	void known_players_service::remove(player_ptr player)
 	{
 		if (auto net_data = player->get_net_data())
-		{
-			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-			known_players_list.erase(rockstar_id);
-			++save_count;
-		}
+			remove(net_data->m_gamer_handle.m_rockstar_id);
 	}
 
-	bool known_players_service::is_known(uint64_t rockstar_id)
+	bool known_players_service::is_known(int64_t rockstar_id)
 	{
 		return known_players_list.find(rockstar_id) != known_players_list.end();
 	}

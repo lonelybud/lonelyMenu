@@ -157,6 +157,11 @@ namespace big
 			else if (!preparing_veh)
 			{
 				ImGui::Text(veh_name.c_str());
+				ImGui::SameLine();
+				components::button("Refresh###curr_veh", [] {
+					current_veh = -1;
+				});
+
 				ImGui::Spacing();
 				{
 					static char plate[9];

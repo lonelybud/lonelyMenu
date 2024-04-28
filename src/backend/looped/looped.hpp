@@ -14,7 +14,6 @@ namespace big
 		static void update_globals();
 		static void hud_disable_input();
 		static void system_desync_kick_protection();
-		static void host_token_spoofing();
 		static void death_check();
 		static void vehicle_auto_drive();
 		static void self_host_notify();

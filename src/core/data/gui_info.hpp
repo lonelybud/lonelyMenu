@@ -1,5 +1,6 @@
 #pragma once
 #include "../settings/window.hpp"
+#include "gui.hpp"
 #include "pointers.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
@@ -37,6 +38,9 @@ namespace big
 
 		inline void update_gui_info()
 		{
+			if (!g_gui->is_open())
+				return;
+
 			auto font_size = ImGui::GetFontSize();
 			auto nav_count = g_gui_service->get_rendered_navs_count();
 

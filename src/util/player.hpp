@@ -46,19 +46,26 @@ namespace big
 
 		// you are driver
 		if (g_local_player->m_vehicle->m_driver && g_local_player->m_vehicle->m_driver == g_local_player)
+		{
+			g_log.log_additional("player_is_driver 1");
 			return false;
+		}
 
 		if (auto driver =
 		        g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver)
 		{
 			// driver is a player present in session
 			if (driver->m_player_info && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
+			{
+				g_log.log_additional(std::format("player_is_driver 2, {}", driver->m_player_info->m_net_player_data.m_name));
 				return driver == target_plyr->get_ped();
+			}
 
 			// driver exists but is not a valid player
 			return true;
 		}
 
+		g_log.log_additional("player_is_driver 3");
 		return false;
 	}
 
@@ -92,24 +99,12 @@ namespace big
 		return false;
 	}
 
-	inline bool is_player_our_boss(Player sender)
+	inline bool is_player_our_boss(Player id)
 	{
-		auto boss_goon = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon;
-
-		if (boss_goon.Boss != -1)
-		{
-			if (sender == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
-				return true;
-
-			for (int i = 0; i < boss_goon.Goons.Size; ++i)
-				if (boss_goon.Goons[i] == sender)
-					return true;
-		}
-
-		return false;
+		return id == scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss;
 	}
 
-	inline bool is_player_same_team(uint8_t player_id)
+	inline bool is_player_same_team(Player player_id)
 	{
 		if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
 			// mission

@@ -6,6 +6,7 @@
 #include "script_patches.hpp"
 #include "services/context_menu/context_menu_service.hpp"
 #include "services/tunables/tunables_service.hpp"
+#include "util/session.hpp"
 
 namespace big
 {
@@ -17,7 +18,6 @@ namespace big
 		{
 			looped::update_globals();
 			looped::system_desync_kick_protection();
-			looped::host_token_spoofing();
 
 			for (auto command : g_looped_commands)
 				if (command->is_enabled())
@@ -29,6 +29,7 @@ namespace big
 
 	void backend::misc_loop()
 	{
+		session::set_host_tokens();
 		g_tunables_service->run_script(); // blocking until tuneables are loaded
 		looped::custom_thread();          // non-blocking
 

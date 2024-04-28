@@ -3,6 +3,7 @@
 #include "gta_util.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "util/scripts.hpp"
+#include "util/session.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -23,10 +24,24 @@ namespace big
 	{
 		components::sub_title("Session Host");
 
+		auto network = gta_util::get_network();
+
+		ImGui::Text("Custom Host Token: ");
+
+		ImGui::BeginDisabled(network && network->m_game_session_state != 0);
+
 		ImGui::SetNextItemWidth(150);
-		ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.host_token);
-		if (components::button("Restore Host token"))
+		if (ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.host_token))
+			g_fiber_pool->queue_job([] {
+				session::change_host_token();
+			});
+
+		components::button("Restore Host token", [] {
 			g_session.host_token = g_session.orig_host_token;
+			session::change_host_token();
+		});
+
+		ImGui::EndDisabled();
 
 		ImGui::Spacing();
 		components::button("Clear all players infractions", [] {

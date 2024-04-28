@@ -71,7 +71,7 @@ namespace big
 
 	void looped::ptfx_loop()
 	{
-		static bool disabled               = false;
+		static bool disabled               = true;
 		static const char* current_fx_name = nullptr;
 
 		if (g_ptfx_effects.show)
