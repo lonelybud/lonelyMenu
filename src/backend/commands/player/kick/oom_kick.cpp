@@ -15,7 +15,7 @@ namespace big
 			if (!player)
 				return;
 
-			g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->get_name()), true);
+			g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->m_name), true);
 
 			packet msg{};
 

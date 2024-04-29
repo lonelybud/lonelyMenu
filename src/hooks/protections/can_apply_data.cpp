@@ -337,9 +337,9 @@ namespace big
 	void log_node(const sync_node_id& node_id, player_ptr sender, CProjectBaseSyncDataNode* node, rage::netObject* object)
 	{
 		if (object)
-			g_log.log_additional(std::format("{}: {}, {}", sender->get_name(), node_id.name, object->m_object_id));
+			g_log.log_additional(std::format("{}: {}, {}", sender->m_name, node_id.name, object->m_object_id));
 		else
-			g_log.log_additional(std::format("{}: {}", sender->get_name(), node_id.name));
+			g_log.log_additional(std::format("{}: {}", sender->m_name, node_id.name));
 
 		switch (node_id)
 		{
@@ -1486,7 +1486,7 @@ namespace big
 					{
 						if (is_local_player_an_occupant(migration_node)) // remote teleport
 						{
-							LOG(WARNING) << "CVehProxMigDataNode from " << sender_plyr->get_name();
+							LOG(WARNING) << "CVehProxMigDataNode from " << sender_plyr->m_name;
 							return true;
 						}
 					}

@@ -64,7 +64,7 @@ namespace big
 
 						std::ofstream pv_list(
 						    g_file_manager
-						        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->get_name()))
+						        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->m_name))
 						        .get_path(),
 						    std::ios_base::out | std::ios_base::trunc);
 						for (const auto& it : g_mobile_service->personal_vehicles)
@@ -88,7 +88,7 @@ namespace big
 
 							std::ofstream wp_list(
 							    g_file_manager
-							        .get_project_file(std::format("./wp_list_{}.txt", g_player_service->get_self()->get_name()))
+							        .get_project_file(std::format("./wp_list_{}.txt", g_player_service->get_self()->m_name))
 							        .get_path(),
 							    std::ios_base::out | std::ios_base::trunc);
 							for (const auto& w : weapons)

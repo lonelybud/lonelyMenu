@@ -114,7 +114,7 @@ namespace big
 					    ImGui::Text("Rockstar dev (dev dlc check, yim): %d", globalplayer_bd.IsRockstarDev);
 
 					    ImGui::Spacing();
-					    ImGui::Text("NAT Type: %s", get_nat_type_str(g_player_service->get_selected()->get_net_data()->m_nat_type));
+					    ImGui::Text("NAT Type: %s", get_nat_type_str(last_selected_player->get_net_data()->m_nat_type));
 
 					    auto ip   = last_selected_player == g_player_service->get_self() ?
 					          last_selected_player->get_net_data()->m_external_ip :
@@ -190,7 +190,7 @@ namespace big
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
 					    if (last_selected_player->last_killed_by && last_selected_player->last_killed_by->is_valid())
-						    ImGui::Text("Last killed by: %s", last_selected_player->last_killed_by->get_name());
+						    ImGui::Text("Last killed by: %s", last_selected_player->last_killed_by->m_name);
 
 					    ImGui::Spacing();
 
@@ -248,7 +248,7 @@ namespace big
 			extra_info_button();
 			ImGui::SameLine();
 			if (components::button("Copy Name & SC id##copyname"))
-				ImGui::SetClipboardText(std::format("{} {}", last_selected_player->get_name(), rockstar_id).c_str());
+				ImGui::SetClipboardText(std::format("{} {}", last_selected_player->m_name, rockstar_id).c_str());
 		}
 		ImGui::EndGroup();
 	}
@@ -313,7 +313,7 @@ namespace big
 					auto blips = g_pointers->m_gta.m_blip_list->m_Blips;
 					for (int i = 0; i < 1500; i++)
 						if (auto blip = blips[i].m_pBlip;
-						    blip && blip->m_message && !strcmp(blip->m_message, last_selected_player->get_name()))
+						    blip && blip->m_message && !strcmp(blip->m_message, last_selected_player->m_name))
 							return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
 
 					return g_notification_service.push_error("Failed", "Player in interior. Try open map and try again.");
@@ -417,7 +417,7 @@ namespace big
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
 				{
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
-						persist_car_service::clone_ped_car(veh, last_selected_player->get_name());
+						persist_car_service::clone_ped_car(veh, last_selected_player->m_name);
 					else
 						g_notification_service.push_error("Copy Vehicle", "Failed to get veh", false);
 				}
@@ -525,16 +525,16 @@ namespace big
 	{
 		ImGui::Spacing();
 
-		if (g_player_service->get_selected()->is_valid())
-		{
-			player_ptr current_player = g_player_service->get_selected();
+		auto current_player = g_player_service->get_selected();
 
+		if (current_player && current_player->is_valid())
+		{
 			if (last_selected_player != current_player)
 			{
 				last_selected_player          = current_player;
 				navigation_struct& player_tab = g_gui_service->get_navigation().at(tabs::PLAYER);
 
-				strcpy(player_tab.name, last_selected_player->id() == self::id ? "you" : last_selected_player->get_name());
+				strcpy(player_tab.name, last_selected_player->id() == self::id ? "you" : last_selected_player->m_name);
 				strcat(player_tab.name, std::format(" ({})", std::to_string(last_selected_player->id())).data());
 
 				if (last_selected_player->is_host())

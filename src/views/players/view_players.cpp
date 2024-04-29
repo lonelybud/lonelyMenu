@@ -63,7 +63,7 @@ namespace big
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.0, 0.5});
 		ImGui::PushID(plyr->id());
 
-		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->get_name(), {g_gui_info.plr_btn_width, 0.f}))
+		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->m_name, {g_gui_info.plr_btn_width, 0.f}))
 		{
 			g_player_service->set_selected(plyr);
 			g_gui_service->set_selected(tabs::PLAYER);
@@ -119,7 +119,7 @@ namespace big
 				for (const auto& [_, player] : g_player_service->players())
 					if (search_player_name.length())
 					{
-						std::string lower_case_name = player->get_name();
+						std::string lower_case_name = player->m_name;
 						std::transform(lower_case_name.begin(), lower_case_name.end(), lower_case_name.begin(), ::tolower);
 
 						if (lower_case_name.find(search_player_name) != std::string::npos)

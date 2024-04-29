@@ -56,12 +56,12 @@ namespace big
 					auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
 					auto is_known    = g_known_players_service.is_known(rockstar_id);
 					auto is_friend   = plyr->is_friend();
-					auto player_name = plyr->get_name();
+					auto player_name = plyr->m_name;
 					auto id          = plyr->id();
 					auto is_host     = plyr->is_host();
 
 					if (!plyr->is_host())
-						g_session.next_host_list.insert_plyr(id, host_token, plyr->get_name());
+						g_session.next_host_list.insert_plyr(id, host_token, player_name);
 
 					auto join_str = std::format("'{}'{}, slot #{}, RID: {}", player_name, is_host ? "(host)" : "", id, rockstar_id);
 

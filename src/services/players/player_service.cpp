@@ -8,8 +8,7 @@
 namespace big
 {
 	player_service::player_service() :
-	    m_self(nullptr),
-	    m_selected_player(m_dummy)
+	    m_self(nullptr)
 	{
 		const auto network_player_mgr = gta_util::get_network_player_mgr();
 
@@ -26,7 +25,7 @@ namespace big
 	{
 		m_player_to_use_end_session_kick.reset();
 		m_player_to_use_complaint_kick.reset();
-		m_selected_player = m_dummy;
+		m_selected_player = nullptr;
 		m_players.clear();
 		g_gui_info.update_gui_info();
 	}
@@ -46,6 +45,14 @@ namespace big
 		return nullptr;
 	}
 
+	player_ptr player_service::get_by_name(char* name) const
+	{
+		for (const auto& [_, player] : m_players)
+			if (player && strcmp(player->m_name, name) == 0)
+				return player;
+		return nullptr;
+	}
+
 	player_ptr player_service::get_selected() const
 	{
 		return m_selected_player;
@@ -54,7 +61,10 @@ namespace big
 	player_ptr player_service::get_self()
 	{
 		if (!m_self_ptr || !m_self_ptr->equals(*m_self))
+		{
 			m_self_ptr = std::make_shared<player>(*m_self, 0);
+			LOG(VERBOSE) << "Created self player";
+		}
 
 		return m_self_ptr;
 	}
@@ -82,7 +92,7 @@ namespace big
 			return;
 
 		if (m_selected_player && m_selected_player->equals(net_game_player))
-			m_selected_player = m_dummy;
+			m_selected_player = nullptr;
 
 		if (auto it = std::find_if(m_players.begin(),
 		        m_players.end(),

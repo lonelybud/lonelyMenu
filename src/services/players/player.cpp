@@ -12,6 +12,9 @@ namespace big
 	    m_host_token(host_token)
 	{
 		m_is_friend = friends_service::is_friend(net_game_player);
+
+		if (net_game_player)
+			strcpy(m_name, net_game_player->get_name());
 	}
 
 	CVehicle* player::get_current_vehicle() const
@@ -20,11 +23,6 @@ namespace big
 			if (const auto vehicle = ped->m_vehicle; vehicle != nullptr)
 				return vehicle;
 		return nullptr;
-	}
-
-	const char* player::get_name() const
-	{
-		return m_net_game_player == nullptr ? "" : m_net_game_player->get_name();
 	}
 
 	rage::rlGamerInfo* player::get_net_data() const
@@ -145,7 +143,7 @@ namespace big
 
 	std::string player::to_lowercase_identifier() const
 	{
-		std::string lower = this->get_name();
+		std::string lower = this->m_name;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
 		return lower;
@@ -158,6 +156,6 @@ namespace big
 		this->block_clone_create = this->timed_out;
 		this->block_explosions   = this->timed_out;
 
-		LOGF(WARNING, "Timeout player '{}' : {}", this->get_name(), this->timed_out ? "true" : "false");
+		LOGF(WARNING, "Timeout player '{}' : {}", this->m_name, this->timed_out ? "true" : "false");
 	}
 }

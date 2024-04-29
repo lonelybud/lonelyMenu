@@ -87,7 +87,7 @@ namespace big
 			auto str = std::format("{} from '{}'", m_notify_message, name);
 
 			if (target)
-				str += std::format("to {}", target->get_name());
+				str += std::format("to {}", target->m_name);
 
 			// dont log same event more than n time from the same player. This will keep console logs short and concise.
 			bool should_log = true;

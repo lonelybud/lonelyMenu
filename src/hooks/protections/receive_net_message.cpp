@@ -32,7 +32,7 @@ namespace big
 				if (++player->same_interval_spam_count_high == limit)
 				{
 					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
-					    player->get_name(),
+					    player->m_name,
 					    player->last_spam_interval_diff,
 					    diff,
 					    1,
@@ -45,7 +45,7 @@ namespace big
 				if (++player->same_interval_spam_count_low == limit)
 				{
 					g_log.log_additional(std::format("Chat Spammer - p {}, i1 {}, i2 {}, t {}, c {}",
-					    player->get_name(),
+					    player->m_name,
 					    player->last_spam_interval_diff,
 					    diff,
 					    0,
@@ -143,8 +143,10 @@ namespace big
 			if (auto sn_player = gta_util::get_network()->m_game_session_ptr->m_players[i])
 				if (sn_player && sn_player->m_player_data.m_peer_id_2 == frame->m_peer_id)
 				{
-					if (sn_player->m_player_data.m_host_token)
-						player = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
+					player = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
+
+					if (!player)
+						player = g_player_service->get_by_name(sn_player->m_player_data.m_name);
 					break;
 				}
 
@@ -163,8 +165,8 @@ namespace big
 
 				if (!player->whitelist_spammer && is_player_spammer(message, player))
 				{
-					LOG(WARNING) << player->get_name() << " seem to spam chat message.";
-					g_log.log_additional(std::format("Spam Message - p {}, m {}", player->get_name(), message));
+					LOG(WARNING) << player->m_name << " seem to spam chat message.";
+					g_log.log_additional(std::format("Spam Message - p {}, m {}", player->m_name, message));
 
 					// flag as spammer
 					player->is_spammer   = true;
@@ -179,7 +181,7 @@ namespace big
 				}
 
 				if (g_session.log_chat_messages_to_textbox)
-					g_custom_chat_buffer.append_msg(player->get_name(), message);
+					g_custom_chat_buffer.append_msg(player->m_name, message);
 
 				break;
 			}
@@ -229,7 +231,7 @@ namespace big
 
 				if (auto itr = kick_reasons.find(reason); itr != kick_reasons.end())
 					g_notification_service.push_warning("Kick Player Message",
-					    std::format("Received \"{}\" from {} ({})", itr->second, player->get_name(), player->is_host() ? "host" : "non-host"),
+					    std::format("Received \"{}\" from {} ({})", itr->second, player->m_name, player->is_host() ? "host" : "non-host"),
 					    true);
 
 				if (!player->is_host())
@@ -294,7 +296,7 @@ namespace big
 			g_log.log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
 			    packet_type,
 			    frame->m_length,
-			    (player ? player->get_name() : "?"),
+			    (player ? player->m_name : "?"),
 			    (int)msgType));
 		}
 

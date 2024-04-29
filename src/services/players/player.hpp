@@ -43,7 +43,6 @@ namespace big
 		float screen_position_y = -1.f;
 
 		[[nodiscard]] CVehicle* get_current_vehicle() const;
-		[[nodiscard]] const char* get_name() const;
 		[[nodiscard]] rage::rlGamerInfo* get_net_data() const;
 		[[nodiscard]] CNetGamePlayer* get_net_game_player() const;
 		[[nodiscard]] CPed* get_ped() const;
@@ -93,6 +92,7 @@ namespace big
 		player_ptr last_killed_by = nullptr;
 		bool is_pain_in_ass       = false;
 		bool esp_enemy            = false;
+		char m_name[20]           = "";
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
 		std::chrono::seconds last_spam_interval_diff{};

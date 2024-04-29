@@ -13,13 +13,13 @@ namespace big
 
 		virtual void on_enable() override
 		{
-			if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0)
+			target_player = g_player_service->get_selected();
+
+			if (!target_player || SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0)
 			{
 				g_self.spectating = false;
 				return;
 			}
-
-			target_player = g_player_service->get_selected();
 
 			const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
 

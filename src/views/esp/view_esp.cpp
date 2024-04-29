@@ -24,7 +24,7 @@ namespace big::esp
 			const auto esp_x = (float)*g_pointers->m_gta.m_resolution_x * screen_x;
 			const auto esp_y = (float)*g_pointers->m_gta.m_resolution_y * screen_y;
 
-			std::string name_str = plyr->get_name();
+			std::string name_str = plyr->m_name;
 			ImVec2 name_pos      = {esp_x - (62.5f * multplr), esp_y - (175.f * multplr) - 20.f};
 
 			if (g_esp.distance)

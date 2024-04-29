@@ -82,7 +82,7 @@ namespace big
 
 						if (victim == g_local_player)
 							g_fiber_pool->queue_job([player] {
-								std::string str = "You got Killed by: " + std::string(player->get_name());
+								std::string str = "You got Killed by: " + std::string(player->m_name);
 
 								if (g_local_player->m_vehicle)
 								{
@@ -98,7 +98,7 @@ namespace big
 							});
 						else if (g_misc.notify_friend_killed && victim_player->is_friend())
 							g_notification_service.push_warning("Friend Killed",
-							    std::format("{} killed {}", player->get_name(), victim_player->get_name()),
+							    std::format("{} killed {}", player->m_name, victim_player->m_name),
 							    true);
 
 						victim_player->last_killed_by = player;

@@ -372,7 +372,7 @@ namespace big
 			if (plyr && g_debug.log_explosion_event)
 				LOGF(WARNING,
 				    "Explosion Event: {} (Dist- {})",
-				    plyr->get_name(),
+				    plyr->m_name,
 				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
 
 			if (plyr && plyr->block_explosions)
