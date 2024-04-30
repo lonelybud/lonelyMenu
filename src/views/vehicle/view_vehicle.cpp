@@ -7,21 +7,27 @@
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
 
-constexpr int wheelIndexes[4]{0, 1, 4, 5};
-const char* driving_style_names[]{"Law-Abiding", "The Road Is Yours"};
-constexpr auto MAX_VEHICLE_DOORS = 6;
-const char* const doornames[MAX_VEHICLE_DOORS]{
-    "D_1",
-    "D_2",
-    "D_3",
-    "D_4",
-    "Bon",
-    "Trk",
-};
 
 namespace big
 {
-	static void update_seats(std::map<int, bool>& seats, int no_of_seats)
+	static constexpr int wheelIndexes[4]{0, 1, 4, 5};
+	static const char* driving_style_names[]{"Law-Abiding", "The Road Is Yours"};
+	static constexpr auto MAX_VEHICLE_DOORS = 6;
+	static const char* const doornames[MAX_VEHICLE_DOORS]{
+	    "D_1",
+	    "D_2",
+	    "D_3",
+	    "D_4",
+	    "Bon",
+	    "Trk",
+	};
+
+	static Vehicle last_veh;
+	static float maxWheelRaiseFactor = -1;
+	static int no_of_seats           = 0;
+	static std::map<int, bool> seats;
+
+	static void update_seats(int no_of_seats)
 	{
 		std::map<int, bool> tmp_seats;
 
@@ -29,6 +35,16 @@ namespace big
 			tmp_seats[i] = VEHICLE::IS_VEHICLE_SEAT_FREE(self::veh, i, TRUE);
 
 		seats = tmp_seats;
+	}
+	static void update_veh_ammo(int amount)
+	{
+		if (self::veh && VEHICLE::DOES_VEHICLE_HAVE_WEAPONS(self::veh) && entity::take_control_of(self::veh))
+		{
+			for (int i = 0; i < 3; i++)
+				VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, i, amount);
+			VEHICLE::SET_VEHICLE_BOMB_AMMO(self::veh, amount);
+			VEHICLE::SET_VEHICLE_COUNTERMEASURE_AMMO(self::veh, amount);
+		}
 	}
 
 	static inline void render_first_block()
@@ -59,22 +75,30 @@ namespace big
 		});
 	}
 
+	static inline void reset_vehicle()
+	{
+		last_veh            = self::veh;
+		maxWheelRaiseFactor = -1;
+		no_of_seats         = 0;
+	}
+
 	static inline void render_fun_feats()
 	{
-		static float maxWheelRaiseFactor = -1;
-		static int no_of_seats           = 0;
-		static std::map<int, bool> seats;
-
 		if (self::veh)
 		{
-			if (no_of_seats == 0)
+			if (self::veh != last_veh)
 			{
-				no_of_seats = -1;
+				reset_vehicle();
 				g_fiber_pool->queue_job([] {
 					no_of_seats = VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(self::veh) + 1;
-					update_seats(seats, no_of_seats);
+					update_seats(no_of_seats);
 				});
 			}
+
+			if (components::button("Refresh vehicle"))
+				reset_vehicle();
+
+			ImGui::Spacing();
 
 			ImGui::Text("No of seat: %d", no_of_seats);
 
@@ -126,7 +150,7 @@ namespace big
 				components::small_text("Seats");
 				{
 					components::button("Refresh seats", [] {
-						update_seats(seats, no_of_seats);
+						update_seats(no_of_seats);
 					});
 
 					for (auto& it : seats)
@@ -139,7 +163,7 @@ namespace big
 							if (VEHICLE::IS_VEHICLE_SEAT_FREE(self::veh, idx, TRUE))
 							{
 								PED::SET_PED_INTO_VEHICLE(self::ped, self::veh, idx);
-								update_seats(seats, no_of_seats);
+								update_seats(no_of_seats);
 							}
 						});
 						if (!it.second)
@@ -239,12 +263,46 @@ namespace big
 			}
 			ImGui::EndGroup();
 		}
-		else
-		{
-			components::small_text("Please sit in a vehicle");
-			maxWheelRaiseFactor = -1;
-			no_of_seats         = 0;
-		}
+		else if (last_veh)
+			reset_vehicle();
+	}
+
+	static inline void render_weapon_ammo()
+	{
+		components::sub_title("Weapon Ammo Capacity");
+
+		// static int weapon_index, capacity;
+
+		// ImGui::SetNextItemWidth(100);
+		// ImGui::InputInt("Weapon Index", &weapon_index);
+		// ImGui::SameLine();
+		// components::button("Get ammo capacity", [] {
+		// 	auto c = VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index);
+		// 	LOG(INFO) << "VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO = " << c;
+		// });
+
+		// ImGui::SetNextItemWidth(100);
+		// ImGui::InputInt("Capacity", &capacity);
+		// ImGui::SameLine();
+		// components::button("Set ammo capacity", [] {
+		// 	if (entity::take_control_of(self::veh))
+		// 		VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index, capacity);
+		// });
+
+		components::button("Log ammo", [] {
+			if (self::veh && VEHICLE::DOES_VEHICLE_HAVE_WEAPONS(self::veh))
+			{
+				std::string str = "Weapon Amount - ";
+				for (int i = 0; i < 3; i++)
+					str += std::to_string(VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, i)) + ", ";
+				str += std::to_string(VEHICLE::GET_VEHICLE_BOMB_AMMO(self::veh)) + ", " + std::to_string(VEHICLE::GET_VEHICLE_COUNTERMEASURE_AMMO(self::veh));
+				LOG(VERBOSE) << str;
+			}
+		});
+		ImGui::SameLine();
+		components::button("Set infinite", [] {
+			update_veh_ammo(-1);
+		});
 	}
 
 	static inline void render_general()
@@ -287,25 +345,7 @@ namespace big
 			can_be_knocked_off_veh = !can_be_knocked_off_veh;
 		});
 
-		components::sub_title("set/get weapon capacity");
-
-		static int weapon_index, capacity;
-
-		ImGui::SetNextItemWidth(100);
-		ImGui::InputInt("Weapon Index", &weapon_index);
-		ImGui::SameLine();
-		components::button("Get ammo capacity", [] {
-			auto c = VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index);
-			LOG(INFO) << "VEHICLE::GET_VEHICLE_WEAPON_RESTRICTED_AMMO = " << c;
-		});
-
-		ImGui::SetNextItemWidth(100);
-		ImGui::InputInt("Capacity", &capacity);
-		ImGui::SameLine();
-		components::button("Set ammo capacity", [] {
-			if (entity::take_control_of(self::veh))
-				VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, weapon_index, capacity);
-		});
+		render_weapon_ammo();
 	}
 
 	void view::vehicle()
