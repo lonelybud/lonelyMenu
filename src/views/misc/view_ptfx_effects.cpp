@@ -137,7 +137,7 @@ namespace big
 		ImGui::SliderFloat("PTFX Size", &g_ptfx_effects.size, 0.1f, 2.f);
 
 		ImGui::PushItemWidth(200);
-		ImGui::InputInt("PTFX Delay", &g_ptfx_effects.delay);
+		ImGui::InputInt("PTFX Delay (ms)", &g_ptfx_effects.delay);
 		ImGui::SameLine();
 		ImGui::Checkbox("Center##ptfx", &g_ptfx_effects.center);
 

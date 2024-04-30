@@ -10,6 +10,6 @@ namespace big
 		bool log_packets                       = false;
 		bool log_script_events                 = false;
 		bool log_clones                        = false;
-		bool use_default_chat                  = false;
+		// bool use_default_chat                  = false;
 	} g_debug{};
 }

@@ -6,13 +6,15 @@ namespace big
 {
 	void view::custom_teleport()
 	{
-		static std::string new_location_name{}, category, filter;
+		static std::string new_location_name{}, category = "", search;
 		static const telelocation* selected_telelocation = nullptr;
-		static bool delete_modal;
-		static std::vector<telelocation> search_results;
+		static bool delete_modal, selected;
+		static std::vector<telelocation> telelocations;
 
-		if (delete_modal)
+		if (selected)
 			ImGui::OpenPopup("##deletelocation");
+		else if (delete_modal)
+			ImGui::OpenPopup("##selectedlocation");
 
 		if (ImGui::BeginPopupModal("##deletelocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
@@ -22,13 +24,41 @@ namespace big
 			{
 				g_custom_teleport_service.delete_saved_location(category, selected_telelocation->name);
 				selected_telelocation = nullptr;
-				delete_modal          = false;
+
+				delete_modal = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("No"))
 			{
 				delete_modal = false;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
+
+		if (ImGui::BeginPopupModal("##selectedlocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
+		{
+			ImGui::Text("Teleport to %s?", selected_telelocation->name);
+			ImGui::Spacing();
+			if (ImGui::Button("Yes"))
+			{
+				g_fiber_pool->queue_job([] {
+					teleport::to_coords({selected_telelocation->x, selected_telelocation->y, selected_telelocation->z});
+				});
+				g_log.log_additional(std::format("Custom Teleport: {}, {}, {}, {}",
+				    selected_telelocation->name,
+				    selected_telelocation->x,
+				    selected_telelocation->y,
+				    selected_telelocation->z));
+
+				selected = false;
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("No"))
+			{
+				selected = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -52,43 +82,38 @@ namespace big
 		components::button("Refresh List", [] {
 			g_custom_teleport_service.fetch_saved_locations();
 		});
-
-		ImGui::Separator();
-		components::button("Teleport", [] {
-			if (selected_telelocation)
-			{
-				g_log.log_additional(std::format("Custom Teleport: {}, {}, {}, {}",
-				    selected_telelocation->name,
-				    selected_telelocation->x,
-				    selected_telelocation->y,
-				    selected_telelocation->z));
-				teleport::to_coords({selected_telelocation->x, selected_telelocation->y, selected_telelocation->z});
-			}
-		});
 		ImGui::SameLine();
-		components::button("Delete", [] {
+		components::button("Delete Selected", [] {
 			if (selected_telelocation)
 				delete_modal = true;
 		});
 
+		ImGui::Separator();
+
 		ImGui::Spacing();
 
 		ImGui::SetNextItemWidth(300);
-		if (components::input_text_with_hint("##filter", "Search", filter))
+		if (components::input_text_with_hint("##search", "Search", search))
 		{
-			if (filter.length() > 0)
-				search_results = g_custom_teleport_service.saved_telelocations_filtered_list(filter);
+			category = "";
+			if (search.length() > 0)
+				telelocations = g_custom_teleport_service.saved_telelocations_filtered_list(search);
 			else
-				search_results.clear();
+				telelocations.clear();
 		}
 
 		ImGui::BeginGroup();
 		components::small_text("Categories");
 		if (ImGui::BeginListBox("##categories", {250, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.5)}))
 		{
-			for (auto& l : g_custom_teleport_service.all_saved_locations | std::ranges::views::keys)
-				if (ImGui::Selectable(l.c_str(), l == category))
-					category = l;
+			if (!search.length())
+				for (auto& l : g_custom_teleport_service.all_saved_locations | std::ranges::views::keys)
+					if (ImGui::Selectable(l.c_str(), l == category))
+					{
+						category = l;
+
+						telelocations = g_custom_teleport_service.all_saved_locations[category];
+					}
 			ImGui::EndListBox();
 		}
 		ImGui::EndGroup();
@@ -97,14 +122,12 @@ namespace big
 		components::small_text("Locations");
 		if (ImGui::BeginListBox("##telelocations", {250, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.5)}))
 		{
-			auto& objs = filter.length() > 0 ? search_results :
-			                                   (g_custom_teleport_service.all_saved_locations.find(category)
-			                                               != g_custom_teleport_service.all_saved_locations.end() ?
-			                                           g_custom_teleport_service.all_saved_locations[category] :
-			                                           search_results);
-			for (const auto& l : objs)
+			for (const auto& l : telelocations)
 				if (ImGui::Selectable(l.name.c_str(), selected_telelocation && selected_telelocation->name == l.name))
+				{
 					selected_telelocation = &l;
+					selected              = true;
+				}
 			ImGui::EndListBox();
 		}
 		ImGui::EndGroup();

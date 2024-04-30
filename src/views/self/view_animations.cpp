@@ -8,10 +8,10 @@ namespace big
 {
 	void view::animations()
 	{
-		static std::string category = "", filter;
+		static std::string category = "", search;
 		static bool delete_modal;
 		static float relative_pos[3], rotation[3];
-		static std::vector<big::ped_animation> search_results;
+		static std::vector<big::ped_animation> ped_animations;
 
 		if (delete_modal)
 			ImGui::OpenPopup("##deletepedanimation");
@@ -185,12 +185,13 @@ namespace big
 						delete_modal = true;
 				});
 
-				if (components::input_text_with_hint("##filter", "Search", filter))
+				if (components::input_text_with_hint("##search", "Search", search))
 				{
-					if (filter.length() > 0)
-						search_results = g_ped_animation_service.saved_animations_filtered_list(filter);
+					category = "";
+					if (search.length() > 0)
+						ped_animations = g_ped_animation_service.saved_animations_filtered_list(search);
 					else
-						search_results.clear();
+						ped_animations.clear();
 				}
 			}
 			ImGui::PopItemWidth();
@@ -199,9 +200,13 @@ namespace big
 				components::small_text("Categories");
 				if (ImGui::BeginListBox("##categories", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 				{
-					for (auto& p : g_ped_animation_service.all_saved_animations)
-						if (ImGui::Selectable(p.first.c_str(), p.first == category))
-							category = p.first;
+					if (!search.length())
+						for (auto& p : g_ped_animation_service.all_saved_animations)
+							if (ImGui::Selectable(p.first.c_str(), p.first == category))
+							{
+								category       = p.first;
+								ped_animations = g_ped_animation_service.all_saved_animations[category];
+							}
 
 					ImGui::EndListBox();
 				}
@@ -210,16 +215,10 @@ namespace big
 			ImGui::SameLine();
 			ImGui::BeginGroup();
 			{
-				auto& objs = filter.length() > 0 ? search_results :
-				                                   (g_ped_animation_service.all_saved_animations.find(category)
-				                                               != g_ped_animation_service.all_saved_animations.end() ?
-				                                           g_ped_animation_service.all_saved_animations[category] :
-				                                           search_results);
-
 				components::small_text("Animations");
 				if (ImGui::BeginListBox("##animations", {200, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.4)}))
 				{
-					for (const auto& p : objs)
+					for (const auto& p : ped_animations)
 					{
 						if (ImGui::Selectable(p.name.data(), p.name == g_ped_animation_service.current_animation.name))
 							g_ped_animation_service.current_animation = p;

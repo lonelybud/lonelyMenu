@@ -15,11 +15,11 @@ namespace big
 			{
 				ImGui::Spacing();
 
-				components::button("Waypoint", [] {
+				components::button("Waypoint TP", [] {
 					teleport::to_waypoint();
 				});
 				ImGui::SameLine();
-				components::button("Objective", [] {
+				components::button("Objective TP", [] {
 					teleport::to_objective();
 				});
 			}
@@ -34,7 +34,7 @@ namespace big
 				components::small_text("X for L/R, Y for F/B, Z for U/D");
 				ImGui::InputFloat3("###relativepos", relative_pos);
 
-				components::button("Teleport##relative", [] {
+				components::button("Relative TP###relativetp", [] {
 					auto location = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(self::ped, relative_pos[0], relative_pos[1], relative_pos[2]);
 					teleport::to_coords(location);
 				});
@@ -66,7 +66,7 @@ namespace big
 				components::small_text("Custom##teleport");
 				ImGui::InputFloat3("##Customlocation", new_location);
 
-				components::button("Teleport##customtp", [] {
+				components::button("Coord TP##customtp", [] {
 					teleport::to_coords({new_location[0], new_location[1], new_location[2]});
 				});
 			}

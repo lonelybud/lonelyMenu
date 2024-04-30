@@ -19,7 +19,7 @@ namespace big
 
 			components::sub_title("Game");
 			{
-				ImGui::Checkbox("use_default_chat", &g_debug.use_default_chat);
+				// ImGui::Checkbox("use_default_chat", &g_debug.use_default_chat);
 
 				components::button("Network Bail", [] {
 					NETWORK::NETWORK_BAIL(16, 0, 0);
