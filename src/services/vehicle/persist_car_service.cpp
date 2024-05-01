@@ -264,8 +264,8 @@ namespace big
 					vehicle_json[headlight_color_key] = VEHICLE::GET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle);
 			}
 
-		for (int extra = MOD_EXTRA_14; extra <= MOD_EXTRA_0; ++extra)
-			if (auto id = (extra - MOD_EXTRA_0) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
+		for (int extra = MOD_EXTRA_14; extra <= MOD_EXTRA_1; ++extra)
+			if (auto id = (extra - MOD_EXTRA_1) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
 				vehicle_extras[id] = VEHICLE::IS_VEHICLE_EXTRA_TURNED_ON(vehicle, id);
 
 		VEHICLE::GET_VEHICLE_COLOURS(vehicle, &primary_color, &secondary_color);

@@ -109,8 +109,8 @@ namespace big::vehicle
 			if (VEHICLE::GET_NUM_VEHICLE_MODS(vehicle, slot) > 0)
 				owned_mods[slot] = VEHICLE::GET_VEHICLE_MOD(vehicle, slot);
 
-		for (int extra = MOD_EXTRA_14; extra <= MOD_EXTRA_0; ++extra)
-			if (auto id = (extra - MOD_EXTRA_0) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
+		for (int extra = MOD_EXTRA_14; extra <= MOD_EXTRA_1; ++extra)
+			if (auto id = (extra - MOD_EXTRA_1) * -1; VEHICLE::DOES_EXTRA_EXIST(vehicle, id))
 				owned_mods[extra] = VEHICLE::IS_VEHICLE_EXTRA_TURNED_ON(vehicle, id);
 
 		return owned_mods;

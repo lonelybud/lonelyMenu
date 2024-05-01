@@ -348,10 +348,10 @@ namespace big
 				}
 				ImGui::SeparatorText("Extras");
 				{
-					for (int extra = MOD_EXTRA_0; extra >= MOD_EXTRA_14; extra--)
+					for (int extra = MOD_EXTRA_1; extra >= MOD_EXTRA_14; extra--)
 						if (owned_mods.find(extra) != owned_mods.end())
 						{
-							int id                = (extra - MOD_EXTRA_0) * -1;
+							int id                = (extra - MOD_EXTRA_1) * -1;
 							bool is_extra_enabled = owned_mods[extra] == 1;
 							if (ImGui::Checkbox(std::format("{}###extra{}", id, id).c_str(), &is_extra_enabled))
 							{
