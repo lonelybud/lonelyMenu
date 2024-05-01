@@ -12,9 +12,9 @@ namespace big
 		static std::vector<telelocation> telelocations;
 
 		if (selected)
-			ImGui::OpenPopup("##deletelocation");
-		else if (delete_modal)
 			ImGui::OpenPopup("##selectedlocation");
+		else if (delete_modal)
+			ImGui::OpenPopup("##deletelocation");
 
 		if (ImGui::BeginPopupModal("##deletelocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
@@ -24,6 +24,7 @@ namespace big
 			{
 				g_custom_teleport_service.delete_saved_location(category, selected_telelocation->name);
 				selected_telelocation = nullptr;
+				telelocations = g_custom_teleport_service.all_saved_locations[category];
 
 				delete_modal = false;
 				ImGui::CloseCurrentPopup();
@@ -76,11 +77,13 @@ namespace big
 			{
 				auto coords = ENTITY::GET_ENTITY_COORDS(self::ped, 0);
 				g_custom_teleport_service.save_new_location(category, {new_location_name, coords.x, coords.y, coords.z});
+				telelocations = g_custom_teleport_service.all_saved_locations[category];
 			}
 		});
 		ImGui::SameLine();
 		components::button("Refresh List", [] {
 			g_custom_teleport_service.fetch_saved_locations();
+			telelocations = g_custom_teleport_service.all_saved_locations[category];
 		});
 		ImGui::SameLine();
 		components::button("Delete Selected", [] {

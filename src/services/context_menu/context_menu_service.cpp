@@ -167,7 +167,7 @@ namespace big
 		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::OBJECT)),
 		    misc::has_bits_set(&g_context_menu.allowed_entity_types, static_cast<uint8_t>(ContextEntityType::PLAYER)));
 
-		if (m_pointer)
+		if (m_pointer && (g_context_menu.dead_entities || (ENTITY::DOES_ENTITY_EXIST(m_handle) && !ENTITY::IS_ENTITY_DEAD(m_handle, 0))))
 			fill_model_bounding_box_screen_space();
 		else
 		{

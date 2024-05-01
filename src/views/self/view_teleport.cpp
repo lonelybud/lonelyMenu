@@ -1,3 +1,4 @@
+#include "core/data/self.hpp"
 #include "util/mobile.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
@@ -50,12 +51,11 @@ namespace big
 				ImGui::Spacing();
 
 				float coords[3] = {self::pos.x, self::pos.y, self::pos.z};
-				static float new_location[3];
 
 				ImGui::InputFloat3("##currentcoordinates", coords, "%f", ImGuiInputTextFlags_ReadOnly);
 
 				components::button("Copy to custom", [coords] {
-					std::copy(std::begin(coords), std::end(coords), std::begin(new_location));
+					std::copy(std::begin(coords), std::end(coords), std::begin(g_self.custom_coords));
 				});
 				ImGui::SameLine();
 				components::button("Copy to Clipboard", [coords] {
@@ -63,11 +63,11 @@ namespace big
 					    std::format("X: {:.2f}, Y: {:.2f}, Z: {:.2f}", coords[0], coords[1], coords[2]).c_str());
 				});
 
-				components::small_text("Custom##teleport");
-				ImGui::InputFloat3("##Customlocation", new_location);
+				components::small_text("Coord##teleport");
+				ImGui::InputFloat3("##Customlocation", g_self.custom_coords);
 
 				components::button("Coord TP##customtp", [] {
-					teleport::to_coords({new_location[0], new_location[1], new_location[2]});
+					teleport::to_coords({g_self.custom_coords[0], g_self.custom_coords[1], g_self.custom_coords[2]});
 				});
 			}
 			ImGui::PopItemWidth();

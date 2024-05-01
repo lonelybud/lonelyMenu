@@ -77,6 +77,8 @@ namespace big
 				ImGui::CheckboxFlags("Player", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PLAYER));
 				ImGui::SameLine();
 				ImGui::CheckboxFlags("Vehicle", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::VEHICLE));
+				ImGui::Spacing();
+				ImGui::Checkbox("Dead Entites", &g_context_menu.dead_entities);
 			});
 
 			static const char* ragdoll_button_text = "Disable Ragdoll";

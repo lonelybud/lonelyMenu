@@ -26,7 +26,9 @@ namespace big
 			{
 				g_ped_animation_service.delete_saved_animation(category, g_ped_animation_service.current_animation);
 				g_ped_animation_service.current_animation = {};
-				delete_modal                              = false;
+				ped_animations                            = g_ped_animation_service.all_saved_animations[category];
+
+				delete_modal = false;
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -173,11 +175,15 @@ namespace big
 					else if (g_ped_animation_service.current_animation.anim.empty())
 						g_notification_service.push_warning("Animations", "Animation name can't be empty");
 					else
+					{
 						g_ped_animation_service.save_new_animation(category, g_ped_animation_service.current_animation);
+						ped_animations = g_ped_animation_service.all_saved_animations[category];
+					}
 				});
 
 				components::button("Refresh", [] {
 					g_ped_animation_service.fetch_saved_animations();
+					ped_animations = g_ped_animation_service.all_saved_animations[category];
 				});
 				ImGui::SameLine();
 				components::button("Delete Selected", [] {

@@ -80,6 +80,7 @@ namespace big
 		int* m_resolution_x;
 		int* m_resolution_y;
 
+		PVOID m_get_label_text;
 		functions::write_player_game_state_data_node m_write_player_game_state_data_node;
 
 		FriendRegistry* m_friend_registry;

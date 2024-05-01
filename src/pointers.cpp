@@ -367,6 +367,15 @@ namespace big
                 g_pointers->m_gta.m_model_table = ptr.add(3).rip().as<HashTable<CBaseModelInfo*>*>();
             }
         },
+        // Get Label Text
+        {
+            "GLT",
+            "48 8D 0D ? ? ? ? E8 ? ? ? ? 45 33 C9 41 B0 ? B2",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_label_text = ptr.add(8).rip().as<PVOID>();
+            }
+        },
         // Network
         {
             "N",

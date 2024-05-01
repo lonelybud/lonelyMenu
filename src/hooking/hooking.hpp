@@ -124,6 +124,7 @@ namespace big
 		static int queue_dependency(void* a1, int a2, int64_t dependency);
 		static bool http_start_request(void* request, const char* uri);
 		static bool send_chat_message(void* team_mgr, rage::rlGamerInfo* local_gamer_info, char* message, bool is_team);
+		static const char* get_label_text(void* unk, const char* label);
 
 		// toxic
 
