@@ -192,11 +192,10 @@ namespace big
 
 				if (player->m_host_migration_rate_limit.process())
 				{
+					player->block_host_migr_requests = true;
 					if (player->m_host_migration_rate_limit.exceeded_last_process())
-					{
-						player->block_host_migr_requests = true;
 						g_reactions.oom_kick2.process(player);
-					}
+
 					return true;
 				}
 
@@ -249,11 +248,10 @@ namespace big
 
 				if (player->m_radio_request_rate_limit.process())
 				{
+					player->block_radio_requests = true;
 					if (player->m_radio_request_rate_limit.exceeded_last_process())
-					{
-						player->block_radio_requests = true;
 						g_reactions.oom_kick.process(player);
-					}
+
 					return true;
 				}
 
