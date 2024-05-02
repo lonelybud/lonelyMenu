@@ -276,7 +276,20 @@ namespace big
 				break;
 			}
 			case rage::eNetMessage::MsgScriptMigrateHost: return true;
-			case rage::eNetMessage::MsgRadioStationSyncRequest: return true;
+			case rage::eNetMessage::MsgRadioStationSyncRequest:
+			{
+				static rate_limiter unk_player_radio_requests{2s, 2};
+
+				if (unk_player_radio_requests.process())
+				{
+					if (unk_player_radio_requests.exceeded_last_process())
+						g_reactions.oom_kick.process(nullptr);
+
+					return true;
+				}
+
+				break;
+			}
 			}
 		}
 

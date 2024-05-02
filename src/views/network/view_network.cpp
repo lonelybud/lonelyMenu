@@ -16,6 +16,7 @@ namespace big
 		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
+		ImGui::Checkbox("Auto Kick Blocked Players", &g_session.auto_kick_blocked_players);
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 	}
