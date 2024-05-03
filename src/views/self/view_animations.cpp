@@ -6,12 +6,20 @@
 
 namespace big
 {
+	static std::vector<big::ped_animation> ped_animations;
+	static std::string category = "";
+
+	static void refresh_ped_animations()
+	{
+		if (category.length())
+			ped_animations = g_ped_animation_service.all_saved_animations[category];
+	}
+
 	void view::animations()
 	{
-		static std::string category = "", search;
+		static std::string search;
 		static bool delete_modal;
 		static float relative_pos[3], rotation[3];
-		static std::vector<big::ped_animation> ped_animations;
 
 		if (delete_modal)
 			ImGui::OpenPopup("##deletepedanimation");
@@ -177,13 +185,13 @@ namespace big
 					else
 					{
 						g_ped_animation_service.save_new_animation(category, g_ped_animation_service.current_animation);
-						ped_animations = g_ped_animation_service.all_saved_animations[category];
+						refresh_ped_animations();
 					}
 				});
 
 				components::button("Refresh", [] {
 					g_ped_animation_service.fetch_saved_animations();
-					ped_animations = g_ped_animation_service.all_saved_animations[category];
+					refresh_ped_animations();
 				});
 				ImGui::SameLine();
 				components::button("Delete Selected", [] {
@@ -211,7 +219,7 @@ namespace big
 							if (ImGui::Selectable(p.first.c_str(), p.first == category))
 							{
 								category       = p.first;
-								ped_animations = g_ped_animation_service.all_saved_animations[category];
+								refresh_ped_animations();
 							}
 
 					ImGui::EndListBox();

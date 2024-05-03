@@ -4,12 +4,20 @@
 
 namespace big
 {
+	static std::vector<telelocation> telelocations;
+	static std::string category = "";
+
+	static void refresh_telelocations()
+	{
+		if (category.length())
+			telelocations = g_custom_teleport_service.all_saved_locations[category];
+	}
+
 	void view::custom_teleport()
 	{
-		static std::string new_location_name{}, category = "", search;
+		static std::string new_location_name{}, search;
 		static const telelocation* selected_telelocation = nullptr;
 		static bool delete_modal, selected;
-		static std::vector<telelocation> telelocations;
 
 		if (selected)
 			ImGui::OpenPopup("##selectedlocation");
@@ -24,7 +32,7 @@ namespace big
 			{
 				g_custom_teleport_service.delete_saved_location(category, selected_telelocation->name);
 				selected_telelocation = nullptr;
-				telelocations = g_custom_teleport_service.all_saved_locations[category];
+				refresh_telelocations();
 
 				delete_modal = false;
 				ImGui::CloseCurrentPopup();
@@ -77,13 +85,13 @@ namespace big
 			{
 				auto coords = ENTITY::GET_ENTITY_COORDS(self::ped, 0);
 				g_custom_teleport_service.save_new_location(category, {new_location_name, coords.x, coords.y, coords.z});
-				telelocations = g_custom_teleport_service.all_saved_locations[category];
+				refresh_telelocations();
 			}
 		});
 		ImGui::SameLine();
 		components::button("Refresh List", [] {
 			g_custom_teleport_service.fetch_saved_locations();
-			telelocations = g_custom_teleport_service.all_saved_locations[category];
+			refresh_telelocations();
 		});
 		ImGui::SameLine();
 		components::button("Delete Selected", [] {
@@ -114,8 +122,7 @@ namespace big
 					if (ImGui::Selectable(l.c_str(), l == category))
 					{
 						category = l;
-
-						telelocations = g_custom_teleport_service.all_saved_locations[category];
+						refresh_telelocations();
 					}
 			ImGui::EndListBox();
 		}
