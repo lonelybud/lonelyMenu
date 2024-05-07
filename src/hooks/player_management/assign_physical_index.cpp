@@ -9,19 +9,12 @@
 #include "services/known_players/known_players.hpp"
 #include "services/players/player_service.hpp"
 #include "util/player.hpp"
+#include "util/session.hpp"
 
 #include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
 {
-	inline bool is_spoofed_host_token(uint64_t token)
-	{
-		if (token < 1000'000'000'000)
-			return true;
-
-		return false;
-	}
-
 	void* hooks::assign_physical_index(CNetworkPlayerMgr* netPlayerMgr, CNetGamePlayer* player, uint8_t new_index)
 	{
 		const auto* net_player_data = player->get_net_data();
@@ -63,7 +56,7 @@ namespace big
 					if (!plyr->is_host())
 						g_session.next_host_list.insert_plyr(id, host_token, player_name);
 
-					auto join_str = std::format("'{}'{}, slot #{}, RID: {}", player_name, is_host ? "(host)" : "", id, rockstar_id);
+					auto join_str = std::format("'{}'{}, slot #{}, RID: {}, tk: {}", player_name, is_host ? "(host)" : "", id, rockstar_id, host_token);
 
 					if (is_known)
 						plyr->is_known_player = true;
@@ -95,7 +88,7 @@ namespace big
 					else
 						LOG(INFO) << "Player joined: " << join_str;
 
-					if (is_spoofed_host_token(host_token))
+					if (session::is_spoofed_host_token(host_token))
 					{
 						g_reactions.spoofed_host_token.process(plyr);
 

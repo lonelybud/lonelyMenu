@@ -37,5 +37,9 @@ namespace big
 		{
 			return (m_num_attempts_allowed - 1) == m_attempts_allowed_in_time_period;
 		}
+
+		inline auto num_attempts() {
+			return m_num_attempts_allowed;
+		}
 	};
 }

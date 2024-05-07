@@ -16,6 +16,34 @@
 
 namespace big
 {
+	static const std::unordered_set<int> very_bad_script_ids = {
+	    9 /*AM_Darts*/,
+	    17 /*AM_PI_MENU*/,
+	    20 /*fm_intro*/,
+	    215 /*Pilot_School_MP*/,
+	    224 /*am_darts_apartment*/,
+	    226 /*grid_arcade_cabinet*/,
+	    227 /*scroll_arcade_cabinet*/,
+	    228 /*example_arcade*/,
+	    229 /*road_arcade*/,
+	    230 /*gunslinger_arcade*/,
+	    231 /*wizard_arcade*/,
+	    235 /*ggsm_arcade*/,
+	    236 /*puzzle*/,
+	    237 /*camhedz_arcade*/,
+	    238 /*SCTV*/,
+	};
+
+	static const std::unordered_set<int> bad_script_ids = {
+	    212 /*golf_mp*/,
+	    214 /*tennis_network_mp*/,
+	    216 /*FM_Impromptu_DM_Controler*/,
+	    217 /*fm_Bj_race_controler*/,
+	    218 /*fm_deathmatch_controler*/,
+	    221 /*FM_Race_Controler*/,
+	    222 /*FM_Horde_Controler*/,
+	};
+
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)
 	{
 		const auto args       = scripted_game_event->m_args;
@@ -66,6 +94,13 @@ namespace big
 				g_reactions.scripted_event_crash.process(plyr);
 				return true;
 			}
+
+			if (args[3] == -4640169 && args[7] == -36565476 && args[8] == -53105203)
+			{
+				g_reactions.elegant_crash.process(plyr);
+				return true;
+			}
+
 			break;
 		}
 		case eRemoteEvent::Notification:
@@ -339,31 +374,15 @@ namespace big
 		}
 		case eRemoteEvent::StartScriptBegin:
 		{
-			static const std::unordered_set<int> bad_script_ids = {
-			    17 /*AM_PI_MENU*/,
-			    20 /*fm_intro*/,
-			    212 /*golf_mp*/,
-			    214 /*tennis_network_mp*/,
-			    215 /*Pilot_School_MP*/,
-			    216 /*FM_Impromptu_DM_Controler*/,
-			    217 /*fm_Bj_race_controler*/,
-			    218 /*fm_deathmatch_controler*/,
-			    221 /*FM_Race_Controler*/,
-			    222 /*FM_Horde_Controler*/,
-			    226 /*grid_arcade_cabinet*/,
-			    227 /*scroll_arcade_cabinet*/,
-			    229 /*road_arcade*/,
-			    231 /*wizard_arcade*/,
-			    235 /*ggsm_arcade*/,
-			    236 /*puzzle*/,
-			    238 /*SCTV*/,
-			};
 			auto script_id = args[3];
-			if (bad_script_ids.contains(script_id))
+
+			if (very_bad_script_ids.contains(script_id) || (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() && bad_script_ids.contains(script_id)))
 			{
+				g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr ? plyr->m_name : "?"));
 				g_reactions.start_script.process(plyr);
 				return true;
 			}
+
 			break;
 		}
 		}

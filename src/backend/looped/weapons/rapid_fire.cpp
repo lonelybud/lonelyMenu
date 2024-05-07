@@ -4,6 +4,7 @@
 #include "gui.hpp"
 #include "natives.hpp"
 #include "script.hpp"
+#include "util/debouncer.hpp"
 #include "util/math.hpp"
 
 namespace big
@@ -17,6 +18,19 @@ namespace big
 		Hash weapon_hash;
 		int original_weapon_tint = 0;
 		int current_weapon_tint  = 0;
+		debouncer<std::chrono::milliseconds> deb;
+		int _delay = g_weapons.rapid_fire_delay;
+
+		inline void reset_debouncer()
+		{
+			deb.reset(g_weapons.rapid_fire_delay);
+			_delay = g_weapons.rapid_fire_delay;
+		}
+
+		virtual void on_enable() override
+		{
+			reset_debouncer();
+		}
 
 		virtual void on_tick() override
 		{
@@ -49,11 +63,13 @@ namespace big
 							current_weapon_tint = 0;
 					}
 
-					PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
-					WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
-
-					if (g_weapons.rapid_fire_delay)
-						script::get_current()->yield(std::chrono::milliseconds::duration(g_weapons.rapid_fire_delay));
+					if (_delay != g_weapons.rapid_fire_delay)
+						reset_debouncer();
+					else if (deb.has_debounced())
+					{
+						PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
+						WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
+					}
 				}
 			}
 		}

@@ -57,7 +57,7 @@ namespace big
 		auto plyr     = g_player_service->get_by_id(source_player->m_player_id);
 		auto tar_plyr = g_player_service->get_by_id(target_player->m_player_id);
 
-		if (plyr && plyr->block_net_events)
+		if (!plyr || (plyr && plyr->block_net_events))
 		{
 			g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 			return;
@@ -328,13 +328,21 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
-			if (plyr && plyr->m_play_sound_rate_limit.process())
+			if (plyr->block_sound_spam)
 			{
-				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
-					g_reactions.crash41.process(plyr, tar_plyr);
-
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
+			}
+
+			if (plyr->m_play_sound_rate_limit.process())
+			{
+				plyr->block_sound_spam = true;
+
+				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
+				{
+					g_reactions.crash41.process(plyr, tar_plyr);
+					plyr->block_sound_spam = false;
+				}
 			}
 
 			bool is_entity = buffer->Read<bool>(1);

@@ -13,8 +13,8 @@ namespace big
 
 			components::sub_title("Experiments");
 			{
-				ImGui::Checkbox("Freemode Hook G_N_O_T_R_T_S_W_T_H", &g_debug.freemode_hook_G_N_O_T_R_T_S_W_T_H);
 				ImGui::Checkbox("Enable Objects Crash 2 Protection", &g_debug.enable_objects_crash_2);
+				ImGui::Checkbox("Log unknown net msg", &g_debug.log_unkown_net_msg);
 			}
 
 			components::sub_title("Game");

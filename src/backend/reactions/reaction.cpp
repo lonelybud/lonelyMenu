@@ -50,8 +50,7 @@ namespace big
 				if (this->notify_once)
 					return;
 
-				if (this->sub_type != reaction_sub_type::crash41)
-					++player->infractions[this];
+				++player->infractions[this];
 			}
 
 			// auto-kick crashing player
@@ -69,7 +68,6 @@ namespace big
 				case reaction_sub_type::crash13:
 				case reaction_sub_type::crash39:
 				case reaction_sub_type::crash40:
-				case reaction_sub_type::sound_spam:
 				case reaction_sub_type::player_ped_removal:
 				case reaction_sub_type::invalid_weapon_type:
 				{
@@ -159,6 +157,6 @@ namespace big
 			}
 		}
 		else
-			g_notification_service.push_warning("Reaction", std::format("{} from '{}'", m_notify_message, "?"), true);
+			g_notification_service.push_warning("Reaction", std::format("{} from '?'", m_notify_message), true);
 	}
 }

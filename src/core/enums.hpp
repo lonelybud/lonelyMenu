@@ -365,6 +365,7 @@ namespace big
 		crash41,
 		player_ped_removal,
 		invalid_weapon_type,
+		elegant_crash,
 
 		kick_vote,
 		report,

@@ -74,6 +74,7 @@ namespace big
 
 		bool block_radio_requests     = false;
 		bool block_host_migr_requests = false;
+		bool block_sound_spam         = false;
 
 		int m_num_spawned_permanent_vehicles = 0;
 

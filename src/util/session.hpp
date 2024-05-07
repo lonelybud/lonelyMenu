@@ -1,5 +1,6 @@
 #pragma once
 #include "core/data/session.hpp"
+#include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "script.hpp"
@@ -101,5 +102,13 @@ namespace big::session
 
 		if (g_local_player->m_player_info)
 			g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
+	}
+
+	inline bool is_spoofed_host_token(uint64_t token)
+	{
+		if (token < 1000'000'000'000)
+			return true;
+
+		return false;
 	}
 }

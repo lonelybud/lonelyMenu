@@ -230,6 +230,12 @@ namespace big
 					    ImGui::Checkbox("Block Clone Syncs", &last_selected_player->block_clone_sync);
 					    ImGui::Checkbox("Block Network Events", &last_selected_player->block_net_events);
 					    ImGui::Checkbox("Log Clones", &last_selected_player->log_clones);
+
+					    ImGui::Spacing();
+
+					    ImGui::Checkbox("Block Sound Spam", &last_selected_player->block_sound_spam);
+					    ImGui::Checkbox("Block Radio Requests", &last_selected_player->block_radio_requests);
+					    ImGui::Checkbox("Block Host Migration Requests", &last_selected_player->block_host_migr_requests);
 				    }
 			    }
 		    },
@@ -408,6 +414,7 @@ namespace big
 			});
 			ImGui::SameLine();
 			components::button("Save outfit", [] {
+				g_misc.save_outfit_blend_data = true;
 				steal_player_outfit(last_selected_player, true);
 			});
 
