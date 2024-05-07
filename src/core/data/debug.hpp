@@ -11,6 +11,6 @@ namespace big
 		bool log_clones             = false;
 		// bool use_default_chat                  = false;
 
-		bool log_unkown_net_msg = true;
+		bool log_unkown_net_msg = false;
 	} g_debug{};
 }
