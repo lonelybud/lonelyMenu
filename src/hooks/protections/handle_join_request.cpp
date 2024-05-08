@@ -1,3 +1,4 @@
+#include "core/data/recent_spoofed_host_tokens.hpp"
 #include "core/data/session.hpp"
 #include "hooking/hooking.hpp"
 #include "pointers.hpp"
@@ -34,7 +35,10 @@ namespace big
 					g_notification_service.push_success("Join Blocked", str, true);
 			}
 			else if (has_spoofed_token)
+			{
 				LOG(WARNING) << std::format("Join Request denied for spoofed host: {} ({})", player_info->m_name, rockstar_id);
+				g_recent_spoofed_host_tokens[rockstar_id] = player_info->m_name;
+			}
 			else
 				LOG(WARNING) << str;
 

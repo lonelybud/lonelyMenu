@@ -41,8 +41,6 @@ namespace big
 #pragma pack(push, 1)
 	struct gta_pointers
 	{
-		memory::handle m_broadcast_patch;
-
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
 		memory::handle m_sound_overload_detour;
@@ -163,8 +161,6 @@ namespace big
 		functions::request_control m_request_control;
 
 		functions::get_connection_peer m_get_connection_peer;
-
-		PVOID m_broadcast_net_array;
 
 		PVOID m_prepare_metric_for_sending;
 

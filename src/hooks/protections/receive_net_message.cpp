@@ -138,20 +138,20 @@ namespace big
 			return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);
 
 		player_ptr player;
-		rage::snPlayer* possible_plyr;
+		int64_t rockstar_id;
 
 		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
 			if (auto sn_player = gta_util::get_network()->m_game_session_ptr->m_players[i])
 				if (sn_player && sn_player->m_player_data.m_peer_id_2 == frame->m_peer_id)
 				{
-					possible_plyr = sn_player;
-					player        = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
+					rockstar_id = sn_player->m_player_data.m_gamer_handle.m_rockstar_id;
+					player      = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
 
 					if (g_debug.log_unkown_net_msg && !player)
 						LOGF(WARNING,
 						    "Unknown net msg: {}, {}, {}",
 						    sn_player->m_player_data.m_host_token,
-						    sn_player->m_player_data.m_gamer_handle.m_rockstar_id,
+						    rockstar_id,
 						    sn_player->m_player_data.m_peer_id);
 
 					break;
@@ -292,15 +292,8 @@ namespace big
 					if (unk_player_radio_requests.exceeded_last_process())
 					{
 						g_reactions.oom_kick.process(nullptr);
-						if (possible_plyr)
-							LOGF(WARNING,
-							    "Unkown OOM kick {} from '{}' ({})({})",
-							    unk_player_radio_requests.num_attempts(),
-							    possible_plyr->m_player_data.m_name,
-							    possible_plyr->m_player_data.m_gamer_handle.m_rockstar_id,
-							    possible_plyr->m_player_data.m_gamer_handle_2.m_rockstar_id);
-						else
-							LOG(WARNING) << "Unkown OOM kick from unkown player " << unk_player_radio_requests.num_attempts();
+						LOG(WARNING) << "Unkown OOM kick from unkown player " << rockstar_id << " with attempts "
+						             << unk_player_radio_requests.num_attempts();
 					}
 
 					return true;

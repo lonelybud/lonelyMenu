@@ -60,6 +60,10 @@ namespace big
 
 		ImGui::Spacing();
 
+		components::button("Reset Form", [] {
+			set_selected(0, {});
+		});
+
 		if (exist_already)
 		{
 			if (components::button("Un-block"))

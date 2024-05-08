@@ -551,15 +551,6 @@ namespace big
                 g_pointers->m_gta.m_get_connection_peer = ptr.as<functions::get_connection_peer>();
             }
         },
-        // Broadcast Net Array
-        {
-            "BNA",
-            "48 89 5C 24 ? 48 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 40 48 8B 05 ? ? ? ? 66 44 89 4C 24",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_broadcast_net_array = ptr.as<PVOID>();
-            }
-        },
         // Serialize Take Off Ped Variation Task
         {
             "STOPVT",
@@ -813,15 +804,6 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_train_config_array = ptr.add(3).rip().as<rage::atArray<CTrainConfig>*>();
-            }
-        },
-        // Broadcast Net Array Patch
-        {
-            "BP",
-            "74 73 FF 90 ? ? ? ? 8B D5 4C 8B 00 48 8B C8 41 FF 50 30",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_broadcast_patch = ptr;
             }
         },
         // Creator Warp Cheat Triggered Patch

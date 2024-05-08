@@ -13,10 +13,6 @@ namespace big
 {
 	static void init()
 	{
-		// Bypass netarray buffer cache when enabled
-		broadcast_net_array::m_patch =
-		    memory::byte_patch::make(g_pointers->m_gta.m_broadcast_patch.as<uint8_t*>(), 0xEB).get();
-
 		// Disable cheat activated netevent when creator warping
 		memory::byte_patch::make(g_pointers->m_gta.m_creator_warp_cheat_triggered_patch.as<uint8_t*>(), 0xEB)->apply();
 

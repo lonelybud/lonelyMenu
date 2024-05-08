@@ -87,23 +87,6 @@ namespace big
 	{
 		components::sub_title("Next Host");
 
-		components::button("Refresh###hostlist", [] {
-			big::player_ptr host = nullptr;
-
-			if (g_player_service->get_self()->is_host())
-				host = g_player_service->get_self();
-			else
-				for (const auto& [_, plyr] : g_player_service->players())
-					if (plyr->is_host())
-					{
-						host = plyr;
-						break;
-					}
-
-			if (host)
-				g_session.next_host_list.delete_plyr(host->id()); // filter out host from the list
-		});
-
 		int hosts_count = 0;
 		for (auto& pair : g_session.next_host_list.list)
 		{

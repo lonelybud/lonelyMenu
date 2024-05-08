@@ -23,7 +23,6 @@ namespace big
 
 	void player_service::do_cleanup()
 	{
-		m_player_to_use_end_session_kick.reset();
 		m_player_to_use_complaint_kick.reset();
 		m_selected_player = nullptr;
 		m_players.clear();
@@ -73,7 +72,7 @@ namespace big
 	{
 		if (net_game_player == nullptr)
 		{
-			LOG(WARNING) << "net_game_player is nullptr";
+			LOG(WARNING) << "player_join: net_game_player is nullptr";
 			return;
 		}
 
@@ -86,20 +85,18 @@ namespace big
 		g_gui_info.update_gui_info();
 	}
 
-	void player_service::player_leave(CNetGamePlayer* net_game_player)
+	void player_service::player_leave(CNetGamePlayer* net_game_player, int64_t rockstar_id)
 	{
 		if (net_game_player == nullptr)
+		{
+			LOG(WARNING) << "player_leave: net_game_player is nullptr for " << rockstar_id;
 			return;
+		}
 
 		if (m_selected_player && m_selected_player->equals(net_game_player))
 			m_selected_player = nullptr;
 
-		if (auto it = std::find_if(m_players.begin(),
-		        m_players.end(),
-		        [net_game_player](const auto& p) {
-			        return p.second->id() == net_game_player->m_player_id;
-		        });
-		    it != m_players.end())
+		if (auto it = m_players.find(net_game_player->m_player_id); it != m_players.end())
 		{
 			if (m_player_to_use_end_session_kick == it->second)
 				m_player_to_use_end_session_kick = std::nullopt;

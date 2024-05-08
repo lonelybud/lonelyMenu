@@ -1,5 +1,6 @@
 #include "backend/player_command.hpp"
 #include "core/data/reactions.hpp"
+#include "core/data/recent_spoofed_host_tokens.hpp"
 #include "core/data/session.hpp"
 #include "core/scr_globals.hpp"
 #include "fiber_pool.hpp"
@@ -24,7 +25,7 @@ namespace big
 
 		if (new_index == static_cast<uint8_t>(-1))
 		{
-			g_player_service->player_leave(player);
+			g_player_service->player_leave(player, rockstar_id);
 			g_session.next_host_list.delete_plyr(player->m_player_id);
 
 			LOGF(INFO, "Player left '{}', slot #{}. RID: {}", net_player_data->m_name, (int)player->m_player_id, rockstar_id);
@@ -67,7 +68,9 @@ namespace big
 						plyr->is_spammer   = g_bad_players_service.bad_players_list[rockstar_id].s;
 						plyr->spam_message = g_bad_players_service.bad_players_list[rockstar_id].m;
 
-						if (!plyr->is_spammer)
+						if (plyr->is_spammer)
+							LOG(INFO) << "Spammer joined: " << join_str;
+						else
 						{
 							g_notification_service.push_warning("Blocked Player Joined", join_str, true);
 							// if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
@@ -90,6 +93,7 @@ namespace big
 
 					if (session::is_spoofed_host_token(host_token))
 					{
+						g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 						g_reactions.spoofed_host_token.process(plyr);
 
 						if (g_player_service->get_self()->is_host() && !is_friend)
