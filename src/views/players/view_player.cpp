@@ -3,6 +3,7 @@
 #include "core/data/protections.hpp"
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
+#include "gta_util.hpp"
 #include "gui.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
@@ -255,6 +256,11 @@ namespace big
 			ImGui::SameLine();
 			if (components::button("Copy Name & SC id##copyname"))
 				ImGui::SetClipboardText(std::format("{} {}", last_selected_player->m_name, rockstar_id).c_str());
+			ImGui::Spacing();
+			components::button("Log connection stats", [] {
+				auto id = last_selected_player->id();
+				LOGF(VERBOSE, "Relay: {}, Latency: {}, Ping: {}, Packet Loss: {}", NETWORK::NETWORK_IS_CONNECTED_VIA_RELAY(id), NETWORK::NETWORK_GET_AVERAGE_LATENCY(id), NETWORK::NETWORK_GET_AVERAGE_PING(id), NETWORK::NETWORK_GET_AVERAGE_PACKET_LOSS(id));
+			});
 		}
 		ImGui::EndGroup();
 	}
@@ -455,6 +461,9 @@ namespace big
 				if (components::button("Block Kick"))
 					toggle_block(true);
 				components::player_command_button<"hostkick">(last_selected_player);
+				components::button("Remove Kick", [] {
+					gta_util::get_network_player_mgr()->RemovePlayer(last_selected_player->get_net_game_player());
+				});
 			}
 
 			ImGui::Spacing();
