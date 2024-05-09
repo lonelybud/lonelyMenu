@@ -17,7 +17,7 @@ namespace big
 		while (g_running)
 		{
 			looped::update_globals();
-			looped::system_desync_kick_protection();
+			looped::system_update_desync_kick();
 
 			for (auto command : g_looped_commands)
 				if (command->is_enabled())

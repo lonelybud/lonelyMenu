@@ -1,4 +1,5 @@
 #include "backend/player_command.hpp"
+#include "core/data/desync_kick.hpp"
 #include "gta_util.hpp"
 #include "pointers.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -11,15 +12,15 @@ namespace big
 
 		virtual void execute(player_ptr player) override
 		{
-			g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->m_name), true);
-
-			if (gta_util::get_network()->m_game_session_ptr->is_host())
+			if (player && player->is_valid())
 			{
-				gta_util::get_network()->m_game_complaint_mgr.raise_complaint(player->m_host_token);
-				return;
+				auto rockstar_id = player->get_net_data()->m_gamer_handle.m_rockstar_id;
+				if (g_desync_kick_players.find(rockstar_id) == g_desync_kick_players.end())
+				{
+					g_desync_kick_players[rockstar_id] = player;
+					g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->m_name), true);
+				}
 			}
-
-			g_player_service->m_player_to_use_complaint_kick = player;
 		}
 	};
 

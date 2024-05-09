@@ -39,9 +39,6 @@ namespace big
 		player& operator=(const player&)     = default;
 		player& operator=(player&&) noexcept = default;
 
-		float screen_position_x = -1.f;
-		float screen_position_y = -1.f;
-
 		[[nodiscard]] CVehicle* get_current_vehicle() const;
 		[[nodiscard]] rage::rlGamerInfo* get_net_data() const;
 		[[nodiscard]] CNetGamePlayer* get_net_game_player() const;

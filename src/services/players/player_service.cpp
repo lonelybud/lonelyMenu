@@ -1,5 +1,6 @@
 #include "player_service.hpp"
 
+#include "core/data/desync_kick.hpp"
 #include "core/data/gui_info.hpp"
 #include "gta_util.hpp"
 
@@ -23,7 +24,6 @@ namespace big
 
 	void player_service::do_cleanup()
 	{
-		m_player_to_use_complaint_kick.reset();
 		m_selected_player = nullptr;
 		m_players.clear();
 		g_gui_info.update_gui_info();
@@ -98,12 +98,7 @@ namespace big
 
 		if (auto it = m_players.find(net_game_player->m_player_id); it != m_players.end())
 		{
-			if (m_player_to_use_end_session_kick == it->second)
-				m_player_to_use_end_session_kick = std::nullopt;
-
-			if (m_player_to_use_complaint_kick == it->second)
-				m_player_to_use_complaint_kick = std::nullopt;
-
+			g_desync_kick_players.erase(it->second->get_net_data()->m_gamer_handle.m_rockstar_id);
 			m_players.erase(it);
 		}
 
