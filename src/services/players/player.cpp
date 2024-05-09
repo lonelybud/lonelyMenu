@@ -11,10 +11,12 @@ namespace big
 	    m_net_game_player(net_game_player),
 	    m_host_token(host_token)
 	{
-		m_is_friend = friends_service::is_friend(net_game_player);
-
 		if (net_game_player)
+		{
 			strcpy(m_name, net_game_player->get_name());
+			m_rockstar_id = net_game_player->get_net_data()->m_gamer_handle.m_rockstar_id;
+			m_is_friend   = friends_service::is_friend(m_rockstar_id);
+		}
 	}
 
 	CVehicle* player::get_current_vehicle() const
@@ -69,13 +71,8 @@ namespace big
 	rage::snPeer* player::get_session_peer()
 	{
 		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_peer_count; i++)
-		{
-			if (gta_util::get_network()->m_game_session_ptr->m_peers[i]->m_peer_data.m_gamer_handle.m_rockstar_id
-			    == get_net_data()->m_gamer_handle.m_rockstar_id)
-			{
+			if (gta_util::get_network()->m_game_session_ptr->m_peers[i]->m_peer_data.m_gamer_handle.m_rockstar_id == m_rockstar_id)
 				return gta_util::get_network()->m_game_session_ptr->m_peers[i];
-			}
-		}
 
 		return nullptr;
 	}

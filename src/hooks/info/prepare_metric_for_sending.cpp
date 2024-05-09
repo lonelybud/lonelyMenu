@@ -1,7 +1,7 @@
+#include "gta/json_serializer.hpp"
 #include "hooking/hooking.hpp"
 #include "rage/rlMetric.hpp"
 #include "services/players/player_service.hpp"
-#include "gta/json_serializer.hpp"
 
 namespace big
 {
@@ -108,10 +108,8 @@ namespace big
 			{
 				bool contains_your_sc = false;
 
-				auto net_data = g_player_service->get_self()->get_net_data();
-
-				if (strcmp(metric->get_name(), "DIG") == 0 && net_data)
-					contains_your_sc = data.find(std::to_string(net_data->m_gamer_handle.m_rockstar_id)) != std::string::npos;
+				if (strcmp(metric->get_name(), "DIG") == 0)
+					contains_your_sc = data.find(std::to_string(g_player_service->get_self()->m_rockstar_id)) != std::string::npos;
 
 				LOG(WARNING) << "BAD METRIC: " << metric->get_name() << " " << contains_your_sc;
 			}

@@ -197,6 +197,12 @@ namespace big
 				if (player->block_host_migr_requests)
 					return true;
 
+				if (player->m_host_migration_rate_limit.in_process())
+				{
+					LOG(WARNING) << "m_host_migration_rate_limit in_process: " << player->m_name;
+					return true;
+				}
+
 				if (player->m_host_migration_rate_limit.process())
 				{
 					player->block_host_migr_requests = true;
@@ -253,6 +259,12 @@ namespace big
 				if (player->block_radio_requests)
 					return true;
 
+				if (player->m_radio_request_rate_limit.in_process())
+				{
+					LOG(WARNING) << "m_radio_request_rate_limit in_process: " << player->m_name;
+					return true;
+				}
+
 				if (player->m_radio_request_rate_limit.process())
 				{
 					player->block_radio_requests = true;
@@ -287,13 +299,18 @@ namespace big
 			{
 				static rate_limiter unk_player_radio_requests{2s, 2};
 
+				if (unk_player_radio_requests.in_process())
+				{
+					LOG(WARNING) << "unk_player_radio_requests in_process: " << rockstar_id;
+					return true;
+				}
+
 				if (unk_player_radio_requests.process())
 				{
 					if (unk_player_radio_requests.exceeded_last_process())
 					{
 						g_reactions.oom_kick.process(nullptr);
-						LOG(WARNING) << "Unkown OOM kick from unkown player " << rockstar_id << " with attempts "
-						             << unk_player_radio_requests.num_attempts();
+						LOG(WARNING) << "Unkown OOM kick from unkown player " << rockstar_id;
 					}
 
 					return true;

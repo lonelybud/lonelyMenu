@@ -57,7 +57,14 @@ namespace big
 		auto plyr     = g_player_service->get_by_id(source_player->m_player_id);
 		auto tar_plyr = g_player_service->get_by_id(target_player->m_player_id);
 
-		if (!plyr || (plyr && plyr->block_net_events))
+		if (!plyr)
+		{
+			LOG(WARNING) << "received_event player not found: " << source_player->get_name();
+			g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+			return;
+		}
+
+		if (plyr->block_net_events)
 		{
 			g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 			return;
@@ -328,21 +335,19 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
-			if (plyr->block_sound_spam)
+			if (plyr->m_play_sound_rate_limit.in_process())
 			{
-				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-				return;
+				LOG(WARNING) << "m_play_sound_rate_limit in_process: " << plyr->m_name;
+				return true;
 			}
 
 			if (plyr->m_play_sound_rate_limit.process())
 			{
-				plyr->block_sound_spam = true;
-
 				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
-				{
 					g_reactions.crash41.process(plyr, tar_plyr);
-					plyr->block_sound_spam = false;
-				}
+
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+				return;
 			}
 
 			bool is_entity = buffer->Read<bool>(1);
@@ -377,13 +382,13 @@ namespace big
 		}
 		case eNetworkEvents::EXPLOSION_EVENT:
 		{
-			if (plyr && g_debug.log_explosion_event)
+			if (g_debug.log_explosion_event)
 				LOGF(WARNING,
 				    "Explosion Event: {} (Dist- {})",
 				    plyr->m_name,
 				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
 
-			if (plyr && plyr->block_explosions)
+			if (plyr->block_explosions)
 			{
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
@@ -408,7 +413,23 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PTFX_EVENT:
 		{
-			if (plyr && !plyr->whitelist_ptfx && plyr->m_ptfx_ratelimit.process())
+			if (g_debug.log_ptfx_event)
+				LOGF(WARNING,
+				    "PTFX Event: {} (Dist- {})",
+				    plyr->m_name,
+				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
+
+			if (plyr->whitelist_ptfx)
+				break;
+
+			if (plyr->m_ptfx_ratelimit.in_process())
+			{
+				LOG(WARNING) << "m_ptfx_ratelimit in_process: " << plyr->m_name;
+				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
+				return;
+			}
+
+			if (plyr->m_ptfx_ratelimit.process())
 			{
 				if (plyr->m_ptfx_ratelimit.exceeded_last_process())
 					g_reactions.ptfx_spam.process(plyr);

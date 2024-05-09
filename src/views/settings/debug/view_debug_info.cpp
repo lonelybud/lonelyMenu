@@ -4,6 +4,7 @@
 #include "gta/net_array.hpp"
 #include "gta_util.hpp"
 #include "pointers.hpp"
+#include "services/players/player_service.hpp"
 
 #include <imgui.h>
 
@@ -48,6 +49,7 @@ namespace big
 		{
 			ImGui::Text("Game Version: %s", g_pointers->m_gta.m_game_version);
 			ImGui::Text("Online Version: %s", g_pointers->m_gta.m_online_version);
+			ImGui::Text("No of players: %d", g_player_service->players().size() + 1);
 
 			render_transition_state();
 

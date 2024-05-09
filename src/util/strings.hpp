@@ -33,4 +33,14 @@ namespace big
 		if (strlen(src) > len)
 			dest[len] = '\0';
 	}
+
+	inline void replace_double_dots(std::string& str)
+	{
+		size_t pos = 0;
+		while ((pos = str.find("..", pos)) != std::string::npos)
+		{
+			str.replace(pos, 2, ".");
+			pos += 1; // Move past the replaced dot
+		}
+	}
 }

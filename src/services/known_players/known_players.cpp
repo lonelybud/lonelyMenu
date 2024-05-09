@@ -56,8 +56,7 @@ namespace big
 
 	void known_players_service::add(player_ptr player)
 	{
-		if (auto net_data = player->get_net_data())
-			add(net_data->m_name, net_data->m_gamer_handle.m_rockstar_id);
+		add(player->m_name, player->m_rockstar_id);
 	}
 
 	inline void known_players_service::remove(int64_t rockstar_id)
@@ -68,8 +67,7 @@ namespace big
 
 	void known_players_service::remove(player_ptr player)
 	{
-		if (auto net_data = player->get_net_data())
-			remove(net_data->m_gamer_handle.m_rockstar_id);
+		remove(player->m_rockstar_id);
 	}
 
 	bool known_players_service::is_known(int64_t rockstar_id)

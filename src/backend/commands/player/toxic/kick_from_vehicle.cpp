@@ -2,6 +2,7 @@
 #include "gta/net_object_mgr.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "services/notifications/notification_service.hpp"
 
 namespace big
 {
@@ -12,6 +13,13 @@ namespace big
 		virtual void execute(player_ptr player) override
 		{
 			auto vehicle = player->get_current_vehicle();
+
+			if (!vehicle || !vehicle->m_net_object)
+			{
+				g_notification_service.push_error("Vehicle Kick", "Vehicle hasn't synced yet");
+				return;
+			}
+
 			// use a private method to kick player from vehicle
 			(*g_pointers->m_gta.m_network_object_mgr)->ChangeOwner(vehicle->m_net_object, g_player_service->get_self()->get_net_game_player(), 0);
 		}

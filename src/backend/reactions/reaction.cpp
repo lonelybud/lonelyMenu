@@ -34,13 +34,8 @@ namespace big
 
 	void reaction::process(player_ptr player, player_ptr target)
 	{
-		rage::rlGamerInfo* net_data;
-
-		if (player && player->is_valid() && (net_data = player->get_net_data()))
+		if (player && player->is_valid())
 		{
-			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-			auto name        = net_data->m_name;
-
 			bool kick_player = this->type == reaction_type::kick_player;
 
 			if (!player->infractions.contains(this))
@@ -82,7 +77,7 @@ namespace big
 				}
 				}
 
-			auto str = std::format("{} from '{}'", m_notify_message, name);
+			auto str = std::format("{} from '{}'", m_notify_message, player->m_name);
 
 			if (target)
 				str += std::format("to {}", target->m_name);
@@ -122,7 +117,7 @@ namespace big
 			{
 				player->is_modder = true;
 
-				if (!g_bad_players_service.does_exist(rockstar_id))
+				if (!g_bad_players_service.does_exist(player->m_rockstar_id))
 				{
 					player->spam_message = get_infraction_str(player->infractions);
 					g_bad_players_service.add_player(player, false, player->is_spammer);

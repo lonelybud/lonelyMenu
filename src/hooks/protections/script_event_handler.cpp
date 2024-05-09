@@ -51,6 +51,12 @@ namespace big
 		const auto hash       = static_cast<eRemoteEvent>(args[0]);
 		auto plyr             = g_player_service->get_by_id(player->m_player_id);
 
+		if (!plyr)
+		{
+			LOG(WARNING) << "scripted_game_event player not found: " << player->get_name();
+			return true;
+		}
+
 		switch (hash)
 		{
 		case eRemoteEvent::Bounty:
@@ -241,11 +247,21 @@ namespace big
 		}
 		case eRemoteEvent::SoundSpam:
 		{
-			if (g_protections.script_events.sound_spam && (!plyr || plyr->m_invites_rate_limit.process()))
+			if (g_protections.script_events.sound_spam)
 			{
-				if (plyr->m_invites_rate_limit.exceeded_last_process())
-					g_reactions.sound_spam_se.process(plyr);
-				return true;
+				if (plyr->m_invites_rate_limit.in_process())
+				{
+					LOG(WARNING) << "m_invites_rate_limit in_process: " << plyr->m_name;
+					return true;
+				}
+
+				if (plyr->m_invites_rate_limit.process())
+				{
+					if (plyr->m_invites_rate_limit.exceeded_last_process())
+						g_reactions.sound_spam_se.process(plyr);
+
+					return true;
+				}
 			}
 			break;
 		}
@@ -330,8 +346,7 @@ namespace big
 			int interior = (int)args[3];
 			if (interior < 0 || interior > 166) // the upper bound will change after an update
 			{
-				if (auto plyr = g_player_service->get_by_id(player->m_player_id))
-					g_reactions.null_function_kick.process(plyr);
+				g_reactions.null_function_kick.process(plyr);
 				return true;
 			}
 			break;
@@ -347,13 +362,9 @@ namespace big
 		case eRemoteEvent::TriggerCEORaid:
 		{
 			if (auto script = gta_util::find_script_thread("freemode"_J))
-			{
 				if (script->m_net_component && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host
 				    && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host->m_net_game_player != player)
-				{
 					g_reactions.trigger_business_raid.process(plyr);
-				}
-			}
 
 			LOG(WARNING) << "CEO RAID WAS BLOCKED";
 			return true;
@@ -378,7 +389,7 @@ namespace big
 
 			if (very_bad_script_ids.contains(script_id) || (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() && bad_script_ids.contains(script_id)))
 			{
-				g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr ? plyr->m_name : "?"));
+				g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr->m_name));
 				g_reactions.start_script.process(plyr);
 				return true;
 			}

@@ -48,7 +48,7 @@ namespace big
 
 		if (ImGui::BeginPopupModal("##selectedlocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text("Teleport to %s?", selected_telelocation->name);
+			ImGui::Text("Teleport to %s?", selected_telelocation->name.c_str());
 			ImGui::Spacing();
 			if (ImGui::Button("Yes"))
 			{

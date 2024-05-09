@@ -12,19 +12,19 @@ namespace big
 
 		virtual void execute(player_ptr player) override
 		{
-			if (!player)
-				return;
+			if (player && player->is_valid())
+			{
+				packet msg{};
 
-			g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->m_name), true);
+				msg.write_message(rage::eNetMessage::MsgRadioStationSyncRequest);
+				auto msg_id = player->get_session_player()->m_msg_id;
 
-			packet msg{};
+				// for (int j = 0; j < 2000; j++)
+				for (int j = 0; j < 200; j++)
+					msg.send(msg_id);
 
-			msg.write_message(rage::eNetMessage::MsgRadioStationSyncRequest);
-			auto msg_id = player->get_session_player()->m_msg_id;
-
-			// for (int j = 0; j < 2000; j++)
-			for (int j = 0; j < 200; j++)
-				msg.send(msg_id);
+				g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->m_name), true);
+			}
 		}
 	};
 

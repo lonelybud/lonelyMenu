@@ -22,6 +22,7 @@ namespace big
 			if (ENTITY::DOES_ENTITY_EXIST(self::veh))
 			{
 				const auto vehicle_file_name = std::string(vehicle_file_name_input).append(".json");
+				replace_double_dots(vehicle_file_name); // so that .. does not throw error by custom file system
 				persist_car_service::save_vehicle(self::veh, vehicle_file_name, save_folder);
 				ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
 

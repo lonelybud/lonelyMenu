@@ -23,14 +23,9 @@ namespace big
 
 	void bad_players_service::add_player(player_ptr player, bool block_join, bool is_spammer)
 	{
-		if (auto net_data = player->get_net_data())
-		{
-			auto rockstar_id = net_data->m_gamer_handle.m_rockstar_id;
-			auto name        = net_data->m_name;
-			auto& bs         = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
-
-			add_player(rockstar_id, {name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
-		}
+		auto& bs = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
+		add_player(player->m_rockstar_id,
+		    {player->m_name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
 	}
 
 	void bad_players_service::toggle_block(int64_t rockstar_id, bool v)

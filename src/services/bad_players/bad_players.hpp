@@ -8,7 +8,7 @@ namespace big
 		std::string n; // name
 		bool block_join = true;
 		bool s;        // spammer
-		int l;         // language
+		u_int l;       // language
 		std::string m; // message
 	};
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(bad_player, n, s, l, m);

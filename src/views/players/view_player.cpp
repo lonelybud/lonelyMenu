@@ -234,7 +234,6 @@ namespace big
 
 					    ImGui::Spacing();
 
-					    ImGui::Checkbox("Block Sound Spam", &last_selected_player->block_sound_spam);
 					    ImGui::Checkbox("Block Radio Requests", &last_selected_player->block_radio_requests);
 					    ImGui::Checkbox("Block Host Migration Requests", &last_selected_player->block_host_migr_requests);
 				    }
@@ -564,8 +563,7 @@ namespace big
 				if (last_selected_player->is_known_player)
 					strcat(player_tab.name, " [KNOWN]");
 
-				if (auto net_player_data = last_selected_player->get_net_data())
-					rockstar_id = net_player_data->m_gamer_handle.m_rockstar_id;
+				rockstar_id = last_selected_player->m_rockstar_id;
 			}
 
 			if (last_selected_player->id() == self::id)

@@ -2,6 +2,7 @@
 #include "core/data/misc.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/outfit.hpp"
+#include "util/strings.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -140,13 +141,16 @@ namespace big
 			std::string str = outfit_name;
 			auto folder     = outfit::get_folder(selected_folder);
 
-			if (folder.get_file(str + ".json").exists())
+			str += ".json";
+			replace_double_dots(str); // so that .. does not throw error by custom file system
+
+			if (folder.get_file(str).exists())
 			{
 				g_notification_service.push_error("Save Outfit Failed", "File with same name already exists", true);
 				return;
 			}
 
-			outfit::save_outfit(self::ped, str + ".json", selected_folder);
+			outfit::save_outfit(self::ped, str, selected_folder);
 			refresh_list();
 		});
 

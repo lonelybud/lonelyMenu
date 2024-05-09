@@ -45,6 +45,7 @@ namespace big
 				});
 
 				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
+				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
 				ImGui::Checkbox("Log packets", &g_debug.log_packets);
 				ImGui::Checkbox("Log script events", &g_debug.log_script_events);
 				ImGui::Checkbox("Log Clones", &g_debug.log_clones);

@@ -10,7 +10,7 @@ namespace big
 {
 	static char player_name[64];
 	static int64_t rockstar_id;
-	static int language;
+	static u_int language;
 	static bool save_as_spammer, block_join;
 	static char message[msg_size];
 	static bool exist_already;
