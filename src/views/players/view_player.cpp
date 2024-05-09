@@ -34,7 +34,7 @@ namespace big
 	static constexpr char priv[]           = "[PRIVATE]: ";
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 	static big::player_ptr last_selected_player;
-	static int64_t rockstar_id;
+	static rock_id rockstar_id;
 	static bool open_gift_veh_model = false;
 
 	static inline const char* get_nat_type_str(int type)

@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/player.hpp"
 #include "fwddec.hpp"
 #include "pointers.hpp"
 
@@ -91,7 +92,7 @@ namespace rage
 		{
 			return big::g_pointers->m_gta.m_read_bitbuf_bool(this, boolean, 1);
 		}
-		bool ReadRockstarId(int64_t* rockstar_id)
+		bool ReadRockstarId(big::rock_id* rockstar_id)
 		{
 			return this->ReadInt64(rockstar_id, sizeof(rockstar_id) * 8);
 		}
@@ -207,7 +208,7 @@ namespace rage
 		{
 			return big::g_pointers->m_gta.m_write_bitbuf_int64(this, integer, bits);
 		}
-		bool WriteRockstarId(int64_t rockstar_id)
+		bool WriteRockstarId(big::rock_id rockstar_id)
 		{
 			return big::g_pointers->m_gta.m_write_bitbuf_int64(this, rockstar_id, sizeof(rockstar_id) * 8);
 		}

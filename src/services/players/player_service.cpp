@@ -85,7 +85,7 @@ namespace big
 		g_gui_info.update_gui_info();
 	}
 
-	void player_service::player_leave(CNetGamePlayer* net_game_player, int64_t rockstar_id)
+	void player_service::player_leave(CNetGamePlayer* net_game_player, rock_id rockstar_id)
 	{
 		if (net_game_player == nullptr)
 		{
@@ -98,7 +98,7 @@ namespace big
 
 		if (auto it = m_players.find(net_game_player->m_player_id); it != m_players.end())
 		{
-			g_desync_kick_players.erase(it->second->get_net_data()->m_gamer_handle.m_rockstar_id);
+			g_desync_kick_players.erase(it->second->m_rockstar_id);
 			m_players.erase(it);
 		}
 

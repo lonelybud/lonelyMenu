@@ -9,19 +9,19 @@ static constexpr int msg_size = 320;
 namespace big
 {
 	static char player_name[64];
-	static int64_t rockstar_id;
+	static rock_id rockstar_id;
 	static bool exist_already;
 
-	static void set_selected(int64_t rid, known_player p, bool exist)
+	static void set_selected(rock_id rid, known_player p, bool exist)
 	{
 		strcpy(player_name, p.name.c_str());
 		rockstar_id   = rid;
 		exist_already = exist;
 	}
 
-	static inline std::unordered_map<int64_t, known_player> filter_players(const std::unordered_map<int64_t, known_player>& inputMap, const std::string& search)
+	static inline std::unordered_map<rock_id, known_player> filter_players(const std::unordered_map<rock_id, known_player>& inputMap, const std::string& search)
 	{
-		std::unordered_map<int64_t, known_player> res;
+		std::unordered_map<rock_id, known_player> res;
 
 		for (auto pair : inputMap)
 		{
@@ -37,7 +37,7 @@ namespace big
 
 	void view::known_players()
 	{
-		static std::unordered_map<int64_t, known_player> searched_players;
+		static std::unordered_map<rock_id, known_player> searched_players;
 		static std::string search_player_name;
 
 		ImGui::PushItemWidth(300);

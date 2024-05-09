@@ -1,6 +1,7 @@
 #include "backend/looped/looped.hpp"
 #include "core/data/desync_kick.hpp"
 #include "gta_util.hpp"
+#include "services/players/player_service.hpp"
 
 namespace big
 {

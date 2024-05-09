@@ -6,7 +6,7 @@
 
 namespace big
 {
-	static int64_t selected_rid;
+	static rock_id selected_rid;
 
 	static void remove_selected_rid()
 	{
@@ -16,6 +16,18 @@ namespace big
 
 	void view::recent_spoofed_host_tokens()
 	{
+		if (components::button("Add all"))
+		{
+			for (auto& pair : g_recent_spoofed_host_tokens)
+				g_bad_players_service.add_player(pair.first, {pair.second, true, false, 0, "Spoofed host token"});
+			g_recent_spoofed_host_tokens.clear();
+		}
+		ImGui::SameLine();
+		if (components::button("Clear"))
+			g_recent_spoofed_host_tokens.clear();
+
+		ImGui::Spacing();
+
 		if (ImGui::BeginListBox("##plr_list", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 		{
 			for (auto& pair : g_recent_spoofed_host_tokens)

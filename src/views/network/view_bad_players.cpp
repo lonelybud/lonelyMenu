@@ -9,13 +9,13 @@ static constexpr int msg_size = 320;
 namespace big
 {
 	static char player_name[64];
-	static int64_t rockstar_id;
+	static rock_id rockstar_id;
 	static u_int language;
 	static bool save_as_spammer, block_join;
 	static char message[msg_size];
 	static bool exist_already;
 
-	static void set_selected(int64_t rid, bad_player p)
+	static void set_selected(rock_id rid, bad_player p)
 	{
 		strcpy(player_name, p.n.c_str());
 		rockstar_id     = rid;
@@ -25,9 +25,9 @@ namespace big
 		strcpy_safe(message, p.m.c_str(), msg_size);
 	}
 
-	static inline std::unordered_map<int64_t, bad_player> filter_bad_players(const std::unordered_map<int64_t, bad_player>& inputMap, const std::string& search)
+	static inline std::unordered_map<rock_id, bad_player> filter_bad_players(const std::unordered_map<rock_id, bad_player>& inputMap, const std::string& search)
 	{
-		std::unordered_map<int64_t, bad_player> res;
+		std::unordered_map<rock_id, bad_player> res;
 
 		for (auto pair : inputMap)
 		{
@@ -43,7 +43,7 @@ namespace big
 
 	void view::bad_players()
 	{
-		static std::unordered_map<int64_t, bad_player> searched_blocked_players;
+		static std::unordered_map<rock_id, bad_player> searched_blocked_players;
 		static std::string search_blocked_player_name;
 
 		ImGui::PushItemWidth(300);

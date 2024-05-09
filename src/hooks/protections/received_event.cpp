@@ -338,7 +338,7 @@ namespace big
 			if (plyr->m_play_sound_rate_limit.in_process())
 			{
 				LOG(WARNING) << "m_play_sound_rate_limit in_process: " << plyr->m_name;
-				return true;
+				return;
 			}
 
 			if (plyr->m_play_sound_rate_limit.process())

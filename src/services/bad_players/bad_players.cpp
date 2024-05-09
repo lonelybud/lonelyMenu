@@ -14,7 +14,7 @@ namespace big
 		return g_file_manager.get_project_file("blocked_players.json").get_path();
 	}
 
-	void bad_players_service::add_player(int64_t rockstar_id, bad_player player)
+	void bad_players_service::add_player(rock_id rockstar_id, bad_player player)
 	{
 		bad_players_list[rockstar_id] = player;
 		if (player.block_join)
@@ -25,22 +25,22 @@ namespace big
 	{
 		auto& bs = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
 		add_player(player->m_rockstar_id,
-		    {player->m_name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
+		    {player->m_name, block_join, is_spammer, (u_int)bs.Language, is_spammer ? "spam" : player->spam_message});
 	}
 
-	void bad_players_service::toggle_block(int64_t rockstar_id, bool v)
+	void bad_players_service::toggle_block(rock_id rockstar_id, bool v)
 	{
 		bad_players_list[rockstar_id].block_join = v;
 		++save_count;
 	}
 
-	bool bad_players_service::is_blocked(int64_t rockstar_id)
+	bool bad_players_service::is_blocked(rock_id rockstar_id)
 	{
 		auto bad_player = bad_players_list.find(rockstar_id);
 		return bad_player != bad_players_list.end() && bad_player->second.block_join;
 	}
 
-	bool bad_players_service::does_exist(int64_t rockstar_id)
+	bool bad_players_service::does_exist(rock_id rockstar_id)
 	{
 		auto bad_player = bad_players_list.find(rockstar_id);
 		return bad_player != bad_players_list.end();

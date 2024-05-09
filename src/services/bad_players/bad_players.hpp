@@ -17,14 +17,14 @@ namespace big
 	{
 	public:
 		int save_count;
-		std::unordered_map<int64_t, bad_player> bad_players_list;
+		std::unordered_map<rock_id, bad_player> bad_players_list;
 
 		std::filesystem::path get_file_path();
-		void add_player(int64_t rockstar_id, bad_player player);
+		void add_player(rock_id rockstar_id, bad_player player);
 		void add_player(player_ptr player, bool block_join, bool is_spammer);
-		void toggle_block(int64_t rockstar_id, bool v);
-		bool is_blocked(int64_t rockstar_id);
-		bool does_exist(int64_t rockstar_id);
+		void toggle_block(rock_id rockstar_id, bool v);
+		bool is_blocked(rock_id rockstar_id);
+		bool does_exist(rock_id rockstar_id);
 		void load_blocked_list();
 		void save_blocked_list();
 	};

@@ -48,7 +48,7 @@ namespace big
 		}
 	}
 
-	inline void known_players_service::add(std::string name, int64_t rockstar_id)
+	inline void known_players_service::add(std::string name, rock_id rockstar_id)
 	{
 		known_players_list[rockstar_id] = {name, rockstar_id};
 		++save_count;
@@ -59,7 +59,7 @@ namespace big
 		add(player->m_name, player->m_rockstar_id);
 	}
 
-	inline void known_players_service::remove(int64_t rockstar_id)
+	inline void known_players_service::remove(rock_id rockstar_id)
 	{
 		known_players_list.erase(rockstar_id);
 		++save_count;
@@ -70,7 +70,7 @@ namespace big
 		remove(player->m_rockstar_id);
 	}
 
-	bool known_players_service::is_known(int64_t rockstar_id)
+	bool known_players_service::is_known(rock_id rockstar_id)
 	{
 		return known_players_list.find(rockstar_id) != known_players_list.end();
 	}

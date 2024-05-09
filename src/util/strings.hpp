@@ -6,7 +6,7 @@
 namespace big
 {
 	// Function to trim leading and trailing whitespace from a string
-	inline std::string trimString(const std::string& str)
+	inline std::string trimString(std::string& str)
 	{
 		auto start = str.begin();
 		auto end   = str.end();
