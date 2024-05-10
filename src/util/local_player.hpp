@@ -16,4 +16,13 @@ namespace big::local_player
 	{
 		return "MP" + std::to_string(get_active_character_slot()) + "_";
 	}
+
+	inline void remove_wanted()
+	{
+		if (g_local_player && g_local_player->m_player_info->m_is_wanted)
+		{
+			g_local_player->m_player_info->m_wanted_level = 0;
+			g_local_player->m_player_info->m_is_wanted    = false;
+		}
+	}
 }

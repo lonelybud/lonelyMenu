@@ -99,7 +99,6 @@ namespace big
 				    const auto money  = reinterpret_cast<uint64_t&>(stats.Money);
 				    const auto wallet = reinterpret_cast<uint64_t&>(stats.WalletBalance);
 
-
 				    ImGui::BeginGroup();
 				    {
 					    if (boss_goon.Language >= 0 && boss_goon.Language < 13)
@@ -186,7 +185,7 @@ namespace big
 
 					    ImGui::Spacing();
 
-					    ImGui::Text("Is in interior: %d", globalplayer_bd.CurrentInteriorIndex != 0);
+					    ImGui::Text("Is in interior: %d", globals::get_interior_from_player(id) != 0);
 					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
@@ -230,12 +229,15 @@ namespace big
 					    ImGui::Checkbox("Block Clone Creates", &last_selected_player->block_clone_create);
 					    ImGui::Checkbox("Block Clone Syncs", &last_selected_player->block_clone_sync);
 					    ImGui::Checkbox("Block Network Events", &last_selected_player->block_net_events);
-					    ImGui::Checkbox("Log Clones", &last_selected_player->log_clones);
 
 					    ImGui::Spacing();
 
 					    ImGui::Checkbox("Block Radio Requests", &last_selected_player->block_radio_requests);
 					    ImGui::Checkbox("Block Host Migration Requests", &last_selected_player->block_host_migr_requests);
+
+					    ImGui::Spacing();
+
+					    ImGui::Checkbox("Log Clones", &last_selected_player->log_clones);
 				    }
 			    }
 		    },
@@ -377,7 +379,7 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
 					{
 						ENTITY::SET_ENTITY_INVINCIBLE(veh, TRUE);
-						g_notification_service.push_error("Success", "Entity is invincible now", false);
+						g_notification_service.push_success("Success", "Entity is invincible now", false);
 					}
 			});
 			ImGui::SameLine();
@@ -386,7 +388,7 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
 					{
 						ENTITY::SET_ENTITY_INVINCIBLE(veh, FALSE);
-						g_notification_service.push_error("Success", "Entity is not invincible now", false);
+						g_notification_service.push_success("Success", "Entity is not invincible now", false);
 					}
 			});
 

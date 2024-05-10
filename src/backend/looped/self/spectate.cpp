@@ -1,7 +1,9 @@
 #include "backend/looped_command.hpp"
 #include "core/data/self.hpp"
 #include "natives.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
+#include "util/globals.hpp"
 
 namespace big
 {
@@ -15,19 +17,23 @@ namespace big
 		{
 			target_player = g_player_service->get_selected();
 
-			if (!target_player || SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0)
+			if (target_player && target_player->is_valid() && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 			{
-				g_self.spectating = false;
-				return;
+				if (globals::get_interior_from_player(target_player->id()) != 0)
+					g_notification_service.push_error("Spectate", "Player is in interior");
+				else
+				{
+					const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
+					NETWORK::NETWORK_SET_IN_SPECTATOR_MODE(TRUE, target_ped);
+					NETWORK::NETWORK_OVERRIDE_RECEIVE_RESTRICTIONS_ALL(FALSE);
+					HUD::SET_MINIMAP_IN_SPECTATOR_MODE(TRUE, target_ped);
+					HUD::SET_BLIP_ALPHA(HUD::GET_MAIN_PLAYER_BLIP_ID(), 255);
+					STREAMING::SET_FOCUS_ENTITY(target_ped);
+					return;
+				}
 			}
 
-			const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
-
-			NETWORK::NETWORK_SET_IN_SPECTATOR_MODE(TRUE, target_ped);
-			NETWORK::NETWORK_OVERRIDE_RECEIVE_RESTRICTIONS_ALL(FALSE);
-			HUD::SET_MINIMAP_IN_SPECTATOR_MODE(TRUE, target_ped);
-			HUD::SET_BLIP_ALPHA(HUD::GET_MAIN_PLAYER_BLIP_ID(), 255);
-			STREAMING::SET_FOCUS_ENTITY(target_ped);
+			g_self.spectating = false;
 		}
 
 		virtual void on_tick() override

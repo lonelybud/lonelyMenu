@@ -38,6 +38,9 @@ namespace big
 
 		virtual void on_tick() override
 		{
+			if (g_local_player == nullptr)
+				return;
+
 			if (m_vehicle != g_local_player->m_vehicle)
 				lock_veh();
 			else if (m_vehicle)

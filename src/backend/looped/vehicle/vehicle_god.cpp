@@ -32,25 +32,25 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			if (g_local_player)
+			if (g_local_player == nullptr)
+				return;
+
+			if (auto vehicle = g_local_player->m_vehicle)
 			{
-				if (auto vehicle = g_local_player->m_vehicle)
+				if (const auto is_not_in_vehicle = !PED::GET_PED_CONFIG_FLAG(self::ped, 62, false))
 				{
-					if (const auto is_not_in_vehicle = !PED::GET_PED_CONFIG_FLAG(self::ped, 62, false))
-					{
-						restore_original_vehicle_data(vehicle);
-						return;
-					}
-
-					if (!m_orig_veh_datas.contains(vehicle))
-					{
-						m_orig_veh_datas[vehicle].m_deform_god  = vehicle->m_deform_god;
-						m_orig_veh_datas[vehicle].m_damage_bits = vehicle->m_damage_bits;
-					}
-
-					vehicle->m_deform_god &= ~(deform_god_bit);
-					vehicle->m_damage_bits = static_cast<int>(eEntityProofs::GOD);
+					restore_original_vehicle_data(vehicle);
+					return;
 				}
+
+				if (!m_orig_veh_datas.contains(vehicle))
+				{
+					m_orig_veh_datas[vehicle].m_deform_god  = vehicle->m_deform_god;
+					m_orig_veh_datas[vehicle].m_damage_bits = vehicle->m_damage_bits;
+				}
+
+				vehicle->m_deform_god &= ~(deform_god_bit);
+				vehicle->m_damage_bits = static_cast<int>(eEntityProofs::GOD);
 			}
 		}
 

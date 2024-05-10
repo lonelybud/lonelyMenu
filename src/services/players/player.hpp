@@ -58,57 +58,46 @@ namespace big
 
 		void timeout();
 
-		bool off_radar    = false;
-		bool never_wanted = false;
-		bool semi_godmode = false;
-		bool fix_vehicle  = false;
+		uint64_t m_host_token;
+		char m_name[20] = "";
+		int64_t m_rockstar_id;
 
-		rate_limiter m_host_migration_rate_limit{2s, 15};
-		rate_limiter m_play_sound_rate_limit{1s, 10};
-		rate_limiter m_invites_rate_limit{10s, 2};
-		rate_limiter m_radio_request_rate_limit{5s, 2};
-		rate_limiter m_ptfx_ratelimit{1s, 5};
+		std::map<reaction*, int> infractions;
+		std::string spam_message  = "";
+		player_ptr last_killed_by = nullptr;
+
+		bool is_modder         = false;
+		bool is_blocked        = false;
+		bool is_spammer        = false;
+		bool whitelist_spammer = false;
+		bool whitelist_ptfx    = false;
+		bool is_other          = false;
+		bool is_known_player   = false;
+		bool is_pain_in_ass    = false;
+		bool esp_enemy         = false;
 
 		bool block_radio_requests     = false;
 		bool block_host_migr_requests = false;
-
-		int m_num_spawned_permanent_vehicles = 0;
-
-		bool m_block_permanent_vehicles = false;
-
-		uint64_t m_host_token;
-		bool is_modder = false;
-		std::map<reaction*, int> infractions;
-		bool is_blocked           = false;
-		bool is_spammer           = false;
-		bool whitelist_spammer    = false;
-		bool whitelist_ptfx       = false;
-		std::string spam_message  = "";
-		bool is_other             = false;
-		bool is_known_player      = false;
-		player_ptr last_killed_by = nullptr;
-		bool is_pain_in_ass       = false;
-		bool esp_enemy            = false;
-		char m_name[20]           = "";
-		int64_t m_rockstar_id;
-
-		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
-		std::chrono::seconds last_spam_interval_diff{};
-		int same_interval_spam_count_low{};
-		int same_interval_spam_count_high{};
-
-		std::optional<uint32_t> player_time_value;
-		std::optional<std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>> player_time_value_received_time;
-		std::optional<uint32_t> time_difference;
-		uint32_t num_time_syncs_sent = 9999;
 
 		bool timed_out          = false;
 		bool block_explosions   = false;
 		bool block_clone_create = false;
 		bool block_clone_sync   = false;
 		bool block_net_events   = false;
-		bool log_clones         = false;
-		bool log_network_events = false;
+
+		rate_limiter m_host_migration_rate_limit{2s, 15};
+		rate_limiter m_play_sound_rate_limit{1s, 10};
+		rate_limiter m_invites_rate_limit{10s, 2};
+		rate_limiter m_invites_rate_limit_tse{5s, 2};
+		rate_limiter m_radio_request_rate_limit{5s, 2};
+		rate_limiter m_ptfx_ratelimit{1s, 5};
+
+		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
+		std::chrono::seconds last_spam_interval_diff{};
+		int same_interval_spam_count_low{};
+		int same_interval_spam_count_high{};
+
+		bool log_clones = false;
 
 		// prevent spam logging of events in console
 		reaction_sub_type last_event_id = reaction_sub_type::none;

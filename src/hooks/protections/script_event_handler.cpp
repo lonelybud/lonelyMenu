@@ -101,7 +101,7 @@ namespace big
 				return true;
 			}
 
-			if (args[3] == -4640169 && args[7] == -36565476 && args[8] == -53105203)
+			if (args[3] == -4640169 && (args[7] == -36565476 || args[7] == -36567476) && args[8] == -53105203)
 			{
 				g_reactions.elegant_crash.process(plyr);
 				return true;
@@ -187,12 +187,35 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::TSECommand:
-			if (g_protections.script_events.rotate_cam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandRotateCam && !NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+		{
+			if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+				break;
+
+			if (g_protections.script_events.rotate_cam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandRotateCam)
 			{
 				g_reactions.rotate_cam.process(plyr);
 				return true;
 			}
+
+			if (g_protections.script_events.sound_spam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandSound)
+			{
+				if (plyr->m_invites_rate_limit_tse.in_process())
+				{
+					LOG(WARNING) << "m_invites_rate_limit_tse in_process: " << plyr->m_name;
+					return true;
+				}
+
+				if (plyr->m_invites_rate_limit_tse.process())
+				{
+					if (plyr->m_invites_rate_limit_tse.exceeded_last_process())
+						g_reactions.sound_spam_tse.process(plyr);
+
+					return true;
+				}
+			}
+
 			break;
+		}
 		case eRemoteEvent::SendToCayoPerico:
 			if (g_protections.script_events.send_to_location && args[4] == 0)
 			{

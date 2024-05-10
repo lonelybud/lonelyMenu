@@ -152,6 +152,7 @@ namespace big
 
 		TSECommand          = 800157557, // CnCTG_IN_BF
 		TSECommandRotateCam = 225624744, // != 29) && f
+		TSECommandSound     = 385726943,
 
 		Notification             = -642704387,
 		NotificationMoneyBanked  = 94410750,   // TICK_TC_BANK
@@ -385,6 +386,7 @@ namespace big
 		gta_banner,
 		sound_spam,
 		sound_spam_se,
+		sound_spam_tse,
 		spectate,
 		remote_ragdoll,
 		spectate_notification,

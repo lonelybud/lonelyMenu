@@ -171,12 +171,12 @@ namespace big
 					nlohmann::json j;
 					i >> j;
 
-					if (!g_misc.disable_clothing_validation)
-					{
-						g_misc.disable_clothing_validation = true;
-						dynamic_cast<looped_command*>(command::get(rage::joaat("disable_clothing_validation")))->refresh();
-						g_notification_service.push_success("Clothing Validation", "Disabled automatically.");
-					}
+					// if (!g_misc.disable_clothing_validation)
+					// {
+					// 	g_misc.disable_clothing_validation = true;
+					// 	dynamic_cast<looped_command*>(command::get(rage::joaat("disable_clothing_validation")))->refresh();
+					// 	g_notification_service.push_success("Clothing Validation", "Disabled automatically.");
+					// }
 
 					outfit::apply_outfit(j);
 					refresh_outfit_state();

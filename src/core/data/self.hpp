@@ -10,6 +10,7 @@ namespace big
 		bool no_idle_kick     = false;
 		bool spectating       = false;
 		bool free_cam         = false;
+		bool never_wanted     = false;
 
 		float custom_coords[3];
 	} g_self{};

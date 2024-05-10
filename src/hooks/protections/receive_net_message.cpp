@@ -152,7 +152,6 @@ namespace big
 					{
 						auto plyr = std::make_shared<player>(nullptr, 0);
 						unknown_players.insert({rockstar_id, std::move(plyr)});
-						LOG(VERBOSE) << "Added unknown_player " << rockstar_id;
 					}
 
 					if (g_debug.log_unkown_net_msg && !_player)

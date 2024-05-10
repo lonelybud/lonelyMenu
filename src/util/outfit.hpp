@@ -16,6 +16,7 @@ namespace big::outfit
 		std::string label;
 		int drawable_id     = 0;
 		int texture_id      = 0;
+		int palette_var     = -1;
 		int drawable_id_max = 0;
 		int texture_id_max  = 0;
 	};
@@ -88,8 +89,9 @@ namespace big::outfit
 
 			auto draw    = target ? PED::GET_PED_DRAWABLE_VARIATION(target, item.id) : item.drawable_id;
 			auto texture = target ? PED::GET_PED_TEXTURE_VARIATION(target, item.id) : item.texture_id;
+			auto pallete = item.palette_var == -1 ? PED::GET_PED_PALETTE_VARIATION(target ? target : self::ped, item.id) : item.palette_var;
 
-			PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
+			PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, pallete);
 		}
 
 		PED::CLEAR_ALL_PED_PROPS(self::ped, 0);
@@ -101,6 +103,19 @@ namespace big::outfit
 
 			PED::SET_PED_PROP_INDEX(self::ped, item.id, draw, texture, TRUE, 1);
 		}
+	}
+
+	inline void apply_hair(components_t components)
+	{
+		for (auto item : components.items)
+			if (item.id == 2)
+			{
+				auto draw    = item.drawable_id;
+				auto texture = item.texture_id;
+				auto pallete = item.palette_var == -1 ? PED::GET_PED_PALETTE_VARIATION(self::ped, item.id) : item.palette_var;
+
+				PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, pallete);
+			}
 	}
 
 	inline void apply_outfit(nlohmann::json j)
@@ -140,6 +155,10 @@ namespace big::outfit
 			{
 				components.items[index].drawable_id = item.value()["drawable_id"];
 				components.items[index].texture_id  = item.value()["texture_id"];
+
+				auto palette_var = item.value()["palette_var"];
+				if (!palette_var.is_null())
+					components.items[index].palette_var = palette_var;
 			}
 		}
 		for (auto& item : j["props"].items())
@@ -158,13 +177,8 @@ namespace big::outfit
 		if (g_misc.apply_outfit_blend_data_only)
 		{
 			if (g_misc.apply_outfit_hair)
-				for (auto item : components.items)
-					if (item.id == 2)
-					{
-						auto draw    = item.drawable_id;
-						auto texture = item.texture_id;
-						PED::SET_PED_COMPONENT_VARIATION(self::ped, item.id, draw, texture, PED::GET_PED_PALETTE_VARIATION(self::ped, item.id));
-					}
+				apply_hair(components);
+
 			return;
 		}
 
@@ -181,6 +195,7 @@ namespace big::outfit
 		{
 			item.drawable_id = PED::GET_PED_DRAWABLE_VARIATION(ped, item.id);
 			item.texture_id  = PED::GET_PED_TEXTURE_VARIATION(ped, item.id);
+			item.palette_var = PED::GET_PED_PALETTE_VARIATION(ped, item.id);
 		}
 
 		for (auto& item : props.items)
@@ -201,6 +216,7 @@ namespace big::outfit
 			nlohmann::json tmp;
 			tmp["drawable_id"]                    = item.drawable_id;
 			tmp["texture_id"]                     = item.texture_id;
+			tmp["palette_var"]                    = item.texture_id;
 			j_components[std::to_string(item.id)] = tmp;
 		}
 

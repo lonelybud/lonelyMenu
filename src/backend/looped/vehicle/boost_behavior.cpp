@@ -10,6 +10,9 @@ namespace big
 
 		virtual void on_tick() override
 		{
+			if (g_local_player == nullptr)
+				return;
+
 			if (auto* const vehicle = g_local_player->m_vehicle)
 			{
 				bool is_rocket = VEHICLE::GET_HAS_ROCKET_BOOST(self::veh);

@@ -8,7 +8,7 @@ namespace big
 {
 	void looped::death_check()
 	{
-		if (g_local_player->m_player_info->m_game_state == eGameState::Died)
+		if (g_local_player && g_local_player->m_player_info->m_game_state == eGameState::Died)
 		{
 			if (g_self.spectating)
 			{

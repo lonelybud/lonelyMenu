@@ -79,6 +79,7 @@ namespace big
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", "Received GTA Banner", false, false, false, 1};
 		reaction sound_spam{reaction_type::none, reaction_sub_type::sound_spam, "Sound Spam", "Received Sound Spam", false, false, false};
 		reaction sound_spam_se{reaction_type::none, reaction_sub_type::sound_spam_se, "Sound Spam Scripted", "Received Sound Spam Scripted", false, false, false};
+		reaction sound_spam_tse{reaction_type::none, reaction_sub_type::sound_spam_tse, "Sound Spam TSE", "Received Sound Spam TSE", false, false, false};
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", "Received Spectate", false, false, false};
 		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", "Received Remote Ragdoll", false, false, false, 1};
 		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", "Received Spectate Notification", false, false, false};

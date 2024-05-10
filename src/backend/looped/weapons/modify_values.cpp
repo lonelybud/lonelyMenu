@@ -22,7 +22,10 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			if (auto* const weapon_mgr = g_local_player->m_weapon_manager; weapon_mgr)
+			if (g_local_player == nullptr)
+				return;
+
+			if (auto* const weapon_mgr = g_local_player->m_weapon_manager)
 			{
 				if (p_modified_weapon != weapon_mgr->m_weapon_info)
 				{

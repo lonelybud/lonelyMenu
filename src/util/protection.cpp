@@ -262,6 +262,22 @@ namespace big::protection
 	    "v_serv_ct_chair02"_J,
 	    "v_corp_filecabtall"_J,
 	    "v_serv_ct_monitor07"_J,
+
+	    //
+	    "proc_forest_grass_01"_J,
+	    "prop_fern_01"_J,
+	    "prop_dryweed_001_a"_J,
+	    "urbanweeds02"_J,
+	    "urbanweeds02_l2"_J,
+
+	    // vehicles
+	    "barracks"_J,
+	    "barracks3"_J,
+	    "dune"_J,
+	    "marquis"_J,
+	    "marshall"_J,
+	    "monster"_J,
+	    "tug"_J,
 	};
 
 	bool is_crash_object(rage::joaat_t model)
@@ -287,7 +303,7 @@ namespace big::protection
 				}
 
 		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
-			crash_object = true;
+			return true;
 
 		if (crash_object)
 		{
