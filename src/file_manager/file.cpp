@@ -46,4 +46,17 @@ namespace big
 
 		return {new_path};
 	}
+
+	file file::copy( std::filesystem::path new_path)
+	{
+		if (new_path.is_relative())
+			new_path = m_file_path.parent_path() / new_path;
+
+		file_manager::ensure_file_can_be_created(new_path);
+
+		if (std::filesystem::exists(m_file_path))
+			std::filesystem::copy(m_file_path, new_path, std::filesystem::copy_options::overwrite_existing);
+
+		return {new_path};
+	}
 }

@@ -533,6 +533,24 @@ namespace big
                 g_pointers->m_gta.m_queue_packet = ptr.add(1).rip().as<functions::queue_packet>();
             }
         },
+        // Serialize Join Request Message
+        {
+            "SJRM",
+            "E8 ? ? ? ? 84 C0 0F 84 9B 00 00 00 49 8D 8F 48 11 00 00",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_serialize_join_request_message = ptr.add(1).rip().as<PVOID>();
+            }
+        },
+        // Serialize Join Request Message 2
+        {
+            "SJRM2",
+            "E8 ? ? ? ? 48 8D 8D 08 01 00 00 8A D8",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_serialize_join_request_message_2 = ptr.add(1).rip().as<PVOID>();
+            }
+        },
         // Request Control
         {
             "RC",

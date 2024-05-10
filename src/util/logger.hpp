@@ -11,7 +11,7 @@ namespace big
 		return system_clock::to_time_t(sctp);
 	}
 
-	inline void logger_create_backup(file& m_file, const char* folder)
+	inline void logger_create_backup(file& m_file, const char* folder, bool move_file = true)
 	{
 		if (m_file.exists())
 		{
@@ -19,7 +19,7 @@ namespace big
 			auto time_t     = to_time_t(file_time);
 			auto local_time = std::localtime(&time_t);
 
-			m_file.move(std::format("./{}/{:0>2}-{:0>2}-{}-{:0>2}-{:0>2}-{:0>2}_{}",
+			auto file_path = std::format("./{}/{:0>2}-{:0>2}-{}-{:0>2}-{:0>2}-{:0>2}_{}",
 			    folder,
 			    local_time->tm_mon + 1,
 			    local_time->tm_mday,
@@ -27,7 +27,12 @@ namespace big
 			    local_time->tm_hour,
 			    local_time->tm_min,
 			    local_time->tm_sec,
-			    m_file.get_path().filename().string().c_str()));
+			    m_file.get_path().filename().string().c_str());
+
+			if (move_file)
+				m_file.move(file_path);
+			else
+				m_file.copy(file_path);
 		}
 	}
 }

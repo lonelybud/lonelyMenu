@@ -12,7 +12,7 @@ namespace big
 		operator std::filesystem::path();
 		operator std::filesystem::path&();
 
-		file copy(const std::filesystem::path& new_path);
+		file copy(const std::filesystem::path new_path);
 		bool exists() const;
 		const std::filesystem::path get_path() const;
 		file move(std::filesystem::path new_path);

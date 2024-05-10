@@ -117,13 +117,15 @@ namespace big
 		static void render_entity(__int64 renderer, rage::fwEntity* entity, int unk, bool a4);
 		static __int64 render_big_ped(__int64 renderer, CPed* ped, __int64 a3, __int64 a4);
 		static void received_clone_remove(CNetworkObjectMgr* mgr, CNetGamePlayer* src, CNetGamePlayer* dst, int16_t object_id, uint32_t ownership_token);
-		
+
 		// misc
 
 		static int nt_query_virtual_memory(void* _this, HANDLE handle, PVOID base_addr, int info_class, MEMORY_BASIC_INFORMATION* info, int size, size_t* return_len);
 		static int queue_dependency(void* a1, int a2, int64_t dependency);
 		static bool http_start_request(void* request, const char* uri);
 		static bool send_chat_message(void* team_mgr, rage::rlGamerInfo* local_gamer_info, char* message, bool is_team);
+		static bool serialize_join_request_message(RemoteGamerInfoMsg* info, void* data, int size, int* bits_serialized);
+		static bool serialize_join_request_message_2(__int64 msg, void* buf, int size, int* bits_serialized);
 		static const char* get_label_text(void* unk, const char* label);
 
 		// spoofing

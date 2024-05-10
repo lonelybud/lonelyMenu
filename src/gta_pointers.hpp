@@ -158,6 +158,9 @@ namespace big
 
 		functions::queue_packet m_queue_packet;
 
+		PVOID m_serialize_join_request_message;
+		PVOID m_serialize_join_request_message_2;
+
 		functions::request_control m_request_control;
 
 		functions::get_connection_peer m_get_connection_peer;
