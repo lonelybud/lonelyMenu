@@ -143,6 +143,11 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto chat_log_file = g_file_manager.get_project_file("./chat.log");
 			    logger_create_backup(chat_log_file, "chats");
 			    std::filesystem::remove(chat_log_file.get_path());
+
+			    auto blocked_players = g_file_manager.get_project_file("./blocked_players.json");
+			    auto known_players   = g_file_manager.get_project_file("./known_players.json");
+			    logger_create_backup(blocked_players, "json_lists_backup");
+			    logger_create_backup(known_players, "json_lists_backup");
 			    //
 
 			    LOG(INFO) << "Yim's Menu Initializing";

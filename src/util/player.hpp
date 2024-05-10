@@ -32,7 +32,7 @@ namespace big
 			}
 
 			if (save)
-				outfit::save_outfit(target, std::to_string(get_current_time_in_mill()).append(".json"), "");
+				outfit::save_outfit(target, std::format("{}_{}.json", plyr->m_name, get_current_time_in_mill()), "");
 			else
 				outfit::set_self_comps_props({}, {}, target);
 		}

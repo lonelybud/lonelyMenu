@@ -371,6 +371,7 @@ namespace big
 		kick_vote,
 		report,
 		bounty,
+		rockstar_admin,
 
 		anti_cheat_modder_detection,
 		spoofed_host_token,

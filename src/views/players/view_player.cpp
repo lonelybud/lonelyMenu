@@ -277,7 +277,8 @@ namespace big
 			if (ImGui::Checkbox("Is Blocked", &last_selected_player->is_blocked))
 				toggle_block(last_selected_player->is_blocked);
 
-			ImGui::Checkbox("Is Modder", &last_selected_player->is_modder);
+			if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
+				g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
 
 			if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
 				last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :

@@ -1,4 +1,5 @@
 #include "backend/player_command.hpp"
+#include "core/data/admin_rids.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/recent_spoofed_host_tokens.hpp"
 #include "core/data/session.hpp"
@@ -90,6 +91,9 @@ namespace big
 						g_notification_service.push_warning("Known Player Joined", join_str, true);
 					else
 						LOG(INFO) << "Player joined: " << join_str;
+
+					if (admin_rids.contains(rockstar_id))
+						g_reactions.rockstar_admin.process(plyr);
 
 					if (session::is_spoofed_host_token(host_token))
 					{

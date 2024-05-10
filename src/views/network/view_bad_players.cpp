@@ -66,6 +66,12 @@ namespace big
 
 		if (exist_already)
 		{
+			if (components::button("Save"))
+			{
+				block_join = true;
+				g_bad_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
+			}
+			ImGui::SameLine();
 			if (components::button("Un-block"))
 			{
 				g_bad_players_service.toggle_block(rockstar_id, false);
