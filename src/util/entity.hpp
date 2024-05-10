@@ -7,7 +7,7 @@
 
 namespace big::entity
 {
-	std::vector<Entity> get_entities(bool vehicles, bool peds, bool props = false, bool include_self_veh = false);
+	std::vector<Entity> get_entities(bool vehicles, bool peds, bool props = false);
 	bool load_ground_at_3dcoord(Vector3& location);
 
 	inline bool network_has_control_of_entity(rage::netObject* net_object)
