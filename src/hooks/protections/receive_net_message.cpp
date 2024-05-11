@@ -138,7 +138,7 @@ namespace big
 		if (!get_msg_type(msgType, buffer))
 			return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);
 
-		player_ptr _player;
+		player_ptr _player, unkown_player;
 		rock_id rockstar_id;
 
 		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
@@ -148,218 +148,169 @@ namespace big
 					rockstar_id = sn_player->m_player_data.m_gamer_handle.m_rockstar_id;
 					_player     = g_player_service->get_by_host_token(sn_player->m_player_data.m_host_token);
 
-					if (unknown_players.find(rockstar_id) == unknown_players.end())
+					if (!_player)
 					{
-						auto plyr = std::make_shared<player>(nullptr, 0);
-						unknown_players.insert({rockstar_id, std::move(plyr)});
-					}
+						auto p = unknown_players.find(rockstar_id);
 
-					if (g_debug.log_unkown_net_msg && !_player)
-						LOGF(WARNING,
-						    "Unknown net msg: {}, {}, {}",
-						    sn_player->m_player_data.m_host_token,
-						    rockstar_id,
-						    sn_player->m_player_data.m_peer_id);
+						if (p == unknown_players.end())
+						{
+							auto plyr           = std::make_shared<player>(nullptr, 0);
+							const auto [itr, _] = unknown_players.insert({rockstar_id, std::move(plyr)});
+							unkown_player       = itr->second;
+							auto str            = std::to_string(rockstar_id);
+							strcpy(unkown_player->m_name, str.c_str());
+						}
+						else
+							unkown_player = p->second;
+					}
 
 					break;
 				}
 
-		if (_player)
+		auto plyr = _player ? _player : unkown_player;
+
+		switch (msgType)
 		{
-			switch (msgType)
-			{
-			case rage::eNetMessage::MsgTextMessage:
-			case rage::eNetMessage::MsgTextMessage2:
-			{
-				if (_player->is_spammer)
-					return true;
+		case rage::eNetMessage::MsgTextMessage:
+		case rage::eNetMessage::MsgTextMessage2:
+		{
+			if (plyr->is_spammer)
+				return true;
 
-				char message[256];
-				buffer.ReadString(message, sizeof(message));
+			char message[256];
+			buffer.ReadString(message, sizeof(message));
 
-				if (!_player->whitelist_spammer && is_player_spammer(message, _player))
+			if (!plyr->whitelist_spammer && is_player_spammer(message, plyr))
+			{
+				if (_player)
 				{
-					LOG(WARNING) << _player->m_name << " seem to spam chat message.";
-					g_log.log_additional(std::format("Spam Message - p {}, m {}", _player->m_name, message));
+					LOG(WARNING) << plyr->m_name << " seem to spam chat message.";
+					g_log.log_additional(std::format("Spam Message - p {}, m {}", plyr->m_name, message));
+				}
+				else
+				{
+					LOG(WARNING) << rockstar_id << " (RID*) seem to spam chat message.";
+					g_log.log_additional(std::format("Spam Message - rid {}, m {}", rockstar_id, message));
+				}
 
-					// flag as spammer
-					_player->is_spammer   = true;
-					_player->spam_message = message;
-					_player->is_blocked   = true;
+				plyr->is_spammer = true;
 
-					g_bad_players_service.add_player(_player, true, true);
+				if (_player)
+				{
+					plyr->spam_message = message;
+					plyr->is_blocked   = true;
+
+					g_bad_players_service.add_player(plyr, true, true);
 					if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
-						dynamic_cast<player_command*>(command::get("hostkick"_J))->call(_player);
-
-					return true;
+						dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
 				}
 
-				if (g_session.log_chat_messages_to_textbox)
-					g_custom_chat_buffer.append_msg(_player->m_name, message);
-
-				break;
+				return true;
 			}
-			case rage::eNetMessage::MsgScriptMigrateHost:
-			{
-				if (_player->block_host_migr_requests)
-					return true;
 
-				if (_player->m_host_migration_rate_limit.in_process())
-				{
-					LOG(WARNING) << "m_host_migration_rate_limit in_process: " << _player->m_name;
-					return true;
-				}
+			if (g_session.log_chat_messages_to_textbox)
+				g_custom_chat_buffer.append_msg(plyr->m_name, message);
 
-				if (_player->m_host_migration_rate_limit.process())
-				{
-					_player->block_host_migr_requests = true;
-					if (_player->m_host_migration_rate_limit.exceeded_last_process())
-						g_reactions.oom_kick2.process(_player);
-
-					return true;
-				}
-
-				break;
-			}
-			case rage::eNetMessage::MsgScriptHostRequest:
-			{
-				CGameScriptId script;
-				script_id_deserialize(script, buffer);
-
-				switch (script.m_hash)
-				{
-				case "freemode"_J:
-					if (g_session.force_freemode_host)
-						return true;
-					break;
-				case "fmmc_launcher"_J:
-					if (g_session.force_fmmc_launcher_host)
-						return true;
-					break;
-				case "am_launcher"_J:
-					if (g_session.force_am_launcher_host)
-						return true;
-					break;
-				}
-
-				break;
-			}
-			case rage::eNetMessage::MsgKickPlayer:
-			{
-				KickReason reason = buffer.Read<KickReason>(3);
-
-				if (auto itr = kick_reasons.find(reason); itr != kick_reasons.end())
-					g_notification_service.push_warning("Kick Player Message",
-					    std::format("Received \"{}\" from {} ({})", itr->second, _player->m_name, _player->is_host() ? "host" : "non-host"),
-					    true);
-
-				if (!_player->is_host())
-					return true;
-
-				if (reason == KickReason::VOTED_OUT)
-					return true;
-
-				break;
-			}
-			case rage::eNetMessage::MsgRadioStationSyncRequest:
-			{
-				if (_player->block_radio_requests)
-					return true;
-
-				if (_player->m_radio_request_rate_limit.in_process())
-				{
-					LOG(WARNING) << "m_radio_request_rate_limit in_process: " << _player->m_name;
-					return true;
-				}
-
-				if (_player->m_radio_request_rate_limit.process())
-				{
-					_player->block_radio_requests = true;
-					if (_player->m_radio_request_rate_limit.exceeded_last_process())
-						g_reactions.oom_kick.process(_player);
-
-					return true;
-				}
-
-				break;
-			}
-			}
+			break;
 		}
-		else
+		case rage::eNetMessage::MsgScriptMigrateHost:
 		{
-			switch (msgType)
+			if (plyr->block_host_migr_requests)
+				return true;
+
+			if (plyr->m_host_migration_rate_limit.in_process())
 			{
-			case rage::eNetMessage::MsgTextMessage:
-			case rage::eNetMessage::MsgTextMessage2:
+				LOG(WARNING) << "m_host_migration_rate_limit in_process: " << plyr->m_name;
+				return true;
+			}
+
+			if (plyr->m_host_migration_rate_limit.process())
 			{
-				if (g_session.log_chat_messages_to_textbox)
+				plyr->block_host_migr_requests = true;
+				if (plyr->m_host_migration_rate_limit.exceeded_last_process())
 				{
-					char message[256];
-					buffer.ReadString(message, 256);
-					g_custom_chat_buffer.append_msg("?", message);
+					g_reactions.oom_kick2.process(_player ? plyr : nullptr);
+					if (_player == nullptr)
+						LOG(WARNING) << "Unkown OOM kick 2 from unkown: " << rockstar_id;
 				}
 
-				break;
+				return true;
 			}
-			case rage::eNetMessage::MsgScriptMigrateHost:
-			{
-				if (auto pair = unknown_players.find(rockstar_id); pair != unknown_players.end())
-				{
-					auto plyr = pair->second;
 
-					if (plyr->m_host_migration_rate_limit.in_process())
-					{
-						LOG(WARNING) << "unkown m_host_migration_rate_limit in_process: " << rockstar_id;
-						return true;
-					}
-
-					if (plyr->m_host_migration_rate_limit.process())
-					{
-						if (plyr->m_host_migration_rate_limit.exceeded_last_process())
-						{
-							g_reactions.oom_kick2.process(nullptr);
-							LOG(WARNING) << "Unkown OOM kick 2 from unkown _player " << rockstar_id;
-						}
-
-						return true;
-					}
-				}
-				else
-					LOG(WARNING) << "MsgScriptMigrateHost called with unkown rockstar_id";
-
-				break;
-			}
-			case rage::eNetMessage::MsgRadioStationSyncRequest:
-			{
-				if (auto pair = unknown_players.find(rockstar_id); pair != unknown_players.end())
-				{
-					auto plyr = pair->second;
-
-					if (plyr->m_radio_request_rate_limit.in_process())
-					{
-						LOG(WARNING) << "unkown m_radio_request_rate_limit in_process: " << rockstar_id;
-						return true;
-					}
-
-					if (plyr->m_radio_request_rate_limit.process())
-					{
-						if (plyr->m_radio_request_rate_limit.exceeded_last_process())
-						{
-							g_reactions.oom_kick.process(nullptr);
-							LOG(WARNING) << "Unkown OOM kick from unkown _player " << rockstar_id;
-						}
-
-						return true;
-					}
-				}
-				else
-					LOG(WARNING) << "MsgRadioStationSyncRequest called with unkown rockstar_id";
-
-				break;
-			}
-			}
+			break;
 		}
+		case rage::eNetMessage::MsgScriptHostRequest:
+		{
+			CGameScriptId script;
+			script_id_deserialize(script, buffer);
 
+			if (script.m_hash == "freemode"_J)
+			{
+				LOG(VERBOSE) << "MsgScriptHostRequest for freemode: " << plyr->m_name;
+
+				if (g_session.force_freemode_host)
+					return true;
+			}
+			else if (script.m_hash == "fmmc_launcher"_J)
+			{
+				LOG(VERBOSE) << "MsgScriptHostRequest for fmmc_launcher: " << plyr->m_name;
+
+				if (g_session.force_fmmc_launcher_host)
+					return true;
+			}
+			else if (script.m_hash == "am_launcher"_J)
+			{
+				LOG(VERBOSE) << "MsgScriptHostRequest for am_launcher: " << plyr->m_name;
+
+				if (g_session.force_am_launcher_host)
+					return true;
+			}
+
+			break;
+		}
+		case rage::eNetMessage::MsgKickPlayer:
+		{
+			KickReason reason = buffer.Read<KickReason>(3);
+			auto is_host      = _player ? plyr->is_host() : true;
+
+			if (auto itr = kick_reasons.find(reason); itr != kick_reasons.end())
+				g_notification_service.push_warning("Kick Player Message", std::format("Received \"{}\" from {} ({})", itr->second, plyr->m_name, is_host ? "host" : "non-host"), true);
+
+			if (!is_host)
+				return true;
+
+			if (reason == KickReason::VOTED_OUT)
+				return true;
+
+			break;
+		}
+		case rage::eNetMessage::MsgRadioStationSyncRequest:
+		{
+			if (plyr->block_radio_requests)
+				return true;
+
+			if (plyr->m_radio_request_rate_limit.in_process())
+			{
+				LOG(WARNING) << "m_radio_request_rate_limit in_process: " << plyr->m_name;
+				return true;
+			}
+
+			if (plyr->m_radio_request_rate_limit.process())
+			{
+				plyr->block_radio_requests = true;
+				if (plyr->m_radio_request_rate_limit.exceeded_last_process())
+				{
+					g_reactions.oom_kick.process(_player ? plyr : nullptr);
+					if (_player == nullptr)
+						LOG(WARNING) << "Unkown OOM kick from unkown: " << rockstar_id;
+				}
+
+				return true;
+			}
+
+			break;
+		}
+		}
 
 		if (g_debug.log_packets && msgType != rage::eNetMessage::MsgCloneSync && msgType != rage::eNetMessage::MsgPackedCloneSyncACKs && msgType != rage::eNetMessage::MsgPackedEvents && msgType != rage::eNetMessage::MsgPackedReliables && msgType != rage::eNetMessage::MsgPackedEventReliablesMsgs && msgType != rage::eNetMessage::MsgNetArrayMgrUpdate && msgType != rage::eNetMessage::MsgNetArrayMgrSplitUpdateAck && msgType != rage::eNetMessage::MsgNetArrayMgrUpdateAck && msgType != rage::eNetMessage::MsgScriptHandshakeAck && msgType != rage::eNetMessage::MsgScriptHandshake && msgType != rage::eNetMessage::MsgScriptJoin && msgType != rage::eNetMessage::MsgScriptJoinAck && msgType != rage::eNetMessage::MsgScriptJoinHostAck && msgType != rage::eNetMessage::MsgRequestObjectIds && msgType != rage::eNetMessage::MsgInformObjectIds && msgType != rage::eNetMessage::MsgNetTimeSync)
 		{
@@ -371,11 +322,8 @@ namespace big
 					break;
 				}
 
-			g_log.log_additional(std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}",
-			    packet_type,
-			    frame->m_length,
-			    (_player ? _player->m_name : "?"),
-			    (int)msgType));
+			g_log.log_additional(
+			    std::format("RECEIVED PACKET | Type: {} | Length: {} | Sender: {} | {}", packet_type, frame->m_length, plyr->m_name, (int)msgType));
 		}
 
 		return g_hooking->get_original<hooks::receive_net_message>()(netConnectionManager, a2, frame);

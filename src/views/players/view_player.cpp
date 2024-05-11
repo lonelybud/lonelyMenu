@@ -463,9 +463,7 @@ namespace big
 				if (components::button("Block Kick"))
 					toggle_block(true);
 				components::player_command_button<"hostkick">(last_selected_player);
-				components::button("Remove Kick", [] {
-					gta_util::get_network_player_mgr()->RemovePlayer(last_selected_player->get_net_game_player());
-				});
+				components::player_command_button<"removekick">(last_selected_player);
 			}
 
 			ImGui::Spacing();

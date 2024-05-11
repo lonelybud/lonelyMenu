@@ -1,6 +1,5 @@
 #pragma once
 #include "core/scr_globals.hpp"
-#include "services/bad_players/bad_players.hpp"
 #include "services/players/player.hpp"
 #include "util/outfit.hpp"
 #include "util/time.hpp"

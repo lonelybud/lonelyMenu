@@ -1,6 +1,5 @@
 #include "backend/player_command.hpp"
 #include "natives.hpp"
-#include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big
@@ -13,7 +12,7 @@ namespace big
 		{
 			if (!g_player_service->get_self()->is_host())
 			{
-				g_notification_service.push_error("Host kick", std::format("Host kick failed on {}", player->m_name), true);
+				g_notification_service.push_error("Host kick", std::format("You need to be host to kick {}", player->m_name), true);
 				return;
 			}
 

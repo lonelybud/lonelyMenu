@@ -1,7 +1,6 @@
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
-#include "services/bad_players/bad_players.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"

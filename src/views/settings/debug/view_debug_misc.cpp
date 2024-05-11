@@ -14,7 +14,6 @@ namespace big
 			components::sub_title("Experiments");
 			{
 				ImGui::Checkbox("Enable Objects Crash 2 Protection", &g_debug.enable_objects_crash_2);
-				ImGui::Checkbox("Log unknown net msg", &g_debug.log_unkown_net_msg);
 			}
 
 			components::sub_title("Game");
