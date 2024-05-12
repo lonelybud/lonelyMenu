@@ -15,11 +15,12 @@ namespace big
 {
 	bool hooks::handle_join_request(Network* network, rage::snSession* session, rage::rlGamerInfo* player_info, CJoinRequestContext* ctx, BOOL is_transition_session)
 	{
-		auto rockstar_id       = player_info->m_gamer_handle.m_rockstar_id;
-		auto is_friend         = friends_service::is_friend(rockstar_id);
-		auto block_join        = g_session.block_joins && (!is_friend && g_session.block_friend_joins);
+		auto rockstar_id = player_info->m_gamer_handle.m_rockstar_id;
+		auto is_friend   = friends_service::is_friend(rockstar_id);
+		auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
+
+		auto block_join        = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
 		auto has_spoofed_token = !is_friend && session::is_spoofed_host_token(player_info->m_host_token);
-		auto is_blocked        = g_bad_players_service.is_blocked(rockstar_id);
 
 		if (block_join || is_blocked || has_spoofed_token)
 		{

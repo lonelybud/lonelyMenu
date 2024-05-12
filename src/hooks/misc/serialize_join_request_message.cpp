@@ -13,7 +13,10 @@ namespace big
 		LOG(INFO) << "serialize_join_request_message";
 
 		if (g_protections.desync_kick)
+		{
 			info->m_gamer_info.m_nat_type = 0;
+			LOG(INFO) << "desync protection enabled";
+		}
 
 		return g_hooking->get_original<hooks::serialize_join_request_message>()(info, data, size, bits_serialized);
 	}
@@ -25,7 +28,10 @@ namespace big
 		LOG(INFO) << "serialize_join_request_message 2: " << regions[data.m_region].name;
 
 		if (g_protections.desync_kick)
+		{
 			data.m_nat_type = 0;
+			LOG(INFO) << "desync protection enabled";
+		}
 
 		return g_hooking->get_original<hooks::serialize_join_request_message_2>()(msg, buf, size, bits_serialized);
 	}

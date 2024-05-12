@@ -17,7 +17,7 @@ namespace big
 			if (g_session.auto_kick_blocked_players)
 				g_player_service->iterate([](const player_entry& player) {
 					if (player.second->is_blocked)
-						dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player.second);
+						dynamic_cast<player_command*>(command::get("removekick"_J))->call(player.second);
 				});
 		}
 	}

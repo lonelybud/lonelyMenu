@@ -148,7 +148,7 @@ namespace big
 				}
 
 				if (g_player_service->get_self()->is_host())
-					dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
+					dynamic_cast<player_command*>(command::get("removekick"_J))->call(player);
 			}
 		}
 		else

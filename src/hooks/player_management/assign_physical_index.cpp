@@ -101,7 +101,7 @@ namespace big
 						g_reactions.spoofed_host_token.process(plyr);
 
 						if (g_player_service->get_self()->is_host() && !is_friend)
-							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
+							dynamic_cast<player_command*>(command::get("removekick"_J))->call(plyr);
 					}
 				}
 			});
