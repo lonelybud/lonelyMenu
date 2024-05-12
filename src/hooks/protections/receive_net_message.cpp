@@ -150,12 +150,12 @@ namespace big
 
 					if (!_player)
 					{
-						auto p = unknown_players.find(rockstar_id);
+						auto p = g_unknown_players.find(rockstar_id);
 
-						if (p == unknown_players.end())
+						if (p == g_unknown_players.end())
 						{
-							auto plyr           = std::make_shared<player>(nullptr, 0);
-							const auto [itr, _] = unknown_players.insert({rockstar_id, std::move(plyr)});
+							auto plyr = std::make_shared<player>(nullptr, sn_player->m_player_data.m_host_token);
+							const auto [itr, _] = g_unknown_players.insert({rockstar_id, std::move(plyr)});
 							unkown_player       = itr->second;
 							auto str            = std::to_string(rockstar_id);
 							strcpy(unkown_player->m_name, str.c_str());
@@ -174,6 +174,9 @@ namespace big
 		case rage::eNetMessage::MsgTextMessage:
 		case rage::eNetMessage::MsgTextMessage2:
 		{
+			if (!plyr)
+				return true;
+
 			if (plyr->is_spammer)
 				return true;
 

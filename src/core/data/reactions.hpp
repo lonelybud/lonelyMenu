@@ -65,6 +65,7 @@ namespace big
 		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", true, false, true};
 		reaction bounty{reaction_type::none, reaction_sub_type::bounty, "Bounty", "Set bounty on you", true, false, true};
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", "Is a rockstar admin", true, false, true};
+		reaction desync_protection{reaction_type::none, reaction_sub_type::desync_protection, "Desync Protection", "Have their nat type 0", true, false, true};
 
 		reaction anti_cheat_modder_detection{reaction_type::modder_detection, reaction_sub_type::anti_cheat_modder_detection, "Anti cheat modder detection", "Detected modder by anti-cheat", true, true, false};
 		reaction spoofed_host_token{reaction_type::modder_detection, reaction_sub_type::spoofed_host_token, "Spoofed host token", "Spoofed their host token", true, true, false};

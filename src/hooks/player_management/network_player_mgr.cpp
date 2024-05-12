@@ -1,9 +1,11 @@
 #include "core/data/context_menu.hpp"
 #include "core/data/debug.hpp"
+#include "core/data/desync_kick.hpp"
 #include "core/data/misc.hpp"
 #include "core/data/self.hpp"
 #include "core/data/session.hpp"
 #include "core/data/syncing_player.hpp"
+#include "core/data/unknown_player.hpp"
 #include "core/data/vehicle.hpp"
 #include "core/data/weapons.hpp"
 #include "core/settings/esp.hpp"
@@ -16,12 +18,14 @@ namespace big
 {
 	static void clean_up()
 	{
-		g_self         = {};
-		g_vehicle      = {};
-		g_weapons      = {};
-		g_context_menu = {};
-		g_misc         = {};
-		g_debug        = {};
+		g_self                = {};
+		g_vehicle             = {};
+		g_weapons             = {};
+		g_context_menu        = {};
+		g_misc                = {};
+		g_debug               = {};
+		g_unknown_players     = {};
+		g_desync_kick_players = {};
 
 		g_session_t g_session_temp;
 		g_session_temp.host_token      = g_session.host_token;

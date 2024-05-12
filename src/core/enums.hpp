@@ -372,6 +372,7 @@ namespace big
 		report,
 		bounty,
 		rockstar_admin,
+		desync_protection,
 
 		anti_cheat_modder_detection,
 		spoofed_host_token,

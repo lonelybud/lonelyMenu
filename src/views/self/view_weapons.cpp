@@ -2,6 +2,7 @@
 #include "gta/weapons.hpp"
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
+#include "services/persist_weapons/persist_weapons.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -92,7 +93,45 @@ namespace big
 			}
 			ImGui::SameLine();
 			components::button("Give Weapon", [] {
-				WEAPON::GIVE_WEAPON_TO_PED(self::ped, selected_weapon_hash, 9999, FALSE, TRUE);
+				int maxAmmo;
+				if (WEAPON::GET_MAX_AMMO(self::ped, selected_weapon_hash, &maxAmmo) == FALSE)
+					maxAmmo = 9999;
+
+				WEAPON::GIVE_WEAPON_TO_PED(self::ped, selected_weapon_hash, maxAmmo, FALSE, TRUE);
+			});
+		}
+	}
+
+	static inline void render_persist_weapons()
+	{
+		if (ImGui::CollapsingHeader("Persist Weapons"))
+		{
+			static std::string selected_loadout;
+			static std::vector<std::string> loadouts;
+			static std::string input_file_name;
+
+			ImGui::SetNextItemWidth(200);
+			components::input_text_with_hint("###loadoutFilename", "Loadout Name", input_file_name);
+			ImGui::SameLine();
+			components::button("Save Loadout", [] {
+				persist_weapons::save_weapons(input_file_name);
+				input_file_name.clear();
+			});
+
+			components::button("Refresh##loadouts", [] {
+				loadouts = persist_weapons::list_weapon_loadouts();
+			});
+			ImGui::Spacing();
+			if (ImGui::BeginListBox("###SavedLoadouts", ImVec2(200, 100)))
+			{
+				for (std::string filename : loadouts)
+					if (components::selectable(filename, filename == selected_loadout))
+						selected_loadout = filename;
+				ImGui::EndListBox();
+			}
+			ImGui::Spacing();
+			components::button("Load Selected Loadout", [] {
+				persist_weapons::give_player_loadout(selected_loadout);
 			});
 		}
 	}
@@ -132,5 +171,9 @@ namespace big
 			ImGui::SetNextItemWidth(200);
 			ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
 		}
+
+		ImGui::Spacing();
+
+		render_persist_weapons();
 	}
 }

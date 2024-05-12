@@ -103,6 +103,9 @@ namespace big
 						if (g_player_service->get_self()->is_host() && !is_friend)
 							dynamic_cast<player_command*>(command::get("removekick"_J))->call(plyr);
 					}
+
+					if (plyr->get_net_data()->m_nat_type == 0)
+						g_reactions.desync_protection.process(plyr);
 				}
 			});
 		}

@@ -3,5 +3,5 @@
 
 namespace big
 {
-	std::unordered_map<rock_id, player_ptr> unknown_players;
+	inline std::unordered_map<rock_id, player_ptr> g_unknown_players;
 }

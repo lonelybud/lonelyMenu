@@ -10,6 +10,7 @@
 #include "services/mobile/mobile_service.hpp"
 #include "services/players/player_service.hpp"
 #include "thread_pool.hpp"
+#include "util/local_player.hpp"
 
 namespace big
 {
@@ -64,7 +65,7 @@ namespace big
 
 						std::ofstream pv_list(
 						    g_file_manager
-						        .get_project_file(std::format("./pv_list_{}.txt", g_player_service->get_self()->m_name))
+						        .get_project_file(std::format("./pv_list_{}_mp{}.txt", g_player_service->get_self()->m_name, local_player::get_active_character_slot()))
 						        .get_path(),
 						    std::ios_base::out | std::ios_base::trunc);
 						for (const auto& it : g_mobile_service->personal_vehicles)
@@ -75,29 +76,29 @@ namespace big
 					}
 
 					// auto save current weapon loadout when in freemode
-					if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION())
-					{
-						std::vector<saved_weapon> weapons;
-						for (const auto& [name, weapon] : g_gta_data_service->weapons())
-							if (weapon.m_hash != WEAPON_UNARMED && WEAPON::HAS_PED_GOT_WEAPON(self::ped, weapon.m_hash, FALSE))
-								weapons.push_back({weapon.m_hash, name});
+					// if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+					// {
+					// 	std::vector<saved_weapon> weapons;
+					// 	for (const auto& [name, weapon] : g_gta_data_service->weapons())
+					// 		if (weapon.m_hash != WEAPON_UNARMED && WEAPON::HAS_PED_GOT_WEAPON(self::ped, weapon.m_hash, FALSE))
+					// 			weapons.push_back({weapon.m_hash, name});
 
-						if (last_wp_len != weapons.size())
-						{
-							last_wp_len = weapons.size();
+					// 	if (last_wp_len != weapons.size())
+					// 	{
+					// 		last_wp_len = weapons.size();
 
-							std::ofstream wp_list(
-							    g_file_manager
-							        .get_project_file(std::format("./wp_list_{}.txt", g_player_service->get_self()->m_name))
-							        .get_path(),
-							    std::ios_base::out | std::ios_base::trunc);
-							for (const auto& w : weapons)
-								wp_list << w.name << " " << w.hash << std::endl;
-							wp_list.close();
+					// 		std::ofstream wp_list(
+					// 		    g_file_manager
+					// 		        .get_project_file(std::format("./wp_list_{}_mp{}.txt", g_player_service->get_self()->m_name, local_player::get_active_character_slot()))
+					// 		        .get_path(),
+					// 		    std::ios_base::out | std::ios_base::trunc);
+					// 		for (const auto& w : weapons)
+					// 			wp_list << w.name << " " << w.hash << std::endl;
+					// 		wp_list.close();
 
-							LOG(VERBOSE) << "Weapons save success!";
-						}
-					}
+					// 		LOG(VERBOSE) << "Weapons save success!";
+					// 	}
+					// }
 				}
 			}
 		});

@@ -25,7 +25,7 @@ namespace big
 	{
 		auto& bs = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
 		add_player(player->m_rockstar_id,
-		    {player->m_name, block_join, is_spammer, (u_int)bs.Language, is_spammer ? "spam" : player->spam_message});
+		    {player->m_name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
 	}
 
 	void bad_players_service::toggle_block(rock_id rockstar_id, bool v)

@@ -10,7 +10,7 @@ namespace big
 {
 	static char player_name[64];
 	static rock_id rockstar_id;
-	static u_int language;
+	static int language;
 	static bool save_as_spammer, block_join;
 	static char message[msg_size];
 	static bool exist_already;
@@ -49,7 +49,7 @@ namespace big
 		ImGui::PushItemWidth(300);
 		components::input_text("Player Name", player_name, sizeof(player_name));
 		ImGui::InputScalar("Rockstar Id", ImGuiDataType_U64, &rockstar_id);
-		ImGui::InputScalar("Language", ImGuiDataType_U32, &language);
+		ImGui::InputScalar("Language", ImGuiDataType_S32, &language);
 		ImGui::PopItemWidth();
 
 		ImGui::Checkbox("Save as spammer", &save_as_spammer);
