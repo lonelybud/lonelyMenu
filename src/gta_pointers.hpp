@@ -224,6 +224,11 @@ namespace big
 		functions::received_clone_remove m_received_clone_remove;
 
 		CWeaponInfoManager* m_weapon_info_manager;
+
+		PVOID m_searchlight_crash;
+		functions::get_unk_weapon m_get_unk_weapon;
+
+		GenericPool** m_clone_create_pool; // this is not a normal pool
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

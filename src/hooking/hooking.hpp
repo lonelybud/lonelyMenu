@@ -117,6 +117,7 @@ namespace big
 		static void render_entity(__int64 renderer, rage::fwEntity* entity, int unk, bool a4);
 		static __int64 render_big_ped(__int64 renderer, CPed* ped, __int64 a3, __int64 a4);
 		static void received_clone_remove(CNetworkObjectMgr* mgr, CNetGamePlayer* src, CNetGamePlayer* dst, int16_t object_id, uint32_t ownership_token);
+		static void searchlight_crash(void* a1, CPed* ped);
 
 		// misc
 

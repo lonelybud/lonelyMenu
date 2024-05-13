@@ -1,5 +1,6 @@
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
+#include "gta/pools.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
 
@@ -17,6 +18,13 @@ namespace big
 
 		if (plyr && plyr->block_clone_create)
 			return;
+
+		if (*g_pointers->m_gta.m_clone_create_pool && (*g_pointers->m_gta.m_clone_create_pool)->m_size < 2)
+		{
+			// We don't have enough memory to handle this
+			LOG(WARNING) << "received_clone_create low pool size: " << src->get_name();
+			return;
+		}
 
 		m_syncing_player      = src;
 		m_syncing_object_type = object_type;
