@@ -21,7 +21,7 @@ namespace big
 
 	CVehicle* player::get_current_vehicle() const
 	{
-		if (const auto ped = this->get_ped(); ped != nullptr)
+		if (const auto ped = get_ped())
 			if (const auto vehicle = ped->m_vehicle; vehicle != nullptr)
 				return vehicle;
 		return nullptr;
@@ -39,8 +39,8 @@ namespace big
 
 	CPed* player::get_ped() const
 	{
-		if (const auto player_info = this->get_player_info(); player_info != nullptr)
-			if (const auto ped = player_info->m_ped; ped != nullptr)
+		if (auto player_info = get_player_info())
+			if (auto ped = player_info->m_ped)
 				return ped;
 		return nullptr;
 	}
@@ -136,14 +136,6 @@ namespace big
 	bool player::equals(const CNetGamePlayer* net_game_player) const
 	{
 		return net_game_player == m_net_game_player;
-	}
-
-	std::string player::to_lowercase_identifier() const
-	{
-		std::string lower = this->m_name;
-		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-
-		return lower;
 	}
 
 	void player::timeout()

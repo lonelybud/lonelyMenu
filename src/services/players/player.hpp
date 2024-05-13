@@ -107,7 +107,5 @@ namespace big
 
 	protected:
 		bool equals(const CNetGamePlayer* net_game_player) const;
-
-		[[nodiscard]] std::string to_lowercase_identifier() const;
 	};
 }

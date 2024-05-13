@@ -364,6 +364,7 @@ namespace big
 		crash39,
 		crash40,
 		crash41,
+		crash42,
 		player_ped_removal,
 		invalid_weapon_type,
 		elegant_crash,
