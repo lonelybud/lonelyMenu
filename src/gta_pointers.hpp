@@ -229,6 +229,8 @@ namespace big
 		functions::get_unk_weapon m_get_unk_weapon;
 
 		GenericPool** m_clone_create_pool; // this is not a normal pool
+
+		PVOID m_write_physical_script_game_state_data_node;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

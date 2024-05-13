@@ -40,6 +40,7 @@ class Network;
 class GtaThread;
 class CNetworkPlayerMgr;
 class CNetworkObjectMgr;
+class CPhysicalScriptGameStateDataNode;
 
 enum class eAckCode : uint32_t;
 
@@ -133,6 +134,7 @@ namespace big
 
 		static void write_player_game_state_data_node(rage::netObject* player, CPlayerGameStateDataNode* node);
 		static void write_player_camera_data_node(rage::netObject* player, CPlayerCameraDataNode* node);
+		static void write_physical_script_game_state_data_node(rage::CPhysical* this_ptr, CPhysicalScriptGameStateDataNode* node);
 	};
 
 	class minhook_keepalive

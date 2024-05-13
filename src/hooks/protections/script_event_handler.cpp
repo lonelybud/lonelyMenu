@@ -199,15 +199,15 @@ namespace big
 
 			if (g_protections.script_events.sound_spam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandSound)
 			{
-				if (plyr->m_invites_rate_limit_tse.in_process())
+				if (plyr->m_play_sound_rate_limit_tse.in_process())
 				{
-					LOG(WARNING) << "m_invites_rate_limit_tse in_process: " << plyr->m_name;
+					LOG(WARNING) << "m_play_sound_rate_limit_tse in_process: " << plyr->m_name;
 					return true;
 				}
 
-				if (plyr->m_invites_rate_limit_tse.process())
+				if (plyr->m_play_sound_rate_limit_tse.process())
 				{
-					if (plyr->m_invites_rate_limit_tse.exceeded_last_process())
+					if (plyr->m_play_sound_rate_limit_tse.exceeded_last_process())
 						g_reactions.sound_spam_tse.process(plyr);
 
 					return true;
