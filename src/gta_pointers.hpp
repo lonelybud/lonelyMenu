@@ -17,6 +17,8 @@ class CBlipList;
 class TimecycleKeyframeData;
 class CTrainConfig;
 class CWeaponInfoManager;
+class CPedFactory;
+class GtaThread;
 
 namespace rage
 {
@@ -30,6 +32,7 @@ namespace rage
 	class netTime;
 	class rlGamerInfo;
 	struct game_skeleton;
+	class scrProgramTable;
 }
 
 template<typename T>

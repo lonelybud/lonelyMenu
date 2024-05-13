@@ -10,7 +10,7 @@ namespace big
 	{
 		g_hooking->get_original<hooks::write_physical_script_game_state_data_node>()(this_ptr, node);
 
-		auto this_vehicle = (*(CVehicle*(__fastcall**)(char*))(*((DWORD64*)this_ptr - 38) + 0xC0))((char*)this_ptr - 304);
+		auto this_vehicle = (*(CVehicle * (__fastcall**)(char*))(*((DWORD64*)this_ptr - 38) + 0xC0))((char*)this_ptr - 304);
 
 		if (g_vehicle.god_mode && self::veh && g_local_player->m_vehicle && g_local_player->m_vehicle == this_vehicle)
 		{
