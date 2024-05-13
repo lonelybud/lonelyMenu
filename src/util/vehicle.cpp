@@ -189,10 +189,10 @@ namespace big::vehicle
 	std::string get_vehicle_model_name(Vehicle veh)
 	{
 		auto model = ENTITY::GET_ENTITY_MODEL(veh);
+		auto& vehs = g_gta_data_service->vehicles();
 
-		for (auto& pair : g_gta_data_service->vehicles())
-			if (model == pair.second.m_hash)
-				return get_vehicle_model_name(pair.second);
+		if (auto it = vehs.find(model); it != vehs.end())
+			return get_vehicle_model_name(it->second);
 
 		return "Unknown";
 	}

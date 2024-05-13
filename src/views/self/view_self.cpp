@@ -55,6 +55,10 @@ namespace big
 
 			STATS::STAT_SET_INT(rage::joaat(prefix + "BREATHING_APPAR_BOUGHT"), 20, true);
 		});
+		ImGui::SameLine();
+		components::button("Die", [] {
+			ENTITY::SET_ENTITY_HEALTH(self::ped, 0, 0, 0);
+		});
 	}
 
 	static inline void render_chkboxs()

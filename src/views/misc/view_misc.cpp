@@ -128,10 +128,6 @@ namespace big
 	{
 		components::sub_title("Self");
 
-		components::button("Die", [] {
-			ENTITY::SET_ENTITY_HEALTH(self::ped, 0, 0, 0);
-		});
-		ImGui::SameLine();
 		components::button("Skip Cutscene", [] {
 			CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 		});

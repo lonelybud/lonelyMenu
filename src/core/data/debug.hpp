@@ -11,5 +11,8 @@ namespace big
 		bool log_script_events      = false;
 		bool log_clones             = false;
 		// bool use_default_chat                  = false;
+
+		bool log_vehicle_clones = false;
+		bool log_ped_clones     = false;
 	} g_debug{};
 }

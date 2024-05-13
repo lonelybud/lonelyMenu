@@ -186,7 +186,7 @@ namespace big
 
 					    ImGui::Spacing();
 
-					    ImGui::Text("Is in interior: %d", globals::get_interior_from_player(id) != 0);
+					    ImGui::Text("Is in interior: %d", globals::get_interior_from_player(id));
 					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);

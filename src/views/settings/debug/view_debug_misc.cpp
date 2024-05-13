@@ -54,11 +54,14 @@ namespace big
 					LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
 				});
 
-				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
-				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
 				ImGui::Checkbox("Log packets", &g_debug.log_packets);
 				ImGui::Checkbox("Log script events", &g_debug.log_script_events);
 				ImGui::Checkbox("Log Clones", &g_debug.log_clones);
+				ImGui::Spacing();
+				ImGui::Checkbox("Log Vehicle Clones", &g_debug.log_vehicle_clones);
+				ImGui::Checkbox("Log Ped Clones", &g_debug.log_ped_clones);
+				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
+				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
 			}
 
 			// ImGui::Spacing();

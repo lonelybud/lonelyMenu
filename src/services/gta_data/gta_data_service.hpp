@@ -14,7 +14,7 @@ namespace big
 		UPDATING
 	};
 
-	using ped_map     = std::map<std::string, ped_item>;
+	using ped_map     = std::map<uint32_t, ped_item>;
 	using vehicle_map = std::map<uint32_t, vehicle_item>;
 	using string_vec  = std::vector<std::string>;
 
@@ -29,8 +29,6 @@ namespace big
 		void set_state(eGtaDataUpdateState state);
 		void update_now();
 
-		const ped_item& ped_by_hash(uint32_t hash);
-		const vehicle_item& vehicle_by_hash(uint32_t hash);
 		const weapon_item& weapon_by_hash(uint32_t hash);
 		const weapon_component& weapon_component_by_hash(uint32_t hash);
 		const weapon_component& weapon_component_by_name(std::string name);

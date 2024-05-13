@@ -72,6 +72,7 @@
 #include "util/player.hpp"
 #include "util/protection.hpp"
 #include "util/sync_trees.hpp"
+#include "util/vehicle.hpp"
 #include "vehicle/CTrainConfig.hpp"
 #include "vehicle/CVehicleModelInfo.hpp"
 
@@ -194,22 +195,20 @@ namespace big
 		if (info->m_model_type == eModelType::Vehicle)
 		{
 			for (auto& [hash, data] : g_gta_data_service->vehicles())
-			{
 				if (hash == model)
 				{
 					model_str = data.m_name;
+					break;
 				}
-			}
 		}
 		else if (info->m_model_type == eModelType::Ped || info->m_model_type == eModelType::OnlineOnlyPed)
 		{
-			for (auto& [name, data] : g_gta_data_service->peds())
-			{
-				if (data.m_hash == model)
+			for (auto& [hash, data] : g_gta_data_service->peds())
+				if (hash == model)
 				{
-					model_str = name.data();
+					model_str = data.m_name;
+					break;
 				}
-			}
 		}
 
 		if (!model_str)
@@ -1204,6 +1203,13 @@ namespace big
 
 				veh_creation_model = creation_node->m_model;
 
+				if (g_debug.log_vehicle_clones)
+				{
+					auto& vehs = g_gta_data_service->vehicles();
+					if (auto it = vehs.find(creation_node->m_model); it != vehs.end())
+						LOG(VERBOSE) << "veh: " << vehicle::get_vehicle_model_name(it->second) << " (" << sender_plyr->m_name << ")";
+				}
+
 				break;
 			}
 			case sync_node_id("CDoorCreationDataNode"):
@@ -1282,6 +1288,14 @@ namespace big
 					g_reactions.crash9.process(sender_plyr);
 					return true;
 				}
+
+				if (g_debug.log_ped_clones)
+				{
+					auto& peds = g_gta_data_service->peds();
+					if (auto it = peds.find(creation_node->m_model); it != peds.end())
+						LOG(VERBOSE) << "ped: " << it->second.m_name << " (" << sender_plyr->m_name << ")";
+				}
+
 				break;
 			}
 			case sync_node_id("CPedAttachDataNode"):
