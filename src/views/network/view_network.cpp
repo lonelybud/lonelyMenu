@@ -15,7 +15,8 @@ namespace big
 		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
-		ImGui::Checkbox("Auto Kick Blocked Players", &g_session.auto_kick_blocked_players);
+		ImGui::Checkbox("Block Spoofed Tokens Joins", &g_session.block_spoofed_tokens_join); // defaults to true when host
+		ImGui::Checkbox("Block Blocked Players Joins", &g_session.block_blocked_players_join); // defaults to true when host
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 	}
@@ -70,15 +71,15 @@ namespace big
 
 		if (ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("freemode", "freemode"_J, g_session.force_freemode_host);
+				scripts::force_migration("freemode"_J, g_session.force_freemode_host);
 			});
 		if (ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("fmmc_launcher", "fmmc_launcher"_J, g_session.force_fmmc_launcher_host);
+				scripts::force_migration("fmmc_launcher"_J, g_session.force_fmmc_launcher_host);
 			});
 		if (ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host))
 			g_fiber_pool->queue_job([] {
-				scripts::force_migration("am_launcher", "am_launcher"_J, g_session.force_am_launcher_host);
+				scripts::force_migration("am_launcher"_J, g_session.force_am_launcher_host);
 			});
 	}
 

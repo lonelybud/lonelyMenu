@@ -33,7 +33,6 @@ namespace big
 			if (ImGui::Button("Yes"))
 			{
 				g_ped_animation_service.delete_saved_animation(category, g_ped_animation_service.current_animation);
-				g_ped_animation_service.current_animation = {};
 				ped_animations                            = g_ped_animation_service.all_saved_animations[category];
 
 				delete_modal = false;

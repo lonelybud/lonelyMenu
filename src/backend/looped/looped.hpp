@@ -4,11 +4,11 @@ namespace big
 {
 	class looped
 	{
-		struct saved_weapon
-		{
-			Hash hash;
-			std::string name;
-		};
+		// struct saved_weapon
+		// {
+		// 	Hash hash;
+		// 	std::string name;
+		// };
 
 	public:
 		static void update_globals();

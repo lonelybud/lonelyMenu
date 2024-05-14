@@ -54,6 +54,8 @@ namespace big
 					auto player_name = plyr->m_name;
 					auto id          = plyr->id();
 					auto is_host     = plyr->is_host();
+					bool kick        = false;
+					bool imhost      = g_player_service->get_self()->is_host();
 
 					if (!plyr->is_host())
 						g_session.next_host_list.insert_plyr(id, host_token, player_name);
@@ -74,8 +76,7 @@ namespace big
 						else
 						{
 							g_notification_service.push_warning("Blocked Player Joined", join_str, true);
-							// if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
-							// 	dynamic_cast<player_command*>(command::get("desync"_J))->call(plyr);
+							kick = imhost || g_session.block_blocked_players_join;
 						}
 					}
 					else if (is_friend)
@@ -99,9 +100,15 @@ namespace big
 					{
 						g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 						g_reactions.spoofed_host_token.process(plyr);
+						kick = imhost || g_session.block_spoofed_tokens_join;
+					}
 
-						if (g_player_service->get_self()->is_host() && !is_friend)
-							dynamic_cast<player_command*>(command::get("removekick"_J))->call(plyr);
+					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
+					{
+						if (imhost)
+							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
+						else
+							dynamic_cast<player_command*>(command::get("shkick"_J))->call(plyr);
 					}
 
 					if (plyr->get_net_data()->m_nat_type == 0)

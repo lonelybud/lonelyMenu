@@ -12,13 +12,6 @@ namespace big
 			g_session.notified_as_host = true;
 			g_notification_service.push_success("You are host", "", true);
 			g_session.next_host_list.delete_plyr(g_player_service->get_self()->id());
-
-			// kick all blocked players
-			if (g_session.auto_kick_blocked_players)
-				g_player_service->iterate([](const player_entry& player) {
-					if (player.second->is_blocked)
-						dynamic_cast<player_command*>(command::get("removekick"_J))->call(player.second);
-				});
 		}
 	}
 }

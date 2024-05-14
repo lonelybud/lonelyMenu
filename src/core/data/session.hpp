@@ -57,9 +57,9 @@ namespace big
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;
 		bool auto_kick_chat_spammers      = false;
-		bool auto_kick_blocked_players    = false;
-
-		bool notified_as_host = false;
+		bool block_spoofed_tokens_join    = false;
+		bool block_blocked_players_join   = false;
+		bool notified_as_host             = false;
 	};
 
 	inline g_session_t g_session{};

@@ -64,7 +64,7 @@ namespace big
 								{
 									ImGui::SameLine();
 									components::button("Take Control", [script] {
-										scripts::force_migration(script->m_name, script->m_script_hash);
+										scripts::force_migration(script->m_script_hash);
 									});
 								}
 							}

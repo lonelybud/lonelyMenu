@@ -81,7 +81,7 @@ namespace big
 			g_bad_players_service.toggle_block(rockstar_id, false);
 
 		if (v && g_player_service->get_self()->is_host())
-			dynamic_cast<player_command*>(command::get("removekick"_J))->call(last_selected_player);
+			dynamic_cast<player_command*>(command::get("hostkick"_J))->call(last_selected_player);
 	}
 
 	static void extra_info_button()
@@ -463,8 +463,8 @@ namespace big
 			{
 				if (components::button("Block Kick"))
 					toggle_block(true);
-				components::player_command_button<"removekick">(last_selected_player);
 				components::player_command_button<"hostkick">(last_selected_player);
+				components::player_command_button<"removekick">(last_selected_player);
 			}
 
 			ImGui::Spacing();
@@ -474,7 +474,10 @@ namespace big
 			ImGui::Spacing();
 
 			if (!last_selected_player->is_host())
-				components::player_command_button<"desync">(last_selected_player);
+				{
+					components::player_command_button<"shkick">(last_selected_player);
+					components::player_command_button<"desync">(last_selected_player);
+				}
 
 			components::ver_space();
 

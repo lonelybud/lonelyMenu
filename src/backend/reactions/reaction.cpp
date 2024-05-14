@@ -69,6 +69,12 @@ namespace big
 					kick_player = true;
 					break;
 				}
+				case reaction_sub_type::crash14:
+				case reaction_sub_type::crash15:
+				case reaction_sub_type::crash23:
+				{
+					break;
+				}
 				default:
 				{
 					if (player->infractions[this] > 10)
@@ -148,7 +154,7 @@ namespace big
 				}
 
 				if (g_player_service->get_self()->is_host())
-					dynamic_cast<player_command*>(command::get("removekick"_J))->call(player);
+					dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
 			}
 		}
 		else

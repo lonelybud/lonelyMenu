@@ -205,7 +205,7 @@ namespace big
 
 					g_bad_players_service.add_player(plyr, true, true);
 					if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
-						dynamic_cast<player_command*>(command::get("removekick"_J))->call(plyr);
+						dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
 				}
 
 				return true;
