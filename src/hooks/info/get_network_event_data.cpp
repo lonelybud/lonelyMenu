@@ -103,16 +103,18 @@ namespace big
 
 						victim_player->last_killed_by = player;
 
-						if (is_invincible(player))
+						if (is_using_orbital_cannon(player))
+						{
+							if (globals::get_interior_from_player(player->id()) == 0)
+								g_reactions.Killed_with_orbital.process(player, victim_player);
+						}
+						else if (is_invincible(player))
 							g_reactions.killed_with_god.process(player, victim_player);
 						else if (is_invincible_veh(player))
 							g_reactions.killed_with_veh_god.process(player, victim_player);
 
 						if (is_hidden_from_player_list(player))
 							g_reactions.killed_when_hidden.process(player, victim_player);
-
-						if (is_using_orbital_cannon(player) && globals::get_interior_from_player(player->id()) == 0)
-							g_reactions.Killed_with_orbital.process(player, victim_player);
 					}
 
 			break;

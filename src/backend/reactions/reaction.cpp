@@ -45,7 +45,23 @@ namespace big
 				if (this->notify_once)
 					return;
 
-				++player->infractions[this];
+				// use these variables to avoid getting crash infraction of same type from multiple players at the same time aka false positives
+				// which can result in kicking innocent players
+				static reaction_sub_type last_sub_type = reaction_sub_type::none;
+				static player_ptr last_sub_type_plyr   = nullptr;
+				static std::chrono::system_clock::time_point last_sub_type_time = std::chrono::system_clock::time_point::min();
+
+				auto currentTime = std::chrono::system_clock::now();
+				if (this->type == reaction_type::crash_player && this->sub_type == last_sub_type && player != last_sub_type_plyr
+				    && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - last_sub_type_time).count() <= 500)
+					;
+				else
+					++player->infractions[this];
+
+				last_sub_type      = this->sub_type;
+				last_sub_type_plyr = player;
+				last_sub_type_time = currentTime;
+				//
 			}
 
 			// auto-kick crashing player
@@ -154,7 +170,7 @@ namespace big
 				}
 
 				if (g_player_service->get_self()->is_host())
-					dynamic_cast<player_command*>(command::get("hostkick"_J))->call(player);
+					dynamic_cast<player_command*>(command::get("breakup"_J))->call(player);
 			}
 		}
 		else

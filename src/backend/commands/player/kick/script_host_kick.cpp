@@ -21,9 +21,9 @@ namespace big
 					return;
 				}
 
-				*scr_globals::gsbd_kicking.at(player->id(), 1).as<bool*>() = true;
-
 				g_notification_service.push_success("Kick", std::format("Script Host Kick to {}", player->m_name), true);
+
+				*scr_globals::gsbd_kicking.at(player->id(), 1).as<bool*>() = true;
 			}
 		}
 	};

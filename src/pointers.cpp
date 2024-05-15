@@ -569,6 +569,15 @@ namespace big
                 g_pointers->m_gta.m_get_connection_peer = ptr.as<functions::get_connection_peer>();
             }
         },
+        // Handle Remove Gamer Command
+        {
+            "HRGC",
+            "48 85 D2 0F 84 0E 04",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_handle_remove_gamer_cmd = ptr.as<functions::handle_remove_gamer_cmd>();
+            }
+        },
         // Serialize Take Off Ped Variation Task
         {
             "STOPVT",

@@ -18,8 +18,8 @@ namespace big
 
 			if (player && player->is_valid())
 			{
-				NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
 				g_notification_service.push_success("Kick", std::format("Host kick to {}", player->m_name), true);
+				NETWORK::NETWORK_SESSION_KICK_PLAYER(player->id());
 			}
 		}
 	};

@@ -19,11 +19,11 @@ namespace big
 				msg.write_message(rage::eNetMessage::MsgRadioStationSyncRequest);
 				auto msg_id = player->get_session_player()->m_msg_id;
 
+				g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->m_name), true);
+
 				// for (int j = 0; j < 2000; j++)
 				for (int j = 0; j < 200; j++)
 					msg.send(msg_id);
-
-				g_notification_service.push_success("Kick", std::format("OOM kick to {}", player->m_name), true);
 			}
 		}
 	};

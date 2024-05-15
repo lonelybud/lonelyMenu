@@ -235,20 +235,8 @@ namespace big
 				continue;
 			}
 
-			if (PAD::IS_USING_KEYBOARD_AND_MOUSE(0))
-			{
-				if (PAD::IS_DISABLED_CONTROL_JUST_RELEASED(0, (int)ControllerInputs::INPUT_VEH_DUCK))
-				{
-					g_context_menu_service->enabled = !g_context_menu_service->enabled;
-				}
-			}
-			else
-			{
-				if (PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_AIM) && PAD::IS_DISABLED_CONTROL_JUST_RELEASED(0, (int)ControllerInputs::INPUT_FRONTEND_Y))
-				{
-					g_context_menu_service->enabled = !g_context_menu_service->enabled;
-				}
-			}
+			if (PAD::IS_DISABLED_CONTROL_JUST_RELEASED(0, (int)ControllerInputs::INPUT_VEH_DUCK))
+				g_context_menu_service->enabled = !g_context_menu_service->enabled;
 
 			if (g_context_menu_service->enabled)
 			{
@@ -263,9 +251,9 @@ namespace big
 					continue;
 				}
 
-				ControllerInputs next_key = PAD::IS_USING_KEYBOARD_AND_MOUSE(0) ? ControllerInputs::INPUT_WEAPON_WHEEL_NEXT : ControllerInputs::INPUT_SCRIPT_PAD_DOWN;
-				ControllerInputs prev_key = PAD::IS_USING_KEYBOARD_AND_MOUSE(0) ? ControllerInputs::INPUT_WEAPON_WHEEL_PREV : ControllerInputs::INPUT_SCRIPT_PAD_UP;
-				ControllerInputs execute_key = PAD::IS_USING_KEYBOARD_AND_MOUSE(0) ? ControllerInputs::INPUT_ATTACK : ControllerInputs::INPUT_FRONTEND_ACCEPT;
+				ControllerInputs next_key    = ControllerInputs::INPUT_WEAPON_WHEEL_NEXT;
+				ControllerInputs prev_key    = ControllerInputs::INPUT_WEAPON_WHEEL_PREV;
+				ControllerInputs execute_key = ControllerInputs::INPUT_ATTACK;
 
 				PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(next_key), true);
 				PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(prev_key), true);

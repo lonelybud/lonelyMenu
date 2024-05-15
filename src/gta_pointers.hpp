@@ -167,6 +167,7 @@ namespace big
 		functions::request_control m_request_control;
 
 		functions::get_connection_peer m_get_connection_peer;
+		functions::handle_remove_gamer_cmd m_handle_remove_gamer_cmd;
 
 		PVOID m_prepare_metric_for_sending;
 

@@ -106,7 +106,7 @@ namespace big
 					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 					{
 						if (imhost)
-							dynamic_cast<player_command*>(command::get("hostkick"_J))->call(plyr);
+							dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 						else
 							dynamic_cast<player_command*>(command::get("shkick"_J))->call(plyr);
 					}

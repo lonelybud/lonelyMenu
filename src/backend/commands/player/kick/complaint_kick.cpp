@@ -15,8 +15,8 @@ namespace big
 			if (player && player->is_valid()
 			    && g_desync_kick_players.find(player->m_rockstar_id) == g_desync_kick_players.end())
 			{
-				g_desync_kick_players[player->m_rockstar_id] = player;
 				g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->m_name), true);
+				g_desync_kick_players[player->m_rockstar_id] = player;
 			}
 		}
 	};
