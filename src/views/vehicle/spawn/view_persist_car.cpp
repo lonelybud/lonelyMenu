@@ -14,7 +14,7 @@ namespace big
 	{
 		components::button("Save Vehicle", [vehicle_file_name_input, save_folder] {
 			std::string yo = vehicle_file_name_input;
-			
+
 			if (!trimString(yo).size())
 				return g_notification_service.push_warning("Persist Car", "Filename empty!");
 
@@ -23,8 +23,9 @@ namespace big
 
 			if (ENTITY::DOES_ENTITY_EXIST(self::veh))
 			{
+				replace_string(yo, ".", ""); // so that .. does not throw error by custom file system when it sees say bob..json
 				yo += ".json";
-				replace_double_dots(yo); // so that .. does not throw error by custom file system
+
 				persist_car_service::save_vehicle(self::veh, yo, save_folder);
 				ZeroMemory(vehicle_file_name_input, sizeof(vehicle_file_name_input));
 

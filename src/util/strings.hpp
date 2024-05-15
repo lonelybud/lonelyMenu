@@ -34,13 +34,10 @@ namespace big
 			dest[len] = '\0';
 	}
 
-	inline void replace_double_dots(std::string& str)
+	inline void replace_string(std::string& str, const char* str1, const char* str2)
 	{
 		size_t pos = 0;
-		while ((pos = str.find("..", pos)) != std::string::npos)
-		{
-			str.replace(pos, 2, ".");
-			pos += 1; // Move past the replaced dot
-		}
+		while ((pos = str.find(str1, pos)) != std::string::npos)
+			str.replace(pos, strlen(str1), str2);
 	}
 }

@@ -141,8 +141,8 @@ namespace big
 			std::string str = outfit_name;
 			auto folder     = outfit::get_folder(selected_folder);
 
+			replace_string(str, ".", ""); // so that .. does not throw error by custom file system when it sees say bob..json
 			str += ".json";
-			replace_double_dots(str); // so that .. does not throw error by custom file system
 
 			if (folder.get_file(str).exists())
 			{
@@ -232,7 +232,9 @@ namespace big
 				    && ImGui::Selectable(outfit.c_str(), outfit == selected_file))
 				{
 					selected_file = outfit;
-					strcpy(outfit_name, outfit.c_str());
+					auto _outfit  = outfit;
+					replace_string(_outfit, ".json", "");
+					strcpy(outfit_name, _outfit.c_str());
 				}
 			ImGui::EndListBox();
 		}

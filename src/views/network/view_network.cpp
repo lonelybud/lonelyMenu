@@ -7,6 +7,8 @@
 
 namespace big
 {
+	constexpr auto max_token_val = 18000000000000000000;
+
 	static inline void render_misc()
 	{
 		components::sub_title("Misc");
@@ -29,11 +31,14 @@ namespace big
 
 		ImGui::Text("Custom Host Token: ");
 
-		ImGui::BeginDisabled(network && network->m_game_session_state != 0);
+		ImGui::BeginDisabled(!g_session.orig_host_token || (network && network->m_game_session_state != 0));
 
 		ImGui::SetNextItemWidth(150);
 		if (ImGui::InputScalar("Custom host Token##customhostoken", ImGuiDataType_U64, &g_session.host_token))
 			g_fiber_pool->queue_job([] {
+				if (g_session.host_token < 0 || g_session.host_token > max_token_val)
+					g_session.host_token = max_token_val;
+
 				session::change_host_token();
 			});
 
