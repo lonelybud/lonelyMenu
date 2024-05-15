@@ -105,8 +105,8 @@ namespace big
 			{
 				g_log.log_additional(std::format("args[7] = {},  args[8] = {}", args[7], args[8]));
 
-				if (args[7] == -36565476 && args[8] == -53105203)
-					g_reactions.elegant_crash.process(plyr);
+				// can result in false postives but i want to see if that happens
+				g_reactions.elegant_crash.process(plyr);
 				return true;
 			}
 

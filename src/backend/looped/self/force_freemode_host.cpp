@@ -11,7 +11,9 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			if (g_pointers->m_gta.m_is_session_started && !scripts::is_local_player_host("freemode"_J))
+			auto comp = scripts::get_script_handler_net_comp("freemode"_J);
+
+			if (g_pointers->m_gta.m_is_session_started && comp && !comp->is_local_player_host())
 				scripts::force_migration("freemode"_J, true);
 		}
 	};
