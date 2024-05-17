@@ -221,21 +221,12 @@ namespace big
 			if (plyr->block_host_migr_requests)
 				return true;
 
-			if (plyr->m_host_migration_rate_limit.in_process())
-			{
-				LOG(WARNING) << "m_host_migration_rate_limit in_process: " << plyr->m_name;
-				return true;
-			}
-
 			if (plyr->m_host_migration_rate_limit.process())
 			{
 				plyr->block_host_migr_requests = true;
-				if (plyr->m_host_migration_rate_limit.exceeded_last_process())
-				{
-					g_reactions.oom_kick2.process(_player ? plyr : nullptr);
-					if (_player == nullptr)
-						LOG(WARNING) << "Unkown OOM kick 2 from unkown: " << rockstar_id;
-				}
+				g_reactions.oom_kick2.process(_player ? plyr : nullptr);
+				if (_player == nullptr)
+					LOG(WARNING) << "Unkown OOM kick 2 from unkown: " << rockstar_id;
 
 				return true;
 			}
@@ -298,21 +289,12 @@ namespace big
 			if (plyr->block_radio_requests)
 				return true;
 
-			if (plyr->m_radio_request_rate_limit.in_process())
-			{
-				LOG(WARNING) << "m_radio_request_rate_limit in_process: " << plyr->m_name;
-				return true;
-			}
-
 			if (plyr->m_radio_request_rate_limit.process())
 			{
 				plyr->block_radio_requests = true;
-				if (plyr->m_radio_request_rate_limit.exceeded_last_process())
-				{
-					g_reactions.oom_kick.process(_player ? plyr : nullptr);
-					if (_player == nullptr)
-						LOG(WARNING) << "Unkown OOM kick from unkown: " << rockstar_id;
-				}
+				g_reactions.oom_kick.process(_player ? plyr : nullptr);
+				if (_player == nullptr)
+					LOG(WARNING) << "Unkown OOM kick from unkown: " << rockstar_id;
 
 				return true;
 			}

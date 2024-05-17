@@ -1,4 +1,5 @@
 #include "backend/player_command.hpp"
+#include "core/data/bad_scripts.hpp"
 #include "core/data/debug.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
@@ -16,34 +17,6 @@
 
 namespace big
 {
-	static const std::unordered_set<int> very_bad_script_ids = {
-	    9 /*AM_Darts*/,
-	    17 /*AM_PI_MENU*/,
-	    20 /*fm_intro*/,
-	    215 /*Pilot_School_MP*/,
-	    224 /*am_darts_apartment*/,
-	    226 /*grid_arcade_cabinet*/,
-	    227 /*scroll_arcade_cabinet*/,
-	    228 /*example_arcade*/,
-	    229 /*road_arcade*/,
-	    230 /*gunslinger_arcade*/,
-	    231 /*wizard_arcade*/,
-	    235 /*ggsm_arcade*/,
-	    236 /*puzzle*/,
-	    237 /*camhedz_arcade*/,
-	    238 /*SCTV*/,
-	};
-
-	static const std::unordered_set<int> bad_script_ids = {
-	    212 /*golf_mp*/,
-	    214 /*tennis_network_mp*/,
-	    216 /*FM_Impromptu_DM_Controler*/,
-	    217 /*fm_Bj_race_controler*/,
-	    218 /*fm_deathmatch_controler*/,
-	    221 /*FM_Race_Controler*/,
-	    222 /*FM_Horde_Controler*/,
-	};
-
 	bool hooks::scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player)
 	{
 		const auto args       = scripted_game_event->m_args;
@@ -202,17 +175,12 @@ namespace big
 
 			if (g_protections.script_events.sound_spam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandSound)
 			{
-				if (plyr->m_play_sound_rate_limit_tse.in_process())
-				{
-					LOG(WARNING) << "m_play_sound_rate_limit_tse in_process: " << plyr->m_name;
-					return true;
-				}
+				if (g_debug.log_sound_event)
+					LOG(WARNING) << "Sound Event (tse) from: " << plyr->m_name;
 
 				if (plyr->m_play_sound_rate_limit_tse.process())
 				{
-					if (plyr->m_play_sound_rate_limit_tse.exceeded_last_process())
-						g_reactions.sound_spam_tse.process(plyr);
-
+					g_reactions.sound_spam_tse.process(plyr);
 					return true;
 				}
 			}
@@ -273,19 +241,14 @@ namespace big
 		}
 		case eRemoteEvent::SoundSpam:
 		{
+			if (g_debug.log_sound_event)
+				LOG(WARNING) << "Sound Event (spam) from: " << plyr->m_name;
+
 			if (g_protections.script_events.sound_spam)
 			{
-				if (plyr->m_invites_rate_limit.in_process())
-				{
-					LOG(WARNING) << "m_invites_rate_limit in_process: " << plyr->m_name;
-					return true;
-				}
-
 				if (plyr->m_invites_rate_limit.process())
 				{
-					if (plyr->m_invites_rate_limit.exceeded_last_process())
-						g_reactions.sound_spam_se.process(plyr);
-
+					g_reactions.sound_spam_se.process(plyr);
 					return true;
 				}
 			}
@@ -400,8 +363,8 @@ namespace big
 			// TODO: Breaks stuff
 			if (auto script = gta_util::find_script_thread("freemode"_J))
 			{
-				if (script->m_net_component && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host
-				    && ((CGameScriptHandlerNetComponent*)script->m_net_component)->m_host->m_net_game_player != player)
+				auto comp = (CGameScriptHandlerNetComponent*)script->m_net_component;
+				if (comp && comp->m_host && comp->m_host->m_net_game_player != player)
 				{
 					g_reactions.start_script.process(plyr);
 					return true;
@@ -413,9 +376,10 @@ namespace big
 		{
 			auto script_id = args[3];
 
+			LOGF(VERBOSE, "StartScriptBegin: {}, {}", script_id, plyr->m_name);
 			if (very_bad_script_ids.contains(script_id) || (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() && bad_script_ids.contains(script_id)))
 			{
-				g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr->m_name));
+				// g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr->m_name));
 				g_reactions.start_script.process(plyr);
 				return true;
 			}

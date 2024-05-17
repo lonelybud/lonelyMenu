@@ -346,17 +346,12 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
-			if (plyr->m_play_sound_rate_limit.in_process())
-			{
-				LOG(WARNING) << "m_play_sound_rate_limit in_process: " << plyr->m_name;
-				return;
-			}
-
+			if (g_debug.log_sound_event)
+				LOG(WARNING) << "Sound Event (event) from: " << plyr->m_name;
+				
 			if (plyr->m_play_sound_rate_limit.process())
 			{
-				if (plyr->m_play_sound_rate_limit.exceeded_last_process())
-					g_reactions.crash41.process(plyr, tar_plyr);
-
+				g_reactions.crash41.process(plyr, tar_plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}
@@ -381,7 +376,7 @@ namespace big
 
 			uint32_t sound_hash = buffer->Read<uint32_t>(32);
 
-			if (sound_hash == "Remote_Ring"_J && plyr)
+			if (sound_hash == "Remote_Ring"_J)
 			{
 				g_reactions.sound_spam.process(plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
@@ -433,18 +428,9 @@ namespace big
 			if (plyr->whitelist_ptfx)
 				break;
 
-			if (plyr->m_ptfx_ratelimit.in_process())
-			{
-				LOG(WARNING) << "m_ptfx_ratelimit in_process: " << plyr->m_name;
-				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
-				return;
-			}
-
 			if (plyr->m_ptfx_ratelimit.process())
 			{
-				if (plyr->m_ptfx_ratelimit.exceeded_last_process())
-					g_reactions.ptfx_spam.process(plyr);
-
+				g_reactions.ptfx_spam.process(plyr);
 				g_pointers->m_gta.m_send_event_ack(event_manager, source_player, target_player, event_index, event_handled_bitset);
 				return;
 			}

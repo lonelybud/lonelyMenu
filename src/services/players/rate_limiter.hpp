@@ -8,8 +8,6 @@ namespace big
 		std::chrono::milliseconds m_time_period;
 		std::chrono::system_clock::time_point m_last_event_time{};
 		uint32_t m_num_attempts_allowed = 0;
-		bool processing                 = false;
-		bool happened                   = false;
 
 	public:
 		rate_limiter(std::chrono::milliseconds time_period, uint32_t num_allowed_attempts) :
@@ -21,44 +19,27 @@ namespace big
 		// Returns true if the rate limit has been exceeded
 		bool process()
 		{
-			processing = true;
-
 			if (std::chrono::system_clock::now() - m_last_event_time < m_time_period)
 			{
 				if (++m_num_attempts_allowed > m_attempts_allowed_in_time_period)
-				{
-					if (m_num_attempts_allowed == m_attempts_allowed_in_time_period)
-						happened = true;
-
-					processing = false;
 					return true;
-				}
 			}
 			else
 			{
 				m_last_event_time      = std::chrono::system_clock::now();
 				m_num_attempts_allowed = 1;
-				happened               = false;
 			}
-
-			processing = false;
 			return false;
 		}
 
 		// Check if the rate limit was exceeded by the last process() call. Use this to prevent the player from being flooded with notifications
-		inline bool exceeded_last_process()
+		bool exceeded_last_process()
 		{
-			if (happened)
-			{
-				happened = false;
-				return true;
-			}
-			return false;
+			return (m_num_attempts_allowed - 1) == m_attempts_allowed_in_time_period;
 		}
 
-		inline bool in_process()
-		{
-			return processing;
+		inline auto num_attempts() {
+			return m_num_attempts_allowed;
 		}
 	};
 }

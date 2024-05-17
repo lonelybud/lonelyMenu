@@ -62,6 +62,7 @@ namespace big
 				ImGui::Checkbox("Log Ped Clones", &g_debug.log_ped_clones);
 				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
 				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
+				ImGui::Checkbox("Log Sound Event", &g_debug.log_sound_event);
 			}
 
 			// ImGui::Spacing();
