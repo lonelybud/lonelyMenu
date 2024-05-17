@@ -164,6 +164,7 @@ namespace big
 			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
 		}
 
+		components::command_checkbox<"infammo">();
 		components::command_checkbox<"infclip">();
 		components::command_checkbox<"rapidfire">();
 		if (g_weapons.rapid_fire)

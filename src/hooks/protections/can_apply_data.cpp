@@ -1215,7 +1215,7 @@ namespace big
 			case sync_node_id("CDoorCreationDataNode"):
 			{
 				const auto creation_node = (CDoorCreationDataNode*)(node);
-				if (protection::is_crash_object(creation_node->m_model))
+				if (protection::is_crash_object(creation_node->m_model, sender_plyr))
 				{
 					g_reactions.crash3.process(sender_plyr);
 					return true;
@@ -1225,7 +1225,7 @@ namespace big
 			case sync_node_id("CPickupCreationDataNode"):
 			{
 				const auto creation_node = (CPickupCreationDataNode*)(node);
-				if (creation_node->m_custom_model && protection::is_crash_object(creation_node->m_custom_model))
+				if (creation_node->m_custom_model && protection::is_crash_object(creation_node->m_custom_model, sender_plyr))
 				{
 					g_reactions.crash4.process(sender_plyr);
 					return true;
@@ -1283,7 +1283,7 @@ namespace big
 					g_reactions.crash8.process(sender_plyr);
 					return true;
 				}
-				else if (creation_node->m_has_prop && protection::is_crash_object(creation_node->m_prop_model))
+				else if (creation_node->m_has_prop && protection::is_crash_object(creation_node->m_prop_model, sender_plyr))
 				{
 					g_reactions.crash9.process(sender_plyr);
 					return true;
@@ -1320,7 +1320,7 @@ namespace big
 			case sync_node_id("CObjectCreationDataNode"):
 			{
 				const auto creation_node = (CObjectCreationDataNode*)(node);
-				if (protection::is_crash_object(creation_node->m_model))
+				if (protection::is_crash_object(creation_node->m_model, sender_plyr))
 				{
 					g_reactions.crash11.process(sender_plyr);
 					return true;

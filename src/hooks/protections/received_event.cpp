@@ -1,6 +1,7 @@
 #include "core/data/debug.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
+#include "core/data/session.hpp"
 #include "core/data/syncing_player.hpp"
 #include "fiber_pool.hpp"
 #include "gta/enums.hpp"
@@ -76,7 +77,10 @@ namespace big
 		{
 			uint32_t player_bitfield = buffer->Read<uint32_t>(32);
 			if (player_bitfield & (1 << target_player->m_player_id))
+			{
 				g_reactions.kick_vote.process(plyr);
+				++g_session.num_vote_kicks;
+			}
 			buffer->Seek(0);
 			break;
 		}

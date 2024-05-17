@@ -94,9 +94,6 @@ namespace big
 
 	void view::players()
 	{
-		if (!*g_pointers->m_gta.m_is_session_started)
-			return;
-
 		ImGui::SetNextWindowSize({g_gui_info.nav_window_width, 0.f});
 		ImGui::SetNextWindowPos({g_gui_info.nav_window_pos_x, g_gui_info.plrs_wind_pos_y});
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {g_gui_info.plrs_wind_padding, g_gui_info.plrs_wind_padding});

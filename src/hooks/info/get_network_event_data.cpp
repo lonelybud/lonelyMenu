@@ -1,5 +1,6 @@
 #include "core/data/misc.hpp"
 #include "core/data/reactions.hpp"
+#include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta/joaat.hpp"
 #include "gta/net_game_event.hpp"
@@ -63,6 +64,7 @@ namespace big
 		case rage::eEventNetworkType::CEventNetworkRemovedFromSessionDueToComplaints:
 		{
 			g_notification_service.push_warning("Kicked", "You have been desync kicked.", true);
+			g_session.next_host_list.list.clear();
 			break;
 		}
 		case rage::eEventNetworkType::CEventNetworkEntityDamage:

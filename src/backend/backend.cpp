@@ -37,7 +37,6 @@ namespace big
 		{
 			looped::hud_disable_input();
 			looped::vehicle_auto_drive();
-			looped::self_host_notify();
 			looped::death_check();
 
 			script::get_current()->yield();

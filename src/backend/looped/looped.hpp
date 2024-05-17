@@ -16,7 +16,6 @@ namespace big
 		static void system_update_desync_kick();
 		static void death_check();
 		static void vehicle_auto_drive();
-		static void self_host_notify();
 		static void custom_thread();
 		static void ptfx_loop();
 	};

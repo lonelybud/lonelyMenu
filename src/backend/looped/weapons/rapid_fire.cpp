@@ -35,12 +35,11 @@ namespace big
 
 		virtual void on_tick() override
 		{
-			ControllerInputs execute_key = ControllerInputs::INPUT_ATTACK;
-
-			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(execute_key), TRUE);
-
 			if (g_local_player == nullptr)
 				return;
+
+			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_ATTACK), TRUE);
+			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_ATTACK2), TRUE);
 
 			if (auto* const weapon_mgr = g_local_player->m_weapon_manager)
 			{
@@ -58,7 +57,7 @@ namespace big
 					g_weapons.rapid_fire = false;
 					on_disable();
 				}
-				else if (!g_gui->is_open() && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)execute_key) && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_AIM))
+				else if (!g_gui->is_open() && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_ATTACK) && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_AIM))
 				{
 					auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
 					auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;

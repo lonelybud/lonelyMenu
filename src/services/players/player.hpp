@@ -61,6 +61,7 @@ namespace big
 		uint64_t m_host_token;
 		char m_name[20] = "";
 		int64_t m_rockstar_id;
+		bool m_host = false;
 
 		std::map<reaction*, int> infractions;
 		std::string spam_message  = "";

@@ -280,36 +280,28 @@ namespace big::protection
 	    "tug"_J,
 	};
 
-	bool is_crash_object(rage::joaat_t model)
+	bool is_crash_object(rage::joaat_t model, player_ptr p)
 	{
-		auto crash_object = false;
-
 		if (!model_info::get_model(model))
 			return false;
 
 		for (auto iterator : crash_objects)
 			if (iterator == model)
 			{
-				crash_object = true;
-				break;
+				g_log.log_additional(std::format("crash_objects {}, {}", model, p ? p->m_name : ""));
+				return true;
 			}
 
 		if (g_debug.enable_objects_crash_2)
 			for (auto iterator : crash_objects2)
 				if (iterator == model)
 				{
-					crash_object = true;
-					break;
+					g_log.log_additional(std::format("crash_objects2 {}, {}", model, p ? p->m_name : ""));
+					return true;
 				}
 
 		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
 			return true;
-
-		if (crash_object)
-		{
-			g_log.log_additional(std::format("crashing object '{}' detected", model));
-			return true;
-		}
 
 		return false;
 	}
