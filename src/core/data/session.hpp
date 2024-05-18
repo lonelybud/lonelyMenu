@@ -61,9 +61,6 @@ namespace big
 		bool decloak_players              = false;
 		bool auto_kick_chat_spammers      = false;
 
-		bool block_spoofed_tokens_join  = false;
-		bool block_blocked_players_join = false;
-
 		int num_vote_kicks = 0;
 	};
 

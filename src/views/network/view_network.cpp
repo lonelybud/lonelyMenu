@@ -17,8 +17,6 @@ namespace big
 		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
-		ImGui::Checkbox("Block Spoofed Tokens Joins", &g_session.block_spoofed_tokens_join); // defaults to true when host
-		ImGui::Checkbox("Block Blocked Players Joins", &g_session.block_blocked_players_join); // defaults to true when host
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 	}

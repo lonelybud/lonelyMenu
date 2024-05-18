@@ -96,7 +96,7 @@ namespace big
 						else
 						{
 							g_notification_service.push_warning("Blocked Player Joined", join_str, true);
-							kick = imhost || g_session.block_blocked_players_join;
+							kick = imhost;
 						}
 					}
 					else if (is_friend)
@@ -120,16 +120,11 @@ namespace big
 					{
 						g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 						g_reactions.spoofed_host_token.process(plyr);
-						kick = imhost || g_session.block_spoofed_tokens_join;
+						kick = imhost;
 					}
 
 					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
-					{
-						if (imhost)
-							dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
-						else
-							dynamic_cast<player_command*>(command::get("shkick"_J))->call(plyr);
-					}
+						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
 					if (plyr->get_net_data()->m_nat_type == 0)
 						g_reactions.desync_protection.process(plyr);
