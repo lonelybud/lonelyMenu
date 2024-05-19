@@ -144,5 +144,5 @@ namespace big::functions
 	
 	using received_clone_remove = void (*)(CNetworkObjectMgr*, CNetGamePlayer*, CNetGamePlayer*, int16_t, uint32_t);
 
-	using get_unk_weapon = void* (*) (CPed*);
+	using get_searchlight = void* (*) (CPed*);
 }

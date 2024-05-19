@@ -1,4 +1,5 @@
 #pragma once
+#include "rage/joaat.hpp"
 
 namespace big
 {
@@ -31,7 +32,7 @@ namespace big
 	};
 
 	// inline constexpr auto bad_script_hashes = { // use it for intellisense
-	inline const std::unordered_set<Hash> bad_script_hashes = {
+	inline const std::unordered_set<rage::joaat_t> bad_script_hashes = {
 	    "am_darts"_J,
 	    "am_darts_apartment"_J,
 	    "example_arcade"_J,

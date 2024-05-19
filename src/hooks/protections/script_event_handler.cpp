@@ -9,6 +9,7 @@
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
+#include "util/math.hpp"
 #include "util/player.hpp"
 
 #include <network/CNetGamePlayer.hpp>
@@ -338,6 +339,15 @@ namespace big
 				g_reactions.null_function_kick.process(plyr);
 				return true;
 			}
+
+			if (NETWORK::NETWORK_IS_ACTIVITY_SESSION() || !g_local_player || plyr->is_friend() || is_player_same_team(plyr->id()) || player_is_driver(plyr))
+				break;
+
+			g_reactions.send_to_interior.process(plyr);
+			auto cped = plyr->get_ped();
+			auto dist = cped ? math::distance_between_vectors(*cped->get_position(), *g_local_player->get_position()) : -1;
+			g_log.log_additional(std::format("InteriorControl: {}, {}", plyr->m_name, dist));
+
 			break;
 		}
 		case eRemoteEvent::DestroyPersonalVehicle: g_reactions.destroy_personal_vehicle.process(plyr); return true;

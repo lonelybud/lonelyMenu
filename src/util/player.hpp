@@ -1,6 +1,7 @@
 #pragma once
 #include "core/scr_globals.hpp"
 #include "services/players/player_service.hpp"
+#include "util/mobile.hpp"
 #include "util/outfit.hpp"
 #include "util/time.hpp"
 
@@ -39,6 +40,13 @@ namespace big
 
 	inline bool player_is_driver(player_ptr target_plyr)
 	{
+		// your pv
+		if (mobile::mechanic::get_personal_vehicle() == g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle))
+		{
+			g_log.log_additional("player_is_driver 0");
+			return false;
+		}
+
 		// player was last driver
 		if (g_local_player->m_vehicle->m_last_driver && g_local_player->m_vehicle->m_last_driver == target_plyr->get_ped())
 			return true;
@@ -91,6 +99,7 @@ namespace big
 		{
 			if (boss_goon.Goons[i] == sender)
 			{
+				g_log.log_additional(std::format("is_player_our_bodyguard {}", sender));
 				return true;
 			}
 		}
@@ -128,5 +137,11 @@ namespace big
 
 			return false;
 		}
+	}
+
+	inline bool is_local_vehicle_net_id(int16_t net_id)
+	{
+		return g_local_player && g_local_player->m_vehicle && g_local_player->m_vehicle->m_net_object
+		    && g_local_player->m_vehicle->m_driver == g_local_player && g_local_player->m_vehicle->m_net_object->m_object_id == net_id;
 	}
 }

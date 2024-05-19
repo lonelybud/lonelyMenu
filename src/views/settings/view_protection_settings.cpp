@@ -45,6 +45,7 @@ namespace big
 			ImGui::SetTooltip("This prevents the collection of pickups such as unwanted money bags\nNote: Normal pickups are also no longer possible to collect with this enabled");
 		ImGui::Checkbox("Block Traffic Manipulation", &g_protections.stop_traffic);
 		ImGui::Checkbox("Desync Kick", &g_protections.desync_kick);
+		ImGui::Checkbox("Cage Protection", &g_protections.cage_protection);
 		ImGui::EndGroup();
 
 		ImGui::SeparatorText("Options");

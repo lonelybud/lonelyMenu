@@ -19,11 +19,22 @@ namespace big
 		if (plyr && plyr->block_clone_create)
 			return;
 
-		if (*g_pointers->m_gta.m_clone_create_pool && (*g_pointers->m_gta.m_clone_create_pool)->m_size < 2)
+		switch (object_type)
 		{
-			// We don't have enough memory to handle this
-			LOG(WARNING) << "received_clone_create low pool size: " << src->get_name();
-			return;
+		case eNetObjType::NET_OBJ_TYPE_AUTOMOBILE:
+		case eNetObjType::NET_OBJ_TYPE_BIKE:
+		case eNetObjType::NET_OBJ_TYPE_BOAT:
+		case eNetObjType::NET_OBJ_TYPE_HELI:
+		case eNetObjType::NET_OBJ_TYPE_PLANE:
+		case eNetObjType::NET_OBJ_TYPE_SUBMARINE:
+		case eNetObjType::NET_OBJ_TYPE_TRAILER:
+		case eNetObjType::NET_OBJ_TYPE_TRAIN:
+			if ((*g_pointers->m_gta.m_vehicle_allocator)->m_size < 10)
+			{
+				// We don't have enough memory to handle this
+				LOG(WARNING) << "received_clone_create low pool size: " << src->get_name();
+				return;
+			}
 		}
 
 		m_syncing_player      = src;

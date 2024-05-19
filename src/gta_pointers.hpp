@@ -140,7 +140,6 @@ namespace big
 		functions::fipackfile_unmount m_fipackfile_unmount;
 		functions::fipackfile_close_archive m_fipackfile_close_archive;
 
-		PVOID m_invalid_mods_crash_detour;
 		PVOID m_invalid_decal_crash;
 		PVOID m_task_parachute_object;
 		PVOID m_task_ambient_clips;
@@ -230,9 +229,9 @@ namespace big
 		CWeaponInfoManager* m_weapon_info_manager;
 
 		PVOID m_searchlight_crash;
-		functions::get_unk_weapon m_get_unk_weapon;
+		functions::get_searchlight m_get_searchlight;
 
-		GenericPool** m_clone_create_pool; // this is not a normal pool
+		GenericPool** m_vehicle_allocator; // this is not a normal pool
 
 		PVOID m_write_physical_script_game_state_data_node;
 	};

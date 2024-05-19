@@ -1,6 +1,8 @@
 #pragma once
 #include "pointers.hpp"
 
+#include <random>
+
 namespace big::math
 {
 	inline float deg_to_rad(float deg)
@@ -35,5 +37,15 @@ namespace big::math
 		const Vector3 cam_coords  = g_pointers->m_gta.m_get_gameplay_cam_coords();
 
 		return (float)distance_between_vectors(plyr_coords, cam_coords);
+	}
+
+	// [min_value, max_value]
+	inline int rand(int min_value, int max_value)
+	{
+		static std::random_device seed;
+		static std::mt19937 gen{seed()};
+		std::uniform_int_distribution<int> dist{min_value, max_value};
+
+		return dist(gen);
 	}
 }

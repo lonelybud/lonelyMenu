@@ -58,6 +58,7 @@ namespace big
 		reaction crash40{reaction_type::crash_player, reaction_sub_type::crash40, "Crash 40", "out of bounds instance id", false, true, false};
 		reaction crash41{reaction_type::crash_player, reaction_sub_type::crash41, "Crash 41", "Sound spam Crash", false, false, false};
 		reaction crash42{reaction_type::crash_player, reaction_sub_type::crash42, "Crash 42", "out of bounds tse args size", false, true, false};
+		reaction crash43{reaction_type::crash_player, reaction_sub_type::crash43, "Crash 43", "invalid vehicle parachute", false, true, false};
 		reaction player_ped_removal{reaction_type::crash_player, reaction_sub_type::player_ped_removal, "Player ped removal", "Player ped removal", false, true, false};
 		reaction invalid_weapon_type{reaction_type::crash_player, reaction_sub_type::invalid_weapon_type, "invalid weapon type", "invalid weapon type", false, true, false};
 		reaction elegant_crash{reaction_type::crash_player, reaction_sub_type::elegant_crash, "Elegant Crash", "Elegant Crash", false, true, false};
@@ -71,7 +72,6 @@ namespace big
 		reaction anti_cheat_modder_detection{reaction_type::modder_detection, reaction_sub_type::anti_cheat_modder_detection, "Anti cheat modder detection", "Detected modder by anti-cheat", true, true, false};
 		reaction spoofed_host_token{reaction_type::modder_detection, reaction_sub_type::spoofed_host_token, "Spoofed host token", "Spoofed their host token", true, true, false};
 		reaction killed_with_god{reaction_type::modder_detection, reaction_sub_type::killed_with_god, "God Kill", "God Kill", false, true, false};
-		reaction killed_with_veh_god{reaction_type::modder_detection, reaction_sub_type::killed_with_veh_god, "Vehicle God Kill", "Vehicle God Kill", false, false, false};
 		reaction killed_with_invis{reaction_type::modder_detection, reaction_sub_type::killed_with_invis, "Invisible Kill", "Invisible Kill", false, true, false};
 		reaction killed_when_hidden{reaction_type::modder_detection, reaction_sub_type::killed_when_hidden, "Hidden Kill", "Hidden Kill", false, true, false};
 		reaction Killed_with_orbital{reaction_type::modder_detection, reaction_sub_type::Killed_with_orbital, "Orbital Kill", "Orbital Kill (from outside)", false, true, false};
@@ -86,6 +86,12 @@ namespace big
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", "Received Spectate", false, false, false};
 		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", "Received Remote Ragdoll", false, false, false, 1};
 		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", "Received Spectate Notification", false, false, false};
+		reaction killed_with_veh_god{reaction_type::none, reaction_sub_type::killed_with_veh_god, "Vehicle God Kill", "Vehicle God Kill", false, false, false};
+		reaction pop_multiplier_area{reaction_type::none, reaction_sub_type::pop_multiplier_area, "Pop Multiplier Area", "Pop Multiplier Area", false, false, false};
+		reaction veh_spec_ability_event{reaction_type::none, reaction_sub_type::veh_spec_ability_event, "Vehicle Special Ability Event", "Vehicle Special Ability Event", false, false, false};
+		reaction break_door_event{reaction_type::none, reaction_sub_type::break_door_event, "Break Door Event", "Break Door Event", false, false, false};
+		reaction change_radio_station{reaction_type::none, reaction_sub_type::change_radio_station, "Change Radio Station", "Change Radio Station", false, false, false};
+		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", false, false, false};
 
 		reaction ceo_kick{reaction_type::none, reaction_sub_type::ceo_kick, "CEO Kick", "CEO Kick", false, true, false, 2};
 		reaction ceo_money{reaction_type::none, reaction_sub_type::ceo_money, "CEO Money", "CEO Money", false, true, false, 2};
@@ -102,7 +108,6 @@ namespace big
 		reaction rotate_cam{reaction_type::none, reaction_sub_type::rotate_cam, "Rotate Cam", "Rotated your Camera", true, true, false};
 		reaction send_to_cutscene{reaction_type::none, reaction_sub_type::send_to_cutscene, "Send To Cutscene", "Received Send To Cutscene", false, true, false};
 		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", "Received Send To Location", false, true, false};
-		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", false, true, false};
 		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", "Received Transaction Error", true, true, false};
 		reaction vehicle_kick{reaction_type::none, reaction_sub_type::vehicle_kick, "Vehicle Kick", "Received Vehicle Kick", false, true, false, 2};
 		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", "Received Teleport to warehouse", false, true, false};

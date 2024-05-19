@@ -1,6 +1,7 @@
 #include "base/CBaseModelInfo.hpp"
 #include "base/CObject.hpp"
 #include "core/data/debug.hpp"
+#include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
 #include "core/data/task_types.hpp"
@@ -28,6 +29,7 @@
 #include "netsync/nodes/ped/CPedHealthDataNode.hpp"
 #include "netsync/nodes/ped/CPedInventoryDataNode.hpp"
 #include "netsync/nodes/ped/CPedMovementDataNode.hpp"
+#include "netsync/nodes/ped/CPedMovementGroupDataNode.hpp"
 #include "netsync/nodes/ped/CPedOrientationDataNode.hpp"
 #include "netsync/nodes/ped/CPedScriptCreationDataNode.hpp"
 #include "netsync/nodes/ped/CPedTaskSequenceDataNode.hpp"
@@ -66,6 +68,7 @@
 #include "network/CNetGamePlayer.hpp"
 #include "network/netObject.hpp"
 #include "ped/CPed.hpp"
+#include "rage/joaat.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/model_info.hpp"
@@ -78,6 +81,9 @@
 
 namespace big
 {
+	// constexpr uint32_t vehicle_parachutes[] = {  // use it for intellisense
+	static const std::unordered_set<rage::joaat_t> vehicle_parachutes = {"imp_prop_impexp_para_s"_J, "sr_prop_specraces_para_s_01"_J, "gr_prop_gr_para_s_01"_J};
+
 	inline void check_player_model(player_ptr player, uint32_t model)
 	{
 		if (!player)
@@ -114,9 +120,6 @@ namespace big
 
 	inline bool is_attachment_infinite(rage::netObject* object, uint16_t attached_to_net_id, int from_bone, int to_bone)
 	{
-		if (object == nullptr)
-			return false;
-
 		auto target = g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, attached_to_net_id, false);
 
 		while (target)
@@ -335,10 +338,7 @@ namespace big
 
 	void log_node(const sync_node_id& node_id, player_ptr sender, CProjectBaseSyncDataNode* node, rage::netObject* object)
 	{
-		if (object)
-			g_log.log_additional(std::format("{}: {}, {}", sender->m_name, node_id.name, object->m_object_id));
-		else
-			g_log.log_additional(std::format("{}: {}", sender->m_name, node_id.name));
+		g_log.log_additional(std::format("{}: {}, {}", sender->m_name, node_id.name, object->m_object_id));
 
 		switch (node_id)
 		{
@@ -387,7 +387,6 @@ namespace big
 			LOG_FIELD_B(CObjectCreationDataNode, m_player_wants_control);
 			LOG_FIELD_B(CObjectCreationDataNode, m_has_init_physics);
 			LOG_FIELD_B(CObjectCreationDataNode, m_script_grabbed_from_world);
-			LOG_FIELD_B(CObjectCreationDataNode, m_has_frag_group);
 			LOG_FIELD_B(CObjectCreationDataNode, m_is_broken);
 			LOG_FIELD_B(CObjectCreationDataNode, m_has_exploded);
 			LOG_FIELD_B(CObjectCreationDataNode, m_keep_registered);
@@ -793,8 +792,8 @@ namespace big
 			LOG_FIELD(CPlayerGameStateDataNode, m_voice_channel);
 			LOG_FIELD_B(CPlayerGameStateDataNode, m_is_overriding_voice_proximity);
 			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_x);
-			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_x);
-			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_x);
+			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_y);
+			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_z);
 			LOG_FIELD(CPlayerGameStateDataNode, m_voice_proximity_radius_maybe);
 			LOG_FIELD(CPlayerGameStateDataNode, unk_0150);
 			LOG_FIELD(CPlayerGameStateDataNode, m_vehicle_weapon_index);
@@ -951,7 +950,6 @@ namespace big
 			LOG_FIELD_B(CPhysicalScriptGameStateDataNode, m_visible_in_cutscene);
 			LOG_FIELD_B(CPhysicalScriptGameStateDataNode, m_visible_in_cutscene_remain_hack);
 			LOG_FIELD_B(CPhysicalScriptGameStateDataNode, m_pickup_by_cargobob_disabled);
-			LOG_FIELD_B(CPhysicalScriptGameStateDataNode, m_godmode);
 			LOG_FIELD(CPhysicalScriptGameStateDataNode, m_relationship_group);
 			LOG_FIELD(CPhysicalScriptGameStateDataNode, m_always_cloned_for_players);
 			LOG_FIELD_B(CPhysicalScriptGameStateDataNode, m_trigger_damage_event_for_zero_damage);
@@ -1090,10 +1088,22 @@ namespace big
 		return eNetObjType::NET_OBJ_TYPE_AUTOMOBILE;
 	}
 
-	bool is_crash_ped_task(eTaskTypeIndex type)
+	bool is_crash_ped_task(eTaskTypeIndex type, rage::netObject* object)
 	{
-		if (type == eTaskTypeIndex::CTaskUnalerted && m_syncing_object_type == eNetObjType::NET_OBJ_TYPE_PLAYER)
-			return true;
+		switch (type)
+		{
+		case eTaskTypeIndex::CTaskUnalerted: return m_syncing_object_type == eNetObjType::NET_OBJ_TYPE_PLAYER;
+		case eTaskTypeIndex::CTaskJump:
+		case eTaskTypeIndex::CTaskGun:
+		case eTaskTypeIndex::CTaskAimGunOnFoot:
+		case eTaskTypeIndex::CTaskAimAndThrowProjectile:
+		case eTaskTypeIndex::CTaskAimGun:
+		case eTaskTypeIndex::CTaskAimGunVehicleDriveBy:
+			if (auto ped = (CPed*)object->GetGameObject())
+				return ped->get_ped_type() == ePedType::PED_TYPE_ANIMAL;
+
+			break;
+		}
 
 		return false;
 	}
@@ -1257,7 +1267,7 @@ namespace big
 					return true;
 				}
 
-				if (attach_node->m_attached && object && object->m_object_type == (int16_t)eNetObjType::NET_OBJ_TYPE_TRAILER)
+				if (attach_node->m_attached && object->m_object_type == (int16_t)eNetObjType::NET_OBJ_TYPE_TRAILER)
 				{
 					if (auto net_obj =
 					        g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, attach_node->m_attached_to, false))
@@ -1325,7 +1335,7 @@ namespace big
 					g_reactions.crash11.process(sender_plyr);
 					return true;
 				}
-				if (protection::is_cage_object(creation_node->m_model))
+				if (g_protections.cage_protection && protection::is_cage_object(creation_node->m_model))
 				{ // This will trigger for any player caging any player, Due to a issue with m_dummy_position data
 					g_reactions.cage.process(sender_plyr);
 					return true;
@@ -1490,7 +1500,7 @@ namespace big
 			}
 			case sync_node_id("CVehicleProximityMigrationDataNode"):
 			{
-				if (object && g_local_player && g_local_player->m_net_object)
+				if (g_local_player && g_local_player->m_net_object)
 				{
 					const auto migration_node = (CVehicleProximityMigrationDataNode*)(node);
 
@@ -1619,7 +1629,7 @@ namespace big
 				{
 					if (task_node->m_task_bitset & (1 << i))
 					{
-						if (is_crash_ped_task((eTaskTypeIndex)task_node->m_tasks[i].m_task_type))
+						if (is_crash_ped_task((eTaskTypeIndex)task_node->m_tasks[i].m_task_type, object))
 						{
 							g_reactions.crash25.process(sender_plyr);
 							return true;
@@ -1665,6 +1675,47 @@ namespace big
 					g_reactions.crash28.process(sender_plyr);
 					return true;
 				}
+			}
+			case sync_node_id("CPedMovementGroupDataNode"):
+			{
+				const auto movement_node = (CPedMovementGroupDataNode*)(node);
+
+				if ((eTaskTypeIndex)movement_node->m_movement_task_index == eTaskTypeIndex::CTaskMotionPed
+				    && movement_node->m_movement_task_stage == 13) // aiming
+				{
+					auto ped = (CPed*)object->GetGameObject();
+
+					if (ped && ped->get_ped_type() == ePedType::PED_TYPE_ANIMAL)
+					{
+						g_reactions.crash25.process(sender_plyr);
+						return true;
+					}
+				}
+
+				break;
+			}
+			case sync_node_id("CVehicleScriptGameStateDataNode"):
+			{
+				if (!*reinterpret_cast<bool*>(addr + 0x14A))
+					break;
+
+				int16_t parachute_net_id = *reinterpret_cast<int16_t*>(addr + 0x148);
+
+				auto parachute_obj = g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, parachute_net_id, true);
+				if (!parachute_obj)
+					break;
+
+				auto parachute = parachute_obj->GetGameObject();
+				if (!parachute || !parachute->m_model_info)
+					break;
+
+				if (!vehicle_parachutes.contains(parachute->m_model_info->m_hash))
+				{
+					g_reactions.crash43.process(sender_plyr);
+					return true;
+				}
+
+				break;
 			}
 			}
 		}

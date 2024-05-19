@@ -434,15 +434,6 @@ namespace big
                 g_pointers->m_gta.m_fipackfile_mount = ptr.add(0x47).rip().as<functions::fipackfile_mount>();
             }
         },
-        // Invalid Mods Crash Detour
-        {
-            "IMCD",
-            "E8 ? ? ? ? 40 88 7C 24 ? 49 89 9C 24",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_invalid_mods_crash_detour = ptr.add(1).rip().as<PVOID>();
-            }
-        },
         // Send Chat Ptr
         {
             "SCP",
@@ -986,16 +977,16 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_searchlight_crash = ptr.sub(0x1E).as<PVOID>();
-                g_pointers->m_gta.m_get_unk_weapon = ptr.add(0x28).rip().as<functions::get_unk_weapon>();
+                g_pointers->m_gta.m_get_searchlight = ptr.add(0x28).rip().as<functions::get_searchlight>();
             }
         },
-        // Clone Create Pool
+        // Vehicle Allocator
         {
-            "CCP",
+            "VA",
             "48 8B 0D ? ? ? ? 45 33 C9 BA ? ? ? ? 41",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_clone_create_pool = ptr.add(3).rip().as<GenericPool**>();
+                g_pointers->m_gta.m_vehicle_allocator = ptr.add(3).rip().as<GenericPool**>();
             }
         },
         // Write Physical Script Game State Data Node

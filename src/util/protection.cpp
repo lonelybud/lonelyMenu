@@ -2,10 +2,12 @@
 
 #include "core/data/debug.hpp"
 #include "model_info.hpp"
+#include "rage/joaat.hpp"
 
 namespace big::protection
 {
-	constexpr auto crash_objects = {
+	// constexpr auto crash_objects = { // use it for intellisense
+	static const std::unordered_set<rage::joaat_t> crash_objects = {
 	    "prop_dummy_01"_J,
 	    "prop_dummy_car"_J,
 	    "prop_dummy_light"_J,
@@ -88,7 +90,8 @@ namespace big::protection
 	    "prop_saplin_001_b"_J,
 	};
 
-	constexpr auto crash_objects2 = {
+	// constexpr auto crash_objects2 = { // use it for intellisense
+	static const std::unordered_set<rage::joaat_t> crash_objects2 = {
 	    "prop_facgate_05_r_dam_l1"_J,
 	    "v_61_lng_mesh_unita_swap"_J,
 	    "prop_crt_mon_02"_J,
@@ -285,20 +288,17 @@ namespace big::protection
 		if (!model_info::get_model(model))
 			return false;
 
-		for (auto iterator : crash_objects)
-			if (iterator == model)
-			{
-				g_log.log_additional(std::format("crash_objects {}, {}", model, p ? p->m_name : ""));
-				return true;
-			}
+		if (crash_objects.contains(model))
+		{
+			g_log.log_additional(std::format("crash_objects {}, {}", model, p ? p->m_name : ""));
+			return true;
+		}
 
-		if (g_debug.enable_objects_crash_2)
-			for (auto iterator : crash_objects2)
-				if (iterator == model)
-				{
-					g_log.log_additional(std::format("crash_objects2 {}, {}", model, p ? p->m_name : ""));
-					return true;
-				}
+		if (g_debug.enable_objects_crash_2 && crash_objects2.contains(model))
+		{
+			g_log.log_additional(std::format("crash_objects2 {}, {}", model, p ? p->m_name : ""));
+			return true;
+		}
 
 		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
 			return true;
@@ -306,38 +306,33 @@ namespace big::protection
 		return false;
 	}
 
-	constexpr auto crash_peds = {"slod_human"_J, "slod_small_quadped"_J, "slod_large_quadped"_J};
+	static const std::unordered_set<rage::joaat_t> crash_peds = {"slod_human"_J, "slod_small_quadped"_J, "slod_large_quadped"_J};
 	bool is_crash_ped(rage::joaat_t model)
 	{
-		for (auto iterator : crash_peds)
-			if (iterator == model)
-				return true;
+		if (crash_peds.contains(model))
+			return true;
 		if (!model_info::is_model_of_type(model, eModelType::Ped, eModelType::OnlineOnlyPed))
 			return true;
 		return false;
 	}
 
-	constexpr auto crash_vehicles = {"arbitergt"_J, "astron2"_J, "cyclone2"_J, "ignus2"_J, "s95"_J};
+	static const std::unordered_set<rage::joaat_t> crash_vehicles = {"arbitergt"_J, "astron2"_J, "cyclone2"_J, "ignus2"_J, "s95"_J};
 	bool is_crash_vehicle(rage::joaat_t model)
 	{
-		for (auto iterator : crash_vehicles)
-			if (iterator == model)
-				return true;
+		if (crash_vehicles.contains(model))
+			return true;
 		if (!model_info::is_model_of_type(model, eModelType::Vehicle, eModelType::Unk133))
 			return true;
 		return false;
 	}
 
-	constexpr auto cage_objects = {"stt_prop_stunt_tube_s"_J, "prop_fnclink_03e"_J, "prop_gold_cont_01"_J, "prop_gold_cont_01b"_J, "prop_rub_cage01a"_J};
+	static const std::unordered_set<rage::joaat_t> cage_objects = {"stt_prop_stunt_tube_s"_J, "prop_fnclink_03e"_J, "prop_gold_cont_01"_J, "prop_gold_cont_01b"_J, "prop_rub_cage01a"_J};
 	bool is_cage_object(rage::joaat_t model)
 	{
-		for (auto iterator : cage_objects)
-			if (iterator == model)
-				return true;
-		return false;
+		return cage_objects.contains(model);
 	}
 
-	constexpr auto valid_player_models = {
+	static const std::unordered_set<rage::joaat_t> valid_player_models = {
 	    "mp_m_freemode_01"_J,
 	    "mp_f_freemode_01"_J,
 	    "u_m_m_filmdirector"_J,
@@ -378,9 +373,6 @@ namespace big::protection
 	};
 	bool is_valid_player_model(rage::joaat_t model)
 	{
-		for (auto iterator : valid_player_models)
-			if (iterator == model)
-				return true;
-		return false;
+		return valid_player_models.contains(model);
 	}
 }
