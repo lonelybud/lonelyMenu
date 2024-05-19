@@ -12,7 +12,6 @@ namespace big
 	    "DEBUGGER_ATTACH",
 	    "DIG",
 	    "XP_LOSS",
-	    // "AWARD_XP",
 	    "CF",
 	    "CC",
 	    "CNR",
@@ -28,8 +27,6 @@ namespace big
 	    "PCSETTINGS",
 	    "CASH_CREATED",
 	    "DR_PS",
-	    // "UVC",
-	    "W_L",
 	    "ESVCS",
 	    "IDLEKICK",
 	    "GSCB",
@@ -49,6 +46,12 @@ namespace big
 	    "RDEV",
 	    "RQA",
 	    "RANK_UP",
+	});
+
+	const auto bad_metrics_unimp = std::unordered_set<std::string_view>({
+	    "AWARD_XP",
+	    "UVC",
+	    "W_L",
 	});
 
 	std::string hex_encode(std::string_view input)
@@ -96,29 +99,30 @@ namespace big
 
 		metric->serialize(&yim_serializer);
 
-		const bool is_bad_metric = bad_metrics.contains(metric->get_name());
+		auto metric_name          = metric->get_name();
+		auto is_unimp_bad_metrics = bad_metrics_unimp.contains(metric_name);
 
-		if (is_bad_metric)
+		if (bad_metrics.contains(metric_name) || is_unimp_bad_metrics)
 		{
 			std::string data = yim_serializer.get_string();
 
-			if (strcmp(metric->get_name(), "W_L") == 0)
-				; // dont log W_L metric
-			else
+			// log to console
+			if (!is_unimp_bad_metrics)
 			{
 				bool contains_your_sc = false;
 
-				if (strcmp(metric->get_name(), "DIG") == 0)
+				if (!strcmp(metric_name, "DIG"))
 					contains_your_sc = data.find(std::to_string(g_player_service->get_self()->m_rockstar_id)) != std::string::npos;
 
-				LOG(WARNING) << "BAD METRIC: " << metric->get_name() << " " << contains_your_sc;
+				LOG(WARNING) << "BAD METRIC: " << metric_name << " " << contains_your_sc;
 			}
 
+			// log to file
 			std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
-			log << "BAD METRIC: " << metric->get_name() << "; DATA: " << data << std::endl;
+			log << "BAD METRIC: " << metric_name << "; DATA: " << data << std::endl;
 			log.close();
 
-			if (strcmp(metric->get_name(), "MM") == 0)
+			if (!strcmp(metric_name, "MM"))
 			{
 				std::string data = std::string(reinterpret_cast<char*>(metric) + 0x18);
 				char module_name[MAX_PATH];
