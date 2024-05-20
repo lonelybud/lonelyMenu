@@ -82,7 +82,6 @@ namespace big
 		int* m_resolution_y;
 
 		PVOID m_get_label_text;
-		functions::write_player_game_state_data_node m_write_player_game_state_data_node;
 
 		FriendRegistry* m_friend_registry;
 
@@ -185,8 +184,6 @@ namespace big
 
 		PVOID m_receive_pickup;
 
-		PVOID m_write_player_camera_data_node;
-
 		const char* m_game_version;
 		const char* m_online_version;
 
@@ -233,7 +230,7 @@ namespace big
 
 		GenericPool** m_vehicle_allocator; // this is not a normal pool
 
-		PVOID m_write_physical_script_game_state_data_node;
+		PVOID m_write_node_data;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

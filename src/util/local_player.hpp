@@ -1,6 +1,8 @@
 #pragma once
 #include "gta/joaat.hpp"
 #include "natives.hpp"
+#include "services/players/player_service.hpp"
+#include "util/globals.hpp"
 
 namespace big::local_player
 {
@@ -24,5 +26,20 @@ namespace big::local_player
 			g_local_player->m_player_info->m_wanted_level = 0;
 			g_local_player->m_player_info->m_is_wanted    = false;
 		}
+	}
+
+	inline bool is_in_cutscene()
+	{
+		if (g_local_player && g_local_player->m_player_info)
+			return g_local_player->m_player_info->m_game_state == eGameState::InMPCutscene;
+		return false;
+	}
+
+	inline bool is_in_interior()
+	{
+		int id = 0;
+		if (auto self_ptr = g_player_service->get_self(); self_ptr->is_valid())
+			id = self_ptr->id();
+		return globals::get_interior_from_player(id) != 0;
 	}
 }

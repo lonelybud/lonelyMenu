@@ -59,6 +59,7 @@ namespace rage
 	class netEventMgr;
 	class json_serializer;
 	class netGameEvent;
+	class netSyncDataNode;
 }
 
 namespace big
@@ -131,9 +132,7 @@ namespace big
 
 		// spoofing
 
-		static void write_player_game_state_data_node(rage::netObject* player, CPlayerGameStateDataNode* node);
-		static void write_player_camera_data_node(rage::netObject* player, CPlayerCameraDataNode* node);
-		static void write_physical_script_game_state_data_node(rage::CPhysical* this_ptr, CPhysicalScriptGameStateDataNode* node);
+		static void write_node_data(void* data_node, rage::netObject* net_object, rage::datBitBuffer* buffer, void* log, bool update);
 	};
 
 	class minhook_keepalive

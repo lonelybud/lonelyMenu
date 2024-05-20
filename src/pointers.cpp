@@ -221,15 +221,6 @@ namespace big
                 g_pointers->m_gta.m_write_bitbuf_array = ptr.add(1).rip().as<decltype(gta_pointers::m_write_bitbuf_array)>();
             }
         },
-        // Write Player Game State Data Node
-        {
-            "WPGSDN",
-            "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC 30 0F B7 81",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_write_player_game_state_data_node = ptr.as<functions::write_player_game_state_data_node>();
-            }
-        },
         // Ptr To Handle
         {
             "PTH",
@@ -677,15 +668,6 @@ namespace big
                 g_pointers->m_gta.m_receive_pickup = ptr.as<PVOID>();
             }
         },
-        // Write Player Camera Data Node
-        {
-            "WPCDN",
-            "48 8B C4 48 89 58 20 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 B0 48 81 EC 50 01 00 00 4C",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_write_player_camera_data_node = ptr.as<PVOID>();
-            }
-        },
         // Game Version + Online Version
         {
             "GVOV",
@@ -989,13 +971,13 @@ namespace big
                 g_pointers->m_gta.m_vehicle_allocator = ptr.add(3).rip().as<GenericPool**>();
             }
         },
-        // Write Physical Script Game State Data Node
+        // Write Node Data
         {
-            "WPSGSDN",
-            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 20 4C 8D B1 D0 FE",
+            "WND",
+            "48 8B 89 A8 00 00 00 4C 8B 11 49 FF 62 10",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_write_physical_script_game_state_data_node = ptr.as<PVOID>();
+                g_pointers->m_gta.m_write_node_data = ptr.as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end
