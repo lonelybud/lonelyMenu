@@ -40,9 +40,9 @@ namespace big
 			ImGui::PopItemWidth();
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
 
-			static bool head = g_weapons.aimbot.bone == PedBones::SKEL_Head;
+			static bool head = g_weapons.aimbot.bone == ePedBoneType::HEAD;
 			if (ImGui::Checkbox("Aimbot Head", &head))
-				g_weapons.aimbot.bone = head ? PedBones::SKEL_Head : PedBones::SKEL_Spine3;
+				g_weapons.aimbot.bone = head ? ePedBoneType::HEAD : ePedBoneType::ABDOMEN;
 		}
 
 		ImGui::Spacing();
