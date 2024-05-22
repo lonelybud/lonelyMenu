@@ -1,4 +1,5 @@
 #pragma once
+#include "core/enums.hpp"
 #include "gta/enums.hpp"
 #include "imgui.h"
 #include "natives.hpp"

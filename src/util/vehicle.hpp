@@ -68,8 +68,10 @@ namespace big::vehicle
 				auto ped = VEHICLE::GET_PED_IN_VEHICLE_SEAT(vehicle, i, 0);
 				if (PED::IS_PED_A_PLAYER(ped))
 					return false;
-				else
+				else if (entity::take_control_of(ped))
 					TASK::CLEAR_PED_TASKS_IMMEDIATELY(ped);
+				else
+					return false;
 			}
 
 			// wait for passengers to leave

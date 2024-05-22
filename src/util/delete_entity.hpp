@@ -1,5 +1,4 @@
 #pragma once
-#include "mobile.hpp"
 #include "natives.hpp"
 #include "vehicle.hpp"
 
@@ -14,26 +13,26 @@ namespace big::entity
 			g_notification_service.push_error("Deletion failed", std::format("Entity does not exist {}", ent));
 			return true;
 		}
-		if (!take_control_of(ent))
-		{
-			g_notification_service.push_error("Deletion failed", std::format("failed to take_control_of {}", ent));
-			return false;
-		}
 
 		if (ENTITY::IS_ENTITY_A_VEHICLE(ent))
 		{
-			if (*g_pointers->m_gta.m_is_session_started)
-				if (Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle(); personal_vehicle == ent)
-				{
-					g_notification_service.push_error("Deletion failed", "It is a personal Vehicle");
-					return false;
-				}
+			if (*g_pointers->m_gta.m_is_session_started && vehicle::is_player_veh(ent))
+			{
+				g_notification_service.push_error("Deletion failed", "It is a personal Vehicle");
+				return false;
+			}
 
 			if (!vehicle::clear_all_peds(ent))
 			{
 				g_notification_service.push_error("Deletion failed", std::format("vehicle {} is not empty.", ent));
 				return false;
 			}
+		}
+
+		if (!take_control_of(ent))
+		{
+			g_notification_service.push_error("Deletion failed", std::format("failed to take_control_of {}", ent));
+			return false;
 		}
 
 		if (ENTITY::IS_ENTITY_ATTACHED(ent))

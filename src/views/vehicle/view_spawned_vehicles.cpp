@@ -1,5 +1,6 @@
 #include "core/data/vehicle.hpp"
 #include "natives.hpp"
+#include "services/notifications/notification.hpp"
 #include "util/delete_entity.hpp"
 #include "util/teleport.hpp"
 #include "views/view.hpp"
@@ -7,6 +8,7 @@
 namespace big
 {
 	static int tick_count = 60;
+	static bool deleting  = false;
 
 	void view::spawned_vehicles()
 	{
@@ -32,6 +34,11 @@ namespace big
 		}
 
 		components::button("Delete All", [] {
+			if (deleting)
+				return g_notification_service.push_error("Failed", "Delete already in process");
+
+			deleting = true;
+
 			auto temp = g_vehicle.spawned_vehicles;
 			for (auto it = g_vehicle.spawned_vehicles.begin(); it != g_vehicle.spawned_vehicles.end(); ++it)
 			{
@@ -41,6 +48,8 @@ namespace big
 						temp.erase(itr);
 			}
 			g_vehicle.spawned_vehicles = temp;
+
+			deleting = false;
 		});
 		ImGui::SameLine();
 		ImGui::Text(std::to_string(g_vehicle.spawned_vehicles.size()).c_str());
@@ -82,9 +91,16 @@ namespace big
 				});
 				ImGui::SameLine();
 				components::button("Delete", [it] {
+					if (deleting)
+						return g_notification_service.push_error("Failed", "Delete already in process");
+
+					deleting = true;
+
 					auto ent = static_cast<Entity>(it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first);
 					if (entity::delete_entity(ent))
 						g_vehicle.spawned_vehicles.erase(it);
+
+					deleting = false;
 				});
 			}
 
