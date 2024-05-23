@@ -81,9 +81,9 @@ namespace big
 		            [this] {
 			            teleport::into_vehicle(m_handle);
 		            }},
-		        {"LOG DECORS",
+		        {"IS PV",
 		            [this] {
-			            LOG(VERBOSE) << "Veh Decors" << DECORATOR::DECOR_GET_INT(m_handle, "MPBitset") << " " << DECORATOR::DECOR_GET_INT(m_handle, "Player_Vehicle");
+			            LOG(VERBOSE) << "Is Player Vehicle: " << vehicle::is_player_veh(m_handle);
 		            }},
 		    }};
 
