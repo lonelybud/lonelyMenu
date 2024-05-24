@@ -474,7 +474,7 @@ namespace big
 
 			if (!last_selected_player->is_host())
 			{
-				components::player_command_button<"shkick">(last_selected_player);
+				// components::player_command_button<"shkick">(last_selected_player);
 				components::player_command_button<"desync">(last_selected_player);
 			}
 

@@ -16,18 +16,10 @@ namespace big
 			if (player && player->is_valid()
 			    && g_desync_kick_players.find(player->m_rockstar_id) == g_desync_kick_players.end())
 			{
-				if (player->get_net_data()->m_nat_type < g_player_service->get_self()->get_net_data()->m_nat_type)
-					return g_notification_service.push_error("Kick",
-					    std::format("Desync kick to {} failed because nat type is small", player->m_name),
-					    true);
-
 				if (player->m_host_token < g_session.host_token)
 					return g_notification_service.push_error("Kick",
 					    std::format("Desync kick to {} failed because host token is small", player->m_name),
 					    true);
-
-				player->timed_out = true;
-				player->timeout();
 
 				g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->m_name), true);
 				g_desync_kick_players[player->m_rockstar_id] = player;
