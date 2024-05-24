@@ -423,7 +423,6 @@ namespace big
 			});
 			ImGui::SameLine();
 			components::button("Save outfit", [] {
-				g_misc.save_outfit_blend_data = true;
 				steal_player_outfit(last_selected_player, true);
 			});
 
