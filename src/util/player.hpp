@@ -6,6 +6,7 @@
 #include "util/time.hpp"
 
 #include <script/globals/GPBD_FM_3.hpp>
+#include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
 {
@@ -143,5 +144,50 @@ namespace big
 	{
 		return g_local_player && g_local_player->m_vehicle && g_local_player->m_vehicle->m_net_object
 		    && g_local_player->m_vehicle->m_driver == g_local_player && g_local_player->m_vehicle->m_net_object->m_object_id == net_id;
+	}
+
+	inline bool is_invincible(big::player_ptr player)
+	{
+		if (auto ped = player->get_ped())
+			return ped->m_damage_bits & (uint32_t)eEntityProofs::GOD || ped->m_damage_bits & (uint32_t)eEntityProofs::BULLET || ped->m_damage_bits & (uint32_t)eEntityProofs::EXPLOSION;
+
+		return false;
+	}
+
+	inline bool is_invincible_veh(big::player_ptr player)
+	{
+		auto vehicle = player->get_current_vehicle();
+		return vehicle && vehicle->m_driver == player->get_ped() && (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD);
+	}
+
+	inline bool is_invisible(big::player_ptr player)
+	{
+		if (!player->get_ped())
+			return false;
+
+		if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].IsInvisible)
+			return true;
+
+		if ((player->get_current_vehicle() && player->get_current_vehicle()->m_driver == player->get_ped())
+		    || PLAYER::IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(player->id()))
+			return false; // can't say
+
+		return false; // TODO! have to get data from CPhysicalGameStateDataNode
+		              //return (player->get_ped()->m_flags & (int)rage::fwEntity::EntityFlags::IS_VISIBLE) == 0;
+	}
+
+	inline bool is_hidden_from_player_list(big::player_ptr player)
+	{
+		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].CayoPericoFlags & 1;
+	}
+
+	inline bool is_using_orbital_cannon(big::player_ptr player)
+	{
+		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].OrbitalBitset.IsSet(eOrbitalBitset::kOrbitalCannonActive);
+	}
+
+	inline Interior get_interior_from_player(Player player)
+	{
+		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player].CurrentInteriorIndex;
 	}
 }

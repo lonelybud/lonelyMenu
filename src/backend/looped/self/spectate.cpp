@@ -3,7 +3,7 @@
 #include "natives.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
-#include "util/globals.hpp"
+#include "util/player.hpp"
 
 namespace big
 {
@@ -19,7 +19,7 @@ namespace big
 
 			if (target_player && target_player->is_valid() && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 			{
-				if (globals::get_interior_from_player(target_player->id()) != 0)
+				if (get_interior_from_player(target_player->id()) != 0)
 					g_notification_service.push_error("Spectate", "Player is in interior");
 				else
 				{

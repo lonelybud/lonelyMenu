@@ -88,6 +88,7 @@ namespace big::protection
 	    "proc_meadowpoppy_01"_J,
 	    "proc_desert_sage_01"_J,
 	    "prop_saplin_001_b"_J,
+	    "prop_thindesertfiller_aa"_J,
 	};
 
 	// constexpr auto crash_objects2 = { // use it for intellisense
@@ -153,7 +154,6 @@ namespace big::protection
 	    "p_hw1_22_doors_s"_J,
 	    "arbitergt"_J,
 	    "slod_human"_J,
-	    "prop_thindesertfiller_aa"_J,
 	    "proc_stones_06"_J,
 	    "v_corp_conftable2"_J,
 	    "ng_proc_temp"_J,

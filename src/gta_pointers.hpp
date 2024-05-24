@@ -44,6 +44,8 @@ namespace big
 #pragma pack(push, 1)
 	struct gta_pointers
 	{
+		memory::handle m_is_matchmaking_session_valid;
+		
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
 		memory::handle m_sound_overload_detour;
@@ -80,6 +82,8 @@ namespace big
 
 		int* m_resolution_x;
 		int* m_resolution_y;
+
+		uint32_t* m_region_code;
 
 		PVOID m_get_label_text;
 

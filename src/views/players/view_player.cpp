@@ -15,7 +15,6 @@
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/chat.hpp"
 #include "util/delete_entity.hpp"
-#include "util/globals.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
 #include "util/teleport.hpp"
@@ -186,10 +185,11 @@ namespace big
 
 					    ImGui::Spacing();
 
-					    ImGui::Text("Is in interior: %d", globals::get_interior_from_player(id));
+					    ImGui::Text("Is in interior: %d", get_interior_from_player(id));
 					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
+					    ImGui::Text("Is invisible (Player list): %d", is_hidden_from_player_list(last_selected_player));
 					    if (last_selected_player->last_killed_by && last_selected_player->last_killed_by->is_valid())
 						    ImGui::Text("Last killed by: %s", last_selected_player->last_killed_by->m_name);
 
@@ -323,7 +323,7 @@ namespace big
 			components::sub_title("Teleport / Location");
 
 			components::button("Set Waypoint", [] {
-				if (globals::get_interior_from_player(last_selected_player->id()) != 0)
+				if (get_interior_from_player(last_selected_player->id()) != 0)
 				{
 					auto blips = g_pointers->m_gta.m_blip_list->m_Blips;
 					for (int i = 0; i < 1500; i++)
@@ -474,10 +474,10 @@ namespace big
 			ImGui::Spacing();
 
 			if (!last_selected_player->is_host())
-				{
-					components::player_command_button<"shkick">(last_selected_player);
-					components::player_command_button<"desync">(last_selected_player);
-				}
+			{
+				components::player_command_button<"shkick">(last_selected_player);
+				components::player_command_button<"desync">(last_selected_player);
+			}
 
 			components::ver_space();
 
@@ -503,6 +503,8 @@ namespace big
 						g_notification_service.push_error("Delete Vehicle", "Its a PV", false);
 				}
 			});
+
+			components::player_command_button<"intkick">(last_selected_player);
 		}
 		ImGui::EndGroup();
 	}

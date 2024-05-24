@@ -2,7 +2,7 @@
 #include "gta/joaat.hpp"
 #include "natives.hpp"
 #include "services/players/player_service.hpp"
-#include "util/globals.hpp"
+#include "util/player.hpp"
 
 namespace big::local_player
 {
@@ -40,6 +40,6 @@ namespace big::local_player
 		int id = 0;
 		if (auto self_ptr = g_player_service->get_self(); self_ptr->is_valid())
 			id = self_ptr->id();
-		return globals::get_interior_from_player(id) != 0;
+		return get_interior_from_player(id) != 0;
 	}
 }

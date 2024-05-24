@@ -1,11 +1,11 @@
 #pragma once
 #include "core/data/session.hpp"
+#include "core/scr_globals.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "script.hpp"
 #include "script_function.hpp"
-#include "util/globals.hpp"
 #include "util/misc.hpp"
 
 #include <network/CCommunications.hpp>

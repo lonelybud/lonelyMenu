@@ -13,6 +13,10 @@ namespace big
 {
 	static void init()
 	{
+		// Skip matchmaking session validity checks
+		memory::byte_patch::make(g_pointers->m_gta.m_is_matchmaking_session_valid.as<void*>(), std::to_array({0xB0, 0x01, 0xC3}))
+		    ->apply(); // has no observable side effects
+
 		// Disable cheat activated netevent when creator warping
 		memory::byte_patch::make(g_pointers->m_gta.m_creator_warp_cheat_triggered_patch.as<uint8_t*>(), 0xEB)->apply();
 

@@ -1,3 +1,4 @@
+#include "core/data/region_codes.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
@@ -11,6 +12,24 @@ namespace big
 
 	static inline void render_misc()
 	{
+		components::sub_title("Region Switcher");
+
+		if (g_pointers->m_gta.m_region_code)
+		{
+			static int selected_region_index = -1;
+
+			ImGui::SetNextItemWidth(200.f);
+			if (ImGui::BeginCombo("##regionswitcher", regions[*g_pointers->m_gta.m_region_code].name))
+			{
+				for (const auto& region_type : regions)
+					components::selectable(region_type.name, *g_pointers->m_gta.m_region_code == region_type.id, [&region_type] {
+						*g_pointers->m_gta.m_region_code = region_type.id;
+					});
+
+				ImGui::EndCombo();
+			}
+		}
+
 		components::sub_title("Misc");
 
 		ImGui::Checkbox("Block Joins", &g_session.block_joins);

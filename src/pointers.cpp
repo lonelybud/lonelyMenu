@@ -20,6 +20,16 @@ namespace big
                 g_pointers->m_gta.m_resolution_y = ptr.add(4).rip().as<int*>();
             }
         },
+        // Region Code
+        {
+            "RC",
+            "48 83 EC 28 83 3D ? ? ? ? ? 75 10",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_region_code = ptr.add(16).rip().add(1).as<uint32_t*>();
+                g_pointers->m_gta.m_region_code = ptr.add(16).rip().as<uint32_t*>();
+            }
+        },
         // Is Session Started
         {
             "ISA",
@@ -804,6 +814,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_train_config_array = ptr.add(3).rip().as<rage::atArray<CTrainConfig>*>();
+            }
+        },
+        // Is Matchmaking Session Valid
+        {
+            "IMSV",
+            "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 54 41 55 41 56 41 57 48 83 EC 20 45 0F",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_is_matchmaking_session_valid = ptr;
             }
         },
         // Creator Warp Cheat Triggered Patch
