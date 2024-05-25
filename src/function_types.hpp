@@ -74,8 +74,6 @@ namespace big::functions
 	using ptr_to_handle = Entity (*)(void*);
 	using handle_to_ptr = rage::CDynamicEntity* (*)(Entity);
 
-	using write_player_game_state_data_node = bool (*)(rage::netObject* plr, CPlayerGameStateDataNode* node);
-
 	using get_gameplay_cam_coords = Vector3 (*)();
 
 	using get_screen_coords_for_world_coords = bool (*)(float* world_coords, float* out_x, float* out_y);
@@ -113,10 +111,6 @@ namespace big::functions
 	using fipackfile_unmount       = bool (*)(const char* mount_point);
 	using fipackfile_close_archive = void (*)(rage::fiDevice* this_);
 
-	using start_get_presence_attributes = bool (*)(int profile_index, rage::rlScHandle* handle, int num_handles, rage::rlQueryPresenceAttributesContext** contexts, int count, rage::rlScTaskStatus* state);
-
-	using get_vehicle_gadget_array_size = int (*)(eVehicleGadgetType type);
-
 	using write_join_response_data = bool (*)(CMsgJoinResponse* response, void* data, int size, uint32_t* size_used);
 
 	using queue_packet = bool (*)(rage::netConnectionManager* mgr, int msg_id, void* data, int size, int flags, void* unk);
@@ -141,8 +135,8 @@ namespace big::functions
 	using remove_reference = void (*)(rage::fwRefAwareBase* object, void* reference);
 
 	using get_ped_seat = CGetPedSeatReturnClass* (*)(PVOID seat_info, CPed* ped);
-	
+
 	using received_clone_remove = void (*)(CNetworkObjectMgr*, CNetGamePlayer*, CNetGamePlayer*, int16_t, uint32_t);
 
-	using get_searchlight = void* (*) (CPed*);
+	using get_searchlight = void* (*)(CPed*);
 }

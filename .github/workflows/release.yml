@@ -57,24 +57,43 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Delete Previous GitHub Release
-        run: |
-          response=$(curl -sS -w '\n%{http_code}' "https://api.github.com/repos/lonelybud/lonelyMenu/releases/latest")
-          http_code=$(echo "$response" | tail -n1)
-          json_data=$(echo "$response" | sed '$d')
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const tag = "release-latest";
 
-          # Check if the HTTP request was successful (status code 2xx)
-          if [[ "$http_code" =~ ^2[0-9][0-9]$ ]]; then
-              # Extract the "id" field from JSON data and save it to a variable
-              release_id=$(echo "$json_data" | jq -r '.id')
-              echo "release_id: $release_id"
-              curl -L \
-                -X DELETE \
-                -H "Accept: application/vnd.github.v3+json" \
-                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/lonelybud/lonelyMenu/releases/$release_id"
-          else
-              echo "Failed to fetch release information. HTTP code: $http_code"
-          fi
+            const releases = await github.rest.repos.listReleases({
+              owner: owner,
+              repo: repo,
+            });
+
+            const release = releases.data.find(release => release.tag_name === tag);
+
+            if (release) {
+              await github.rest.repos.deleteRelease({
+                owner: owner,
+                repo: repo,
+                release_id: release.id,
+              });
+              console.log(`Deleted release with ID ${release.id}`);
+            } else {
+              console.log("No existing release to delete");
+            }
+
+            // Delete the tag but it is not mandatory (https://github.com/YimMenu/YimMenu/issues/2499)
+            try {
+              await github.rest.git.deleteRef({
+                owner: owner,
+                repo: repo,
+                ref: `tags/${tag}`,
+              });
+              console.log(`Deleted tag ${tag}`);
+            } catch (error) {
+              console.error(`Error deleting tag: ${error.message}`);
+            }
+
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:

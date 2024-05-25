@@ -38,6 +38,11 @@ namespace big
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
+
+		ImGui::Checkbox("Multiplex Session", &g_session.multiplex_session);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(100);
+		ImGui::SliderInt("###multiplex_cnt", &g_session.multiplex_count, 2, 5);
 	}
 
 	static inline void render_hosting()

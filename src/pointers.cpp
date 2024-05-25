@@ -26,7 +26,6 @@ namespace big
             "48 83 EC 28 83 3D ? ? ? ? ? 75 10",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_region_code = ptr.add(16).rip().add(1).as<uint32_t*>();
                 g_pointers->m_gta.m_region_code = ptr.add(16).rip().as<uint32_t*>();
             }
         },
@@ -997,6 +996,33 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_write_node_data = ptr.as<PVOID>();
+            }
+        },
+        // Advertise Session
+        {
+            "AS",
+            "F6 D8 1B C9 83 C1 05 EB 43",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_advertise_session = ptr.sub(4).rip().as<PVOID>();
+            }
+        },
+        // Update Session Advertisement
+        {
+            "USA",
+            "84 C0 74 0A 44 89 43 30",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_update_session_advertisement = ptr.sub(0xA).rip().as<PVOID>();
+            }
+        },
+        // Unadvertise Session
+        {
+            "US",
+            "EB 21 B9 01 00 00 00 87 4B 28",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_unadvertise_session = ptr.sub(4).rip().as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end

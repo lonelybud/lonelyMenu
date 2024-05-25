@@ -45,7 +45,7 @@ namespace big
 	struct gta_pointers
 	{
 		memory::handle m_is_matchmaking_session_valid;
-		
+
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
 		memory::handle m_sound_overload_detour;
@@ -200,7 +200,7 @@ namespace big
 		functions::get_host_array_handler_by_index m_get_host_array_handler_by_index;
 
 		CBlipList* m_blip_list;
-		
+
 		PVOID m_allocate_memory_reliable;
 		functions::connection_manager_try_free_memory m_connection_manager_try_free_memory;
 		functions::remove_message_from_queue m_remove_message_from_queue;
@@ -235,6 +235,10 @@ namespace big
 		GenericPool** m_vehicle_allocator; // this is not a normal pool
 
 		PVOID m_write_node_data;
+
+		PVOID m_advertise_session;
+		PVOID m_update_session_advertisement;
+		PVOID m_unadvertise_session;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");
