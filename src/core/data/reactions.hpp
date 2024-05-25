@@ -64,8 +64,8 @@ namespace big
 		reaction elegant_crash{reaction_type::crash_player, reaction_sub_type::elegant_crash, "Elegant Crash", "Elegant Crash", false, true, false};
 
 		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", "Voting to kick you", false, false, true};
-		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", true, false, true};
-		reaction bounty{reaction_type::none, reaction_sub_type::bounty, "Bounty", "Set bounty on you", true, false, true};
+		reaction report{reaction_type::none, reaction_sub_type::report, "Report", "Reported you", false, false, true};
+		reaction bounty{reaction_type::none, reaction_sub_type::bounty, "Bounty", "Set bounty on you", false, false, true};
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", "Is a rockstar admin", true, false, true};
 		reaction desync_protection{reaction_type::none, reaction_sub_type::desync_protection, "Desync Protection", "Have their nat type 0", true, false, true};
 

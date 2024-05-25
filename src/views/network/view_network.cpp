@@ -37,6 +37,9 @@ namespace big
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
 
+		ImGui::Checkbox("Block Muggers", &g_session.block_muggers);
+		ImGui::Checkbox("Unhide Players From List", &g_session.unhide_players_from_player_list);
+
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 
 		ImGui::Checkbox("Multiplex Session", &g_session.multiplex_session);

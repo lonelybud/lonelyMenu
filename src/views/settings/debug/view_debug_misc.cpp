@@ -46,6 +46,10 @@ namespace big
 					HUD::DISPLAY_RADAR(true);
 					HUD::DISPLAY_HUD(true);
 				});
+
+				components::button("Play sound", [] {
+					AUDIO::PLAY_SOUND_FROM_ENTITY(1, "SELECT", self::ped, "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0);
+				});
 			}
 
 			components::sub_title("Log");

@@ -22,6 +22,15 @@ namespace big
 		g_script_patcher_service->add_patch({"shop_controller"_J, "despawn bypass", "2D 01 04 00 00 2C ? ? ? 56 ? ? 71", 5, {0x71, 0x2E, 0x01, 0x01}, nullptr}); // despawn bypass
 		g_script_patcher_service->add_patch({"shop_controller"_J, "godmode/invisibility detection bypass", "2D 01 03 00 00 5D ? ? ? 06 56 ? ? 2E ? ? 2C", 5, {0x2E, 0x01, 0x00}, nullptr}); // godmode/invisibility detection bypass
 
+		g_script_patcher_service->add_patch(
+		    {"freemode"_J, "block_muggers", "2D 02 08 00 00 38 01 56", 5, {0x2E, 0x02, 0x00}, &g_session.block_muggers});
+		g_script_patcher_service->add_patch({"freemode"_J,
+		    "unhide_players_from_player_list",
+		    "2D 01 03 00 00 38 00 71 72 5D ? ? ? 06 56 ? ? 71 2E ? ? 2C ? ? ? 71",
+		    5,
+		    {0x72, 0x2E, 0x01, 0x01},
+		    &g_session.unhide_players_from_player_list});
+
 		LOG(INFO) << "Script patches: registered";
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
