@@ -35,6 +35,7 @@ namespace big
 
 		while (g_running)
 		{
+			looped::hud_transition_state();
 			looped::hud_disable_input();
 			looped::vehicle_auto_drive();
 			looped::death_check();

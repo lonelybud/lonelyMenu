@@ -1,6 +1,7 @@
+#include "backend/looped/looped.hpp"
+#include "gta/joaat.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
-#include "backend/looped/looped.hpp"
 
 namespace big
 {
@@ -31,5 +32,7 @@ namespace big
 			else
 				self::veh = 0;
 		}
+
+		is_maintransition_script_active = SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0;
 	}
 }

@@ -73,6 +73,7 @@ namespace big
 	inline std::atomic_bool g_running{false};
 
 	inline CPed* g_local_player;
+	inline bool is_maintransition_script_active;
 }
 
 namespace self

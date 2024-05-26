@@ -17,7 +17,7 @@ namespace big
 		{
 			target_player = g_player_service->get_selected();
 
-			if (target_player && target_player->is_valid() && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
+			if (target_player && target_player->is_valid() && !is_maintransition_script_active)
 			{
 				if (get_interior_from_player(target_player->id()) != 0)
 					g_notification_service.push_error("Spectate", "Player is in interior");

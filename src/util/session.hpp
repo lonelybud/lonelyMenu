@@ -44,7 +44,7 @@ namespace big::session
 		*scr_globals::session4.as<int*>() = 1;
 		*scr_globals::session5.as<int*>() = 32;
 
-		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
+		if (!is_maintransition_script_active)
 		{
 			*scr_globals::session6.as<int*>() = 1;
 			script::get_current()->yield(200ms);

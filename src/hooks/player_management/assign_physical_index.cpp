@@ -123,7 +123,7 @@ namespace big
 						kick = imhost;
 					}
 
-					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
+					if (!is_friend && kick && !is_maintransition_script_active)
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
 					if (plyr->get_net_data()->m_nat_type == 0)

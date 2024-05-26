@@ -59,21 +59,21 @@ namespace big
 				}
 				else if (!g_gui->is_open() && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_ATTACK) && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_AIM))
 				{
-					auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
-					auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
-					Vector3 end           = camera_position + camera_direction * 2000.0;
-
-					if (weapon_hash == "WEAPON_FLAREGUN"_J)
-					{
-						WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, current_weapon_tint++);
-						if (current_weapon_tint > 7)
-							current_weapon_tint = 0;
-					}
-
 					if (_delay != g_weapons.rapid_fire_delay)
 						reset_debouncer();
 					else if (deb.has_debounced())
 					{
+						auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
+						auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
+						Vector3 end           = camera_position + camera_direction * 2000.0;
+
+						if (weapon_hash == "WEAPON_FLAREGUN"_J)
+						{
+							WEAPON::SET_PED_WEAPON_TINT_INDEX(self::ped, weapon_hash, current_weapon_tint++);
+							if (current_weapon_tint > 7)
+								current_weapon_tint = 0;
+						}
+
 						PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
 						WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
 					}

@@ -18,5 +18,6 @@ namespace big
 		static void vehicle_auto_drive();
 		static void custom_thread();
 		static void ptfx_loop();
+		static void hud_transition_state();
 	};
 }
