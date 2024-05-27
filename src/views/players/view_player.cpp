@@ -482,24 +482,13 @@ namespace big
 
 			components::sub_title("Other");
 
+			components::player_command_button<"vehkick">(last_selected_player);
+
 			components::button("Delete Vehicle", [] {
 				if (auto c_veh = last_selected_player->get_current_vehicle())
 				{
 					auto veh = g_pointers->m_gta.m_ptr_to_handle(c_veh);
-					if (!vehicle::is_player_veh(veh))
-					{
-						if (entity::take_control_of(c_veh))
-						{
-							auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id());
-							if (ped && PED::GET_VEHICLE_PED_IS_IN(ped, 0))
-								dynamic_cast<player_command*>(command::get("vehkick"_J))->call(last_selected_player);
-							entity::delete_entity(veh);
-						}
-						else
-							g_notification_service.push_error("Delete Vehicle", "Unable to take control", false);
-					}
-					else
-						g_notification_service.push_error("Delete Vehicle", "Its a PV", false);
+					entity::delete_entity(veh);
 				}
 			});
 

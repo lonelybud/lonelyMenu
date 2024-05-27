@@ -391,6 +391,7 @@ namespace big
 		sound_spam_se,
 		sound_spam_tse,
 		spectate,
+		spectate_int,
 		remote_ragdoll,
 		spectate_notification,
 		killed_with_veh_god,

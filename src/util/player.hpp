@@ -41,6 +41,9 @@ namespace big
 
 	inline bool player_is_driver(player_ptr target_plyr)
 	{
+		if (!g_local_player->m_vehicle)
+			return false;
+
 		// your pv
 		if (mobile::mechanic::get_personal_vehicle() == g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle))
 		{

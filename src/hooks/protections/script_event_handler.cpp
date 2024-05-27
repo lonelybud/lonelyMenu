@@ -53,7 +53,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::ClearWantedLevel:
-			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
+			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && !player_is_driver(plyr))
 			{
 				g_reactions.clear_wanted_level.process(plyr);
 				return true;
@@ -156,8 +156,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::RemoteOffradar:
-			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(player->m_player_id)
-			    && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
+			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(player->m_player_id) && !player_is_driver(plyr))
 			{
 				g_reactions.remote_off_radar.process(plyr);
 				return true;
@@ -263,8 +262,7 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::Teleport:
-			if (!plyr->is_friend() && g_protections.script_events.force_teleport && !is_player_our_boss(player->m_player_id)
-			    && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
+			if (!plyr->is_friend() && g_protections.script_events.force_teleport && !is_player_our_boss(player->m_player_id) && !player_is_driver(plyr))
 			{
 				g_reactions.force_teleport.process(plyr);
 				return true;
@@ -272,7 +270,7 @@ namespace big
 			break;
 		case eRemoteEvent::TransactionError: g_reactions.transaction_error.process(plyr); return true;
 		case eRemoteEvent::VehicleKick:
-			if (g_local_player->m_vehicle && !plyr->is_friend() && g_protections.script_events.vehicle_kick && !player_is_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick && !player_is_driver(plyr))
 			{
 				g_reactions.vehicle_kick.process(plyr);
 				return true;
@@ -280,7 +278,7 @@ namespace big
 			break;
 		case eRemoteEvent::NetworkBail: g_reactions.network_bail.process(plyr); return true;
 		case eRemoteEvent::TeleportToWarehouse:
-			if (!plyr->is_friend() && g_protections.script_events.teleport_to_warehouse && (!g_local_player->m_vehicle || !player_is_driver(plyr)))
+			if (!plyr->is_friend() && g_protections.script_events.teleport_to_warehouse && !player_is_driver(plyr))
 			{
 				g_reactions.teleport_to_warehouse.process(plyr);
 				return true;

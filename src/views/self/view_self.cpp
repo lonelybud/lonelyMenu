@@ -31,6 +31,8 @@ namespace big
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 3, "ALL");
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 4, "ALL");
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 5, "ALL");
+
+			NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
 		});
 		ImGui::SameLine();
 		components::button("Fill Inventory", [] {

@@ -16,12 +16,22 @@ namespace big
 
 			if (!vehicle || !vehicle->m_net_object)
 			{
-				g_notification_service.push_error("Vehicle Kick", "Vehicle hasn't synced yet");
-				return;
-			}
+				// vehicle hasn't synced yet, use TSE
+				const size_t arg_count = 10;
+				int64_t args[arg_count] = {(int64_t)eRemoteEvent::VehicleKick, self::id, 1 << player->id(), 0, 0, 0, 0, 0, 0, 0};
 
-			// use a private method to kick player from vehicle
-			(*g_pointers->m_gta.m_network_object_mgr)->ChangeOwner(vehicle->m_net_object, g_player_service->get_self()->get_net_game_player(), 0);
+				g_pointers->m_gta.m_trigger_script_event(1, args, arg_count, 1 << player->id(), (int)eRemoteEvent::VehicleKick);
+
+				g_notification_service.push_error("Vehicle Kick", std::format("TSE Kick sent to {}", player->m_name));
+			}
+			else
+			{
+				// use a private method to kick player from vehicle
+				(*g_pointers->m_gta.m_network_object_mgr)
+				    ->ChangeOwner(vehicle->m_net_object, g_player_service->get_self()->get_net_game_player(), 0);
+
+				g_notification_service.push_success("Vehicle Kick", std::format("Kick sent to {}", player->m_name));
+			}
 		}
 	};
 
