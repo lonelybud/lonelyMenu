@@ -64,9 +64,6 @@ namespace big
 		bool unhide_players_from_player_list = false;
 
 		int num_vote_kicks = 0;
-
-		bool multiplex_session = false;
-		int multiplex_count    = 2;
 	};
 
 	inline g_session_t g_session{};

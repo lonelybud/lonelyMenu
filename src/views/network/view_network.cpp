@@ -41,11 +41,6 @@ namespace big
 		ImGui::Checkbox("Unhide Players From List", &g_session.unhide_players_from_player_list);
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
-
-		ImGui::Checkbox("Multiplex Session", &g_session.multiplex_session);
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(100);
-		ImGui::SliderInt("###multiplex_cnt", &g_session.multiplex_count, 2, 5);
 	}
 
 	static inline void render_hosting()
