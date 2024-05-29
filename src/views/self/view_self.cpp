@@ -1,5 +1,7 @@
 #include "core/data/context_menu.hpp"
+#include "core/data/self.hpp"
 #include "natives.hpp"
+#include "services/notifications/notification_service.hpp"
 #include "util/local_player.hpp"
 #include "views/view.hpp"
 
@@ -60,6 +62,17 @@ namespace big
 		ImGui::SameLine();
 		components::button("Die", [] {
 			ENTITY::SET_ENTITY_HEALTH(self::ped, 0, 0, 0);
+		});
+		ImGui::Spacing();
+		components::button("Toggle Max Wanted Level", [] {
+			auto is_zero = PLAYER::GET_MAX_WANTED_LEVEL() == 0;
+
+			if (is_zero)
+				PLAYER::SET_MAX_WANTED_LEVEL(5);
+			else
+				PLAYER::SET_MAX_WANTED_LEVEL(0);
+
+			g_notification_service.push_success("Max Wanted Level", is_zero ? "Set to 5" : "Set to 0");
 		});
 	}
 

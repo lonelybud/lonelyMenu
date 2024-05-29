@@ -177,7 +177,7 @@ namespace big
 			if (!plyr)
 				return true;
 
-			if (plyr->is_spammer)
+			if (!plyr->whitelist_spammer && plyr->is_spammer)
 				return true;
 
 			char message[256];

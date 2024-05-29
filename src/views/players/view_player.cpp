@@ -285,16 +285,7 @@ namespace big
 				last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
 				                                        g_known_players_service.remove(last_selected_player);
 
-			if (ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer))
-			{
-				if (last_selected_player->whitelist_spammer && last_selected_player->is_spammer)
-				{
-					last_selected_player->is_spammer = false;
-					last_selected_player->is_blocked = false;
-					if (g_bad_players_service.does_exist(rockstar_id))
-						g_bad_players_service.toggle_block(rockstar_id, false);
-				}
-			}
+			ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer);
 
 			ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
 

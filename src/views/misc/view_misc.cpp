@@ -160,6 +160,7 @@ namespace big
 		components::button("Get Wet", [] {
 			PED::SET_PED_WETNESS_HEIGHT(self::ped, 1);
 			PED::SET_PED_WETNESS_ENABLED_THIS_FRAME(self::ped);
+			NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
 		});
 	}
 

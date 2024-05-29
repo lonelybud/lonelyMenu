@@ -54,6 +54,9 @@ namespace big
 
 			components::sub_title("Log");
 			{
+				if (components::button("Log Hello World"))
+					LOG(VERBOSE) << "Hello World";
+
 				components::button("Is Activity Session?", [] {
 					LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
 				});
