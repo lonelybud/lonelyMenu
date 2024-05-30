@@ -30,6 +30,7 @@ namespace big
 		g_session_t g_session_temp;
 		g_session_temp.host_token      = g_session.host_token;
 		g_session_temp.orig_host_token = g_session.orig_host_token;
+		g_session_temp.nat_type        = g_session.nat_type;
 		g_session                      = g_session_temp;
 
 		g_esp_t g_esp_temp;

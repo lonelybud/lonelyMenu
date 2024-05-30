@@ -13,6 +13,8 @@ namespace big
 		bool log_clones             = false;
 		bool log_vehicle_clones     = false;
 		bool log_ped_clones         = false;
+		bool log_CPedHealthDataNode = false; // spam kill feed detection
+
 		// bool use_default_chat                  = false;
 	} g_debug{};
 }

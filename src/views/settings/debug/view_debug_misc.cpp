@@ -70,6 +70,7 @@ namespace big
 				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
 				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
 				ImGui::Checkbox("Log Sound Event", &g_debug.log_sound_event);
+				ImGui::Checkbox("Log CPedHealthDataNode", &g_debug.log_CPedHealthDataNode);
 			}
 
 			// ImGui::Spacing();

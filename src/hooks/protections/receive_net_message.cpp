@@ -301,6 +301,39 @@ namespace big
 
 			break;
 		}
+		case rage::eNetMessage::MsgRoamingJoinBubbleAck:
+		{
+			LOG(WARNING) << "MsgRoamingJoinBubbleAck from " << plyr->m_name;
+			return true;
+		}
+		case rage::eNetMessage::MsgRoamingInitialBubble:
+		{
+			if (!_player)
+				break;
+
+			LOG(WARNING) << "MsgRoamingInitialBubble from " << plyr->m_name;
+			return true;
+		}
+		case rage::eNetMessage::MsgNonPhysicalData:
+		{
+			if (!_player)
+				break;
+
+			buffer.Read<int>(7); // size
+			int bubble = buffer.Read<int>(4);
+			int player = buffer.Read<int>(6);
+
+			if (g_player_service->get_self() && g_player_service->get_self()->id() == player)
+			{
+				LOG(WARNING) << "MsgNonPhysicalData: \"We're being replaced.\" from " << plyr->m_name;
+				return true;
+			}
+
+			if (bubble != 0)
+				LOG(WARNING) << "MsgNonPhysicalData: Wrong bubble: " << bubble << " from " << plyr->m_name;
+
+			break;
+		}
 		}
 
 		if (g_debug.log_packets && plyr && msgType != rage::eNetMessage::MsgCloneSync && msgType != rage::eNetMessage::MsgPackedCloneSyncACKs && msgType != rage::eNetMessage::MsgPackedEvents && msgType != rage::eNetMessage::MsgPackedReliables && msgType != rage::eNetMessage::MsgPackedEventReliablesMsgs && msgType != rage::eNetMessage::MsgNetArrayMgrUpdate && msgType != rage::eNetMessage::MsgNetArrayMgrSplitUpdateAck && msgType != rage::eNetMessage::MsgNetArrayMgrUpdateAck && msgType != rage::eNetMessage::MsgScriptHandshakeAck && msgType != rage::eNetMessage::MsgScriptHandshake && msgType != rage::eNetMessage::MsgScriptJoin && msgType != rage::eNetMessage::MsgScriptJoinAck && msgType != rage::eNetMessage::MsgScriptJoinHostAck && msgType != rage::eNetMessage::MsgRequestObjectIds && msgType != rage::eNetMessage::MsgInformObjectIds && msgType != rage::eNetMessage::MsgNetTimeSync)

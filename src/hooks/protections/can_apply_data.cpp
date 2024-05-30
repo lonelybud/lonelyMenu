@@ -1722,6 +1722,19 @@ namespace big
 
 				break;
 			}
+			case sync_node_id("CPedHealthDataNode"):
+			{
+				if (g_debug.log_CPedHealthDataNode)
+				{
+					const auto _node = (CPedHealthDataNode*)(node);
+					// https://github.com/YimMenu/YimMenu/blob/master/src/hooks/spoofing/write_node_data.cpp#L259-L276
+					if (_node->m_weapon_damage_hash == "WEAPON_EXPLOSION"_J && !_node->m_has_max_health && _node->m_hurt_started
+					    && _node->m_health == 0 && _node->m_weapon_damage_component == 5)
+						LOG(WARNING) << "CPedHealthDataNode from " << sender_plyr->m_name;
+				}
+
+				break;
+			}
 			}
 		}
 		return false;
