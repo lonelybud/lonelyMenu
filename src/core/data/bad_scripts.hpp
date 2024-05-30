@@ -36,7 +36,6 @@ namespace big
 	    "am_darts"_J,
 	    "am_darts_apartment"_J,
 	    "example_arcade"_J,
-
 	    "ggsm_arcade"_J,
 	    "camhedz_arcade"_J,
 	    "wizard_arcade"_J,
