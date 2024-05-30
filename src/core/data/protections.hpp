@@ -30,7 +30,6 @@ namespace big
 		bool clear_ped_tasks       = true;
 		bool receive_pickup        = false;
 		bool stop_traffic          = true;
-		bool desync_kick           = false;
 		bool cage_protection       = false;
 	} g_protections{};
 }

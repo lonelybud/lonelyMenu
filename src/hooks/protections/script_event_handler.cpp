@@ -399,9 +399,8 @@ namespace big
 		// detect pasted menus setting args[1] to something other than PLAYER_ID()
 		if (*(int*)&args[1] != player->m_player_id && player->m_player_id != -1)
 		{
-			LOG(INFO) << "Hash = " << (int)args[0];
-			LOG(INFO) << "Sender = " << args[1];
 			g_reactions.tse_sender_mismatch.process(plyr);
+			LOGF(WARNING, "tse_sender_mismatch Player= {}, Hash= {}, Sender= {}", player->get_name(), (int)args[0], args[1]);
 			return true;
 		}
 

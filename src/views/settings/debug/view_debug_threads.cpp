@@ -12,11 +12,17 @@ namespace big
 	{
 		if (ImGui::BeginTabItem("Threads"))
 		{
+			static std::string search;
 			static bool idle = true, running = true, killed = true, paused = true, state_4 = true;
 
 			if (g_pointers->m_gta.m_script_threads)
 			{
+				ImGui::SetNextItemWidth(300);
+				if (components::input_text_with_hint("###search_thread", "search", search))
+					std::transform(search.begin(), search.end(), search.begin(), ::tolower);
+				ImGui::SameLine();
 				ImGui::Text("Number of threads: %d", g_pointers->m_gta.m_script_threads->size());
+
 				ImGui::Checkbox("idle", &idle);
 				ImGui::SameLine();
 				ImGui::Checkbox("running", &running);
@@ -31,7 +37,14 @@ namespace big
 
 				ImGui::BeginChild("ScrollingRegion", {600, 450});
 				for (auto script : *g_pointers->m_gta.m_script_threads)
-					if (script)
+				{
+					if (!script)
+						continue;
+
+					std::string script_name = script->m_name;
+					std::transform(script_name.begin(), script_name.end(), script_name.begin(), ::tolower);
+
+					if (script_name.find(search) != std::string::npos)
 					{
 						if (script->m_context.m_state != rage::eThreadState::killed && script->m_context.m_stack_size == 0)
 							continue;
@@ -88,6 +101,7 @@ namespace big
 						ImGui::PopID();
 						ImGui::Spacing();
 					}
+				}
 				ImGui::EndChild();
 			}
 		}

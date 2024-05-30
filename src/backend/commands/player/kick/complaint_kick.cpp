@@ -16,11 +16,6 @@ namespace big
 			if (player && player->is_valid()
 			    && g_desync_kick_players.find(player->m_rockstar_id) == g_desync_kick_players.end())
 			{
-				if (player->m_host_token < g_session.host_token)
-					return g_notification_service.push_error("Kick",
-					    std::format("Desync kick to {} failed because host token is small", player->m_name),
-					    true);
-
 				g_notification_service.push_success("Kick", std::format("Desync kick to {}", player->m_name), true);
 				g_desync_kick_players[player->m_rockstar_id] = player;
 			}

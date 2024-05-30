@@ -30,6 +30,17 @@ namespace big
 			}
 		}
 
+		ImGui::Spacing();
+
+		ImGui::SetNextItemWidth(200.f);
+		if (ImGui::BeginCombo("##natswitcher", nat_types[g_session.nat_type].name))
+		{
+			for (const auto& nat_type : nat_types)
+				if (components::selectable(nat_type.name, g_session.nat_type == nat_type.id))
+					g_session.nat_type = nat_type.id;
+			ImGui::EndCombo();
+		}
+
 		components::sub_title("Misc");
 
 		ImGui::Checkbox("Block Joins", &g_session.block_joins);

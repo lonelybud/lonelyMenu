@@ -12,7 +12,6 @@ namespace big
 		reaction oom_kick{reaction_type::kick_player, reaction_sub_type::oom_kick, "OOM Kick (radio)", "OOM Kick (radio)", false, true, false};
 		reaction oom_kick2{reaction_type::kick_player, reaction_sub_type::oom_kick2, "OOM Kick (host migr.)", "OOM Kick (host migr.)", false, true, false};
 		reaction tse_freeze{reaction_type::kick_player, reaction_sub_type::tse_freeze, "TSE Freeze", "TSE Freeze", false, true, false};
-		reaction tse_sender_mismatch{reaction_type::kick_player, reaction_sub_type::tse_sender_mismatch, "TSE Sender Mismatch", "TSE Sender Mismatch", false, true, false};
 
 		reaction scripted_event_crash{reaction_type::crash_player, reaction_sub_type::scripted_event_crash, "Scripted Event Crash", "Scripted Event Crash", false, true, false};
 		reaction stand_user_crash{reaction_type::crash_player, reaction_sub_type::stand_user_crash, "Stand User Crash", "Stand User Crash", false, true, false};
@@ -93,6 +92,7 @@ namespace big
 		reaction break_door_event{reaction_type::none, reaction_sub_type::break_door_event, "Break Door Event", "Break Door Event", false, false, false};
 		reaction change_radio_station{reaction_type::none, reaction_sub_type::change_radio_station, "Change Radio Station", "Change Radio Station", false, false, false};
 		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", "Received Send To Interior", false, false, false};
+		reaction tse_sender_mismatch{reaction_type::none, reaction_sub_type::tse_sender_mismatch, "TSE Sender Mismatch", "TSE Sender Mismatch", false, false, false};
 
 		reaction ceo_kick{reaction_type::none, reaction_sub_type::ceo_kick, "CEO Kick", "CEO Kick", false, true, false, 2};
 		reaction ceo_money{reaction_type::none, reaction_sub_type::ceo_money, "CEO Money", "CEO Money", false, true, false, 2};

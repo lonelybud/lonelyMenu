@@ -8,7 +8,7 @@ namespace big
 		const char name[22];
 	};
 
-	const RegionType regions[] = {
+	inline const RegionType regions[] = {
 	    {0, "CIS"},
 	    {1, "Africa"},
 	    {2, "East"},
@@ -18,5 +18,13 @@ namespace big
 	    {6, "West"},
 	    {7, "Japan"},
 	    {8, "Unknown"},
+	};
+
+	inline const RegionType nat_types[] = {
+	    {0, "Zero"},
+	    {1, "open"},
+	    {2, "moderate"},
+	    {3, "strict"},
+	    {4, "unkown"},
 	};
 }

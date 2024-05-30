@@ -44,13 +44,6 @@ namespace big
 		if (!g_local_player->m_vehicle)
 			return false;
 
-		// your pv
-		if (mobile::mechanic::get_personal_vehicle() == g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle))
-		{
-			g_log.log_additional("player_is_driver 0");
-			return false;
-		}
-
 		// player was last driver
 		if (g_local_player->m_vehicle->m_last_driver && g_local_player->m_vehicle->m_last_driver == target_plyr->get_ped())
 			return true;

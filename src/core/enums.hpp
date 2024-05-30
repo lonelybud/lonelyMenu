@@ -319,7 +319,6 @@ namespace big
 		oom_kick,
 		oom_kick2,
 		tse_freeze,
-		tse_sender_mismatch,
 
 		scripted_event_crash,
 		stand_user_crash,
@@ -399,6 +398,8 @@ namespace big
 		veh_spec_ability_event,
 		break_door_event,
 		change_radio_station,
+		send_to_interior,
+		tse_sender_mismatch,
 
 		ceo_kick,
 		ceo_money,
@@ -415,7 +416,6 @@ namespace big
 		rotate_cam,
 		send_to_cutscene,
 		send_to_location,
-		send_to_interior,
 		transaction_error,
 		vehicle_kick,
 		teleport_to_warehouse,

@@ -88,6 +88,9 @@ namespace big
 				case reaction_sub_type::crash14:
 				case reaction_sub_type::crash15:
 				case reaction_sub_type::crash23:
+				case reaction_sub_type::tse_sender_mismatch:
+				case reaction_sub_type::crash11:
+				case reaction_sub_type::crash8:
 				{
 					break;
 				}

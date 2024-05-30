@@ -1,6 +1,7 @@
 #include "core/data/language_codes.hpp"
 #include "core/data/lua.hpp"
 #include "core/data/protections.hpp"
+#include "core/data/region_codes.hpp"
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
 #include "gta_util.hpp"
@@ -40,10 +41,10 @@ namespace big
 	{
 		switch (type)
 		{
-		case 0: return "Zero";
-		case 1: return "open";
-		case 2: return "moderate";
-		case 3: return "strict";
+		case 0:
+		case 1:
+		case 2:
+		case 3: return nat_types[type].name;
 		default: return "unkown";
 		}
 	}
@@ -174,6 +175,8 @@ namespace big
 						    ImGui::SameLine();
 						    if (ImGui::SmallButton("copy##copyHtoken"))
 							    ImGui::SetClipboardText(std::format("{}", last_selected_player->m_host_token).c_str());
+						    if (last_selected_player->m_host_token < g_session.host_token)
+							    ImGui::Text("Host token is smaller than you");
 					    }
 				    }
 				    ImGui::EndGroup();
@@ -463,11 +466,8 @@ namespace big
 
 			ImGui::Spacing();
 
-			if (!last_selected_player->is_host())
-			{
-				// components::player_command_button<"shkick">(last_selected_player);
-				components::player_command_button<"desync">(last_selected_player);
-			}
+			// components::player_command_button<"shkick">(last_selected_player);
+			components::player_command_button<"desync">(last_selected_player);
 
 			components::ver_space();
 
