@@ -105,7 +105,7 @@ namespace big
 						if (!plyr->is_known_player)
 						{
 							plyr->is_known_player = true;
-							g_known_players_service.add(plyr);
+							g_known_players_service.add(player_name, rockstar_id, "friend");
 						}
 					}
 					else if (is_known)

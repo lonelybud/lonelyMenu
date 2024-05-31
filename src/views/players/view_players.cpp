@@ -22,12 +22,13 @@ namespace big
 			return;
 
 		bool selected_player = plyr == g_player_service->get_selected();
+		bool is_friend       = plyr->is_friend();
 
 		// generate icons string
 		std::string player_icons;
 		if (plyr->is_host())
 			player_icons += FONT_ICON_HOST;
-		if (plyr->is_friend())
+		if (is_friend)
 			player_icons += FONT_ICON_FRIEND;
 		if (const auto ped = plyr->get_ped(); (ped != nullptr && ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING))
 			player_icons += FONT_ICON_VEHICLE;
@@ -44,18 +45,24 @@ namespace big
 		const ImRect icons_box(icons_pos, icons_pos + icons_size);
 		ImGui::PopFont();
 
+		bool special_color_applied = true;
+
 		if (plyr->is_pain_in_ass)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.f, 0.f, 1.f)); // red
-		else if (plyr->is_modder)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.2f, 1.f)); // light red
 		else if (plyr->is_spammer)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.67f, 0.f, 1.f)); // more of yellow than orange
+		else if (plyr->is_modder)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.2f, 1.f)); // light red
 		else if (plyr->is_blocked)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f)); // purple
-		else if (plyr->is_known_player)
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.25f, 1.f)); // grey
 		else if (plyr->is_other)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f)); // green dark
+		else if (is_friend)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.52f, 1.f)); // pink
+		else if (plyr->is_known_player)
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.25f, 0.25f, 0.25f, 1.f)); // grey
+		else
+			special_color_applied = false;
 
 		if (selected_player)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.29f, 0.45f, 0.69f, 1.f)); // blue
@@ -83,7 +90,7 @@ namespace big
 		if (selected_player)
 			ImGui::PopStyleColor();
 
-		if (plyr->is_pain_in_ass || plyr->is_blocked || plyr->is_spammer || plyr->is_modder || plyr->is_other || plyr->is_known_player)
+		if (special_color_applied)
 			ImGui::PopStyleColor();
 
 		// render icons on top of the player button

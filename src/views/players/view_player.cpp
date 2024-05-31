@@ -276,32 +276,50 @@ namespace big
 		{
 			components::sub_title("Flags");
 
-			ImGui::Checkbox("Esp Enemy", &last_selected_player->esp_enemy);
-
-			if (ImGui::Checkbox("Is Blocked", &last_selected_player->is_blocked))
-				toggle_block(last_selected_player->is_blocked);
-
-			if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
-				g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
-
-			if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
-				last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
-				                                        g_known_players_service.remove(last_selected_player);
-
-			ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer);
-
-			ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
-
-			if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
-				g_fiber_pool->queue_job([] {
-					last_selected_player->timeout();
-				});
-
-			if (ImGui::BeginListBox("##message", ImVec2(350, 100)))
+			ImGui::BeginGroup();
 			{
-				ImGui::TextWrapped(last_selected_player->spam_message.c_str());
-				ImGui::EndListBox();
+				ImGui::Checkbox("Esp Enemy", &last_selected_player->esp_enemy);
+
+				if (ImGui::Checkbox("Is Blocked", &last_selected_player->is_blocked))
+					toggle_block(last_selected_player->is_blocked);
+
+				if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
+					g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
+
+				if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
+					last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
+					                                        g_known_players_service.remove(last_selected_player);
+
+				ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer);
+
+				ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
+
+				if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
+					g_fiber_pool->queue_job([] {
+						last_selected_player->timeout();
+					});
 			}
+			ImGui::EndGroup();
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				if (ImGui::BeginListBox("##message", ImVec2(300, 100)))
+				{
+					ImGui::TextWrapped(last_selected_player->spam_message.c_str());
+					ImGui::EndListBox();
+				}
+
+				if (g_known_players_service.is_known(rockstar_id))
+				{
+					ImGui::Text("Known Player Message - ");
+					if (ImGui::BeginListBox("##known_message", ImVec2(300, 100)))
+					{
+						ImGui::TextWrapped(g_known_players_service.known_players_list[rockstar_id].m.c_str());
+						ImGui::EndListBox();
+					}
+				}
+			}
+			ImGui::EndGroup();
 		}
 		ImGui::EndGroup();
 	}
@@ -496,6 +514,7 @@ namespace big
 			components::sub_title("Infractions");
 			components::button("Clear infractions", [] {
 				last_selected_player->infractions.clear();
+				last_selected_player->is_pain_in_ass = false;
 			});
 			for (auto infraction : last_selected_player->infractions)
 				ImGui::BulletText(std::format("{} - {}", infraction.first->m_notify_message, infraction.second).c_str());

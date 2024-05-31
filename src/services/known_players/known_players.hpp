@@ -5,11 +5,11 @@ namespace big
 {
 	struct known_player
 	{
-		std::string name;
-		rock_id rockstar_id;
+		std::string n; // name
+		std::string m; // message
 	};
 
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(known_player, name, rockstar_id);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(known_player, n, m);
 
 	class known_players_service
 	{
@@ -20,7 +20,7 @@ namespace big
 		std::filesystem::path get_file_path();
 		void load_list();
 		void save_list();
-		inline void add(std::string name, rock_id rockstar_id);
+		inline void add(std::string name, rock_id rockstar_id, std::string message);
 		void add(player_ptr player);
 		inline void remove(rock_id rockstar_id);
 		void remove(player_ptr player);

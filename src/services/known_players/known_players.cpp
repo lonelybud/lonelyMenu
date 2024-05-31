@@ -48,15 +48,15 @@ namespace big
 		}
 	}
 
-	inline void known_players_service::add(std::string name, rock_id rockstar_id)
+	inline void known_players_service::add(std::string name, rock_id rockstar_id, std::string message)
 	{
-		known_players_list[rockstar_id] = {name, rockstar_id};
+		known_players_list[rockstar_id] = {name, message};
 		++save_count;
 	}
 
 	void known_players_service::add(player_ptr player)
 	{
-		add(player->m_name, player->m_rockstar_id);
+		add(player->m_name, player->m_rockstar_id, "");
 	}
 
 	inline void known_players_service::remove(rock_id rockstar_id)

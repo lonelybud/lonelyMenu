@@ -10,13 +10,15 @@ namespace big
 {
 	static char player_name[64];
 	static rock_id rockstar_id;
+	static char message[msg_size];
 	static bool exist_already;
 
 	static void set_selected(rock_id rid, known_player p, bool exist)
 	{
-		strcpy(player_name, p.name.c_str());
+		strcpy(player_name, p.n.c_str());
 		rockstar_id   = rid;
 		exist_already = exist;
+		strcpy_safe(message, p.m.c_str(), msg_size);
 	}
 
 	static inline std::unordered_map<rock_id, known_player> filter_players(const std::unordered_map<rock_id, known_player>& inputMap, const std::string& search)
@@ -25,7 +27,7 @@ namespace big
 
 		for (auto pair : inputMap)
 		{
-			auto t = pair.second.name;
+			auto t = pair.second.n;
 			std::transform(t.begin(), t.end(), t.begin(), ::tolower);
 
 			if (t.find(search) != std::string::npos)
@@ -44,11 +46,18 @@ namespace big
 		components::input_text("Player Name", player_name, sizeof(player_name));
 		ImGui::InputScalar("Rockstar Id", ImGuiDataType_U64, &rockstar_id);
 		ImGui::PopItemWidth();
+		ImGui::SetNextItemWidth(500);
+		components::input_text("Message##1", message, sizeof(message));
 
 		ImGui::Spacing();
 
 		if (exist_already)
 		{
+			if (components::button("Save"))
+			{
+				g_known_players_service.add(player_name, rockstar_id, message);
+			}
+			ImGui::SameLine();
 			if (components::button("Remove"))
 			{
 				g_known_players_service.remove(rockstar_id);
@@ -60,7 +69,7 @@ namespace big
 			std::string name = player_name;
 			if (trimString(name).length() && rockstar_id)
 			{
-				g_known_players_service.add(player_name, rockstar_id);
+				g_known_players_service.add(player_name, rockstar_id, message);
 				strcpy(player_name, "");
 				rockstar_id = 0;
 				searched_players.clear();
@@ -93,7 +102,7 @@ namespace big
 		if (ImGui::BeginListBox("##known_players", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 		{
 			for (auto& pair : (search_player_name.length() > 0 ? searched_players : g_known_players_service.known_players_list))
-				if (ImGui::Selectable(pair.second.name.c_str(), rockstar_id && rockstar_id == pair.first))
+				if (ImGui::Selectable(pair.second.n.c_str(), rockstar_id && rockstar_id == pair.first))
 					set_selected(pair.first, pair.second, true);
 
 			ImGui::EndListBox();
