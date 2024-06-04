@@ -3,6 +3,7 @@
 #include "function_types.hpp"
 #include "gta/fwddec.hpp"
 #include "gta_pointers.hpp"
+#include "logger/logger.hpp"
 #include "memory/batch.hpp"
 #include "memory/byte_patch.hpp"
 #include "memory/module.hpp"

@@ -1,5 +1,6 @@
 #pragma once
 #include "file_manager.hpp"
+#include "logger/logger.hpp"
 #include "util/strings.hpp"
 
 static constexpr int chat_buffer_size         = 8192;

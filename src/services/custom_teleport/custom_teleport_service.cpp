@@ -1,5 +1,5 @@
 #include "custom_teleport_service.hpp"
-
+#include "logger/logger.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big

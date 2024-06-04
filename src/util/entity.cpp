@@ -4,6 +4,7 @@
 #include "natives.hpp"
 #include "pools.hpp"
 #include "services/players/player_service.hpp"
+#include "core/vars.hpp"
 
 namespace big::entity
 {
@@ -130,7 +131,7 @@ namespace big::entity
 		if (include_prop)
 			include_pool(pools::get_all_props);
 
-		if (include_players)
+		if (include_players && !include_ped)
 		{
 			for (auto player : g_player_service->players() | std::ranges::views::values)
 			{

@@ -1,6 +1,7 @@
 #include "backend/looped_command.hpp"
 #include "core/data/vehicle.hpp"
 #include "natives.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

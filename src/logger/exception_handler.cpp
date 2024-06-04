@@ -1,7 +1,7 @@
 #include "exception_handler.hpp"
 
 #include "stack_trace.hpp"
-
+#include "logger/logger.hpp"
 #include <hde64.h>
 
 namespace big

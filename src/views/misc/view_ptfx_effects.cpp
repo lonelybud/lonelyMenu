@@ -4,6 +4,7 @@
 #include "services/notifications/notification_service.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
+#include "core/vars.hpp"
 
 using json = nlohmann::json;
 

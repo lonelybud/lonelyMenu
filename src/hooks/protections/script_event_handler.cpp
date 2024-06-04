@@ -53,7 +53,8 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::ClearWantedLevel:
-			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level && !player_is_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.clear_wanted_level
+			    && !is_in_vehicle(plyr->get_ped(), g_local_player->m_vehicle))
 			{
 				g_reactions.clear_wanted_level.process(plyr);
 				return true;
@@ -176,11 +177,11 @@ namespace big
 			if (g_protections.script_events.sound_spam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandSound)
 			{
 				if (g_debug.log_sound_event)
-					LOG(WARNING) << "Sound Event (tse) from: " << plyr->m_name;
+					LOG(WARNING) << "Sound Event (TSECommand) from: " << plyr->m_name;
 
 				if (plyr->m_play_sound_rate_limit_tse.process())
 				{
-					g_reactions.sound_spam_tse.process(plyr);
+					g_reactions.sound_spam_tse_rate_limit.process(plyr);
 					return true;
 				}
 			}
@@ -200,6 +201,8 @@ namespace big
 				g_reactions.send_to_cutscene.process(plyr);
 				return true;
 			}
+			else
+				g_notification_service.push_warning("SendToCutscene", std::format("Event ack to {}", plyr->m_name), true);
 			break;
 		case eRemoteEvent::SendToLocation:
 		{
@@ -242,13 +245,13 @@ namespace big
 		case eRemoteEvent::SoundSpam:
 		{
 			if (g_debug.log_sound_event)
-				LOG(WARNING) << "Sound Event (spam) from: " << plyr->m_name;
+				LOG(WARNING) << "Sound Event (invite) from: " << plyr->m_name;
 
 			if (g_protections.script_events.sound_spam)
 			{
 				if (plyr->m_invites_rate_limit.process())
 				{
-					g_reactions.sound_spam_se.process(plyr);
+					g_reactions.sound_spam_invite_rate_limit.process(plyr);
 					return true;
 				}
 			}
@@ -262,18 +265,30 @@ namespace big
 			}
 			break;
 		case eRemoteEvent::Teleport:
-			if (!plyr->is_friend() && g_protections.script_events.force_teleport && !is_player_our_boss(player->m_player_id) && !player_is_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.force_teleport)
 			{
-				g_reactions.force_teleport.process(plyr);
-				return true;
+				if (is_player_same_team(player->m_player_id))
+					g_log.log_additional(std::format("Force Teleport 1: {}", plyr->m_name));
+				else if (!player_is_driver(plyr))
+				{
+					g_reactions.force_teleport.process(plyr);
+					return true;
+				}
+				else
+					g_log.log_additional(std::format("Force Teleport 2: {}", plyr->m_name));
 			}
 			break;
 		case eRemoteEvent::TransactionError: g_reactions.transaction_error.process(plyr); return true;
 		case eRemoteEvent::VehicleKick:
-			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick && !player_is_driver(plyr))
+			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick)
 			{
-				g_reactions.vehicle_kick.process(plyr);
-				return true;
+				auto val = player_is_driver(plyr, true);
+				if (val == 1 || val == 0)
+				{
+					g_reactions.vehicle_kick.is_modder = val == 1;
+					g_reactions.vehicle_kick.process(plyr);
+					return true;
+				}
 			}
 			break;
 		case eRemoteEvent::NetworkBail: g_reactions.network_bail.process(plyr); return true;

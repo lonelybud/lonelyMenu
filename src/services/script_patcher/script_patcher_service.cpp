@@ -1,5 +1,5 @@
 #include "script_patcher_service.hpp"
-
+#include "logger/logger.hpp"
 #include "script_data.hpp"
 #include "script_patch.hpp"
 

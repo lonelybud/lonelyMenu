@@ -1,5 +1,5 @@
 #include "notification_service.hpp"
-
+#include "logger/logger.hpp"
 #include "core/settings/menu.hpp"
 #include "widgets/imgui_hotkey.hpp"
 

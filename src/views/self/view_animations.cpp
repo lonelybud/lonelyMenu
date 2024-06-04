@@ -3,6 +3,7 @@
 #include "services/ped_animations/ped_animations_service.hpp"
 #include "util/animations.hpp"
 #include "views/view.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

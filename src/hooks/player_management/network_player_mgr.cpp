@@ -11,7 +11,7 @@
 #include "core/settings/esp.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
-
+#include "logger/logger.hpp"
 #include <network/CNetworkPlayerMgr.hpp>
 
 namespace big

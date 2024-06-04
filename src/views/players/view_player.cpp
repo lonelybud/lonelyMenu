@@ -1,5 +1,5 @@
 #include "core/data/language_codes.hpp"
-#include "core/data/lua.hpp"
+#include "core/data/lua_scripts.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/region_codes.hpp"
 #include "core/data/self.hpp"
@@ -188,7 +188,7 @@ namespace big
 
 					    ImGui::Spacing();
 
-					    ImGui::Text("Is in interior: %d", get_interior_from_player(id));
+					    ImGui::Text("Interior: %d", get_interior_from_player(id));
 					    // ImGui::Text("In mission: %d", globalplayer_bd.MissionType != eMissionType::NONE);
 					    ImGui::Text("Off radar: %d", globalplayer_bd.OffRadarActive);
 					    ImGui::Text("Is invisible: %d", globalplayer_bd.IsInvisible);
@@ -517,7 +517,7 @@ namespace big
 				last_selected_player->is_pain_in_ass = false;
 			});
 			for (auto infraction : last_selected_player->infractions)
-				ImGui::BulletText(std::format("{} - {}", infraction.first->m_notify_message, infraction.second).c_str());
+				ImGui::BulletText(std::format("{} - {}", infraction.first->m_event_name, infraction.second).c_str());
 			ImGui::EndGroup();
 		}
 	}

@@ -1,6 +1,7 @@
 #include "core/data/self.hpp"
 #include "gta/joaat.hpp"
 #include "hooking/hooking.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

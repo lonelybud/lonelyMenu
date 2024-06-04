@@ -3,6 +3,7 @@
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"
 #include "natives.hpp"
+#include "core/vars.hpp"
 
 #include <script/globals/GlobalPlayerBD.hpp>
 

@@ -20,15 +20,14 @@ namespace big
 		return str;
 	}
 
-	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, const char* notify_message, bool notify_once, bool is_modder, bool other, int n_events_at_time) :
+	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, bool notify_once, bool is_modder, bool other, reaction_karma karma_type) :
 	    type(type),
 	    sub_type(sub_type),
 	    m_event_name(event_name),
-	    m_notify_message(notify_message),
 	    notify_once(notify_once),
 	    is_modder(is_modder),
 	    other(other),
-	    n_events_at_time(n_events_at_time)
+	    m_karma_type(karma_type)
 	{
 	}
 
@@ -36,8 +35,6 @@ namespace big
 	{
 		if (player && player->is_valid())
 		{
-			bool kick_player = this->type == reaction_type::kick_player;
-
 			if (!player->infractions.contains(this))
 				player->infractions[this] = 1;
 			else
@@ -64,73 +61,29 @@ namespace big
 				//
 			}
 
-			// auto-kick crashing player
-			if (this->type == reaction_type::crash_player)
-				switch (this->sub_type)
-				{
-				case reaction_sub_type::crash1:
-				case reaction_sub_type::crash3:
-				case reaction_sub_type::crash19:
-				case reaction_sub_type::crash21:
-				case reaction_sub_type::crash22:
-				case reaction_sub_type::scripted_event_crash:
-				case reaction_sub_type::stand_user_crash:
-				case reaction_sub_type::crash12:
-				case reaction_sub_type::crash13:
-				case reaction_sub_type::crash39:
-				case reaction_sub_type::crash40:
-				case reaction_sub_type::player_ped_removal:
-				case reaction_sub_type::invalid_weapon_type:
-				{
-					kick_player = true;
-					break;
-				}
-				case reaction_sub_type::crash14:
-				case reaction_sub_type::crash15:
-				case reaction_sub_type::crash23:
-				case reaction_sub_type::tse_sender_mismatch:
-				case reaction_sub_type::crash11:
-				case reaction_sub_type::crash8:
-				{
-					break;
-				}
-				default:
-				{
-					if (player->infractions[this] > 10)
-						kick_player = true;
-					break;
-				}
-				}
+			bool kick_player = this->m_karma_type == reaction_karma::kick_player;
+			if (this->m_karma_type == reaction_karma::infraction_based && player->infractions[this] > 10)
+				kick_player = true;
 
-			auto str = std::format("{} from '{}'", m_notify_message, player->m_name);
-
-			if (target)
-				str += std::format("to {}", target->m_name);
-
-			// dont log same event more than n time from the same player. This will keep console logs short and concise.
+			// dont log same event in a given time period from the same player. This will keep console logs short and concise.
 			bool should_log = true;
-			if (player->last_event_id == sub_type)
-			{
-				if (player->last_event_count >= this->n_events_at_time)
-					should_log = false;
-				else
-					++player->last_event_count;
-			}
+			if (player->last_event_id == sub_type && !player->last_event_deb.has_debounced())
+				should_log = false;
 			else
 			{
-				player->last_event_id    = sub_type;
-				player->last_event_count = 1;
+				player->last_event_id = sub_type;
+				player->last_event_deb.reset(1000);
 			}
 			//
 
-			const char* title = nullptr;
-			switch (this->type)
-			{
-			case reaction_type::modder_detection: title = "Modder Detection"; break;
-			case reaction_type::kick_player: title = "Received Kick"; break;
-			case reaction_type::crash_player: title = "Received Crash"; break;
-			default: title = "Event"; break;
-			}
+			auto str = std::format("{} from '{}'", m_event_name, player->m_name);
+			if (target)
+				str += std::format("to {}", target->m_name);
+			const char* title = "Event";
+			if (this->type == reaction_type::kick_player)
+				title = "Received Kick";
+			else if (this->type == reaction_type::crash_player)
+				title = "Received Crash";
 
 			if (log && should_log)
 				LOG(WARNING) << title << ": " << str;
@@ -151,18 +104,9 @@ namespace big
 			else if (other)
 				player->is_other = true;
 
-			// open player info of crazy dude
-			// if (infraction == Infraction::TRIED_CRASH_PLAYER || infraction == Infraction::TRIED_KICK_PLAYER)
-			// {
-			// 	g_gui_service->set_selected(tabs::PLAYER);
-			// 	g_player_service->set_selected(player);
-			// }
-
 			if (!player->is_friend() && kick_player)
 			{
 				player->is_pain_in_ass = true;
-
-				// player->timeout();
 
 				// block join
 				if (!player->is_blocked)
@@ -177,6 +121,6 @@ namespace big
 			}
 		}
 		else
-			g_notification_service.push_warning("Reaction", std::format("{} from '?'", m_notify_message), true);
+			g_notification_service.push_warning("Reaction", std::format("{} from '?'", m_event_name), true);
 	}
 }

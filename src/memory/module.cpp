@@ -1,5 +1,5 @@
 #include "module.hpp"
-
+#include "logger/logger.hpp"
 #include "../common.hpp"
 
 namespace memory

@@ -20,7 +20,7 @@ namespace big
 			g_fiber_pool->queue_job([] {
 				for (auto& pair : g_vehicle.spawned_vehicles)
 				{
-					auto veh = pair.second.is_networked ? NETWORK::NET_TO_VEH(pair.first) : pair.first;
+					auto veh = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(pair.second.blip);
 
 					if (ENTITY::DOES_ENTITY_EXIST(veh) && !ENTITY::IS_ENTITY_DEAD(veh, 0))
 					{
@@ -41,12 +41,10 @@ namespace big
 
 			auto temp = g_vehicle.spawned_vehicles;
 			for (auto it = g_vehicle.spawned_vehicles.begin(); it != g_vehicle.spawned_vehicles.end(); ++it)
-			{
-				auto ent = it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first;
-				if (entity::delete_entity(ent))
+				if (auto ent = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip); entity::delete_entity(ent))
 					if (auto itr = temp.find(it->first); itr != temp.end())
 						temp.erase(itr);
-			}
+
 			g_vehicle.spawned_vehicles = temp;
 
 			deleting = false;
@@ -68,27 +66,27 @@ namespace big
 				ImGui::Text("Passengers: %d, %s", it->second.passenger_count, it->second.is_locked ? "LOCKED" : "FREE");
 
 				components::button("TP", [it] {
-					auto veh         = it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first;
+					auto veh         = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip);
 					Vector3 location = ENTITY::GET_ENTITY_COORDS(veh, 0);
 					teleport::to_coords(location);
 				});
 				ImGui::SameLine();
 				components::button("Waypoint", [it] {
-					auto veh         = it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first;
+					auto veh         = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip);
 					Vector3 location = ENTITY::GET_ENTITY_COORDS(veh, 0);
 					HUD::SET_NEW_WAYPOINT(location.x, location.y);
 				});
-				ImGui::SameLine();
-				components::button("Blip", [it] {
-					auto veh = it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first;
-					if (!it->second.blip)
-						vehicle::add_blip_to_spawned_veh(veh, it->second);
-					else
-					{
-						HUD::REMOVE_BLIP(&it->second.blip);
-						it->second.blip = 0;
-					}
-				});
+				// ImGui::SameLine();
+				// components::button("Blip", [it] {
+				// 	auto veh = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip);
+				// 	if (!it->second.blip)
+				// 		vehicle::add_blip_to_spawned_veh(veh, it->second);
+				// 	else
+				// 	{
+				// 		HUD::REMOVE_BLIP(&it->second.blip);
+				// 		it->second.blip = 0;
+				// 	}
+				// });
 				ImGui::SameLine();
 				components::button("Delete", [it] {
 					if (deleting)
@@ -96,7 +94,7 @@ namespace big
 
 					deleting = true;
 
-					auto ent = static_cast<Entity>(it->second.is_networked ? NETWORK::NET_TO_VEH(it->first) : it->first);
+					auto ent = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip);
 					if (entity::delete_entity(ent))
 						g_vehicle.spawned_vehicles.erase(it);
 

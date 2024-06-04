@@ -1450,12 +1450,9 @@ namespace big
 						if (target->id() != sender_plyr->spectating_player)
 						{
 							if (target->id() == self::id)
-							{
-								if (get_interior_from_player(sender_plyr->id()))
-									g_reactions.spectate_int.process(sender_plyr);
-								else
-									g_reactions.spectate.process(sender_plyr);
-							}
+								g_reactions.spectate.process(sender_plyr);
+							else
+								g_reactions.spectate_others.process(sender_plyr, target);
 
 							sender_plyr->spectating_player = target->id();
 						}

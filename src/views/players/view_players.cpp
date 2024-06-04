@@ -7,6 +7,7 @@
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
 #include "views/view.hpp"
+#include "core/vars.hpp"
 
 #define IMGUI_DEFINE_PLACEMENT_NEW
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -75,13 +76,6 @@ namespace big
 			g_player_service->set_selected(plyr);
 			g_gui_service->set_selected(tabs::PLAYER);
 			g_gui_info.update_gui_info();
-		}
-		if (ImGui::IsItemHovered() && !plyr->infractions.empty())
-		{
-			ImGui::BeginTooltip();
-			for (auto infraction : plyr->infractions)
-				ImGui::BulletText(infraction.first->m_notify_message);
-			ImGui::EndTooltip();
 		}
 
 		ImGui::PopID();

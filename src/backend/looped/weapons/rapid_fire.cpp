@@ -7,6 +7,7 @@
 #include "script.hpp"
 #include "util/debouncer.hpp"
 #include "util/math.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

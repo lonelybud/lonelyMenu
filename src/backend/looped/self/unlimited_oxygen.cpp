@@ -1,6 +1,7 @@
 #include "backend/looped_command.hpp"
 #include "core/data/self.hpp"
 #include "natives.hpp"
+#include "core/vars.hpp"
 
 #include <ped/CPedIntelligence.hpp>
 

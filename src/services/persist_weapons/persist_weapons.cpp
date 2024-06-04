@@ -1,5 +1,7 @@
 #include "persist_weapons.hpp"
 
+#include "core/vars.hpp"
+#include "file_manager.hpp"
 #include "gta/weapons.hpp"
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"

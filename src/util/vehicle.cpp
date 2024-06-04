@@ -1,5 +1,6 @@
 #include "vehicle.hpp"
 
+#include "core/vars.hpp"
 #include "entity.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 
@@ -38,12 +39,10 @@ namespace big::vehicle
 				NETWORK::SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, TRUE);
 
 			VEHICLE::SET_VEHICLE_IS_STOLEN(veh, FALSE);
-
-			g_vehicle.spawned_vehicles[network_id]              = {vehicle::get_vehicle_model_name(veh)};
-			g_vehicle.spawned_vehicles[network_id].is_networked = true;
 		}
-		else
-			g_vehicle.spawned_vehicles[veh] = {vehicle::get_vehicle_model_name(veh)};
+
+		g_vehicle.spawned_vehicles[veh] = {vehicle::get_vehicle_model_name(veh)};
+		add_blip_to_spawned_veh(veh, g_vehicle.spawned_vehicles[veh]);
 
 		return veh;
 	}

@@ -2,7 +2,7 @@
 #include "core/data/session.hpp"
 #include "hooking/hooking.hpp"
 #include "services/players/player_service.hpp"
-
+#include "logger/logger.hpp"
 #include <network/CNetGamePlayerDataMsg.hpp>
 #include <network/RemoteGamerInfoMsg.hpp>
 

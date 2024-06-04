@@ -1,6 +1,7 @@
 #include "backend/looped/looped.hpp"
 #include "backend/looped_command.hpp"
 #include "core/data/weapons.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

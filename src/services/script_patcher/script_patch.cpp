@@ -1,5 +1,5 @@
 #include "script_patch.hpp"
-
+#include "logger/logger.hpp"
 #include "script_data.hpp"
 
 namespace big

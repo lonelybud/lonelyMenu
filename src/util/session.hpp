@@ -7,6 +7,7 @@
 #include "script.hpp"
 #include "script_function.hpp"
 #include "util/misc.hpp"
+#include "core/vars.hpp"
 
 #include <network/CCommunications.hpp>
 #include <script/globals/GPBD_FM_3.hpp>

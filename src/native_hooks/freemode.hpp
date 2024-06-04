@@ -1,5 +1,6 @@
 #pragma once
 #include "core/data/session.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

@@ -53,13 +53,10 @@
 #include <format>
 #include <nlohmann/json.hpp>
 
-#include "logger/logger.hpp"
-
-#include "ped/CPed.hpp"
+#include <ped/CPed.hpp>
+#include <script/types.hpp>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
-
-#include <script/types.hpp>
 
 // clang-format on
 
@@ -71,17 +68,6 @@ namespace big
 	inline HANDLE g_main_thread{};
 	inline DWORD g_main_thread_id{};
 	inline std::atomic_bool g_running{false};
-
-	inline CPed* g_local_player;
-	inline bool is_maintransition_script_active;
-}
-
-namespace self
-{
-	inline Ped ped;
-	inline Player id;
-	inline Vector3 pos;
-	inline Vehicle veh;
 }
 
 template<size_t N>

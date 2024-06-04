@@ -1,4 +1,5 @@
 #pragma once
+#include "logger/logger.hpp"
 #include "pattern.hpp"
 #include "range.hpp"
 #include "signature.hpp"

@@ -2,6 +2,7 @@
 #include "core/data/misc.hpp"
 #include "natives.hpp"
 #include "services/notifications/notification_service.hpp"
+#include "core/vars.hpp"
 
 namespace big::outfit
 {

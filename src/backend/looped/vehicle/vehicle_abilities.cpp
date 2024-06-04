@@ -4,6 +4,7 @@
 #include "gta/enums.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/misc.hpp"
+#include "core/vars.hpp"
 
 #include <vehicle/CVehicleModelInfo.hpp>
 

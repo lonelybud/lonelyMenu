@@ -3,6 +3,7 @@
 #include "core/enums.hpp"
 #include "natives.hpp"
 #include "util/blip.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

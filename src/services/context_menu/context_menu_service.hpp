@@ -1,12 +1,15 @@
 #pragma once
 #include "core/enums.hpp"
+#include "core/vars.hpp"
 #include "gta/enums.hpp"
 #include "imgui.h"
+#include "logger/logger.hpp"
 #include "natives.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
 #include "util/delete_entity.hpp"
 #include "util/ped.hpp"
+#include "util/player.hpp"
 #include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 
@@ -83,7 +86,7 @@ namespace big
 		            }},
 		        {"IS PV",
 		            [this] {
-			            LOG(VERBOSE) << "Is Player Vehicle: " << vehicle::is_player_veh(m_handle);
+			            LOG(VERBOSE) << "Is Player Vehicle: " << is_player_veh(m_handle);
 		            }},
 		    }};
 

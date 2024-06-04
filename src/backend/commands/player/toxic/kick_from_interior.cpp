@@ -1,5 +1,6 @@
 #include "backend/player_command.hpp"
 #include "core/scr_globals.hpp"
+#include "core/vars.hpp"
 #include "pointers.hpp"
 #include "services/notifications/notification_service.hpp"
 

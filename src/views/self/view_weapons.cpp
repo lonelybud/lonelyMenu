@@ -4,6 +4,7 @@
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/persist_weapons/persist_weapons.hpp"
 #include "views/view.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {
@@ -44,7 +45,7 @@ namespace big
 			if (ImGui::Checkbox("Aimbot Head", &head))
 				g_weapons.aimbot.bone = head ? ePedBoneType::HEAD : ePedBoneType::ABDOMEN;
 		}
-
+		components::command_checkbox<"norecoilspread">();
 		ImGui::Spacing();
 
 		components::button("Give Parachute", [] {

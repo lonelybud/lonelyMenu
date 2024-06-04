@@ -8,7 +8,7 @@
 #include "script_local.hpp"
 #include "services/players/player_service.hpp"
 #include "util/misc.hpp"
-
+#include "core/vars.hpp"
 #include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big

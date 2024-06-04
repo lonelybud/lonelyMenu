@@ -2,6 +2,7 @@
 #include "bad_players.hpp"
 
 #include "core/scr_globals.hpp"
+#include "logger/logger.hpp"
 
 #include <script/globals/GPBD_FM_3.hpp>
 

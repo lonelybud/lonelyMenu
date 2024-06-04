@@ -1,5 +1,5 @@
 #include "backend/looped_command.hpp"
-#include "core/data/lua.hpp"
+#include "core/data/lua_scripts.hpp"
 #include "core/data/misc.hpp"
 #include "natives.hpp"
 

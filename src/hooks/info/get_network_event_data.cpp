@@ -44,12 +44,17 @@ namespace big
 								if (g_local_player->m_vehicle)
 								{
 									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-									if (!vehicle::is_player_veh(veh) && entity::take_control_of(g_local_player->m_vehicle))
+									if (!is_player_veh(veh) && entity::take_control_of(g_local_player->m_vehicle))
 									{
 										g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
-										str += " (Veh Locked)";
+										g_notification_service.push_success("Vehicle Lock", "Success after you died", true);
 									}
+									else
+										g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
 								}
+
+								if (is_player_in_submarine(player->id()))
+									str += " (submarine)";
 
 								LOG(WARNING) << str;
 							});
@@ -61,10 +66,7 @@ namespace big
 						victim_player->last_killed_by = player;
 
 						if (is_using_orbital_cannon(player))
-						{
-							if (get_interior_from_player(player->id()) == 0)
-								g_reactions.Killed_with_orbital.process(player, victim_player);
-						}
+							g_reactions.killed_with_orbital.process(player, victim_player);
 						else if (is_invincible(player))
 							g_reactions.killed_with_god.process(player, victim_player);
 						else if (is_invincible_veh(player))

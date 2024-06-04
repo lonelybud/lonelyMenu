@@ -1,4 +1,5 @@
 #pragma once
+#include "core/vars.hpp"
 #include "gta/joaat.hpp"
 #include "natives.hpp"
 #include "services/players/player_service.hpp"

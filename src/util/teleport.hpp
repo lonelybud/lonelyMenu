@@ -2,6 +2,7 @@
 #include "blip.hpp"
 #include "entity.hpp"
 #include "gta/enums.hpp"
+#include "core/vars.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big::teleport

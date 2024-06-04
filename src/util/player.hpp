@@ -1,5 +1,7 @@
 #pragma once
 #include "core/scr_globals.hpp"
+#include "core/vars.hpp"
+#include "natives.hpp"
 #include "services/players/player_service.hpp"
 #include "util/mobile.hpp"
 #include "util/outfit.hpp"
@@ -10,6 +12,10 @@
 
 namespace big
 {
+	inline bool is_player_veh(Vehicle veh)
+	{
+		return DECORATOR::DECOR_GET_INT(veh, "MPBitset") || DECORATOR::DECOR_GET_INT(veh, "Player_Vehicle");
+	}
 	inline player_ptr get_player_from_ped(Ped ped)
 	{
 		for (auto& p : g_player_service->players())
@@ -39,42 +45,68 @@ namespace big
 		}
 	}
 
-	inline bool player_is_driver(player_ptr target_plyr)
+	// 2 allow, 1 (modder, not allow), 0 (not allow)
+	inline int player_is_driver(player_ptr target_plyr, bool unrelated_checks = false)
 	{
-		if (!g_local_player->m_vehicle)
-			return false;
-
-		// player was last driver
-		if (g_local_player->m_vehicle->m_last_driver && g_local_player->m_vehicle->m_last_driver == target_plyr->get_ped())
-			return true;
-
-		// you are driver
-		if (g_local_player->m_vehicle->m_driver && g_local_player->m_vehicle->m_driver == g_local_player)
+		if (!self::veh)
 		{
-			g_log.log_additional("player_is_driver 1");
-			return false;
-		}
-
-		if (auto driver =
-		        g_local_player->m_vehicle->m_driver ? g_local_player->m_vehicle->m_driver : g_local_player->m_vehicle->m_last_driver)
-		{
-			// driver is a player present in session
-			if (driver->m_player_info && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
+			if (unrelated_checks)
 			{
-				g_log.log_additional(std::format("player_is_driver 2, {}", driver->m_player_info->m_net_player_data.m_name));
-				return driver == target_plyr->get_ped();
+				g_log.log_additional(
+				    std::format("player_is_driver: I am not in vehicle. Granted control to {}", target_plyr->m_name));
+				return 2;
 			}
 
-			// driver exists but is not a valid player
-			return true;
+			return 0;
 		}
 
-		g_log.log_additional("player_is_driver 3");
-		return false;
+		if (unrelated_checks)
+			if (Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle(); personal_vehicle == self::veh)
+			{
+				g_log.log_additional(std::format("player_is_driver: Its my pv but {} wants control", target_plyr->m_name));
+				return 1; // flaky
+			}
+
+		if (g_local_player->m_vehicle->m_driver)
+		{
+			if (g_local_player->m_vehicle->m_driver == g_local_player)
+			{
+				if (unrelated_checks && !is_player_veh(self::veh))
+				{
+					g_log.log_additional(
+					    std::format("player_is_driver: I am driver of clone but {} wants control", target_plyr->m_name));
+					return 1;
+				}
+
+				g_log.log_additional(std::format("player_is_driver: I am driver of pv but {} wants control", target_plyr->m_name));
+				return 0;
+			}
+
+			if (g_local_player->m_vehicle->m_driver != target_plyr->get_ped())
+			{
+				if (unrelated_checks && !is_player_veh(self::veh))
+				{
+					g_log.log_additional(
+					    std::format("player_is_driver: Someone is driver of clone but {} wants control", target_plyr->m_name));
+					return 1;
+				}
+
+				g_log.log_additional(
+				    std::format("player_is_driver: Someone is driver of pv but {} wants control", target_plyr->m_name));
+				return 0;
+			}
+
+			return 2;
+		}
+
+		return 0;
 	}
 
 	inline bool is_in_vehicle(CPed* ped, CVehicle* vehicle)
 	{
+		if (!vehicle)
+			return false;
+
 		if (ped == vehicle->m_driver)
 			return true;
 
@@ -184,6 +216,13 @@ namespace big
 
 	inline Interior get_interior_from_player(Player player)
 	{
-		return scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player].CurrentInteriorIndex;
+		auto entry = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player];
+		return entry.CurrentInteriorIndex;
+	}
+
+	inline Interior is_player_in_submarine(Player player)
+	{
+		auto entry = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player];
+		return entry.PlayerBlip.PlayerVehicleBlipType == eBlipType::SUBMARINE || entry.SimpleInteriorData.Index == eSimpleInteriorIndex::SIMPLE_INTERIOR_SUBMARINE;
 	}
 }

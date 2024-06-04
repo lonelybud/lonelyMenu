@@ -1,5 +1,6 @@
 #pragma once
 #include "known_players.hpp"
+#include "logger/logger.hpp"
 
 using json = nlohmann::json;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "fiber_pool.hpp"
 #include "gta/joaat.hpp"
+#include "logger/logger.hpp"
 
 namespace big
 {

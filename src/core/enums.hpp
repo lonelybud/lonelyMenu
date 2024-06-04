@@ -305,21 +305,18 @@ namespace big
 	{
 		none,
 		kick_player,
-		crash_player,
-		modder_detection
+		crash_player
 	};
 
 	enum class reaction_sub_type
 	{
 		none,
-
 		end_session_kick,
 		network_bail,
 		null_function_kick,
 		oom_kick,
 		oom_kick2,
 		tse_freeze,
-
 		scripted_event_crash,
 		stand_user_crash,
 		crash1,
@@ -362,45 +359,37 @@ namespace big
 		crash38,
 		crash39,
 		crash40,
-		crash41,
 		crash42,
 		crash43,
 		player_ped_removal,
 		invalid_weapon_type,
 		elegant_crash,
-
 		kick_vote,
 		report,
 		bounty,
 		rockstar_admin,
 		desync_protection,
-
 		anti_cheat_modder_detection,
 		spoofed_host_token,
 		killed_with_god,
 		killed_with_invis,
 		killed_when_hidden,
-		Killed_with_orbital,
 		spoofed_data,
 		invalid_player_model,
 		super_jump,
-
 		gta_banner,
-		sound_spam,
-		sound_spam_se,
-		sound_spam_tse,
 		spectate,
-		spectate_int,
+		spectate_others,
 		remote_ragdoll,
 		spectate_notification,
 		killed_with_veh_god,
+		killed_with_orbital,
 		pop_multiplier_area,
 		veh_spec_ability_event,
 		break_door_event,
 		change_radio_station,
 		send_to_interior,
 		tse_sender_mismatch,
-
 		ceo_kick,
 		ceo_money,
 		clear_wanted_level,
@@ -430,6 +419,17 @@ namespace big
 		remove_weapon,
 		give_weapon,
 		cage,
-		ptfx_spam
+		ptfx_spam,
+		nw_sound_spam_rate_limit,
+		nw_sound_spam_scanned,
+		sound_spam_invite_rate_limit,
+		sound_spam_tse_rate_limit,
+	};
+
+	enum class reaction_karma
+	{
+		none,
+		infraction_based,
+		kick_player
 	};
 }

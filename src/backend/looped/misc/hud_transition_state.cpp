@@ -5,6 +5,7 @@
 #include "gta/net_array.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
+#include "core/vars.hpp"
 
 // Credits: QuickNET
 namespace big

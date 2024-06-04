@@ -2,6 +2,7 @@
 #include "core/data/vehicle.hpp"
 #include "core/enums.hpp"
 #include "natives.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

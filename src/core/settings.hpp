@@ -1,5 +1,6 @@
 #pragma once
 
+#include "logger/logger.hpp"
 #include "settings/esp.hpp"
 #include "settings/menu.hpp"
 #include "settings/window.hpp"

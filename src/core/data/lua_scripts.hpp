@@ -201,13 +201,13 @@ namespace big
 			{
 				if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
 				{
-					auto netHash = NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(plyr->id());
+					auto net_hash = NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(plyr->id());
 
 					DECORATOR::DECOR_SET_INT(veh, "MPBitset", 3);
-					DECORATOR::DECOR_SET_INT(veh, "Previous_Owner", netHash);
-					DECORATOR::DECOR_SET_INT(veh, "Veh_Modded_By_Player", netHash);
+					DECORATOR::DECOR_SET_INT(veh, "Previous_Owner", net_hash);
+					DECORATOR::DECOR_SET_INT(veh, "Veh_Modded_By_Player", net_hash);
 					DECORATOR::DECOR_SET_INT(veh, "Not_Allow_As_Saved_Veh", 0);
-					DECORATOR::DECOR_SET_INT(veh, "Player_Vehicle", netHash);
+					DECORATOR::DECOR_SET_INT(veh, "Player_Vehicle", net_hash);
 				}
 				else
 					g_notification_service.push_error("Gift Vehicle", "Failed to get veh", false);

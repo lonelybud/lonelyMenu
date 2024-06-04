@@ -3,6 +3,7 @@
 #include "entity.hpp"
 #include "gta/enums.hpp"
 #include "gta/vehicle_values.hpp"
+#include "logger/logger.hpp"
 #include "natives.hpp"
 #include "services/gta_data/vehicle_item.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -121,10 +122,5 @@ namespace big::vehicle
 		HUD::ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME("Spawned Vehicle");
 		HUD::END_TEXT_COMMAND_SET_BLIP_NAME(blip);
 		v.blip = blip;
-	}
-
-	inline bool is_player_veh(Vehicle veh)
-	{
-		return DECORATOR::DECOR_GET_INT(veh, "MPBitset") || DECORATOR::DECOR_GET_INT(veh, "Player_Vehicle");
 	}
 }

@@ -2,6 +2,7 @@
 #include "backend/looped/looped.hpp"
 #include "core/settings.hpp"
 #include "gta/weapons.hpp"
+#include "logger/logger.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/custom_chat_buffer.hpp"
 #include "services/custom_teleport/custom_teleport_service.hpp"

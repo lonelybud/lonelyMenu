@@ -2,6 +2,7 @@
 #include "core/data/misc.hpp"
 #include "natives.hpp"
 #include "util/entity.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

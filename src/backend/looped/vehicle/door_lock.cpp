@@ -2,6 +2,7 @@
 #include "core/data/vehicle.hpp"
 #include "natives.hpp"
 #include "util/vehicle.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

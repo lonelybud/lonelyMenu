@@ -3,6 +3,7 @@
 #include "core/data/reactions.hpp"
 #include "core/enums.hpp"
 #include "rate_limiter.hpp"
+#include "util/debouncer.hpp"
 
 #include <unordered_set>
 
@@ -104,7 +105,7 @@ namespace big
 
 		// prevent spam logging of events in console
 		reaction_sub_type last_event_id = reaction_sub_type::none;
-		int last_event_count            = 1;
+		debouncer<std::chrono::milliseconds> last_event_deb;
 
 		int spectating_player = -1;
 

@@ -3,6 +3,7 @@
 #include "backend/looped/looped.hpp"
 #include "core/data/context_menu.hpp"
 #include "core/data/self.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

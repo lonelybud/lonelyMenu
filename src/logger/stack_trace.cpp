@@ -1,6 +1,7 @@
 #include "stack_trace.hpp"
 
 #include "core/data/script_vm.hpp"
+#include "logger/logger.hpp"
 #include "memory/module.hpp"
 
 #include <DbgHelp.h>
@@ -80,8 +81,7 @@ namespace big
 			{
 				auto mod_info = module_info(table_entry->FullDllName.Buffer, table_entry->DllBase);
 
-				m_dump << mod_info.m_name << " Base Address: " << HEX_TO_UPPER(mod_info.m_base)
-				       << " Size: " << mod_info.m_size << '\n';
+				m_dump << mod_info.m_name << " Base Address: " << HEX_TO_UPPER(mod_info.m_base) << " Size: " << mod_info.m_size << '\n';
 
 				m_modules.emplace_back(std::move(mod_info));
 			}
@@ -143,7 +143,7 @@ namespace big
 
 					continue;
 				}
-				
+
 				if (module_info)
 				{
 					m_dump << module_info->m_name << ' ' << std::string_view(symbol->Name, symbol->NameLen);
@@ -155,11 +155,11 @@ namespace big
 
 				continue;
 			}
-			
+
 			if (module_info)
 			{
 				m_dump << module_info->m_name << '+' << HEX_TO_UPPER(addr - module_info->m_base) << ' ' << HEX_TO_UPPER(addr);
-				
+
 				continue;
 			}
 

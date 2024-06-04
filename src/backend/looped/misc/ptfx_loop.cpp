@@ -4,6 +4,7 @@
 #include "natives.hpp"
 #include "script.hpp"
 #include "util/debouncer.hpp"
+#include "core/vars.hpp"
 
 namespace big
 {

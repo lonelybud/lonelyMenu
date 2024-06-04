@@ -1,5 +1,6 @@
 #pragma once
 #include "natives.hpp"
+#include "file_manager.hpp"
 
 namespace big
 {

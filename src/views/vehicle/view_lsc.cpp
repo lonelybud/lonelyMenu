@@ -5,6 +5,7 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle_helper/vehicle_helper.hpp"
 #include "util/vehicle.hpp"
+#include "core/vars.hpp"
 #include "views/view.hpp"
 
 #include <imgui_internal.h>

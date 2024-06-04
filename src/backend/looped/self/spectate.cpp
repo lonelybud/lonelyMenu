@@ -19,18 +19,13 @@ namespace big
 
 			if (target_player && target_player->is_valid() && !is_maintransition_script_active)
 			{
-				if (get_interior_from_player(target_player->id()) != 0)
-					g_notification_service.push_error("Spectate", "Player is in interior");
-				else
-				{
-					const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
-					NETWORK::NETWORK_SET_IN_SPECTATOR_MODE(TRUE, target_ped);
-					NETWORK::NETWORK_OVERRIDE_RECEIVE_RESTRICTIONS_ALL(FALSE);
-					HUD::SET_MINIMAP_IN_SPECTATOR_MODE(TRUE, target_ped);
-					HUD::SET_BLIP_ALPHA(HUD::GET_MAIN_PLAYER_BLIP_ID(), 255);
-					STREAMING::SET_FOCUS_ENTITY(target_ped);
-					return;
-				}
+				const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
+				NETWORK::NETWORK_SET_IN_SPECTATOR_MODE(TRUE, target_ped);
+				NETWORK::NETWORK_OVERRIDE_RECEIVE_RESTRICTIONS_ALL(FALSE);
+				HUD::SET_MINIMAP_IN_SPECTATOR_MODE(TRUE, target_ped);
+				HUD::SET_BLIP_ALPHA(HUD::GET_MAIN_PLAYER_BLIP_ID(), 255);
+				STREAMING::SET_FOCUS_ENTITY(target_ped);
+				return;
 			}
 
 			g_self.spectating = false;

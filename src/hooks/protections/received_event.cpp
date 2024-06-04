@@ -338,10 +338,22 @@ namespace big
 			if (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() // If we're in Freemode
 			    && !plyr->is_friend() && g_protections.request_control_event && g_local_player->m_vehicle
 			    && g_local_player->m_vehicle->m_net_object && g_local_player->m_vehicle->m_net_object->m_object_id == net_id //The request is for a vehicle we are currently in.
-			    && !player_is_driver(plyr))
+			)
 			{
-				g_reactions.request_control_event.process(plyr);
-				return send_ack_event();
+				if (NETWORK::NETWORK_IS_ACTIVITY_SESSION())
+					g_log.log_additional(std::format("REQUEST_CONTROL_EVENT 0: {}", plyr->m_name));
+				else if (is_player_same_team(plyr->id()))
+					g_log.log_additional(std::format("REQUEST_CONTROL_EVENT 1: {}", plyr->m_name));
+				else
+				{
+					auto val = player_is_driver(plyr, true);
+					if (val == 1 || val == 0)
+					{
+						g_reactions.request_control_event.is_modder = val == 1;
+						g_reactions.request_control_event.process(plyr);
+						return send_ack_event();
+					}
+				}
 			}
 			buffer->Seek(0);
 			break;
@@ -471,17 +483,17 @@ namespace big
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
 			if (g_debug.log_sound_event)
-				LOG(WARNING) << "Sound Event (event) from: " << plyr->m_name;
+				LOG(WARNING) << "Sound Event (NETWORK_PLAY_SOUND_EVENT) from: " << plyr->m_name;
 
 			if (plyr->m_play_sound_rate_limit.process())
 			{
-				g_reactions.crash41.process(plyr, tar_plyr);
+				g_reactions.nw_sound_spam_rate_limit.process(plyr, tar_plyr);
 				return send_ack_event();
 			}
 
 			if (scan_play_sound_event(plyr, *buffer))
 			{
-				g_reactions.sound_spam.process(plyr);
+				g_reactions.nw_sound_spam_scanned.process(plyr);
 				// return send_ack_event(); // lets hear the sound
 			}
 
