@@ -24,28 +24,28 @@ namespace big::scripts
 	inline bool force_migration(rage::joaat_t hash, bool block_migration = false)
 	{
 		if (auto script = gta_util::find_script_thread(hash); script && script->m_net_component)
-		{
-			auto comp             = (CGameScriptHandlerNetComponent*)script->m_net_component;
-			std::string curr_host = comp->get_host()->get_name();
-
-			for (int i = 0; !comp->is_local_player_host(); i++)
+			if (auto comp = (CGameScriptHandlerNetComponent*)script->m_net_component; comp->get_host())
 			{
-				if (i > 200)
-					return false;
+				std::string curr_host = comp->get_host()->get_name();
 
-				comp->send_host_migration_event(g_player_service->get_self()->get_net_game_player());
-				script::get_current()->yield(10ms);
+				for (int i = 0; !comp->is_local_player_host(); i++)
+				{
+					if (i > 200)
+						return false;
 
-				if (!(script && script->m_net_component))
-					return false;
+					comp->send_host_migration_event(g_player_service->get_self()->get_net_game_player());
+					script::get_current()->yield(10ms);
+
+					if (!(script && script->m_net_component))
+						return false;
+				}
+
+				comp->block_host_migration(block_migration);
+
+				LOGF(INFO, "Script migration: {} from {} ({})", script->m_name, curr_host, (block_migration ? "(Locked)" : ""));
+
+				return true;
 			}
-
-			comp->block_host_migration(block_migration);
-
-			LOGF(INFO, "Script migration: {} from {} ({})", script->m_name, curr_host, (block_migration ? "(Locked)" : ""));
-
-			return true;
-		}
 
 		return false;
 	}

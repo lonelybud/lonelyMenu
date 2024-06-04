@@ -38,7 +38,7 @@ namespace big
 						    g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token);
 
 						if (victim == g_local_player)
-							g_fiber_pool->queue_job([player] {
+							g_fiber_pool->queue_job([player, headshot = damage_data.m_is_headshot] {
 								std::string str = "You got Killed by: " + std::string(player->m_name);
 
 								if (g_local_player->m_vehicle)
@@ -55,6 +55,9 @@ namespace big
 
 								if (is_player_in_submarine(player->id()))
 									str += " (submarine)";
+
+								if (headshot)
+									str += " (headshot)";
 
 								LOG(WARNING) << str;
 							});

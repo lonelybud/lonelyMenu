@@ -110,7 +110,6 @@ namespace big::protection
 	    "prop_sh_tt_fridgedoor"_J,
 	    "ch_prop_arcade_race_02a"_J,
 	    "v_61_kit_over_dec_cruma"_J,
-	    "gr_prop_gr_rsply_crate01a"_J,
 	    "prop_snow_streetlight_01_frag_"_J,
 	    "v_34_sm_proc"_J,
 	    "tr_int1_lightcap_proxy001"_J,
