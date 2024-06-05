@@ -293,11 +293,8 @@ namespace big::protection
 			return true;
 		}
 
-		if (g_debug.enable_objects_crash_2 && crash_objects2.contains(model))
-		{
+		if (crash_objects2.contains(model))
 			g_log.log_additional(std::format("crash_objects2 {}, {}", model, p ? p->m_name : ""));
-			return true;
-		}
 
 		if (!model_info::is_model_of_type(model, eModelType::Object, eModelType::Time, eModelType::Weapon, eModelType::Destructable, eModelType::WorldObject, eModelType::Sprinkler, eModelType::Unk65, eModelType::Plant, eModelType::LOD, eModelType::Unk132, eModelType::Building))
 			return true;

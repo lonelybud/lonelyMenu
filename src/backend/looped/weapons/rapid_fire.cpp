@@ -1,5 +1,6 @@
 #include "backend/looped_command.hpp"
 #include "core/data/weapons.hpp"
+#include "core/vars.hpp"
 #include "gta/enums.hpp"
 #include "gta/weapons.hpp"
 #include "gui.hpp"
@@ -7,7 +8,6 @@
 #include "script.hpp"
 #include "util/debouncer.hpp"
 #include "util/math.hpp"
-#include "core/vars.hpp"
 
 namespace big
 {
@@ -41,6 +41,9 @@ namespace big
 
 			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_ATTACK), TRUE);
 			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_ATTACK2), TRUE);
+			// when in vehicle
+			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_VEH_ATTACK), TRUE);
+			PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(ControllerInputs::INPUT_VEH_ATTACK2), TRUE);
 
 			if (auto* const weapon_mgr = g_local_player->m_weapon_manager)
 			{

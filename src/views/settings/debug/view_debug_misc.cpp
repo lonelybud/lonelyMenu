@@ -11,10 +11,9 @@ namespace big
 		{
 			ImGui::Spacing();
 
-			components::sub_title("Experiments");
-			{
-				ImGui::Checkbox("Enable Objects Crash 2 Protection", &g_debug.enable_objects_crash_2);
-			}
+			// components::sub_title("Experiments");
+			// {
+			// }
 
 			components::sub_title("Game");
 			{
@@ -61,16 +60,25 @@ namespace big
 					LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
 				});
 
-				ImGui::Checkbox("Log packets", &g_debug.log_packets);
-				ImGui::Checkbox("Log script events", &g_debug.log_script_events);
-				ImGui::Checkbox("Log Clones", &g_debug.log_clones);
-				ImGui::Spacing();
-				ImGui::Checkbox("Log Vehicle Clones", &g_debug.log_vehicle_clones);
-				ImGui::Checkbox("Log Ped Clones", &g_debug.log_ped_clones);
-				ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
-				ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
-				ImGui::Checkbox("Log Sound Event", &g_debug.log_sound_event);
-				ImGui::Checkbox("Log CPedHealthDataNode", &g_debug.log_CPedHealthDataNode);
+				ImGui::BeginGroup();
+				{
+					ImGui::Checkbox("Log packets", &g_debug.log_packets);
+					ImGui::Checkbox("Log script events", &g_debug.log_script_events);
+					ImGui::Checkbox("Log Clones", &g_debug.log_clones);
+				}
+				ImGui::EndGroup();
+				ImGui::SameLine();
+				ImGui::BeginGroup();
+				{
+					ImGui::Checkbox("Log Vehicle Clones", &g_debug.log_vehicle_clones);
+					ImGui::Checkbox("Log Ped Clones", &g_debug.log_ped_clones);
+					ImGui::Spacing();
+					ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
+					ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
+					ImGui::Checkbox("Log Sound Event", &g_debug.log_sound_event);
+					ImGui::Checkbox("Log CPedHealthDataNode", &g_debug.log_CPedHealthDataNode);
+				}
+				ImGui::EndGroup();
 			}
 
 			// ImGui::Spacing();
