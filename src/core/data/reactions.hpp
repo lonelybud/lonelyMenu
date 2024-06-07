@@ -73,7 +73,8 @@ namespace big
 
 		// notify once, not modder, other
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", true, false, true};
-		reaction desync_protection{reaction_type::none, reaction_sub_type::desync_protection, "Nat type 0", true, false, true};
+		reaction nat_type_0{reaction_type::none, reaction_sub_type::nat_type_0, "Nat type 0", true, false, true};
+		reaction spoofed_host_token_2{reaction_type::none, reaction_sub_type::spoofed_host_token_2, "Potentially Spoofed host token", true, false, true};
 
 		// notify once, modder, not other
 		reaction anti_cheat_modder_detection{reaction_type::none, reaction_sub_type::anti_cheat_modder_detection, "Detected modder by anti-cheat", true, true, false};

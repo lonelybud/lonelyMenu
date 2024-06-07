@@ -1,13 +1,13 @@
 #pragma once
 #include "core/data/session.hpp"
 #include "core/scr_globals.hpp"
+#include "core/vars.hpp"
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
 #include "script.hpp"
 #include "script_function.hpp"
 #include "util/misc.hpp"
-#include "core/vars.hpp"
 
 #include <network/CCommunications.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
@@ -105,11 +105,14 @@ namespace big::session
 			g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
 	}
 
-	inline bool is_spoofed_host_token(uint64_t token)
+	inline int is_spoofed_host_token(uint64_t token)
 	{
 		if (token < 1000'000'000'000)
-			return true;
+			return 1;
 
-		return false;
+		if (token < 1000'000'000'000'000)
+			return 2;
+
+		return 0;
 	}
 }

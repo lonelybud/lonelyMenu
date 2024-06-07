@@ -368,7 +368,7 @@ namespace big
 		report,
 		bounty,
 		rockstar_admin,
-		desync_protection,
+		nat_type_0,
 		anti_cheat_modder_detection,
 		spoofed_host_token,
 		killed_with_god,
@@ -424,6 +424,7 @@ namespace big
 		nw_sound_spam_scanned,
 		sound_spam_invite_rate_limit,
 		sound_spam_tse_rate_limit,
+		spoofed_host_token_2
 	};
 
 	enum class reaction_karma

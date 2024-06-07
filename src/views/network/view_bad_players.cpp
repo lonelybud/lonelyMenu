@@ -1,3 +1,4 @@
+#include "core/data/language_codes.hpp"
 #include "pointers.hpp"
 #include "services/bad_players/bad_players.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -49,8 +50,19 @@ namespace big
 		ImGui::PushItemWidth(300);
 		components::input_text("Player Name", player_name, sizeof(player_name));
 		ImGui::InputScalar("Rockstar Id", ImGuiDataType_U64, &rockstar_id);
-		ImGui::InputScalar("Language", ImGuiDataType_S32, &language);
 		ImGui::PopItemWidth();
+		ImGui::SetNextItemWidth(200.f);
+		if (ImGui::BeginCombo("##languages", language == -1 ? "Unknown" : languages[language].name))
+		{
+			if (components::selectable("Unknown", language == -1))
+				language = -1;
+
+			for (const auto& lang : languages)
+				if (components::selectable(lang.name, language == lang.id))
+					language = lang.id;
+
+			ImGui::EndCombo();
+		}
 
 		ImGui::Checkbox("Save as spammer", &save_as_spammer);
 		ImGui::Checkbox("Block Join", &block_join);

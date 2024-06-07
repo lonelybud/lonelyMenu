@@ -116,18 +116,24 @@ namespace big
 					if (admin_rids.contains(rockstar_id))
 						g_reactions.rockstar_admin.process(plyr);
 
-					if (session::is_spoofed_host_token(host_token))
+					auto has_spoofed_token = session::is_spoofed_host_token(host_token);
+
+					if (has_spoofed_token == 1)
 					{
 						g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 						g_reactions.spoofed_host_token.process(plyr);
 						kick = imhost;
+						if (imhost)
+							LOG(WARNING) << "Spoofed token player joined even when you were host";
 					}
+					else if (has_spoofed_token == 2)
+						g_reactions.spoofed_host_token_2.process(plyr);
 
 					if (!is_friend && kick && !is_maintransition_script_active)
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
 					if (plyr->get_net_data()->m_nat_type == 0)
-						g_reactions.desync_protection.process(plyr);
+						g_reactions.nat_type_0.process(plyr);
 				}
 			});
 		}

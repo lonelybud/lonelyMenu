@@ -298,6 +298,8 @@ namespace big
 					g_fiber_pool->queue_job([] {
 						last_selected_player->timeout();
 					});
+
+				ImGui::Checkbox("Is Other", &last_selected_player->is_other);
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine();
