@@ -8,4 +8,4 @@ refer to original readme [here](https://github.com/YimMenu/YimMenu#readme)
 
 check the release section. download the dll from there.
 
-press `NUM0` to open (numpad on) and in order to change key go to settings>menu and change toggle key.
+press `INSERT` key to open (numpad on) and in order to change key go to settings>menu and change toggle key.
