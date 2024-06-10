@@ -1,4 +1,5 @@
 #pragma once
+#include "core/data/vehicle.hpp"
 #include "core/scr_globals.hpp"
 #include "core/vars.hpp"
 #include "natives.hpp"
@@ -48,6 +49,7 @@ namespace big
 	// 2 allow, 1 (modder, not allow), 0 (not allow)
 	inline int player_is_driver(player_ptr target_plyr, bool unrelated_checks = false)
 	{
+		// i am not in vehicle
 		if (!self::veh)
 		{
 			if (unrelated_checks)
@@ -60,6 +62,7 @@ namespace big
 			return 0;
 		}
 
+		// its my pv
 		if (unrelated_checks)
 			if (Vehicle personal_vehicle = mobile::mechanic::get_personal_vehicle(); personal_vehicle == self::veh)
 			{
@@ -67,10 +70,13 @@ namespace big
 				return 1; // flaky
 			}
 
+		// driver is present
 		if (g_local_player->m_vehicle->m_driver)
 		{
+			// i am the driver
 			if (g_local_player->m_vehicle->m_driver == g_local_player)
 			{
+				// not someone's pv
 				if (unrelated_checks && !is_player_veh(self::veh))
 				{
 					g_log.log_additional(
@@ -82,8 +88,10 @@ namespace big
 				return 0;
 			}
 
+			// target is not driver
 			if (g_local_player->m_vehicle->m_driver != target_plyr->get_ped())
 			{
+				// not someone's pv
 				if (unrelated_checks && !is_player_veh(self::veh))
 				{
 					g_log.log_additional(
@@ -99,6 +107,8 @@ namespace big
 			return 2;
 		}
 
+		// wonder will it run?
+		g_log.log_additional(std::format("player_is_driver: end of function", target_plyr->m_name));
 		return 0;
 	}
 
@@ -188,7 +198,7 @@ namespace big
 		return vehicle && vehicle->m_driver == player->get_ped() && (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD);
 	}
 
-	inline bool is_invisible(big::player_ptr player)
+	inline bool is_player_invisible(big::player_ptr player)
 	{
 		if (!player->get_ped())
 			return false;
@@ -196,12 +206,7 @@ namespace big
 		if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player->id()].IsInvisible)
 			return true;
 
-		if ((player->get_current_vehicle() && player->get_current_vehicle()->m_driver == player->get_ped())
-		    || PLAYER::IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(player->id()))
-			return false; // can't say
-
-		return false; // TODO! have to get data from CPhysicalGameStateDataNode
-		              //return (player->get_ped()->m_flags & (int)rage::fwEntity::EntityFlags::IS_VISIBLE) == 0;
+		return false;
 	}
 
 	inline bool is_hidden_from_player_list(big::player_ptr player)
@@ -224,5 +229,14 @@ namespace big
 	{
 		auto entry = scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[player];
 		return entry.PlayerBlip.PlayerVehicleBlipType == eBlipType::SUBMARINE || entry.SimpleInteriorData.Index == eSimpleInteriorIndex::SIMPLE_INTERIOR_SUBMARINE;
+	}
+
+	inline bool is_my_spawned_vehicle(Vehicle vehicle)
+	{
+		for (auto& spawned_veh : g_vehicle.spawned_vehicles)
+			if (auto ent = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(spawned_veh.second.blip); ent == vehicle)
+				return true;
+
+		return false;
 	}
 }

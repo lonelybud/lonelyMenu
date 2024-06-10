@@ -70,6 +70,9 @@ namespace big
 		reaction request_control_event{reaction_type::none, reaction_sub_type::request_control_event, "Request Control Event", false, false, true};
 		reaction vehicle_kick{reaction_type::none, reaction_sub_type::vehicle_kick, "Vehicle Kick", false, false, true};
 		reaction send_to_interior{reaction_type::none, reaction_sub_type::send_to_interior, "Send To Interior", false, false, true};
+		reaction nw_sound_spam_scanned{reaction_type::none, reaction_sub_type::nw_sound_spam_scanned, "Sound Spam (Netw. Scanned)", false, false, true};
+		reaction sound_spam_invite_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_invite_rate_limit, "Sound Spam (Invite Rate Limit)", false, false, true};
+		reaction sound_spam_tse_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_tse_rate_limit, "Sound Spam (TSE Rate Limit)", false, false, true};
 
 		// notify once, not modder, other
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", true, false, true};
@@ -90,6 +93,8 @@ namespace big
 		reaction trigger_business_raid{reaction_type::none, reaction_sub_type::trigger_business_raid, "Trigger Business Raid", true, true, false};
 		reaction turn_into_beast{reaction_type::none, reaction_sub_type::turn_into_beast, "Turn Into Beast", true, true, false};
 		reaction report_cash_spawn{reaction_type::none, reaction_sub_type::report_cash_spawn, "Cash Spawn", true, true, false};
+		reaction killed_ped_with_god{reaction_type::none, reaction_sub_type::killed_ped_with_god, "God Kill (Ped)", true, true, false};
+		reaction killed_ped_with_invis{reaction_type::none, reaction_sub_type::killed_ped_with_invis, "Invisible Kill (Ped)", true, true, false};
 
 		// notify, modder, not other
 		reaction killed_with_god{reaction_type::none, reaction_sub_type::killed_with_god, "God Kill", false, true, false};
@@ -113,6 +118,9 @@ namespace big
 		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", false, true, false};
 		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", false, true, false};
 		reaction clear_ped_tasks{reaction_type::none, reaction_sub_type::clear_ped_tasks, "Clear Ped Tasks", false, true, false};
+		reaction veh_prox_mig_node{reaction_type::none, reaction_sub_type::veh_prox_mig_node, "CVehProxMigDataNode", false, true, false};
+		reaction request_control_event_prob{reaction_type::none, reaction_sub_type::request_control_event_prob, "Request Control Event (Prob)", false, true, false};
+		reaction vehicle_kick_prob{reaction_type::none, reaction_sub_type::vehicle_kick_prob, "Vehicle Kick (Prob)", false, true, false};
 
 		// notify, not modder, not other
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", false, false, false};
@@ -128,9 +136,6 @@ namespace big
 		reaction change_radio_station{reaction_type::none, reaction_sub_type::change_radio_station, "Change Radio Station", false, false, false};
 		reaction tse_sender_mismatch{reaction_type::none, reaction_sub_type::tse_sender_mismatch, "TSE Sender Mismatch", false, false, false};
 		reaction nw_sound_spam_rate_limit{reaction_type::none, reaction_sub_type::nw_sound_spam_rate_limit, "Sound Spam (Netw. Rate Limit)", false, false, false};
-		reaction nw_sound_spam_scanned{reaction_type::none, reaction_sub_type::nw_sound_spam_scanned, "Sound Spam (Netw. Scanned)", false, false, false};
-		reaction sound_spam_invite_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_invite_rate_limit, "Sound Spam (Invite Rate Limit)", false, false, false};
-		reaction sound_spam_tse_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_tse_rate_limit, "Sound Spam (TSE Rate Limit)", false, false, false};
 		reaction cage{reaction_type::none, reaction_sub_type::cage, "Cage", false, false, false};
 		reaction ptfx_spam{reaction_type::none, reaction_sub_type::ptfx_spam, "Ptfx Spam", false, false, false};
 	} g_reactions{};

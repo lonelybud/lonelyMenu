@@ -46,7 +46,7 @@ namespace big
 					HUD::DISPLAY_HUD(true);
 				});
 
-				components::button("Play sound", [] {
+				components::button("Play sound (Locally)", [] {
 					AUDIO::PLAY_SOUND_FROM_ENTITY(1, "SELECT", self::ped, "HUD_FRONTEND_DEFAULT_SOUNDSET", 0, 0);
 				});
 			}
@@ -72,11 +72,15 @@ namespace big
 				{
 					ImGui::Checkbox("Log Vehicle Clones", &g_debug.log_vehicle_clones);
 					ImGui::Checkbox("Log Ped Clones", &g_debug.log_ped_clones);
+					ImGui::Checkbox("Log Object Clones", &g_debug.log_object_clones);
+
 					ImGui::Spacing();
 					ImGui::Checkbox("Log Explosion Event", &g_debug.log_explosion_event);
 					ImGui::Checkbox("Log Ptfx Event", &g_debug.log_ptfx_event);
 					ImGui::Checkbox("Log Sound Event", &g_debug.log_sound_event);
+					ImGui::Spacing();
 					ImGui::Checkbox("Log CPedHealthDataNode", &g_debug.log_CPedHealthDataNode);
+					ImGui::Checkbox("Log CVehicleTaskDataNode", &g_debug.log_CVehicleTaskDataNode);
 				}
 				ImGui::EndGroup();
 			}

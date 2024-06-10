@@ -6,7 +6,6 @@
 
 namespace big::protection
 {
-	// constexpr auto crash_objects = { // use it for intellisense
 	static const std::unordered_set<rage::joaat_t> crash_objects = {
 	    "prop_dummy_01"_J,
 	    "prop_dummy_car"_J,
@@ -91,7 +90,6 @@ namespace big::protection
 	    "prop_thindesertfiller_aa"_J,
 	};
 
-	// constexpr auto crash_objects2 = { // use it for intellisense
 	static const std::unordered_set<rage::joaat_t> crash_objects2 = {
 	    "prop_facgate_05_r_dam_l1"_J,
 	    "v_61_lng_mesh_unita_swap"_J,
@@ -325,7 +323,15 @@ namespace big::protection
 	static const std::unordered_set<rage::joaat_t> cage_objects = {"stt_prop_stunt_tube_s"_J, "prop_fnclink_03e"_J, "prop_gold_cont_01"_J, "prop_gold_cont_01b"_J, "prop_rub_cage01a"_J};
 	bool is_cage_object(rage::joaat_t model)
 	{
-		return cage_objects.contains(model);
+		if (cage_objects.contains(model))
+			return true;
+
+		// https://github.com/Deadlineem/Extras-Addon-for-YimMenu/blob/main/Extras-Addon.lua
+		// Safe cage, 420 Cage
+		if (model == "p_v_43_safe_s"_J || model == "bkr_prop_weed_lrg_01a"_J)
+			return true;
+
+		return false;
 	}
 
 	static const std::unordered_set<rage::joaat_t> valid_player_models = {

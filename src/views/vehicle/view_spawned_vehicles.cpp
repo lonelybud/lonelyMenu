@@ -40,9 +40,9 @@ namespace big
 			deleting = true;
 
 			auto temp = g_vehicle.spawned_vehicles;
-			for (auto it = g_vehicle.spawned_vehicles.begin(); it != g_vehicle.spawned_vehicles.end(); ++it)
-				if (auto ent = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(it->second.blip); entity::delete_entity(ent))
-					if (auto itr = temp.find(it->first); itr != temp.end())
+			for (auto& spawned_veh : g_vehicle.spawned_vehicles)
+				if (auto ent = HUD::GET_BLIP_INFO_ID_ENTITY_INDEX(spawned_veh.second.blip); entity::delete_entity(ent))
+					if (auto itr = temp.find(spawned_veh.first); itr != temp.end())
 						temp.erase(itr);
 
 			g_vehicle.spawned_vehicles = temp;

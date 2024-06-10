@@ -68,7 +68,6 @@ namespace big
 	{
 		components::sub_title("Others");
 
-		ImGui::Checkbox("Request Control of Entity", &g_misc.request_control);
 		ImGui::Checkbox("Notify friend killed", &g_misc.notify_friend_killed);
 
 		ImGui::Spacing();

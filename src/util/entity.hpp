@@ -20,14 +20,12 @@ namespace big::entity
 		if (!*g_pointers->m_gta.m_is_session_started)
 			return true;
 
-		auto n_of_try = g_misc.request_control ? 300 : 1;
-
-		for (int i = 0; i < n_of_try; ++i)
+		for (int i = 0; i < 300; ++i)
 		{
 			if (hnd && hnd->m_net_object && network_has_control_of_entity(hnd->m_net_object))
 				return true;
 
-			if (n_of_try > 1 && hnd && hnd->m_net_object)
+			if (hnd && hnd->m_net_object)
 			{
 				g_pointers->m_gta.m_request_control(hnd->m_net_object);
 				script::get_current()->yield();

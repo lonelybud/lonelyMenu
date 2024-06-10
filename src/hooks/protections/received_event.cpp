@@ -21,7 +21,6 @@
 
 namespace big
 {
-	// constexpr auto blocked_ref_hashes  = { // use it for intellisense
 	static const std::unordered_set<rage::joaat_t> blocked_ref_hashes = {
 	    "Arena_Vehicle_Mod_Shop_Sounds"_J,
 	    "CELEBRATION_SOUNDSET"_J,
@@ -75,9 +74,7 @@ namespace big
 	    "WastedSounds"_J,
 	    "WEB_NAVIGATION_SOUNDS_PHONE"_J,
 	};
-	// constexpr auto blocked_sound_hashes  = { // use it for intellisense
 	static const std::unordered_set<uint32_t> blocked_sound_hashes = {"Remote_Ring"_J, "COP_HELI_CAM_ZOOM"_J, "Object_Dropped_Remote"_J};
-	// constexpr auto valid_script_hashes  = { // use it for intellisense
 	static const std::unordered_set<uint32_t> valid_script_hashes = {"am_mp_defunct_base"_J, "am_mp_orbital_cannon"_J, "fm_mission_controller_2020"_J, "fm_mission_controller"_J};
 
 	static void script_id_deserialize(CGameScriptId& id, rage::datBitBuffer& buffer)
@@ -347,12 +344,16 @@ namespace big
 				else
 				{
 					auto val = player_is_driver(plyr, true);
-					if (val == 1 || val == 0)
+					if (val == 1)
 					{
-						g_reactions.request_control_event.is_modder = val == 1;
-						g_reactions.request_control_event.process(plyr);
+						g_reactions.request_control_event_prob.process(plyr);
 						return send_ack_event();
 					}
+					else if (val == 0)
+					{
+						g_reactions.request_control_event.process(plyr);
+						return send_ack_event();
+					}		
 				}
 			}
 			buffer->Seek(0);

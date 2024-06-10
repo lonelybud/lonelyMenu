@@ -599,11 +599,7 @@ namespace big
 		case sync_node_id("CPedScriptCreationDataNode"):
 			LOG_FIELD_B(CPedScriptCreationDataNode, m_stay_in_car_when_jacked);
 			break;
-		case sync_node_id("CPedTaskSpecificDataNode"):
-			//LOG_FIELD(CPedTaskSpecificDataNode, m_task_index); not serialized
-			//LOG_FIELD_APPLY(CPedTaskSpecificDataNode, m_task_type, get_task_type_string); not serialized
-			LOG_FIELD(CPedTaskSpecificDataNode, m_buffer_size);
-			break;
+		case sync_node_id("CPedTaskSpecificDataNode"): LOG_FIELD(CPedTaskSpecificDataNode, m_buffer_size); break;
 		case sync_node_id("CPhysicalAngVelocityDataNode"):
 			LOG_FIELD(CPhysicalAngVelocityDataNode, m_ang_velocity_x);
 			LOG_FIELD(CPhysicalAngVelocityDataNode, m_ang_velocity_y);
@@ -1216,8 +1212,9 @@ namespace big
 				if (g_debug.log_vehicle_clones)
 				{
 					auto& vehs = g_gta_data_service->vehicles();
-					if (auto it = vehs.find(creation_node->m_model); it != vehs.end())
-						LOG(VERBOSE) << "veh: " << vehicle::get_vehicle_model_name(it->second) << " (" << sender_plyr->m_name << ")";
+					auto it    = vehs.find(creation_node->m_model);
+					LOG(VERBOSE) << "veh: " << (it != vehs.end() ? vehicle::get_vehicle_model_name(it->second) : "?") << " ("
+					             << sender_plyr->m_name << ")";
 				}
 
 				break;
@@ -1288,7 +1285,8 @@ namespace big
 			case sync_node_id("CPedCreationDataNode"):
 			{
 				const auto creation_node = (CPedCreationDataNode*)(node);
-				if (protection::is_crash_ped(creation_node->m_model))
+				auto _model              = creation_node->m_model;
+				if (protection::is_crash_ped(_model))
 				{
 					g_reactions.crash8.process(sender_plyr);
 					return true;
@@ -1301,9 +1299,14 @@ namespace big
 
 				if (g_debug.log_ped_clones)
 				{
-					auto& peds = g_gta_data_service->peds();
-					if (auto it = peds.find(creation_node->m_model); it != peds.end())
-						LOG(VERBOSE) << "ped: " << it->second.m_name << " (" << sender_plyr->m_name << ")";
+					if (model_info::is_model_of_type(_model, eModelType::OnlineOnlyPed))
+						LOG(VERBOSE) << "ped: player clone (" << sender_plyr->m_name << ")";
+					else if (model_info::is_model_of_type(_model, eModelType::Ped))
+					{
+						auto& peds = g_gta_data_service->peds();
+						auto it    = peds.find(creation_node->m_model);
+						LOG(VERBOSE) << "ped: " << (it != peds.end() ? it->second.m_name : "?") << " (" << sender_plyr->m_name << ")";
+					}
 				}
 
 				break;
@@ -1330,16 +1333,20 @@ namespace big
 			case sync_node_id("CObjectCreationDataNode"):
 			{
 				const auto creation_node = (CObjectCreationDataNode*)(node);
-				if (protection::is_crash_object(creation_node->m_model, sender_plyr))
+				auto _model              = creation_node->m_model;
+				if (protection::is_crash_object(_model, sender_plyr))
 				{
 					g_reactions.crash11.process(sender_plyr);
 					return true;
 				}
-				if (g_protections.cage_protection && protection::is_cage_object(creation_node->m_model))
+				if (g_protections.cage_protection && protection::is_cage_object(_model))
 				{ // This will trigger for any player caging any player, Due to a issue with m_dummy_position data
 					g_reactions.cage.process(sender_plyr);
 					return true;
 				}
+				if (g_debug.log_object_clones)
+					LOG(VERBOSE) << "object: " << _model << " (" << sender_plyr->m_name << ")";
+
 				break;
 			}
 			case sync_node_id("CPlayerAppearanceDataNode"):
@@ -1512,7 +1519,7 @@ namespace big
 					{
 						if (is_local_player_an_occupant(migration_node)) // remote teleport
 						{
-							LOG(WARNING) << "CVehProxMigDataNode from " << sender_plyr->m_name;
+							g_reactions.veh_prox_mig_node.process(sender_plyr);
 							return true;
 						}
 					}
@@ -1651,6 +1658,9 @@ namespace big
 					    std::format("crash26 {} {}", (int)m_syncing_object_type, get_task_type_string(task_node->m_task_type)));
 					return true;
 				}
+				if (g_debug.log_CVehicleTaskDataNode)
+					LOG(VERBOSE) << "CVehicleTaskDataNode: " << get_task_type_string(task_node->m_task_type) << " ("
+					             << sender_plyr->m_name << ")";
 
 				break;
 			}

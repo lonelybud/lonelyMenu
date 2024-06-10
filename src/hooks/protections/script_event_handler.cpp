@@ -283,9 +283,13 @@ namespace big
 			if (!plyr->is_friend() && g_protections.script_events.vehicle_kick)
 			{
 				auto val = player_is_driver(plyr, true);
-				if (val == 1 || val == 0)
+				if (val == 1)
 				{
-					g_reactions.vehicle_kick.is_modder = val == 1;
+					g_reactions.vehicle_kick_prob.process(plyr);
+					return true;
+				}
+				else if (val == 0)
+				{
 					g_reactions.vehicle_kick.process(plyr);
 					return true;
 				}

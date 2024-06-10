@@ -372,7 +372,9 @@ namespace big
 		anti_cheat_modder_detection,
 		spoofed_host_token,
 		killed_with_god,
+		killed_ped_with_god,
 		killed_with_invis,
+		killed_ped_with_invis,
 		killed_when_hidden,
 		spoofed_data,
 		invalid_player_model,
@@ -407,6 +409,7 @@ namespace big
 		send_to_location,
 		transaction_error,
 		vehicle_kick,
+		vehicle_kick_prob,
 		teleport_to_warehouse,
 		start_activity,
 		start_script,
@@ -416,6 +419,7 @@ namespace big
 		clear_ped_tasks,
 		report_cash_spawn,
 		request_control_event,
+		request_control_event_prob,
 		remove_weapon,
 		give_weapon,
 		cage,
@@ -424,7 +428,8 @@ namespace big
 		nw_sound_spam_scanned,
 		sound_spam_invite_rate_limit,
 		sound_spam_tse_rate_limit,
-		spoofed_host_token_2
+		spoofed_host_token_2,
+		veh_prox_mig_node
 	};
 
 	enum class reaction_karma

@@ -13,7 +13,6 @@ namespace big
 		bool fm_mission_controller_cart_grab = false;
 		bool disable_clothing_validation     = false;
 		bool apply_outfit_hair               = false;
-		bool request_control                 = true;
 		bool notify_friend_killed            = true;
 		bool ped_ignore                      = false;
 	};
