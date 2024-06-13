@@ -13,6 +13,7 @@
 #include "services/context_menu/context_menu_service.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
+#include "services/matchmaking/matchmaking_service.hpp"
 #include "services/mobile/mobile_service.hpp"
 #include "services/players/player_service.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
@@ -206,6 +207,7 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto gui_service_instance            = std::make_unique<gui_service>();
 			    auto script_patcher_service_instance = std::make_unique<script_patcher_service>();
 			    auto tunables_service_instance       = std::make_unique<tunables_service>();
+			    auto matchmaking_service_instance    = std::make_unique<matchmaking_service>();
 			    LOG(INFO) << "Registered service instances...";
 
 			    g_script_mgr.add_script(std::make_unique<script>(&gui::script_func, "GUI", false));
@@ -240,6 +242,7 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    thread_pool_instance->destroy();
 			    LOG(INFO) << "Destroyed thread pool.";
 
+			    matchmaking_service_instance.reset();
 			    LOG(INFO) << "Matchmaking Service reset.";
 			    tunables_service_instance.reset();
 			    LOG(INFO) << "Tunables Service reset.";

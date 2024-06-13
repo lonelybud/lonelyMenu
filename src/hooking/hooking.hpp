@@ -41,6 +41,7 @@ class GtaThread;
 class CNetworkPlayerMgr;
 class CNetworkObjectMgr;
 class CPhysicalScriptGameStateDataNode;
+class MatchmakingId;
 
 enum class eAckCode : uint32_t;
 
@@ -60,6 +61,7 @@ namespace rage
 	class json_serializer;
 	class netGameEvent;
 	class netSyncDataNode;
+	class rlSessionDetailMsg;
 }
 
 namespace big
@@ -133,6 +135,12 @@ namespace big
 		// spoofing
 
 		static void write_node_data(void* data_node, rage::netObject* net_object, rage::datBitBuffer* buffer, void* log, bool update);
+
+		// matchmaking
+		static bool advertise_session(int profile_index, int num_slots, int available_slots, MatchmakingAttributes* data, std::uint64_t session_id, rage::rlSessionInfo* info, MatchmakingId* out_id, rage::rlTaskStatus* status);
+		static bool update_session_advertisement(int profile_index, MatchmakingId* id, int num_slots, int available_slots, rage::rlSessionInfo* info, MatchmakingAttributes* data, rage::rlTaskStatus* status);
+		static bool unadvertise_session(int profile_index, MatchmakingId* id, rage::rlTaskStatus* status);
+		static void send_session_detail_msg(rage::netConnectionManager* mgr, rage::netConnection::InFrame* request_frame, rage::rlSessionDetailMsg* msg);
 	};
 
 	class minhook_keepalive

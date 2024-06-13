@@ -65,6 +65,15 @@ namespace big
 		int nat_type                         = 4;
 
 		int num_vote_kicks = 0;
+
+		bool multiplex_session          = false;
+		int multiplex_count             = 2;
+		bool spoof_session_region_type  = false;
+		int session_region_type         = 0;
+		bool spoof_session_language     = false;
+		int session_language            = 0;
+		bool spoof_session_player_count = false;
+		int session_player_count        = 25;
 	};
 
 	inline g_session_t g_session{};

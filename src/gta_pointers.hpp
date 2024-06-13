@@ -235,6 +235,11 @@ namespace big
 		GenericPool** m_vehicle_allocator; // this is not a normal pool
 
 		PVOID m_write_node_data;
+
+		PVOID m_advertise_session;
+		PVOID m_update_session_advertisement;
+		PVOID m_unadvertise_session;
+		PVOID m_send_session_detail_msg;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

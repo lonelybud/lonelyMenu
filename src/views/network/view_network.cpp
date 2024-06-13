@@ -1,3 +1,4 @@
+#include "core/data/language_codes.hpp"
 #include "core/data/region_codes.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
@@ -16,8 +17,6 @@ namespace big
 
 		if (g_pointers->m_gta.m_region_code)
 		{
-			static int selected_region_index = -1;
-
 			ImGui::SetNextItemWidth(200.f);
 			if (ImGui::BeginCombo("##regionswitcher", regions[*g_pointers->m_gta.m_region_code].name))
 			{
@@ -52,6 +51,47 @@ namespace big
 		ImGui::Checkbox("Unhide Players From List", &g_session.unhide_players_from_player_list);
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
+
+		components::sub_title("Session Multiplexer");
+
+		ImGui::Checkbox("Multiplex Session", &g_session.multiplex_session);
+		if (g_session.multiplex_session)
+		{
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(100);
+			ImGui::SliderInt("###multiplex_cnt", &g_session.multiplex_count, 2, 5);
+		}
+		ImGui::Checkbox("Spoof Session Player Counts", &g_session.spoof_session_player_count);
+		if (g_session.spoof_session_player_count)
+		{
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(100);
+			ImGui::InputInt("###Spoofplayer_count", &g_session.session_player_count);
+		}
+		ImGui::Checkbox("Spoof region", &g_session.spoof_session_region_type);
+		if (g_session.spoof_session_region_type)
+		{
+			ImGui::SetNextItemWidth(200.f);
+			if (ImGui::BeginCombo("##spoofedregionswitcher", regions[g_session.session_region_type].name))
+			{
+				for (const auto& region_type : regions)
+					if (components::selectable(region_type.name, g_session.session_region_type == region_type.id))
+						g_session.session_region_type = region_type.id;
+				ImGui::EndCombo();
+			}
+		}
+		ImGui::Checkbox("Spoof Language", &g_session.spoof_session_language);
+		if (g_session.spoof_session_language)
+		{
+			ImGui::SetNextItemWidth(200.f);
+			if (ImGui::BeginCombo("##spoofedlanguage_select", languages[g_session.session_language].name))
+			{
+				for (const auto& language : languages)
+					if (components::selectable(language.name, g_session.session_language == language.id))
+						g_session.session_language = language.id;
+				ImGui::EndCombo();
+			}
+		}
 	}
 
 	static inline void render_hosting()

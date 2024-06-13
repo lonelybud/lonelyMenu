@@ -8,7 +8,7 @@ namespace big
 		const char name[32];
 	};
 
-	const LanguageType languages[] = {
+	inline const LanguageType languages[] = {
 	    {0, "English"},
 	    {1, "French"},
 	    {2, "German"},
