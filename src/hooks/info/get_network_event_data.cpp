@@ -50,18 +50,6 @@ namespace big
 							g_fiber_pool->queue_job([player, headshot = damage_data.m_is_headshot] {
 								std::string str = "You got Killed by: " + std::string(player->m_name);
 
-								if (g_local_player->m_vehicle)
-								{
-									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-									if (!is_player_veh(veh) && entity::take_control_of(g_local_player->m_vehicle))
-									{
-										g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
-										g_notification_service.push_success("Vehicle Lock", "Success after you died", true);
-									}
-									else
-										g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
-								}
-
 								if (is_player_in_submarine(player->id()))
 									str += " (submarine)";
 
@@ -69,6 +57,22 @@ namespace big
 									str += " (headshot)";
 
 								LOG(WARNING) << str;
+
+								if (g_local_player->m_vehicle)
+								{
+									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
+
+									if (is_my_spawned_vehicle(veh)) // prevent request control event on someones else spawned vehicles
+									{
+										if (entity::take_control_of(g_local_player->m_vehicle))
+										{
+											g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
+											g_notification_service.push_success("Vehicle Lock", "Success after you died", true);
+										}
+										else
+											g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
+									}
+								}
 							});
 						else if (victim_player && g_misc.notify_friend_killed && victim_player->is_friend())
 							g_notification_service.push_warning("Friend Killed",

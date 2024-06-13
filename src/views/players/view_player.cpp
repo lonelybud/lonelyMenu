@@ -395,8 +395,10 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
 					{
 						ENTITY::SET_ENTITY_INVINCIBLE(veh, TRUE);
-						g_notification_service.push_success("Success", "Entity is invincible now", false);
+						g_notification_service.push_success("Success", "Entity is invincible now");
+						return;
 					}
+				g_notification_service.push_error("Failed", "To make invincible.");
 			});
 			ImGui::SameLine();
 			components::button("Unset Veh God", [] {
@@ -404,8 +406,10 @@ namespace big
 					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh && entity::take_control_of(veh))
 					{
 						ENTITY::SET_ENTITY_INVINCIBLE(veh, FALSE);
-						g_notification_service.push_success("Success", "Entity is not invincible now", false);
+						g_notification_service.push_success("Failed", "Entity is not invincible now");
+						return;
 					}
+				g_notification_service.push_success("Failed", "To undo invincibility");
 			});
 
 			components::ver_space();

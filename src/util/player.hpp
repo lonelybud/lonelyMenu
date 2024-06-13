@@ -70,11 +70,13 @@ namespace big
 				return 1; // flaky
 			}
 
+		auto driver = g_local_player->m_vehicle->m_driver;
+
 		// driver is present
-		if (g_local_player->m_vehicle->m_driver)
+		if (driver)
 		{
 			// i am the driver
-			if (g_local_player->m_vehicle->m_driver == g_local_player)
+			if (driver == g_local_player)
 			{
 				// not someone's pv
 				if (unrelated_checks && !is_player_veh(self::veh))
@@ -89,7 +91,7 @@ namespace big
 			}
 
 			// target is not driver
-			if (g_local_player->m_vehicle->m_driver != target_plyr->get_ped())
+			if (driver != target_plyr->get_ped())
 			{
 				// not someone's pv
 				if (unrelated_checks && !is_player_veh(self::veh))
@@ -99,11 +101,17 @@ namespace big
 					return 1;
 				}
 
-				g_log.log_additional(
-				    std::format("player_is_driver: Someone is driver of pv but {} wants control", target_plyr->m_name));
-				return 0;
+				// driver is a player present in session
+				if (driver->m_player_info
+				    && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
+				{
+					g_log.log_additional(
+					    std::format("player_is_driver: Someone is driver of pv but {} wants control", target_plyr->m_name));
+					return 0;
+				}
 			}
 
+			g_log.log_additional(std::format("player_is_driver: driver present. Granted control to {}", target_plyr->m_name));
 			return 2;
 		}
 
