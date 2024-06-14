@@ -1,19 +1,13 @@
 #pragma once
-#include "core/data/debug.hpp"
-#include "core/data/session.hpp"
-#include "hooking/hooking.hpp"
+#include "file_manager.hpp"
 #include "natives.hpp"
-#include "packet.hpp"
 #include "script.hpp"
-#include "services/custom_chat_buffer.hpp"
-#include "services/players/player_service.hpp"
-#include "util/player.hpp"
 
 #include <script/HudColor.hpp>
 
 namespace big::chat
 {
-	static inline void draw_chat(const char* msg, const char* player_name, bool is_team)
+	inline void draw_chat(const char* msg, const char* player_name, bool is_team)
 	{
 		int scaleform = GRAPHICS::REQUEST_SCALEFORM_MOVIE("MULTIPLAYER_CHAT");
 
@@ -41,45 +35,26 @@ namespace big::chat
 		HUD::CLOSE_MP_TEXT_CHAT();
 	}
 
-	// static void gamer_handle_serialize(rage::rlGamerHandle& hnd, rage::datBitBuffer& buf)
-	// {
-	// 	buf.Write<uint8_t>(hnd.m_platform, sizeof(hnd.m_platform) * 8);
-	// 	if (hnd.m_platform == rage::rlPlatforms::PC)
-	// 	{
-	// 		buf.WriteRockstarId(hnd.m_rockstar_id);
-	// 		buf.Write<uint8_t>(hnd.m_padding, sizeof(hnd.m_padding) * 8);
-	// 	}
-	// }
+	inline void log_chat_to_disk(char* message, char* player_name)
+	{
+		static std::chrono::system_clock::time_point last_time = std::chrono::system_clock::time_point::min();
 
-	// inline void send_message(char* message, player_ptr target, bool is_team, bool draw)
-	// {
-	// 	if (!*g_pointers->m_gta.m_is_session_started)
-	// 		return;
+		std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
 
-	// 	packet msg{};
-	// 	msg.write_message(rage::eNetMessage::MsgTextMessage);
-	// 	msg.m_buffer.WriteString(message, 256);
-	// 	gamer_handle_serialize(g_player_service->get_self()->get_net_data()->m_gamer_handle, msg.m_buffer);
-	// 	msg.write<bool>(is_team, 1);
+		int time_diff;
+		auto currentTime = std::chrono::system_clock::now();
 
-	// 	for (auto& player : g_player_service->players())
-	// 		if (player.second && player.second->is_valid())
-	// 		{
-	// 			if (target && player.second != target)
-	// 				continue;
+		if (last_time != std::chrono::system_clock::time_point::min())
+		{
+			time_diff = std::chrono::duration_cast<std::chrono::seconds>(currentTime - last_time).count();
+			if (time_diff > 99)
+				time_diff = 0;
+		}
+		last_time = currentTime;
 
-	// 			if (!target && is_team && !is_player_same_team(player.second->id()))
-	// 				continue;
+		std::string formatted_str = std::format("{} {} : {}", time_diff, player_name, message);
 
-	// 			msg.send(player.second->get_net_game_player()->m_msg_id);
-	// 		}
-
-	// 	if (g_session.log_chat_messages_to_textbox)
-	// 		g_custom_chat_buffer.append_msg(g_player_service->get_self()->get_name(), message);
-
-	// 	if (draw)
-	// 		g_fiber_pool->queue_job([message, is_team] {
-	// 			draw_chat(message, g_player_service->get_self()->get_name(), is_team);
-	// 		});
-	// }
+		log << formatted_str << std::endl;
+		log.close();
+	}
 }

@@ -15,7 +15,5 @@ namespace big
 		bool log_CPedHealthDataNode   = false; // spam kill feed detection
 		bool log_object_clones        = false;
 		bool log_CVehicleTaskDataNode = false;
-
-		// bool use_default_chat                  = false;
 	} g_debug{};
 }

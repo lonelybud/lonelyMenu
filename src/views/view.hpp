@@ -27,7 +27,6 @@ namespace big
 		static void known_players();
 		static void recent_spoofed_host_tokens();
 		static void players_lang();
-		static void chat();
 		static void vehicle();
 		static void lsc();
 		static void spawn_vehicle();

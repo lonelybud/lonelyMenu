@@ -3,6 +3,7 @@
 #include "core/data/protections.hpp"
 #include "core/data/region_codes.hpp"
 #include "core/data/self.hpp"
+#include "core/data/session.hpp"
 #include "core/scr_globals.hpp"
 #include "gta_util.hpp"
 #include "gui.hpp"
@@ -14,7 +15,6 @@
 #include "services/known_players/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/vehicle/persist_car_service.hpp"
-#include "util/chat.hpp"
 #include "util/delete_entity.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
@@ -295,9 +295,7 @@ namespace big
 				ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
 
 				if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
-					g_fiber_pool->queue_job([] {
-						last_selected_player->timeout();
-					});
+					last_selected_player->timeout();
 
 				ImGui::Checkbox("Is Other", &last_selected_player->is_other);
 			}
@@ -528,25 +526,6 @@ namespace big
 		}
 	}
 
-	// static inline void render_chat()
-	// {
-	// 	ImGui::BeginGroup();
-	// 	components::sub_title("Chat");
-
-	// 	static char temp[256];
-	// 	static char msg[256 - sizeof(priv)];
-
-	// 	ImGui::SetNextItemWidth(200);
-	// 	components::input_text_with_hint("###chatmessage", "Message", msg, sizeof(msg));
-	// 	if (components::button("Send Message"))
-	// 		g_fiber_pool->queue_job([] {
-	// 			strcpy(temp, priv);
-	// 			strcat(temp, msg);
-	// 			chat::send_message(temp, last_selected_player, false, true);
-	// 		});
-	// 	ImGui::EndGroup();
-	// }
-
 	void view::view_player()
 	{
 		ImGui::Spacing();
@@ -614,9 +593,6 @@ namespace big
 			ImGui::BeginGroup();
 			{
 				render_toxic();
-
-				// components::ver_space();
-				// render_chat();
 			}
 			ImGui::EndGroup();
 

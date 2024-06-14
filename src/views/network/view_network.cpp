@@ -3,6 +3,8 @@
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
+#include "hooking/hooking.hpp"
+#include "util/chat.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
@@ -11,7 +13,7 @@ namespace big
 {
 	constexpr auto max_token_val = 18000000000000000000;
 
-	static inline void render_misc()
+	static inline void render_region_switcher()
 	{
 		components::sub_title("Region Switcher");
 
@@ -39,7 +41,10 @@ namespace big
 					g_session.nat_type = nat_type.id;
 			ImGui::EndCombo();
 		}
+	}
 
+	static inline void render_misc()
+	{
 		components::sub_title("Misc");
 
 		ImGui::Checkbox("Block Joins", &g_session.block_joins);
@@ -51,7 +56,10 @@ namespace big
 		ImGui::Checkbox("Unhide Players From List", &g_session.unhide_players_from_player_list);
 
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
+	}
 
+	static inline void render_session_multiplexer()
+	{
 		components::sub_title("Session Multiplexer");
 
 		ImGui::Checkbox("Multiplex Session", &g_session.multiplex_session);
@@ -92,6 +100,29 @@ namespace big
 				ImGui::EndCombo();
 			}
 		}
+	}
+
+	static inline void render_chat()
+	{
+		components::sub_title("Chat");
+
+		static bool is_team;
+		static char msg[256];
+
+		ImGui::Checkbox("Log Chat", &g_session.log_chat);
+
+		ImGui::Spacing();
+
+		ImGui::SetNextItemWidth(300);
+		components::input_text_with_hint("##message", "Message", msg, sizeof(msg));
+		ImGui::Checkbox("Is Team Message", &is_team);
+		ImGui::SameLine();
+		if (components::button("Send Message"))
+			g_fiber_pool->queue_job([] {
+				const auto net_game_player = gta_util::get_network_player_mgr()->m_local_net_player;
+				g_hooking->get_original<hooks::send_chat_message>()(*g_pointers->m_gta.m_send_chat_ptr, net_game_player->get_net_data(), msg, is_team);
+				chat::draw_chat(msg, g_player_service->get_self()->m_name, is_team);
+			});
 	}
 
 	static inline void render_hosting()
@@ -176,12 +207,18 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
+			render_region_switcher();
+			ImGui::Spacing();
 			render_misc();
+			ImGui::Spacing();
+			render_session_multiplexer();
 		}
 		ImGui::EndGroup();
 		components::hor_space();
 		ImGui::BeginGroup();
 		{
+			render_chat();
+			ImGui::Spacing();
 			render_hosting();
 		}
 		ImGui::EndGroup();

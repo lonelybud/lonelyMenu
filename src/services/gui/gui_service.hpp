@@ -93,7 +93,6 @@ namespace big
 		                {tabs::KNOWN_PLAYERS, {"Known Players", view::known_players}},
 		                {tabs::RECENT_SPOOFED_HOST_TOKENS, {"Spoofed Host Tokens", view::recent_spoofed_host_tokens}},
 						{tabs::PLAYER_LANGS, {"Players Language", view::players_lang}},
-		                {tabs::CHAT, {"Chat", view::chat}},
 		            },
 		        },
 		    },

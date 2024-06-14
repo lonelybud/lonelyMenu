@@ -13,9 +13,9 @@
 #include "natives.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/blocked_players/blocked_players.hpp"
-#include "services/custom_chat_buffer.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
+#include "util/chat.hpp"
 
 #include <cstdlib>
 
@@ -187,7 +187,7 @@ namespace big
 			{
 				if (_player)
 				{
-					LOG(WARNING) << plyr->m_name << " seem to spam chat message.";
+					g_notification_service.push_warning("Chat Spam", plyr->m_name, true);
 					g_log.log_additional(std::format("Spam Message - p {}, m {}", plyr->m_name, message));
 				}
 				else
@@ -211,8 +211,8 @@ namespace big
 				return true;
 			}
 
-			if (g_session.log_chat_messages_to_textbox)
-				g_custom_chat_buffer.append_msg(plyr->m_name, message);
+			if (g_session.log_chat)
+				chat::log_chat_to_disk(message, plyr->m_name);
 
 			break;
 		}
