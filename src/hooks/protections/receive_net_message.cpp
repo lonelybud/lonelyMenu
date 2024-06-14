@@ -277,7 +277,7 @@ namespace big
 			{
 				g_session.next_host_list.list.clear();
 				if (g_session.num_vote_kicks == 0)
-					g_blocked_players_service.add_player(rockstar_id, {plyr->m_name, false, false, -1, "host kicked you without any votes"});
+					g_blocked_players_service.add_player(rockstar_id, {plyr->m_name, false, false, "host kicked you without any votes"});
 
 				return true;
 			}

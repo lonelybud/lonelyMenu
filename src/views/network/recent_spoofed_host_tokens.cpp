@@ -19,7 +19,7 @@ namespace big
 		if (components::button("Add all"))
 		{
 			for (auto& pair : g_recent_spoofed_host_tokens)
-				g_blocked_players_service.add_player(pair.first, {pair.second, true, false, 0, "Spoofed host token"});
+				g_blocked_players_service.add_player(pair.first, {pair.second, true, false, "Spoofed host token"});
 			g_recent_spoofed_host_tokens.clear();
 		}
 		ImGui::SameLine();
@@ -41,7 +41,7 @@ namespace big
 
 		if (selected_rid && components::button("Add to block list"))
 		{
-			g_blocked_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, 0, "Spoofed host token"});
+			g_blocked_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, "Spoofed host token"});
 			remove_selected_rid();
 		}
 		ImGui::SameLine();

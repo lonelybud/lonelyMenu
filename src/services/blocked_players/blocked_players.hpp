@@ -8,10 +8,9 @@ namespace big
 		std::string n; // name
 		bool block_join = true;
 		bool s;        // spammer
-		int l;       // language
 		std::string m; // message
 	};
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(blocked_player, n, s, l, m);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(blocked_player, n, s, m);
 
 	class blocked_players_service
 	{

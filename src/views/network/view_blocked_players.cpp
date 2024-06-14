@@ -1,4 +1,3 @@
-#include "core/data/language_codes.hpp"
 #include "pointers.hpp"
 #include "services/blocked_players/blocked_players.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -11,7 +10,6 @@ namespace big
 {
 	static char player_name[64];
 	static rock_id rockstar_id;
-	static int language;
 	static bool save_as_spammer, block_join;
 	static char message[msg_size];
 	static bool exist_already;
@@ -20,7 +18,6 @@ namespace big
 	{
 		strcpy(player_name, p.n.c_str());
 		rockstar_id     = rid;
-		language        = p.l;
 		save_as_spammer = p.s;
 		exist_already = block_join = p.block_join;
 		strcpy_safe(message, p.m.c_str(), msg_size);
@@ -51,18 +48,6 @@ namespace big
 		components::input_text("Player Name", player_name, sizeof(player_name));
 		ImGui::InputScalar("Rockstar Id", ImGuiDataType_U64, &rockstar_id);
 		ImGui::PopItemWidth();
-		ImGui::SetNextItemWidth(200.f);
-		if (ImGui::BeginCombo("##languages", language == -1 ? "Unknown" : languages[language].name))
-		{
-			if (components::selectable("Unknown", language == -1))
-				language = -1;
-
-			for (const auto& lang : languages)
-				if (components::selectable(lang.name, language == lang.id))
-					language = lang.id;
-
-			ImGui::EndCombo();
-		}
 
 		ImGui::Checkbox("Save as spammer", &save_as_spammer);
 		ImGui::Checkbox("Block Join", &block_join);
@@ -81,13 +66,13 @@ namespace big
 			if (components::button("Save"))
 			{
 				block_join = true;
-				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
+				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, message});
 			}
 			ImGui::SameLine();
 			if (components::button("Un-block"))
 			{
 				g_blocked_players_service.toggle_block(rockstar_id, false);
-				exist_already = false;
+				block_join = exist_already = false;
 			}
 		}
 		else if (components::button("Add to block list"))
@@ -96,11 +81,8 @@ namespace big
 			if (trimString(name).length() && rockstar_id)
 			{
 				block_join = true;
-				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
-				save_as_spammer = false;
-				strcpy(player_name, "");
-				rockstar_id = 0;
-				searched_blocked_players.clear();
+				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, message});
+				set_selected(0, {});
 			}
 			else
 				g_notification_service.push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
@@ -156,7 +138,8 @@ namespace big
 
 		components::button("Reset Non Blocked List", [] {
 			set_selected(0, {});
-			for (auto it = g_blocked_players_service.blocked_players_list.begin(); it != g_blocked_players_service.blocked_players_list.end();)
+			for (auto it = g_blocked_players_service.blocked_players_list.begin();
+			     it != g_blocked_players_service.blocked_players_list.end();)
 				if (!it->second.block_join)
 					it = g_blocked_players_service.blocked_players_list.erase(it);
 				else

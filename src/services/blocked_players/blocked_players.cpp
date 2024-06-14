@@ -1,10 +1,7 @@
 #pragma once
 #include "blocked_players.hpp"
 
-#include "core/scr_globals.hpp"
 #include "logger/logger.hpp"
-
-#include <script/globals/GPBD_FM_3.hpp>
 
 using json = nlohmann::json;
 
@@ -24,9 +21,7 @@ namespace big
 
 	void blocked_players_service::add_player(player_ptr player, bool block_join, bool is_spammer)
 	{
-		auto& bs = scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[player->id()].BossGoon;
-		add_player(player->m_rockstar_id,
-		    {player->m_name, block_join, is_spammer, bs.Language, is_spammer ? "spam" : player->spam_message});
+		add_player(player->m_rockstar_id, {player->m_name, block_join, is_spammer, is_spammer ? "spam" : player->spam_message});
 	}
 
 	void blocked_players_service::toggle_block(rock_id rockstar_id, bool v)
