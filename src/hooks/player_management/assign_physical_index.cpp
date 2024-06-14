@@ -6,7 +6,7 @@
 #include "core/scr_globals.hpp"
 #include "fiber_pool.hpp"
 #include "hooking/hooking.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/friends/friends_service.hpp"
 #include "services/known_players/known_players.hpp"
 #include "services/players/player_service.hpp"
@@ -66,7 +66,7 @@ namespace big
 			g_fiber_pool->queue_job([id, rockstar_id, host_token] {
 				if (auto plyr = g_player_service->get_by_id(id); plyr && plyr->is_valid())
 				{
-					auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
+					auto is_blocked  = g_blocked_players_service.is_blocked(rockstar_id);
 					auto is_known    = g_known_players_service.is_known(rockstar_id);
 					auto is_friend   = plyr->is_friend();
 					auto player_name = plyr->m_name;
@@ -88,8 +88,8 @@ namespace big
 					if (is_blocked)
 					{
 						plyr->is_blocked   = true;
-						plyr->is_spammer   = g_bad_players_service.bad_players_list[rockstar_id].s;
-						plyr->spam_message = g_bad_players_service.bad_players_list[rockstar_id].m;
+						plyr->is_spammer   = g_blocked_players_service.blocked_players_list[rockstar_id].s;
+						plyr->spam_message = g_blocked_players_service.blocked_players_list[rockstar_id].m;
 
 						if (plyr->is_spammer)
 							LOG(INFO) << "Spammer joined: " << join_str;

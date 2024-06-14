@@ -2,7 +2,7 @@
 #include "core/data/session.hpp"
 #include "hooking/hooking.hpp"
 #include "pointers.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/friends/friends_service.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/session.hpp"
@@ -17,7 +17,7 @@ namespace big
 	{
 		auto rockstar_id = player_info->m_gamer_handle.m_rockstar_id;
 		auto is_friend   = friends_service::is_friend(rockstar_id);
-		auto is_blocked  = g_bad_players_service.is_blocked(rockstar_id);
+		auto is_blocked  = g_blocked_players_service.is_blocked(rockstar_id);
 
 		auto block_join        = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
 		auto has_spoofed_token = !is_friend && session::is_spoofed_host_token(player_info->m_host_token);
@@ -32,7 +32,7 @@ namespace big
 
 			if (is_blocked)
 			{
-				if (!g_bad_players_service.bad_players_list[rockstar_id].s)
+				if (!g_blocked_players_service.blocked_players_list[rockstar_id].s)
 					g_notification_service.push_success("Join Blocked", str, true);
 			}
 			else if (has_spoofed_token)

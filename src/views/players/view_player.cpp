@@ -8,7 +8,7 @@
 #include "gui.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/known_players/known_players.hpp"
@@ -71,14 +71,14 @@ namespace big
 
 	static void toggle_block(bool v)
 	{
-		if (!g_bad_players_service.does_exist(rockstar_id))
-			g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
+		if (!g_blocked_players_service.does_exist(rockstar_id))
+			g_blocked_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
 
-		if (v && !g_bad_players_service.is_blocked(rockstar_id))
-			g_bad_players_service.toggle_block(rockstar_id, true);
+		if (v && !g_blocked_players_service.is_blocked(rockstar_id))
+			g_blocked_players_service.toggle_block(rockstar_id, true);
 
-		if (!v && g_bad_players_service.is_blocked(rockstar_id))
-			g_bad_players_service.toggle_block(rockstar_id, false);
+		if (!v && g_blocked_players_service.is_blocked(rockstar_id))
+			g_blocked_players_service.toggle_block(rockstar_id, false);
 
 		if (v && g_player_service->get_self()->is_host())
 			dynamic_cast<player_command*>(command::get("breakup"_J))->call(last_selected_player);
@@ -284,7 +284,7 @@ namespace big
 					toggle_block(last_selected_player->is_blocked);
 
 				if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
-					g_bad_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
+					g_blocked_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
 
 				if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
 					last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :

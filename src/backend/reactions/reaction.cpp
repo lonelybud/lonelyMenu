@@ -4,7 +4,7 @@
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "script.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
 
@@ -90,15 +90,15 @@ namespace big
 			if (notify)
 				g_notification_service.push_warning(title, str);
 
-			// add modder to bad players temporary list
+			// add modder to blocked players temporary list
 			if (is_modder)
 			{
 				player->is_modder = true;
 
-				if (!g_bad_players_service.does_exist(player->m_rockstar_id))
+				if (!g_blocked_players_service.does_exist(player->m_rockstar_id))
 				{
 					player->spam_message = get_infraction_str(player->infractions);
-					g_bad_players_service.add_player(player, false, player->is_spammer);
+					g_blocked_players_service.add_player(player, false, player->is_spammer);
 				}
 			}
 			else if (other)
@@ -113,7 +113,7 @@ namespace big
 				{
 					player->is_blocked   = true;
 					player->spam_message = get_infraction_str(player->infractions);
-					g_bad_players_service.add_player(player, true, false);
+					g_blocked_players_service.add_player(player, true, false);
 				}
 
 				if (g_player_service->get_self()->is_host())

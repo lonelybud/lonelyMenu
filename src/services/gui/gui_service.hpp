@@ -23,7 +23,7 @@ namespace big
 		PTFX_EFFECTS,
 
 		NETWORK,
-		BAD_PLAYERS,
+		BLOCKED_PLAYERS,
 		KNOWN_PLAYERS,
 		RECENT_SPOOFED_HOST_TOKENS,
 		PLAYER_LANGS,
@@ -89,7 +89,7 @@ namespace big
 		            view::misc,
 		            {
 		                {tabs::PTFX_EFFECTS, {"Ptfx Effects", view::ptfx_effects}},
-		                {tabs::BAD_PLAYERS, {"Bad Players", view::bad_players}},
+		                {tabs::BLOCKED_PLAYERS, {"Blocked Players", view::blocked_players}},
 		                {tabs::KNOWN_PLAYERS, {"Known Players", view::known_players}},
 		                {tabs::RECENT_SPOOFED_HOST_TOKENS, {"Spoofed Host Tokens", view::recent_spoofed_host_tokens}},
 						{tabs::PLAYER_LANGS, {"Players Language", view::players_lang}},

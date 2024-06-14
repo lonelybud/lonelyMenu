@@ -1,7 +1,7 @@
 #include "core/data/recent_spoofed_host_tokens.hpp"
 
 #include "pointers.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "views/view.hpp"
 
 namespace big
@@ -19,7 +19,7 @@ namespace big
 		if (components::button("Add all"))
 		{
 			for (auto& pair : g_recent_spoofed_host_tokens)
-				g_bad_players_service.add_player(pair.first, {pair.second, true, false, 0, "Spoofed host token"});
+				g_blocked_players_service.add_player(pair.first, {pair.second, true, false, 0, "Spoofed host token"});
 			g_recent_spoofed_host_tokens.clear();
 		}
 		ImGui::SameLine();
@@ -41,7 +41,7 @@ namespace big
 
 		if (selected_rid && components::button("Add to block list"))
 		{
-			g_bad_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, 0, "Spoofed host token"});
+			g_blocked_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, 0, "Spoofed host token"});
 			remove_selected_rid();
 		}
 		ImGui::SameLine();

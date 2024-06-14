@@ -3,7 +3,7 @@
 #include "core/settings.hpp"
 #include "gta/weapons.hpp"
 #include "logger/logger.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/custom_chat_buffer.hpp"
 #include "services/custom_teleport/custom_teleport_service.hpp"
 #include "services/gta_data/gta_data_service.hpp"
@@ -21,11 +21,11 @@ namespace big
 			while (!g_running)
 				std::this_thread::yield();
 
-			g_bad_players_service.load_blocked_list();
+			g_blocked_players_service.load_blocked_list();
 			g_known_players_service.load_list();
 			g_custom_teleport_service.fetch_saved_locations();
 
-			int last_pv_len{}, last_wp_len{}, bad_players_count = g_bad_players_service.save_count,
+			int last_pv_len{}, last_wp_len{}, blocked_players_count = g_blocked_players_service.save_count,
 			                                  known_players_count = g_known_players_service.save_count;
 
 			while (g_running)
@@ -38,12 +38,12 @@ namespace big
 				// auto flush chat to disk
 				g_custom_chat_buffer.flush_buffer();
 
-				// auto save bad players
-				if (auto bpc = g_bad_players_service.save_count; bad_players_count != bpc)
+				// auto save blocked players
+				if (auto bpc = g_blocked_players_service.save_count; blocked_players_count != bpc)
 				{
-					g_bad_players_service.save_blocked_list();
-					LOG(VERBOSE) << "Saved " << bpc - bad_players_count << " bad players";
-					bad_players_count = bpc;
+					g_blocked_players_service.save_blocked_list();
+					LOG(VERBOSE) << "Saved " << bpc - blocked_players_count << " blocked players";
+					blocked_players_count = bpc;
 				}
 
 				// auto save known players

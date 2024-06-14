@@ -23,7 +23,7 @@ namespace big
 		static void animations();
 		static void ptfx_effects();
 		static void network();
-		static void bad_players();
+		static void blocked_players();
 		static void known_players();
 		static void recent_spoofed_host_tokens();
 		static void players_lang();

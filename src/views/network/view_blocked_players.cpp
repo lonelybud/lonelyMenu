@@ -1,6 +1,6 @@
 #include "core/data/language_codes.hpp"
 #include "pointers.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
@@ -16,7 +16,7 @@ namespace big
 	static char message[msg_size];
 	static bool exist_already;
 
-	static void set_selected(rock_id rid, bad_player p)
+	static void set_selected(rock_id rid, blocked_player p)
 	{
 		strcpy(player_name, p.n.c_str());
 		rockstar_id     = rid;
@@ -26,9 +26,9 @@ namespace big
 		strcpy_safe(message, p.m.c_str(), msg_size);
 	}
 
-	static inline std::unordered_map<rock_id, bad_player> filter_bad_players(const std::unordered_map<rock_id, bad_player>& inputMap, const std::string& search)
+	static inline std::unordered_map<rock_id, blocked_player> filter_blocked_players(const std::unordered_map<rock_id, blocked_player>& inputMap, const std::string& search)
 	{
-		std::unordered_map<rock_id, bad_player> res;
+		std::unordered_map<rock_id, blocked_player> res;
 
 		for (auto pair : inputMap)
 		{
@@ -42,9 +42,9 @@ namespace big
 		return res;
 	}
 
-	void view::bad_players()
+	void view::blocked_players()
 	{
-		static std::unordered_map<rock_id, bad_player> searched_blocked_players;
+		static std::unordered_map<rock_id, blocked_player> searched_blocked_players;
 		static std::string search_blocked_player_name;
 
 		ImGui::PushItemWidth(300);
@@ -81,12 +81,12 @@ namespace big
 			if (components::button("Save"))
 			{
 				block_join = true;
-				g_bad_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
+				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
 			}
 			ImGui::SameLine();
 			if (components::button("Un-block"))
 			{
-				g_bad_players_service.toggle_block(rockstar_id, false);
+				g_blocked_players_service.toggle_block(rockstar_id, false);
 				exist_already = false;
 			}
 		}
@@ -96,7 +96,7 @@ namespace big
 			if (trimString(name).length() && rockstar_id)
 			{
 				block_join = true;
-				g_bad_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
+				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, language, message});
 				save_as_spammer = false;
 				strcpy(player_name, "");
 				rockstar_id = 0;
@@ -117,7 +117,7 @@ namespace big
 				    search_blocked_player_name.end(),
 				    search_blocked_player_name.begin(),
 				    ::tolower);
-				searched_blocked_players = filter_bad_players(g_bad_players_service.bad_players_list, search_blocked_player_name);
+				searched_blocked_players = filter_blocked_players(g_blocked_players_service.blocked_players_list, search_blocked_player_name);
 			}
 			else
 				searched_blocked_players.clear();
@@ -128,9 +128,9 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			ImGui::Text("Joins Not blocked -");
-			if (ImGui::BeginListBox("##bad_players", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
+			if (ImGui::BeginListBox("##blocked_players", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
-				for (auto& pair : g_bad_players_service.bad_players_list)
+				for (auto& pair : g_blocked_players_service.blocked_players_list)
 					if (!pair.second.block_join && ImGui::Selectable(pair.second.n.c_str(), rockstar_id && rockstar_id == pair.first))
 						set_selected(pair.first, pair.second);
 
@@ -142,10 +142,10 @@ namespace big
 		ImGui::BeginGroup();
 		{
 			ImGui::Text("Joins blocked -");
-			if (ImGui::BeginListBox("##bad_players_blocked", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
+			if (ImGui::BeginListBox("##blocked_players_blocked", {300, static_cast<float>(*g_pointers->m_gta.m_resolution_y * 0.3)}))
 			{
 				for (auto& pair :
-				    (search_blocked_player_name.length() > 0 ? searched_blocked_players : g_bad_players_service.bad_players_list))
+				    (search_blocked_player_name.length() > 0 ? searched_blocked_players : g_blocked_players_service.blocked_players_list))
 					if (pair.second.block_join && ImGui::Selectable(pair.second.n.c_str(), rockstar_id && rockstar_id == pair.first))
 						set_selected(pair.first, pair.second);
 
@@ -156,16 +156,16 @@ namespace big
 
 		components::button("Reset Non Blocked List", [] {
 			set_selected(0, {});
-			for (auto it = g_bad_players_service.bad_players_list.begin(); it != g_bad_players_service.bad_players_list.end();)
+			for (auto it = g_blocked_players_service.blocked_players_list.begin(); it != g_blocked_players_service.blocked_players_list.end();)
 				if (!it->second.block_join)
-					it = g_bad_players_service.bad_players_list.erase(it);
+					it = g_blocked_players_service.blocked_players_list.erase(it);
 				else
 					++it;
 		});
 		ImGui::SameLine();
 		components::button("Reset All", [] {
 			set_selected(0, {});
-			g_bad_players_service.load_blocked_list();
+			g_blocked_players_service.load_blocked_list();
 		});
 	}
 }

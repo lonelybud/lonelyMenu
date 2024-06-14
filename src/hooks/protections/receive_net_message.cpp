@@ -12,7 +12,7 @@
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
 #include "script/scriptIdBase.hpp"
-#include "services/bad_players/bad_players.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/custom_chat_buffer.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
@@ -203,7 +203,7 @@ namespace big
 					plyr->spam_message = message;
 					plyr->is_blocked   = true;
 
-					g_bad_players_service.add_player(plyr, true, true);
+					g_blocked_players_service.add_player(plyr, true, true);
 					if (g_session.auto_kick_chat_spammers && g_player_service->get_self()->is_host())
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 				}
@@ -277,7 +277,7 @@ namespace big
 			{
 				g_session.next_host_list.list.clear();
 				if (g_session.num_vote_kicks == 0)
-					g_bad_players_service.add_player(rockstar_id, {plyr->m_name, false, false, -1, "host kicked you without any votes"});
+					g_blocked_players_service.add_player(rockstar_id, {plyr->m_name, false, false, -1, "host kicked you without any votes"});
 
 				return true;
 			}
