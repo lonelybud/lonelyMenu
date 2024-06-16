@@ -74,6 +74,8 @@ namespace big
 		int session_language            = 0;
 		bool spoof_session_player_count = false;
 		int session_player_count        = 25;
+
+		bool sending_chat_msg = false;
 	};
 
 	inline g_session_t g_session{};

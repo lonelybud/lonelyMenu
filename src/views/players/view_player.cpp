@@ -488,7 +488,6 @@ namespace big
 
 			ImGui::Spacing();
 
-			// components::player_command_button<"shkick">(last_selected_player);
 			components::player_command_button<"desync">(last_selected_player);
 
 			components::ver_space();
@@ -504,8 +503,6 @@ namespace big
 					entity::delete_entity(veh);
 				}
 			});
-
-			components::player_command_button<"intkick">(last_selected_player);
 		}
 		ImGui::EndGroup();
 	}

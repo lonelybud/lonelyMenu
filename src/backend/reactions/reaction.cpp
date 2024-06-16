@@ -95,8 +95,9 @@ namespace big
 			{
 				player->is_modder = true;
 
-				if (!g_blocked_players_service.does_exist(player->m_rockstar_id))
+				if (!player->is_blocked)
 				{
+					// add player again and update infraction message if added already
 					player->spam_message = get_infraction_str(player->infractions);
 					g_blocked_players_service.add_player(player, false, player->is_spammer);
 				}
@@ -108,6 +109,10 @@ namespace big
 			{
 				player->is_pain_in_ass = true;
 
+				// trying to kick you. let give 3 warnings before kicking that bud
+				if (this->type == reaction_type::kick_player && g_player_service->get_self()->is_host() && (++player->kick_counts < 4))
+					return;
+
 				// block join
 				if (!player->is_blocked)
 				{
@@ -116,6 +121,7 @@ namespace big
 					g_blocked_players_service.add_player(player, true, false);
 				}
 
+				// kick when host
 				if (g_player_service->get_self()->is_host())
 					dynamic_cast<player_command*>(command::get("breakup"_J))->call(player);
 			}

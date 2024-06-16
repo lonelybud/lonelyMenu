@@ -1,7 +1,12 @@
 #pragma once
+#include "core/data/session.hpp"
 #include "file_manager.hpp"
+#include "gta_util.hpp"
+#include "hooking/hooking.hpp"
 #include "natives.hpp"
 #include "script.hpp"
+#include "services/players/player_service.hpp"
+#include "strings.hpp"
 
 #include <script/HudColor.hpp>
 
@@ -56,5 +61,46 @@ namespace big::chat
 
 		log << formatted_str << std::endl;
 		log.close();
+	}
+
+	inline void send_chat_message(char* message, bool is_team)
+	{
+		std::string _message = message;
+		if (trimString(_message).size())
+		{
+			g_session.sending_chat_msg = true;
+
+			auto duration_ms = 0;
+			auto currentTime = std::chrono::system_clock::now();
+
+			// if not sending the message first time
+			if (g_player_service->get_self()->last_msg_time != std::chrono::system_clock::time_point::min())
+			{
+				auto diff_ms =
+				    std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - g_player_service->get_self()->last_msg_time)
+				        .count();
+
+				auto genuine_time_ms = (strlen(message) / (float)5) * 1000; // (length in chars / (5 char / 1 sec)) * no of ms in one sec
+				if (genuine_time_ms > diff_ms)
+					duration_ms = genuine_time_ms - diff_ms + 200;
+			}
+
+			g_fiber_pool->queue_job([duration_ms, message, is_team] {
+				script::get_current()->yield(std::chrono::milliseconds::duration(duration_ms));
+
+				if (g_pointers->m_gta.m_is_session_started && gta_util::get_network()->m_game_session_state > 4)
+				{
+					const auto net_game_player = gta_util::get_network_player_mgr()->m_local_net_player;
+					g_hooking->get_original<hooks::send_chat_message>()(*g_pointers->m_gta.m_send_chat_ptr,
+					    net_game_player->get_net_data(),
+					    message,
+					    is_team);
+					draw_chat(message, g_player_service->get_self()->m_name, is_team);
+
+					g_player_service->get_self()->last_msg_time = std::chrono::system_clock::now();
+					g_session.sending_chat_msg                  = false;
+				}
+			});
+		}
 	}
 }

@@ -120,7 +120,8 @@ namespace big
 
 					if (has_spoofed_token == 1)
 					{
-						g_recent_spoofed_host_tokens[rockstar_id] = player_name;
+						if (!is_blocked)
+							g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 						g_reactions.spoofed_host_token.process(plyr);
 						kick = imhost;
 						if (imhost)

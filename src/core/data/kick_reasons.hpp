@@ -3,7 +3,7 @@
 
 namespace big
 {
-	const std::map<KickReason, const char*> kick_reasons = {
+	inline const std::map<KickReason, const char*> kick_reasons = {
 	    {KickReason::VOTED_OUT, "HOST KICK"},
 	    {KickReason::PEER_COMPLAINTS, "PEER_COMPLAINTS"},
 	    {KickReason::CONNECTION_ERROR, "CONNECTION_ERROR"},

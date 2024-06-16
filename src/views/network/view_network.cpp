@@ -3,7 +3,6 @@
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
-#include "hooking/hooking.hpp"
 #include "util/chat.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
@@ -113,16 +112,16 @@ namespace big
 
 		ImGui::Spacing();
 
+		ImGui::BeginDisabled(g_session.sending_chat_msg);
+
 		ImGui::SetNextItemWidth(300);
 		components::input_text_with_hint("##message", "Message", msg, sizeof(msg));
 		ImGui::Checkbox("Is Team Message", &is_team);
 		ImGui::SameLine();
 		if (components::button("Send Message"))
-			g_fiber_pool->queue_job([] {
-				const auto net_game_player = gta_util::get_network_player_mgr()->m_local_net_player;
-				g_hooking->get_original<hooks::send_chat_message>()(*g_pointers->m_gta.m_send_chat_ptr, net_game_player->get_net_data(), msg, is_team);
-				chat::draw_chat(msg, g_player_service->get_self()->m_name, is_team);
-			});
+			chat::send_chat_message(msg, is_team);
+
+		ImGui::EndDisabled();
 	}
 
 	static inline void render_hosting()

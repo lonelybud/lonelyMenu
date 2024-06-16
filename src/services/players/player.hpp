@@ -97,7 +97,7 @@ namespace big
 		rate_limiter m_play_sound_rate_limit_tse{5s, 2};
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
-		std::chrono::seconds last_spam_interval_diff{};
+		std::chrono::milliseconds last_spam_interval_diff = std::chrono::milliseconds::min();
 		int same_interval_spam_count_low{};
 		int same_interval_spam_count_high{};
 
@@ -106,6 +106,8 @@ namespace big
 		// prevent spam logging of events in console
 		reaction_sub_type last_event_id = reaction_sub_type::none;
 		debouncer<std::chrono::milliseconds> last_event_deb;
+
+		int kick_counts = 0;
 
 		int spectating_player = -1;
 

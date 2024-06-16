@@ -16,14 +16,14 @@ namespace big
 
 	void view::recent_spoofed_host_tokens()
 	{
-		if (components::button("Add all"))
+		if (components::button("Add All"))
 		{
 			for (auto& pair : g_recent_spoofed_host_tokens)
-				g_blocked_players_service.add_player(pair.first, {pair.second, true, false, "Spoofed host token"});
+				g_blocked_players_service.add_player(pair.first, {pair.second, true, false, "SHT"});
 			g_recent_spoofed_host_tokens.clear();
 		}
 		ImGui::SameLine();
-		if (components::button("Clear"))
+		if (components::button("Clear All"))
 			g_recent_spoofed_host_tokens.clear();
 
 		ImGui::Spacing();
@@ -41,7 +41,7 @@ namespace big
 
 		if (selected_rid && components::button("Add to block list"))
 		{
-			g_blocked_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, "Spoofed host token"});
+			g_blocked_players_service.add_player(selected_rid, {g_recent_spoofed_host_tokens[selected_rid], true, false, "SHT"});
 			remove_selected_rid();
 		}
 		ImGui::SameLine();
