@@ -336,21 +336,18 @@ namespace big
 		}
 		case rage::eNetMessage::MsgNonPhysicalData:
 		{
-			if (!_player)
-				break;
-
 			buffer.Read<int>(7); // size
 			int bubble = buffer.Read<int>(4);
 			int player = buffer.Read<int>(6);
 
 			if (g_player_service->get_self() && g_player_service->get_self()->id() == player)
 			{
-				LOG(WARNING) << "MsgNonPhysicalData: \"We're being replaced.\" from " << plyr->m_name;
+				LOG(WARNING) << "MsgNonPhysicalData: \"We're being replaced.\" from " << _player ? _player->m_name : "?";
 				return true;
 			}
 
 			if (bubble != 0)
-				LOG(WARNING) << "MsgNonPhysicalData: Wrong bubble: " << bubble << " from " << plyr->m_name;
+				LOG(WARNING) << "MsgNonPhysicalData: Wrong bubble: " << bubble << " from " << _player ? _player->m_name : "?";
 
 			break;
 		}

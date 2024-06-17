@@ -1,22 +1,23 @@
 #include "exception_handler.hpp"
 
-#include "stack_trace.hpp"
 #include "logger/logger.hpp"
+#include "stack_trace.hpp"
+
 #include <hde64.h>
 
 namespace big
 {
 	inline auto hash_stack_trace(std::vector<uint64_t> stack_trace)
 	{
-		auto data = reinterpret_cast<const char*>(stack_trace.data());
+		auto data        = reinterpret_cast<const char*>(stack_trace.data());
 		std::size_t size = stack_trace.size() * sizeof(uint64_t);
 
-		return std::hash<std::string_view>()({ data, size });
+		return std::hash<std::string_view>()({data, size});
 	}
 
 	exception_handler::exception_handler()
 	{
-		m_old_error_mode = SetErrorMode(0);
+		m_old_error_mode    = SetErrorMode(0);
 		m_exception_handler = SetUnhandledExceptionFilter(&vectored_exception_handler);
 	}
 
@@ -26,13 +27,13 @@ namespace big
 		SetUnhandledExceptionFilter(reinterpret_cast<decltype(&vectored_exception_handler)>(m_exception_handler));
 	}
 
-	inline static stack_trace trace;
 	LONG vectored_exception_handler(EXCEPTION_POINTERS* exception_info)
 	{
 		const auto exception_code = exception_info->ExceptionRecord->ExceptionCode;
 		if (exception_code == EXCEPTION_BREAKPOINT || exception_code == DBG_PRINTEXCEPTION_C || exception_code == DBG_PRINTEXCEPTION_WIDE_C)
 			return EXCEPTION_CONTINUE_SEARCH;
 
+		static stack_trace trace;
 		static std::set<std::size_t> logged_exceptions;
 
 		trace.new_stack_trace(exception_info);
@@ -45,7 +46,6 @@ namespace big
 			logged_exceptions.insert(trace_hash);
 		}
 
-	
 		if (IsBadReadPtr(reinterpret_cast<void*>(exception_info->ContextRecord->Rip), 8))
 		{
 			auto return_address_ptr = (uint64_t*)exception_info->ContextRecord->Rsp;

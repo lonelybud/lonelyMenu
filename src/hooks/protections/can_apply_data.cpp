@@ -1300,12 +1300,16 @@ namespace big
 				if (g_debug.log_ped_clones)
 				{
 					if (model_info::is_model_of_type(_model, eModelType::OnlineOnlyPed))
-						LOG(VERBOSE) << "ped: player clone (" << sender_plyr->m_name << ")";
+						LOGF(VERBOSE, "ped: player clone ({})", sender_plyr->m_name);
 					else if (model_info::is_model_of_type(_model, eModelType::Ped))
 					{
 						auto& peds = g_gta_data_service->peds();
 						auto it    = peds.find(creation_node->m_model);
-						LOG(VERBOSE) << "ped: " << (it != peds.end() ? it->second.m_name : "?") << " (" << sender_plyr->m_name << ")";
+						LOGF(VERBOSE,
+						    "ped: {}, {} ({})",
+						    it != peds.end() ? it->second.m_name : "?",
+						    it != peds.end() ? it->second.m_ped_type : "?",
+						    sender_plyr->m_name);
 					}
 				}
 
@@ -1687,6 +1691,7 @@ namespace big
 					g_reactions.crash28.process(sender_plyr);
 					return true;
 				}
+				break;
 			}
 			case sync_node_id("CPedMovementGroupDataNode"):
 			{

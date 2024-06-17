@@ -1,10 +1,10 @@
 #include "core/data/weapons.hpp"
+#include "core/vars.hpp"
 #include "gta/weapons.hpp"
 #include "natives.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/persist_weapons/persist_weapons.hpp"
 #include "views/view.hpp"
-#include "core/vars.hpp"
 
 namespace big
 {
@@ -26,17 +26,10 @@ namespace big
 
 	static inline void render_misc()
 	{
-		ImGui::BeginDisabled(g_weapons.aimbot.enable_old);
 		components::command_checkbox<"aimbot">();
-		ImGui::EndDisabled();
-		ImGui::SameLine();
-		ImGui::BeginDisabled(g_weapons.aimbot.enable);
-		components::command_checkbox<"aimbot_old">();
-		ImGui::EndDisabled();
-		if (g_weapons.aimbot.enable || g_weapons.aimbot.enable_old)
+		if (g_weapons.aimbot.enable)
 		{
 			ImGui::PushItemWidth(350);
-			ImGui::SliderFloat("Aimbot Distance", &g_weapons.aimbot.distance, 1.f, 1000.f, "%.0f");
 			ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
 			ImGui::PopItemWidth();
 			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);

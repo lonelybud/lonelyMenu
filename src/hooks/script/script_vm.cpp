@@ -1,15 +1,9 @@
 #include "core/data/script_vm.hpp"
 
-#include "core/scr_globals.hpp"
 #include "hooking/hooking.hpp"
-#include "pointers.hpp"
 #include "services/script_patcher/script_patcher_service.hpp"
 
-#include <script/globals/GlobalPlayerBD.hpp>
 #include <script/scrProgram.hpp>
-
-static int old_cayo_flags;
-static int old_shop_index;
 
 namespace big
 {

@@ -29,6 +29,6 @@ namespace big
 
 	namespace scr_functions
 	{
-		static inline script_function reset_session_data("RSD", "pausemenu_multiplayer"_J, "2D 02 7D 00 00", 0);
+		inline script_function reset_session_data("RSD", "pausemenu_multiplayer"_J, "2D 02 7D 00 00", 0);
 	}
 }

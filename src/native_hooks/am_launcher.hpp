@@ -8,7 +8,7 @@ namespace big
 {
 	namespace am_launcher
 	{
-		static void START_NEW_SCRIPT_WITH_ARGS(rage::scrNativeCallContext* src)
+		void START_NEW_SCRIPT_WITH_ARGS(rage::scrNativeCallContext* src)
 		{
 			const char* const name = src->get_arg<const char*>(0);
 
