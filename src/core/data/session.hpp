@@ -57,7 +57,7 @@ namespace big
 		bool force_fmmc_launcher_host = false;
 		bool force_am_launcher_host   = false;
 
-		bool log_chat                        = true;
+		bool log_chat_messages_to_textbox    = true;
 		bool decloak_players                 = false;
 		bool auto_kick_chat_spammers         = false;
 		bool block_muggers                   = false;

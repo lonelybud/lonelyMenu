@@ -4,6 +4,7 @@
 #include "gta/weapons.hpp"
 #include "logger/logger.hpp"
 #include "services/blocked_players/blocked_players.hpp"
+#include "services/custom_chat_buffer.hpp"
 #include "services/custom_teleport/custom_teleport_service.hpp"
 #include "services/gta_data/gta_data_service.hpp"
 #include "services/known_players/known_players.hpp"
@@ -33,6 +34,9 @@ namespace big
 
 				// auto save current settings to disk
 				g_menu_settings.attempt_save();
+
+				// auto flush chat to disk
+				g_custom_chat_buffer.flush_buffer();
 
 				// auto save blocked players
 				if (auto bpc = g_blocked_players_service.save_count; blocked_players_count != bpc)

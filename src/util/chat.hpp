@@ -1,6 +1,5 @@
 #pragma once
 #include "core/data/session.hpp"
-#include "file_manager.hpp"
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
@@ -38,29 +37,6 @@ namespace big::chat
 		GRAPHICS::DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleform, 255, 255, 255, 255, 0);
 
 		HUD::CLOSE_MP_TEXT_CHAT();
-	}
-
-	inline void log_chat_to_disk(char* message, char* player_name)
-	{
-		static std::chrono::system_clock::time_point last_time = std::chrono::system_clock::time_point::min();
-
-		std::ofstream log(g_file_manager.get_project_file("./chat.log").get_path(), std::ios::app);
-
-		int time_diff;
-		auto currentTime = std::chrono::system_clock::now();
-
-		if (last_time != std::chrono::system_clock::time_point::min())
-		{
-			time_diff = std::chrono::duration_cast<std::chrono::seconds>(currentTime - last_time).count();
-			if (time_diff > 99)
-				time_diff = 0;
-		}
-		last_time = currentTime;
-
-		std::string formatted_str = std::format("{} {} : {}", time_diff, player_name, message);
-
-		log << formatted_str << std::endl;
-		log.close();
 	}
 
 	inline void send_chat_message(char* message, bool is_team)

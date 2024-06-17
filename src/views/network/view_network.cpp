@@ -3,7 +3,6 @@
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
 #include "gta_util.hpp"
-#include "util/chat.hpp"
 #include "util/scripts.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
@@ -101,29 +100,6 @@ namespace big
 		}
 	}
 
-	static inline void render_chat()
-	{
-		components::sub_title("Chat");
-
-		static bool is_team;
-		static char msg[256];
-
-		ImGui::Checkbox("Log Chat", &g_session.log_chat);
-
-		ImGui::Spacing();
-
-		ImGui::BeginDisabled(g_session.sending_chat_msg);
-
-		ImGui::SetNextItemWidth(300);
-		components::input_text_with_hint("##message", "Message", msg, sizeof(msg));
-		ImGui::Checkbox("Is Team Message", &is_team);
-		ImGui::SameLine();
-		if (components::button("Send Message"))
-			chat::send_chat_message(msg, is_team);
-
-		ImGui::EndDisabled();
-	}
-
 	static inline void render_hosting()
 	{
 		components::sub_title("Session Host");
@@ -216,8 +192,6 @@ namespace big
 		components::hor_space();
 		ImGui::BeginGroup();
 		{
-			render_chat();
-			ImGui::Spacing();
 			render_hosting();
 		}
 		ImGui::EndGroup();
