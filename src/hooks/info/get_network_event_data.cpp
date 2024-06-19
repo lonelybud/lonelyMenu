@@ -73,6 +73,9 @@ namespace big
 											g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
 									}
 								}
+
+								if (!player->is_friend())
+									player->esp_enemy = true;
 							});
 						else if (victim_player && g_misc.notify_friend_killed && victim_player->is_friend())
 							g_notification_service.push_warning("Friend Killed",

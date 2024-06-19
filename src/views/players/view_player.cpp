@@ -210,7 +210,7 @@ namespace big
 							    ImGui::Text("Player Explosion Proof");
 
 						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
-							    if (auto vehicle = last_selected_player->get_current_vehicle(); vehicle != nullptr)
+							    if (auto vehicle = last_selected_player->get_current_vehicle())
 							    {
 								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
 									    ImGui::Text("Vehicle: %s",
@@ -282,6 +282,10 @@ namespace big
 
 				if (ImGui::Checkbox("Is Blocked", &last_selected_player->is_blocked))
 					toggle_block(last_selected_player->is_blocked);
+
+				ImGui::BeginDisabled(last_selected_player->is_blocked);
+				ImGui::Checkbox("Is Spammer", &last_selected_player->is_spammer);
+				ImGui::EndDisabled();
 
 				if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
 					g_blocked_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
@@ -375,7 +379,7 @@ namespace big
 			ImGui::SameLine();
 			components::button("TP IN VEH", [] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
-					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0))
 						teleport::into_vehicle(veh);
 			});
 		}
@@ -447,7 +451,7 @@ namespace big
 			components::button("Copy Vehicle", [] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
 				{
-					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0))
 						persist_car_service::clone_ped_car(veh, last_selected_player->m_name);
 					else
 						g_notification_service.push_error("Copy Vehicle", "Failed to get veh", false);
@@ -457,7 +461,7 @@ namespace big
 			components::button("Save Vehicle", [] {
 				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
 				{
-					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0); veh)
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0))
 						persist_car_service::save_vehicle(veh, "", "");
 					else
 						g_notification_service.push_error("Save Vehicle", "Failed to get veh", false);
@@ -501,6 +505,16 @@ namespace big
 				{
 					auto veh = g_pointers->m_gta.m_ptr_to_handle(c_veh);
 					entity::delete_entity(veh);
+				}
+			});
+
+			components::button("Remove vehicle ammo", [] {
+				if (auto ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(last_selected_player->id()))
+				{
+					if (Vehicle veh = PED::GET_VEHICLE_PED_IS_IN(ped, 0))
+						vehicle::update_veh_ammo(veh, 0);
+					else
+						g_notification_service.push_error("Remove Vehicle Ammo", "Failed to get veh");
 				}
 			});
 		}

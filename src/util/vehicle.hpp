@@ -123,4 +123,19 @@ namespace big::vehicle
 		HUD::END_TEXT_COMMAND_SET_BLIP_NAME(blip);
 		v.blip = blip;
 	}
+
+	inline void update_veh_ammo(Vehicle veh, int amount)
+	{
+		if (ENTITY::DOES_ENTITY_EXIST(veh) && VEHICLE::DOES_VEHICLE_HAVE_WEAPONS(veh) && entity::take_control_of(veh))
+		{
+			for (int i = 0; i < 3; i++)
+				VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(veh, i, amount);
+			VEHICLE::SET_VEHICLE_BOMB_AMMO(veh, amount);
+			VEHICLE::SET_VEHICLE_COUNTERMEASURE_AMMO(veh, amount);
+
+			g_notification_service.push_success("Vehicle Ammo", "Success updated");
+		}
+		else
+			g_notification_service.push_error("Vehicle Ammo", "Failed to update");
+	}
 }

@@ -49,6 +49,8 @@ namespace big::entity
 		// if (ENTITY::DOES_ENTITY_EXIST(ent))
 		// 	ENTITY::SET_ENTITY_AS_NO_LONGER_NEEDED(&ent);
 
+		script::get_current()->yield(150ms);
+
 		if (ENTITY::DOES_ENTITY_EXIST(temp))
 		{
 			g_notification_service.push_error("Deletion failed", std::format("Entity {} exists even after deleting", temp));

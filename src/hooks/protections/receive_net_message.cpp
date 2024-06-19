@@ -95,16 +95,17 @@ namespace big
 		 *   gives ratio 12/2 = 6/1 < 7/1 = OK.
 		 * should work for russian language too but still experimental for now
 		 */
+		bool typing_speed_ratio_detection = false;
 		if ((msg_len / time_secs) > 7)
-			return true;
+			typing_speed_ratio_detection = true;
 
-		if (msg_len > 50)
+		if (typing_speed_ratio_detection || msg_len > 50)
 		{
 			// // it should take atleast 2 seconds: to type or copy and paste
 			// if (diff.count() <= 2)
 			// 	return true;
 
-			return is_spam_interval_diff_there(msg, _player, diff, 3, 1);
+			return is_spam_interval_diff_there(msg, _player, diff, 2, 1);
 		}
 
 		return is_spam_interval_diff_there(msg, _player, diff, 10, 0);
@@ -342,12 +343,12 @@ namespace big
 
 			if (g_player_service->get_self() && g_player_service->get_self()->id() == player)
 			{
-				LOG(WARNING) << "MsgNonPhysicalData: \"We're being replaced.\" from " << _player ? _player->m_name : "?";
+				LOG(WARNING) << "MsgNonPhysicalData: \"We're being replaced.\" from " << (plyr ? plyr->m_name : "?");
 				return true;
 			}
 
 			if (bubble != 0)
-				LOG(WARNING) << "MsgNonPhysicalData: Wrong bubble: " << bubble << " from " << _player ? _player->m_name : "?";
+				LOG(WARNING) << "MsgNonPhysicalData: Wrong bubble: " << bubble << " from " << (plyr ? plyr->m_name : "?");
 
 			break;
 		}

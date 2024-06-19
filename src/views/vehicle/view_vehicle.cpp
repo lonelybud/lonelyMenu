@@ -36,16 +36,7 @@ namespace big
 
 		seats = tmp_seats;
 	}
-	static void update_veh_ammo(int amount)
-	{
-		if (self::veh && VEHICLE::DOES_VEHICLE_HAVE_WEAPONS(self::veh) && entity::take_control_of(self::veh))
-		{
-			for (int i = 0; i < 3; i++)
-				VEHICLE::SET_VEHICLE_WEAPON_RESTRICTED_AMMO(self::veh, i, amount);
-			VEHICLE::SET_VEHICLE_BOMB_AMMO(self::veh, amount);
-			VEHICLE::SET_VEHICLE_COUNTERMEASURE_AMMO(self::veh, amount);
-		}
-	}
+
 
 	static inline void render_first_block()
 	{
@@ -301,7 +292,7 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("Set infinite", [] {
-			update_veh_ammo(-1);
+			vehicle::update_veh_ammo(self::veh, -1);
 		});
 	}
 
