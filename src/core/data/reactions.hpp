@@ -76,7 +76,7 @@ namespace big
 
 		// notify once, not modder, other
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", true, false, true};
-		reaction nat_type_0{reaction_type::none, reaction_sub_type::nat_type_0, "Nat type 0", true, false, true};
+		reaction nat_type_0_1{reaction_type::none, reaction_sub_type::nat_type_0_1, "Nat type 0/1", true, false, true};
 		reaction spoofed_host_token_2{reaction_type::none, reaction_sub_type::spoofed_host_token_2, "Potentially Spoofed host token", true, false, true};
 
 		// notify once, modder, not other
@@ -126,7 +126,7 @@ namespace big
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", false, false, false};
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", false, false, false};
 		reaction spectate_others{reaction_type::none, reaction_sub_type::spectate_others, "Spectate Others", false, false, false};
-		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", false, false, false};
+		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", false, false, false, reaction_karma::none, 3};
 		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", false, false, false};
 		reaction killed_with_veh_god{reaction_type::none, reaction_sub_type::killed_with_veh_god, "Vehicle God Kill", false, false, false};
 		reaction killed_with_orbital{reaction_type::none, reaction_sub_type::killed_with_orbital, "Orbital Kill", false, false, false};

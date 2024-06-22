@@ -107,7 +107,7 @@ namespace big
 		{
 			std::string data = yim_serializer.get_string();
 
-			// log to console
+			// log important ones
 			if (!is_unimp_bad_metrics)
 			{
 				bool contains_your_sc = false;
@@ -116,12 +116,12 @@ namespace big
 					contains_your_sc = data.find(std::to_string(g_player_service->get_self()->m_rockstar_id)) != std::string::npos;
 
 				LOG(WARNING) << "BAD METRIC: " << metric_name << " " << contains_your_sc;
-			}
 
 			// log to file
 			std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
 			log << "BAD METRIC: " << metric_name << "; DATA: " << data << std::endl;
 			log.close();
+			}
 
 			if (!strcmp(metric_name, "MM"))
 			{

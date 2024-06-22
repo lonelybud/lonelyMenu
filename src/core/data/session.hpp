@@ -60,7 +60,6 @@ namespace big
 		bool log_chat_messages_to_textbox    = true;
 		bool decloak_players                 = false;
 		bool auto_kick_chat_spammers         = false;
-		bool block_muggers                   = false;
 		bool unhide_players_from_player_list = false;
 		int nat_type                         = 4;
 

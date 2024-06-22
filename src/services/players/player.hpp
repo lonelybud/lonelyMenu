@@ -3,7 +3,7 @@
 #include "core/data/reactions.hpp"
 #include "core/enums.hpp"
 #include "rate_limiter.hpp"
-#include "util/debouncer.hpp"
+#include "util/timer.hpp"
 
 #include <unordered_set>
 
@@ -72,6 +72,7 @@ namespace big
 		bool is_blocked        = false;
 		bool is_spammer        = false;
 		bool whitelist_spammer = false;
+		bool block_ptfx        = false;
 		bool whitelist_ptfx    = false;
 		bool is_other          = false;
 		bool is_known_player   = false;
@@ -97,15 +98,16 @@ namespace big
 		rate_limiter m_play_sound_rate_limit_tse{5s, 2};
 
 		std::chrono::system_clock::time_point last_msg_time = std::chrono::system_clock::time_point::min();
-		std::chrono::milliseconds last_spam_interval_diff = std::chrono::milliseconds::min();
+		std::chrono::milliseconds last_spam_interval_diff   = std::chrono::milliseconds::min();
 		int same_interval_spam_count_low{};
 		int same_interval_spam_count_high{};
 
 		bool log_clones = false;
 
-		// prevent spam logging of events in console
-		reaction_sub_type last_event_id = reaction_sub_type::none;
-		debouncer<std::chrono::milliseconds> last_event_deb;
+		reaction_sub_type last_event_sub_type = reaction_sub_type::none;
+		throttle<std::chrono::milliseconds> last_event_timer;
+		int last_event_count = 0;
+
 
 		int kick_counts = 0;
 

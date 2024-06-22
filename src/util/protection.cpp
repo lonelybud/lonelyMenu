@@ -88,6 +88,13 @@ namespace big::protection
 	    "proc_desert_sage_01"_J,
 	    "prop_saplin_001_b"_J,
 	    "prop_thindesertfiller_aa"_J,
+
+	    // experimental
+	    "urbanweeds02"_J,
+	    "prop_weed_002_ba"_J,
+	    "urbanweeds01_l1"_J,
+	    "urbangrngrass_01"_J,
+	    "urbandryfrnds_01"_J,
 	};
 
 	static const std::unordered_set<rage::joaat_t> crash_objects2 = {
@@ -166,14 +173,14 @@ namespace big::protection
 	    "v_serv_ct_chair01"_J,
 	    "v_corp_deskdrawfd"_J,
 	    "prop_saplin_002_b"_J,
-	    "urbangrngrass_01"_J,
+	    // "urbangrngrass_01"_J,
 	    "v_res_fa_mag_motor"_J,
 	    "v_corp_cashpack"_J,
 	    "v_corp_lowcabdark01"_J,
-	    "prop_weed_002_ba"_J,
+	    // "prop_weed_002_ba"_J,
 	    "prop_saplin_002_c"_J,
 	    "proc_sml_reeds_01b"_J,
-	    "urbanweeds01_l1"_J,
+	    // "urbanweeds01_l1"_J,
 	    "prop_grass_dry_02"_J,
 	    "v_corp_fib_glass1"_J,
 	    "v_serv_bs_clutter"_J,
@@ -227,7 +234,7 @@ namespace big::protection
 	    "v_corp_facebeanbagb"_J,
 	    "v_serv_bs_cond"_J,
 	    "v_corp_bk_lamp2"_J,
-	    "urbandryfrnds_01"_J,
+	    // "urbandryfrnds_01"_J,
 	    "v_corp_filecablow"_J,
 	    "v_serv_bs_gelx3"_J,
 	    "v_corp_bk_pens"_J,
@@ -267,7 +274,7 @@ namespace big::protection
 	    "proc_forest_grass_01"_J,
 	    "prop_fern_01"_J,
 	    "prop_dryweed_001_a"_J,
-	    "urbanweeds02"_J,
+	    // "urbanweeds02"_J,
 	    "urbanweeds02_l2"_J,
 
 	    // vehicles

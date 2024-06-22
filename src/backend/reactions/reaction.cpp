@@ -20,21 +20,26 @@ namespace big
 		return str;
 	}
 
-	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, bool notify_once, bool is_modder, bool other, reaction_karma karma_type) :
+	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, bool notify_once, bool is_modder, bool other, reaction_karma karma_type, int attempts_before_log) :
 	    type(type),
 	    sub_type(sub_type),
 	    m_event_name(event_name),
 	    notify_once(notify_once),
 	    is_modder(is_modder),
 	    other(other),
-	    m_karma_type(karma_type)
+	    m_karma_type(karma_type),
+	    m_attempts_before_log(attempts_before_log)
 	{
 	}
 
-	void reaction::process(player_ptr player, player_ptr target)
+	void reaction::process(player_ptr player, player_ptr target, bool silent)
 	{
 		if (player && player->is_valid())
 		{
+			auto currentTime = std::chrono::system_clock::now();
+
+			/************************************************************ update infraction */
+
 			if (!player->infractions.contains(this))
 				player->infractions[this] = 1;
 			else
@@ -48,7 +53,6 @@ namespace big
 				static player_ptr last_sub_type_plyr   = nullptr;
 				static std::chrono::system_clock::time_point last_sub_type_time = std::chrono::system_clock::time_point::min();
 
-				auto currentTime = std::chrono::system_clock::now();
 				if (this->type == reaction_type::crash_player && this->sub_type == last_sub_type && player != last_sub_type_plyr
 				    && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - last_sub_type_time).count() <= 500)
 					;
@@ -61,53 +65,72 @@ namespace big
 				//
 			}
 
-			bool kick_player = this->m_karma_type == reaction_karma::kick_player;
-			if (this->m_karma_type == reaction_karma::infraction_based && player->infractions[this] > 10)
-				kick_player = true;
-
+			/************************************************************ prevent log spam */
 			// dont log same event in a given time period from the same player. This will keep console logs short and concise.
-			bool should_log = true;
-			if (player->last_event_id == sub_type && !player->last_event_deb.has_debounced())
-				should_log = false;
+			// example if you receive "request control event" 30 times in 5 secs and you have set not to log more than 1 in 1sec
+			// then it will only log 5 times (each after 1 sec) and not 30 times.
+
+			bool should_log = false;
+			if (player->last_event_sub_type == sub_type)
+			{
+				if (player->last_event_count >= m_attempts_before_log)
+					should_log = player->last_event_timer.has_time_passed();
+
+				++player->last_event_count;
+			}
 			else
 			{
-				player->last_event_id = sub_type;
-				player->last_event_deb.reset(1000);
+				player->last_event_sub_type = sub_type;
+				player->last_event_timer.reset(1000);
+				player->last_event_count = 0;
+				should_log               = true;
 			}
-			//
 
-			auto str = std::format("{} from '{}'", m_event_name, player->m_name);
-			if (target)
-				str += std::format("to {}", target->m_name);
-			const char* title = "Event";
-			if (this->type == reaction_type::kick_player)
-				title = "Received Kick";
-			else if (this->type == reaction_type::crash_player)
-				title = "Received Crash";
+			/************************************************************ log phase */
 
-			if (log && should_log)
-				LOG(WARNING) << title << ": " << str;
-			if (notify)
-				g_notification_service.push_warning(title, str);
-
-			// add modder to blocked players temporary list
-			if (is_modder)
+			if (!silent)
 			{
-				player->is_modder = true;
+				auto str = std::format("{} from '{}'", m_event_name, player->m_name);
+				if (target)
+					str += std::format("to {}", target->m_name);
+				const char* title = "Event";
+				if (this->type == reaction_type::kick_player)
+					title = "Received Kick";
+				else if (this->type == reaction_type::crash_player)
+					title = "Received Crash";
+
+				if (log && should_log)
+					LOG(WARNING) << title << ": " << str;
+				if (notify)
+					g_notification_service.push_warning(title, str);
+			}
+
+			/************************************************************ whether to add player in temporary list */
+
+			if (is_modder || other)
+			{
+				if (is_modder)
+					player->is_modder = true;
+				else
+					player->is_other = true;
 
 				if (!player->is_blocked)
 				{
-					// add player again and update infraction message if added already
+					// add player to list and update infraction message if added already
 					player->spam_message = get_infraction_str(player->infractions);
 					g_blocked_players_service.add_player(player, false, player->is_spammer);
 				}
 			}
-			else if (other)
-				player->is_other = true;
+
+			/************************************************************ finally decide to kick player */
+
+			bool kick_player = this->m_karma_type == reaction_karma::kick_player;
+			if (this->m_karma_type == reaction_karma::infraction_based && player->infractions[this] > 10)
+				kick_player = true;
 
 			if (!player->is_friend() && kick_player)
 			{
-				player->is_pain_in_ass = true;
+				player->is_pain_in_ass = true; // make him bright red in player list
 
 				// trying to kick you. let give 3 warnings before kicking that bud
 				if (this->type == reaction_type::kick_player && g_player_service->get_self()->is_host() && (++player->kick_counts < 4))

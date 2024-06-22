@@ -133,8 +133,8 @@ namespace big
 					if (!is_friend && kick && !is_maintransition_script_active)
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
-					if (plyr->get_net_data()->m_nat_type == 0)
-						g_reactions.nat_type_0.process(plyr);
+					if (plyr->get_net_data()->m_nat_type <= 1)
+						g_reactions.nat_type_0_1.process(plyr, nullptr, true);
 				}
 			});
 		}

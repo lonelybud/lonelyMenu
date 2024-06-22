@@ -20,7 +20,7 @@ namespace big
 		auto is_blocked  = g_blocked_players_service.is_blocked(rockstar_id);
 
 		auto block_join        = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
-		auto has_spoofed_token = !is_friend && session::is_spoofed_host_token(player_info->m_host_token);
+		auto has_spoofed_token = !is_friend && (session::is_spoofed_host_token(player_info->m_host_token) == 1);
 
 		if (block_join || is_blocked || has_spoofed_token)
 		{
@@ -37,7 +37,10 @@ namespace big
 			}
 			else if (has_spoofed_token)
 			{
-				LOG(WARNING) << std::format("Join Request denied for spoofed host: {} ({})", player_info->m_name, rockstar_id);
+				LOG(WARNING) << std::format("Join Request denied (spoofed token): {} ({}) tk:{}",
+				    player_info->m_name,
+				    rockstar_id,
+				    player_info->m_host_token);
 				g_recent_spoofed_host_tokens[rockstar_id] = player_info->m_name;
 			}
 			else

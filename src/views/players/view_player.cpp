@@ -112,7 +112,6 @@ namespace big
 					    ImGui::Text("Rockstar Id: %d", rockstar_id);
 					    ImGui::Text("Male: %d", globalplayer_bd.IsMale);
 					    ImGui::Text("Bad sport: %d", globalplayer_bd.IsBadsport);
-					    ImGui::Text("Rockstar dev (dev dlc check, yim): %d", globalplayer_bd.IsRockstarDev);
 
 					    ImGui::Spacing();
 					    ImGui::Text("NAT Type: %s", get_nat_type_str(last_selected_player->get_net_data()->m_nat_type));
@@ -208,6 +207,8 @@ namespace big
 							    ImGui::Text("Player Bullet Proof");
 						    else if (ped->m_damage_bits & (uint32_t)eEntityProofs::EXPLOSION)
 							    ImGui::Text("Player Explosion Proof");
+							else if(ped->m_health > 328 || ped->m_maxhealth > 328)
+								ImGui::Text("Player Health Too High");
 
 						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
 							    if (auto vehicle = last_selected_player->get_current_vehicle())
@@ -296,6 +297,7 @@ namespace big
 
 				ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer);
 
+				ImGui::Checkbox("Block Ptfx", &last_selected_player->block_ptfx);
 				ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
 
 				if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))

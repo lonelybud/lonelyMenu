@@ -3,7 +3,7 @@
 #include "gta/enums.hpp"
 #include "natives.hpp"
 #include "script.hpp"
-#include "util/debouncer.hpp"
+#include "util/timer.hpp"
 #include "core/vars.hpp"
 
 namespace big
@@ -75,7 +75,7 @@ namespace big
 	{
 		static bool disabled               = true;
 		static const char* current_fx_name = nullptr;
-		static debouncer deb;
+		static throttle timer;
 		static int _delay = g_ptfx_effects.delay;
 
 		if (g_ptfx_effects.show)
@@ -83,7 +83,7 @@ namespace big
 			if (disabled || _delay != g_ptfx_effects.delay)
 			{
 				disabled = false;
-				deb.reset(g_ptfx_effects.delay);
+				timer.reset(g_ptfx_effects.delay);
 				_delay = g_ptfx_effects.delay;
 			}
 
@@ -95,7 +95,7 @@ namespace big
 
 			if (!STREAMING::HAS_NAMED_PTFX_ASSET_LOADED(g_ptfx_effects.asset))
 				STREAMING::REQUEST_NAMED_PTFX_ASSET(g_ptfx_effects.asset);
-			else if (deb.has_debounced())
+			else if (timer.has_time_passed())
 			{
 				if (self::veh == 0)
 					show_player_ptfx_effect();

@@ -368,7 +368,7 @@ namespace big
 		report,
 		bounty,
 		rockstar_admin,
-		nat_type_0,
+		nat_type_0_1,
 		anti_cheat_modder_detection,
 		spoofed_host_token,
 		killed_with_god,

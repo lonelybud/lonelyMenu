@@ -353,7 +353,7 @@ namespace big
 					{
 						g_reactions.request_control_event.process(plyr);
 						return send_ack_event();
-					}		
+					}
 				}
 			}
 			buffer->Seek(0);
@@ -536,12 +536,17 @@ namespace big
 				    plyr->m_name,
 				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
 
+			if (plyr->block_ptfx)
+				return send_ack_event();
+
 			if (plyr->whitelist_ptfx)
 				break;
 
 			if (plyr->m_ptfx_ratelimit.process())
 			{
-				g_reactions.ptfx_spam.process(plyr);
+				if (plyr->m_ptfx_ratelimit.exceeded_last_process())
+					g_reactions.ptfx_spam.process(plyr);
+
 				return send_ack_event();
 			}
 

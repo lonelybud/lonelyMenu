@@ -4,13 +4,13 @@
 namespace big
 {
 	template<typename T = std::chrono::milliseconds>
-	class debouncer
+	class throttle
 	{
 		std::chrono::system_clock::time_point last_time = std::chrono::system_clock::time_point::min();
 		int delay;
 
 	public:
-		debouncer(int _delay = 0)
+		throttle(int _delay = 0)
 		{
 			delay = _delay;
 		}
@@ -21,7 +21,7 @@ namespace big
 			delay     = _delay;
 		}
 
-		bool has_debounced()
+		bool has_time_passed()
 		{
 			auto currentTime = std::chrono::system_clock::now();
 			auto diff        = std::chrono::duration_cast<T>(currentTime - last_time);

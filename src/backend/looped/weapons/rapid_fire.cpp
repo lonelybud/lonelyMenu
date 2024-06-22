@@ -6,7 +6,7 @@
 #include "gui.hpp"
 #include "natives.hpp"
 #include "script.hpp"
-#include "util/debouncer.hpp"
+#include "util/timer.hpp"
 #include "util/math.hpp"
 
 namespace big
@@ -20,18 +20,18 @@ namespace big
 		Hash weapon_hash;
 		int original_weapon_tint = 0;
 		int current_weapon_tint  = 0;
-		debouncer<std::chrono::milliseconds> deb;
+		throttle<std::chrono::milliseconds> timer;
 		int _delay = g_weapons.rapid_fire_delay;
 
-		inline void reset_debouncer()
+		inline void reset_timer()
 		{
-			deb.reset(g_weapons.rapid_fire_delay);
+			timer.reset(g_weapons.rapid_fire_delay);
 			_delay = g_weapons.rapid_fire_delay;
 		}
 
 		virtual void on_enable() override
 		{
-			reset_debouncer();
+			reset_timer();
 		}
 
 		virtual void on_tick() override
@@ -64,8 +64,8 @@ namespace big
 				else if (!g_gui->is_open() && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_ATTACK) && PAD::IS_DISABLED_CONTROL_PRESSED(0, (int)ControllerInputs::INPUT_AIM))
 				{
 					if (_delay != g_weapons.rapid_fire_delay)
-						reset_debouncer();
-					else if (deb.has_debounced())
+						reset_timer();
+					else if (timer.has_time_passed())
 					{
 						auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
 						auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
