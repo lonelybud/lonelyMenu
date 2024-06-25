@@ -115,8 +115,8 @@ namespace big
 			return 2;
 		}
 
-		// wonder will it run?
-		g_log.log_additional(std::format("player_is_driver: end of function", target_plyr->m_name));
+		// it will run when there is no driver
+		g_log.log_additional(std::format("player_is_driver: driver is not present", target_plyr->m_name));
 		return 0;
 	}
 

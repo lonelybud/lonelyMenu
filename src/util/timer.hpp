@@ -3,32 +3,37 @@
 
 namespace big
 {
-	template<typename T = std::chrono::milliseconds>
+	template<typename T = std::chrono::milliseconds, int Delay = 0>
 	class throttle
 	{
 		std::chrono::system_clock::time_point last_time = std::chrono::system_clock::time_point::min();
-		int delay;
+		T delay;
 
 	public:
-		throttle(int _delay = 0)
+		throttle() :
+		    delay(Delay)
 		{
-			delay = _delay;
 		}
 
-		void reset(int _delay)
+		void reset()
 		{
 			last_time = std::chrono::system_clock::now();
-			delay     = _delay;
 		}
+
+		void reset(int new_delay)
+		{
+			delay     = T(new_delay);
+			last_time = std::chrono::system_clock::now();
+		}
+
 
 		bool has_time_passed()
 		{
-			auto currentTime = std::chrono::system_clock::now();
-			auto diff        = std::chrono::duration_cast<T>(currentTime - last_time);
+			auto now  = std::chrono::system_clock::now();
 
-			if (diff.count() >= delay)
+			if (now - last_time >= delay)
 			{
-				last_time = currentTime;
+				last_time = now;
 				return true;
 			}
 

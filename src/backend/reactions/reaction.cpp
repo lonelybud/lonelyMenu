@@ -20,23 +20,22 @@ namespace big
 		return str;
 	}
 
-	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, bool notify_once, bool is_modder, bool other, reaction_karma karma_type, int attempts_before_log) :
-	    type(type),
-	    sub_type(sub_type),
+	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, reaction_notif_type notif_type, player_type plyr_type, reaction_karma karma_type, int attempts_before_log) :
+	    m_type(type),
+	    m_sub_type(sub_type),
 	    m_event_name(event_name),
-	    notify_once(notify_once),
-	    is_modder(is_modder),
-	    other(other),
+	    m_notif_type(notif_type),
+	    m_plyr_type(plyr_type),
 	    m_karma_type(karma_type),
 	    m_attempts_before_log(attempts_before_log)
 	{
 	}
 
-	void reaction::process(player_ptr player, player_ptr target, bool silent)
+	void reaction::process(player_ptr player, player_ptr target)
 	{
 		if (player && player->is_valid())
 		{
-			auto currentTime = std::chrono::system_clock::now();
+			auto curr_time = std::chrono::system_clock::now();
 
 			/************************************************************ update infraction */
 
@@ -44,7 +43,7 @@ namespace big
 				player->infractions[this] = 1;
 			else
 			{
-				if (this->notify_once)
+				if (m_notif_type == reaction_notif_type::once)
 					return;
 
 				// use these variables to avoid getting crash infraction of same type from multiple players at the same time aka false positives
@@ -52,16 +51,16 @@ namespace big
 				static reaction_sub_type last_sub_type = reaction_sub_type::none;
 				static player_ptr last_sub_type_plyr   = nullptr;
 				static std::chrono::system_clock::time_point last_sub_type_time = std::chrono::system_clock::time_point::min();
+				constexpr std::chrono::milliseconds time_interval = std::chrono::milliseconds(500);
 
-				if (this->type == reaction_type::crash_player && this->sub_type == last_sub_type && player != last_sub_type_plyr
-				    && std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - last_sub_type_time).count() <= 500)
+				if (m_type == reaction_type::crash_player && m_sub_type == last_sub_type && player != last_sub_type_plyr && (curr_time - last_sub_type_time) <= time_interval)
 					;
 				else
 					++player->infractions[this];
 
-				last_sub_type      = this->sub_type;
+				last_sub_type      = m_sub_type;
 				last_sub_type_plyr = player;
-				last_sub_type_time = currentTime;
+				last_sub_type_time = curr_time;
 				//
 			}
 
@@ -71,7 +70,7 @@ namespace big
 			// then it will only log 5 times (each after 1 sec) and not 30 times.
 
 			bool should_log = false;
-			if (player->last_event_sub_type == sub_type)
+			if (player->last_event_sub_type == m_sub_type)
 			{
 				if (player->last_event_count >= m_attempts_before_log)
 					should_log = player->last_event_timer.has_time_passed();
@@ -80,7 +79,7 @@ namespace big
 			}
 			else
 			{
-				player->last_event_sub_type = sub_type;
+				player->last_event_sub_type = m_sub_type;
 				player->last_event_timer.reset(1000);
 				player->last_event_count = 0;
 				should_log               = true;
@@ -88,15 +87,15 @@ namespace big
 
 			/************************************************************ log phase */
 
-			if (!silent)
+			if (m_notif_type != reaction_notif_type::silent)
 			{
 				auto str = std::format("{} from '{}'", m_event_name, player->m_name);
 				if (target)
 					str += std::format("to {}", target->m_name);
 				const char* title = "Event";
-				if (this->type == reaction_type::kick_player)
+				if (m_type == reaction_type::kick_player)
 					title = "Received Kick";
-				else if (this->type == reaction_type::crash_player)
+				else if (m_type == reaction_type::crash_player)
 					title = "Received Crash";
 
 				if (log && should_log)
@@ -107,12 +106,9 @@ namespace big
 
 			/************************************************************ whether to add player in temporary list */
 
-			if (is_modder || other)
+			if (m_plyr_type != player_type::normal)
 			{
-				if (is_modder)
-					player->is_modder = true;
-				else
-					player->is_other = true;
+				player->plyr_type = m_plyr_type;
 
 				if (!player->is_blocked)
 				{
@@ -124,8 +120,8 @@ namespace big
 
 			/************************************************************ finally decide to kick player */
 
-			bool kick_player = this->m_karma_type == reaction_karma::kick_player;
-			if (this->m_karma_type == reaction_karma::infraction_based && player->infractions[this] > 10)
+			bool kick_player = m_karma_type == reaction_karma::kick_player;
+			if (m_karma_type == reaction_karma::infraction_based && player->infractions[this] > 10)
 				kick_player = true;
 
 			if (!player->is_friend() && kick_player)
@@ -133,7 +129,7 @@ namespace big
 				player->is_pain_in_ass = true; // make him bright red in player list
 
 				// trying to kick you. let give 3 warnings before kicking that bud
-				if (this->type == reaction_type::kick_player && g_player_service->get_self()->is_host() && (++player->kick_counts < 4))
+				if (m_type == reaction_type::kick_player && g_player_service->get_self()->is_host() && (++player->kick_counts < 4))
 					return;
 
 				// block join

@@ -1,5 +1,6 @@
 #include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
+#include "core/vars.hpp"
 #include "fiber_pool.hpp"
 #include "fonts/fonts.hpp"
 #include "natives.hpp"
@@ -7,7 +8,6 @@
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
 #include "views/view.hpp"
-#include "core/vars.hpp"
 
 #define IMGUI_DEFINE_PLACEMENT_NEW
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -52,11 +52,11 @@ namespace big
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.f, 0.f, 1.f)); // red
 		else if (plyr->is_spammer)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.67f, 0.f, 1.f)); // more of yellow than orange
-		else if (plyr->is_modder)
+		else if (plyr->plyr_type == player_type::modder)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.2f, 1.f)); // light red
 		else if (plyr->is_blocked)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.73f, 0.f, 1.f, 1.f)); // purple
-		else if (plyr->is_other)
+		else if (plyr->plyr_type == player_type::other)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.45f, 0.f, 1.f)); // green dark
 		else if (is_friend)
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, 0.2f, 0.52f, 1.f)); // pink

@@ -68,16 +68,17 @@ namespace big
 		std::string spam_message  = "";
 		player_ptr last_killed_by = nullptr;
 
-		bool is_modder         = false;
 		bool is_blocked        = false;
 		bool is_spammer        = false;
 		bool whitelist_spammer = false;
 		bool block_ptfx        = false;
 		bool whitelist_ptfx    = false;
-		bool is_other          = false;
 		bool is_known_player   = false;
 		bool is_pain_in_ass    = false;
 		bool esp_enemy         = false;
+		bool disable_logs      = false;
+		bool is_trusted        = false;
+		player_type plyr_type  = player_type::normal;
 
 		bool block_radio_requests     = false;
 		bool block_host_migr_requests = false;
@@ -105,7 +106,7 @@ namespace big
 		bool log_clones = false;
 
 		reaction_sub_type last_event_sub_type = reaction_sub_type::none;
-		throttle<std::chrono::milliseconds> last_event_timer;
+		throttle<std::chrono::milliseconds, 1000> last_event_timer;
 		int last_event_count = 0;
 
 

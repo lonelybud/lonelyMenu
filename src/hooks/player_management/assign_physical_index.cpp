@@ -134,7 +134,8 @@ namespace big
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
 					if (plyr->get_net_data()->m_nat_type <= 1)
-						g_reactions.nat_type_0_1.process(plyr, nullptr, true);
+						g_reactions.nat_type_0_1.process(plyr, nullptr);
+
 				}
 			});
 		}

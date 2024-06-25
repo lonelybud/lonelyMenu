@@ -62,7 +62,7 @@ namespace big::chat
 			}
 
 			g_fiber_pool->queue_job([duration_ms, message, is_team] {
-				script::get_current()->yield(std::chrono::milliseconds::duration(duration_ms));
+				script::get_current()->yield(std::chrono::milliseconds(duration_ms));
 
 				if (g_pointers->m_gta.m_is_session_started && gta_util::get_network()->m_game_session_state > 4)
 				{

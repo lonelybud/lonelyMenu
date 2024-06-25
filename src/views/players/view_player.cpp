@@ -207,8 +207,8 @@ namespace big
 							    ImGui::Text("Player Bullet Proof");
 						    else if (ped->m_damage_bits & (uint32_t)eEntityProofs::EXPLOSION)
 							    ImGui::Text("Player Explosion Proof");
-							else if(ped->m_health > 328 || ped->m_maxhealth > 328)
-								ImGui::Text("Player Health Too High");
+						    else if (ped->m_health > 328 || ped->m_maxhealth > 328)
+							    ImGui::Text("Player Health Too High");
 
 						    if (ped->m_ped_task_flag & (uint8_t)ePedTask::TASK_DRIVING)
 							    if (auto vehicle = last_selected_player->get_current_vehicle())
@@ -283,27 +283,35 @@ namespace big
 
 				if (ImGui::Checkbox("Is Blocked", &last_selected_player->is_blocked))
 					toggle_block(last_selected_player->is_blocked);
-
 				ImGui::BeginDisabled(last_selected_player->is_blocked);
 				ImGui::Checkbox("Is Spammer", &last_selected_player->is_spammer);
 				ImGui::EndDisabled();
 
-				if (!last_selected_player->is_blocked && ImGui::Checkbox("Is Modder", &last_selected_player->is_modder))
-					g_blocked_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
+				if (!last_selected_player->is_blocked)
+				{
+					bool is_modder = last_selected_player->plyr_type == player_type::modder;
+					bool is_other  = last_selected_player->plyr_type == player_type::other;
 
-				if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
-					last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
-					                                        g_known_players_service.remove(last_selected_player);
+					if (ImGui::Checkbox("Is Modder", &is_modder))
+					{
+						last_selected_player->plyr_type = is_modder ? player_type::modder : player_type::normal;
+						g_blocked_players_service.add_player(last_selected_player, false, last_selected_player->is_spammer);
+					}
+					if (!is_modder && ImGui::Checkbox("Is Other", &is_other))
+						last_selected_player->plyr_type = is_other ? player_type::other : player_type::normal;
 
+					if (ImGui::Checkbox("Is Known", &last_selected_player->is_known_player))
+						last_selected_player->is_known_player ? g_known_players_service.add(last_selected_player) :
+						                                        g_known_players_service.remove(last_selected_player);
+					ImGui::Checkbox("Is trusted", &last_selected_player->is_trusted);
+				}
+
+				ImGui::Checkbox("Disable logs", &last_selected_player->disable_logs);
 				ImGui::Checkbox("Whitelist Spammer", &last_selected_player->whitelist_spammer);
-
 				ImGui::Checkbox("Block Ptfx", &last_selected_player->block_ptfx);
 				ImGui::Checkbox("Whitelist Ptfx", &last_selected_player->whitelist_ptfx);
-
 				if (ImGui::Checkbox("Timeout", &last_selected_player->timed_out))
 					last_selected_player->timeout();
-
-				ImGui::Checkbox("Is Other", &last_selected_player->is_other);
 			}
 			ImGui::EndGroup();
 			ImGui::SameLine();
@@ -559,7 +567,7 @@ namespace big
 					strcat(player_tab.name, " [HOST]");
 				if (last_selected_player->is_friend())
 					strcat(player_tab.name, " [FRIEND]");
-				if (last_selected_player->is_modder)
+				if (last_selected_player->plyr_type == player_type::modder)
 					strcat(player_tab.name, " [MOD]");
 				if (last_selected_player->is_blocked)
 					strcat(player_tab.name, " [BLOCKED]");

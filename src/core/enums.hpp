@@ -438,4 +438,18 @@ namespace big
 		infraction_based,
 		kick_player
 	};
+
+	enum class reaction_notif_type
+	{
+		normal,
+		once,
+		silent
+	};
+
+	enum class player_type
+	{
+		normal,
+		modder,
+		other
+	};
 }

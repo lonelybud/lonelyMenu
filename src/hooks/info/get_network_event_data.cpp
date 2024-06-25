@@ -42,8 +42,9 @@ namespace big
 							                    g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token);
 							victim_player->last_killed_by = player;
 						}
-						// no need to run code for killing peds if he already a modder
-						else if (player->is_modder)
+						// no need to run code for killing peds if he already done that
+						else if (player->infractions.contains(&g_reactions.killed_ped_with_god)
+						    || player->infractions.contains(&g_reactions.killed_ped_with_invis))
 							return g_hooking->get_original<get_network_event_data>()(unk, net_event);
 
 						if (victim == g_local_player)
@@ -58,7 +59,8 @@ namespace big
 
 								LOG(WARNING) << str;
 
-								if (g_local_player->m_vehicle)
+								if (g_local_player->m_vehicle
+								    && (!g_local_player->m_vehicle->m_driver || g_local_player->m_vehicle->m_driver == g_local_player))
 								{
 									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
 

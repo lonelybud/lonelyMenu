@@ -1,5 +1,6 @@
 #include "pointers.hpp"
 #include "services/blocked_players/blocked_players.hpp"
+#include "services/known_players/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/strings.hpp"
 #include "views/view.hpp"
@@ -75,17 +76,31 @@ namespace big
 				block_join = exist_already = false;
 			}
 		}
-		else if (components::button("Add to block list"))
+		else
 		{
-			std::string name = player_name;
-			if (trimString(name).length() && rockstar_id)
+			if (components::button("Add to Block list"))
 			{
-				block_join = true;
-				g_blocked_players_service.add_player(rockstar_id, {player_name, block_join, save_as_spammer, message});
-				set_selected(0, {});
+				std::string name = player_name;
+				if (trimString(name).length() && rockstar_id)
+				{
+					g_blocked_players_service.add_player(rockstar_id, {player_name, true, save_as_spammer, message});
+					set_selected(0, {});
+				}
+				else
+					g_notification_service.push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
 			}
-			else
-				g_notification_service.push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
+			ImGui::SameLine();
+			if (components::button("Add to Known list"))
+			{
+				std::string name = player_name;
+				if (trimString(name).length() && rockstar_id)
+				{
+					g_known_players_service.add(player_name, rockstar_id, message);
+					set_selected(0, {});
+				}
+				else
+					g_notification_service.push_error("New Player Entry", "Player Name or Rockstar Id is missing.");
+			}
 		}
 
 		ImGui::Spacing();

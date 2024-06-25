@@ -1,4 +1,5 @@
 #include "pointers.hpp"
+#include "services/blocked_players/blocked_players.hpp"
 #include "services/known_players/known_players.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "util/strings.hpp"
@@ -62,6 +63,13 @@ namespace big
 			{
 				g_known_players_service.remove(rockstar_id);
 				exist_already = false;
+			}
+			ImGui::SameLine();
+			if (components::button("Move to block list"))
+			{
+				g_blocked_players_service.add_player(rockstar_id, {player_name, true, false, message});
+				g_known_players_service.remove(rockstar_id);
+				set_selected(0, {}, false);
 			}
 		}
 		else if (components::button("Add"))

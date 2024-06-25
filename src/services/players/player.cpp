@@ -125,7 +125,7 @@ namespace big
 
 	bool player::is_friend() const
 	{
-		return m_is_friend;
+		return m_is_friend || is_trusted;
 	}
 
 	bool player::is_valid() const
