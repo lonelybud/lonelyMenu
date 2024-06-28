@@ -46,6 +46,7 @@ namespace rage
 	class fiPackfile;
 	class scrNativeRegistrationTable;
 	class rlSessionByGamerTaskResult;
+	class SecurityPeer;
 	struct rlScTaskStatus
 	{
 		void* pad  = 0;
@@ -139,4 +140,6 @@ namespace big::functions
 	using received_clone_remove = void (*)(CNetworkObjectMgr*, CNetGamePlayer*, CNetGamePlayer*, int16_t, uint32_t);
 
 	using get_searchlight = void* (*)(CPed*);
+
+	using get_peer_by_security_id = rage::SecurityPeer*(*)(int id);
 }

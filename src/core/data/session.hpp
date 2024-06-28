@@ -49,6 +49,7 @@ namespace big
 
 		uint64_t orig_host_token = 0;
 		uint64_t host_token      = 0;
+		uint64_t orig_peer_id   = 0;
 
 		bool block_joins        = false;
 		bool block_friend_joins = false;

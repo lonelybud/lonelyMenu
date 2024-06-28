@@ -26,6 +26,7 @@ namespace big
 	{
 		m_selected_player = nullptr;
 		m_players.clear();
+		m_players_sending_modder_beacons.clear();
 		g_gui_info.update_gui_info();
 	}
 
@@ -103,6 +104,16 @@ namespace big
 		}
 
 		g_gui_info.update_gui_info();
+	}
+
+	void player_service::mark_player_as_sending_modder_beacons(std::uint64_t rid)
+	{
+		m_players_sending_modder_beacons.insert(rid);
+	}
+
+	bool player_service::did_player_send_modder_beacon(std::uint64_t rid)
+	{
+		return m_players_sending_modder_beacons.contains(rid);
 	}
 
 	void player_service::set_selected(player_ptr plyr)

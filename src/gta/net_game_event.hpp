@@ -74,7 +74,7 @@ namespace rage
 		{
 			return m_bitsRead;
 		}
-		bool Seek(uint32_t bits)
+		void Seek(uint32_t bits)
 		{
 			if (bits >= 0)
 			{
@@ -82,7 +82,12 @@ namespace rage
 				if (bits <= length)
 					m_bitsRead = bits;
 			}
-			return false;
+		}
+		void SeekForward(uint32_t bits)
+		{
+			m_bitsRead += static_cast<uint32_t>(bits);
+			if (m_bitsRead > m_highestBitsRead)
+				m_highestBitsRead = m_bitsRead;
 		}
 		bool WriteBool(bool boolean)
 		{
@@ -245,10 +250,11 @@ namespace rage
 		template<typename T>
 		inline T Read(int length)
 		{
-			static_assert(sizeof(T) <= 4, "maximum of 32 bit read");
+			static_assert(sizeof(T) <= 8, "maximum of 64 bit read");
+			static_assert(!std::is_same_v<T, float>, "use ReadFloat to read floating point values from the bitbuffer");
 
-			uint32_t val = 0;
-			ReadDword(&val, length);
+			uint64_t val = 0;
+			ReadQWord(&val, length);
 
 			return T(val);
 		}
@@ -257,6 +263,7 @@ namespace rage
 		inline T ReadSigned(int length)
 		{
 			static_assert(sizeof(T) <= 4, "maximum of 32 bit read");
+			static_assert(!std::is_same_v<T, float>, "use ReadSignedFloat to read signed floating point values from the bitbuffer");
 
 			int val = 0;
 			ReadInt32(&val, length);

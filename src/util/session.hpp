@@ -74,11 +74,28 @@ namespace big::session
 		misc::clear_bit((int*)&scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.ActiveFreemodeEvents[idx], bit);
 	}
 
+	inline int is_spoofed_host_token(uint64_t token, uint64_t peer_id)
+	{
+		if (token < 1000'000'000'000)
+			return 1;
+
+		if ((peer_id >> 32) != (token >> 32))
+			return 1;
+
+		if (token < 1000'000'000'000'000)
+			return 2;
+
+		return 0;
+	}
+
 	inline void set_host_tokens()
 	{
-		auto token                = *g_pointers->m_gta.m_host_token;
-		g_session.orig_host_token = g_session.host_token = token;
-		LOGF(VERBOSE, "Your host token is: {}", token);
+		g_session.orig_host_token = g_session.host_token = *g_pointers->m_gta.m_host_token;
+		g_session.orig_peer_id                           = *g_pointers->m_gta.m_peer_id;
+
+		LOGF(VERBOSE, "Your host token is: {}", g_session.orig_host_token);
+		LOG(VERBOSE) << "Host token detected as spoofed?- "
+		             << is_spoofed_host_token(g_session.orig_host_token, g_session.orig_peer_id);
 	}
 
 	inline void change_host_token()
@@ -92,10 +109,14 @@ namespace big::session
 		else
 			LOG(VERBOSE) << "Using custom host token: " << host_token;
 
+		// set_host_token
+
 		*g_pointers->m_gta.m_host_token = host_token;
 
 		if (gta_util::get_network()->m_game_session_ptr)
 			gta_util::get_network()->m_game_session_ptr->m_local_player.m_player_data.m_host_token = host_token;
+		if (gta_util::get_network()->m_transition_session_ptr)
+			gta_util::get_network()->m_transition_session_ptr->m_local_player.m_player_data.m_host_token = host_token;
 
 		g_pointers->m_gta.m_profile_gamer_info->m_host_token                                       = host_token;
 		g_pointers->m_gta.m_player_info_gamer_info->m_host_token                                   = host_token;
@@ -103,16 +124,31 @@ namespace big::session
 
 		if (g_local_player->m_player_info)
 			g_local_player->m_player_info->m_net_player_data.m_host_token = host_token;
-	}
 
-	inline int is_spoofed_host_token(uint64_t token)
-	{
-		if (token < 1000'000'000'000)
-			return 1;
+		//  set_peer_id_upper
 
-		if (token < 1000'000'000'000'000)
-			return 2;
+		if (host_token == g_session.orig_host_token)
+			*g_pointers->m_gta.m_peer_id = g_session.orig_peer_id;
+		else
+		{
+			std::uint64_t upper = host_token >> 32;
+			*g_pointers->m_gta.m_peer_id &= 0xFFFFFFFF;
+			*g_pointers->m_gta.m_peer_id |= (upper << 32);
+		}
 
-		return 0;
+		if (gta_util::get_network()->m_game_session_ptr)
+			gta_util::get_network()->m_game_session_ptr->m_local_player.m_player_data.m_peer_id = *g_pointers->m_gta.m_peer_id;
+		if (gta_util::get_network()->m_transition_session_ptr)
+			gta_util::get_network()->m_transition_session_ptr->m_local_player.m_player_data.m_peer_id =
+			    *g_pointers->m_gta.m_peer_id;
+
+		g_pointers->m_gta.m_profile_gamer_info->m_peer_id     = *g_pointers->m_gta.m_peer_id;
+		g_pointers->m_gta.m_player_info_gamer_info->m_peer_id = *g_pointers->m_gta.m_peer_id;
+		(*g_pointers->m_gta.m_communications)->m_voice.m_connections[0]->m_gamer_info.m_peer_id = *g_pointers->m_gta.m_peer_id;
+
+		if (g_local_player->m_player_info)
+			g_local_player->m_player_info->m_net_player_data.m_peer_id = *g_pointers->m_gta.m_peer_id;
+
+		LOG(VERBOSE) << "Host token detected as spoofed?- " << is_spoofed_host_token(host_token, *g_pointers->m_gta.m_peer_id);
 	}
 }

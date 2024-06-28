@@ -19,8 +19,8 @@ namespace big
 		auto is_friend   = friends_service::is_friend(rockstar_id);
 		auto is_blocked  = g_blocked_players_service.is_blocked(rockstar_id);
 
-		auto block_join        = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
-		auto has_spoofed_token = !is_friend && (session::is_spoofed_host_token(player_info->m_host_token) == 1);
+		auto block_join = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
+		auto has_spoofed_token = !is_friend && (session::is_spoofed_host_token(player_info->m_host_token, player_info->m_peer_id) == 1);
 
 		if (block_join || is_blocked || has_spoofed_token)
 		{

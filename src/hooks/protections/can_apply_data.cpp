@@ -1127,6 +1127,8 @@ namespace big
 			return m_syncing_object_type != eNetObjType::NET_OBJ_TYPE_SUBMARINE;
 		case eTaskTypeIndex::CTaskVehicleFleeAirborne:
 			return m_syncing_object_type != eNetObjType::NET_OBJ_TYPE_HELI && m_syncing_object_type != eNetObjType::NET_OBJ_TYPE_PLANE;
+		case eTaskTypeIndex::CTaskVehicleGoToPointWithAvoidanceAutomobile:
+			return m_syncing_object_type != eNetObjType::NET_OBJ_TYPE_AUTOMOBILE;
 		}
 
 		return false;
@@ -1273,6 +1275,11 @@ namespace big
 						{
 							if (entity->m_entity_type != 3)
 							{
+								g_log.log_additional(std::format("Rejecting sync due to a CPhysicalAttachDataNode from {} since it's attaching a {} to a {}, which is known to cause crashes",
+								    sender->get_name(),
+								    net_object_type_strs[(int)m_syncing_object_type],
+								    net_object_type_strs[(int)net_obj->m_object_type]));
+
 								g_reactions.crash7.process(sender_plyr);
 								return true;
 							}

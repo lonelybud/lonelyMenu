@@ -1,14 +1,13 @@
 #include "gta/json_serializer.hpp"
 #include "hooking/hooking.hpp"
+#include "logger/logger.hpp"
 #include "rage/rlMetric.hpp"
 #include "services/players/player_service.hpp"
-#include "logger/logger.hpp"
 
 namespace big
 {
 	const auto bad_metrics = std::unordered_set<std::string_view>({
 	    "REPORTER",
-	    "REPORT_INVALIDMODEL",
 	    "MEM_NEW",
 	    "DEBUGGER_ATTACH",
 	    "DIG",
@@ -53,6 +52,9 @@ namespace big
 	    "AWARD_XP",
 	    "UVC",
 	    "W_L",
+	    "COMMS_TEXT",
+	    "REPORT_INVALIDMODEL",
+	    "BLAST",
 	});
 
 	std::string hex_encode(std::string_view input)
@@ -117,10 +119,10 @@ namespace big
 
 				LOG(WARNING) << "BAD METRIC: " << metric_name << " " << contains_your_sc;
 
-			// log to file
-			std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
-			log << "BAD METRIC: " << metric_name << "; DATA: " << data << std::endl;
-			log.close();
+				// log to file
+				std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
+				log << "BAD METRIC: " << metric_name << "; DATA: " << data << std::endl;
+				log.close();
 			}
 
 			if (!strcmp(metric_name, "MM"))
@@ -135,7 +137,7 @@ namespace big
 				strncpy(reinterpret_cast<char*>(metric) + 0x18, result.c_str(), 0x900);
 			}
 			else
-				return false;
+				return true;
 		}
 
 		return g_hooking->get_original<prepare_metric_for_sending>()(serializer, unk, time, metric);

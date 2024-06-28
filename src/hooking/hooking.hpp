@@ -1,5 +1,6 @@
 #pragma once
 #include "MinHook.h"
+#include "call_hook.hpp"
 #include "detour_hook.hpp"
 #include "gta/enums.hpp"
 #include "vmt_hook.hpp"
@@ -42,6 +43,8 @@ class CNetworkPlayerMgr;
 class CNetworkObjectMgr;
 class CPhysicalScriptGameStateDataNode;
 class MatchmakingId;
+class CMsgJoinRequest;
+class GenericPool;
 
 enum class eAckCode : uint32_t;
 
@@ -62,6 +65,7 @@ namespace rage
 	class netGameEvent;
 	class netSyncDataNode;
 	class rlSessionDetailMsg;
+	class netEvent;
 }
 
 namespace big
@@ -103,7 +107,7 @@ namespace big
 		static bool scripted_game_event(CScriptedGameEvent* scripted_game_event, CNetGamePlayer* player);
 		static bool increment_stat_event(CNetworkIncrementStatEvent* net_event_struct, CNetGamePlayer* sender);
 		// ***
-		static bool receive_net_message(void* netConnectionManager, void* a2, rage::netConnection::InFrame* frame);
+		static bool receive_net_message(void* a1, rage::netConnectionManager* mgr, rage::netEvent* event);
 		static void received_clone_create(CNetworkObjectMgr* mgr, CNetGamePlayer* src, CNetGamePlayer* dst, eNetObjType object_type, int32_t object_id, int32_t object_flag, rage::datBitBuffer* buffer, int32_t timestamp);
 		static eAckCode received_clone_sync(CNetworkObjectMgr* mgr, CNetGamePlayer* src, CNetGamePlayer* dst, eNetObjType object_type, uint16_t object_id, rage::datBitBuffer* bufer, uint16_t unk, uint32_t timestamp);
 		static bool can_apply_data(rage::netSyncTree* tree, rage::netObject* object);
@@ -121,6 +125,8 @@ namespace big
 		static __int64 render_big_ped(__int64 renderer, CPed* ped, __int64 a3, __int64 a4);
 		static void received_clone_remove(CNetworkObjectMgr* mgr, CNetGamePlayer* src, CNetGamePlayer* dst, int16_t object_id, uint32_t ownership_token);
 		static void searchlight_crash(void* a1, CPed* ped);
+		static void error_packet_memmove(void* dst, void* src, int size);
+		static void* create_pool_item(GenericPool* pool);
 
 		// misc
 
@@ -129,8 +135,9 @@ namespace big
 		static bool http_start_request(void* request, const char* uri);
 		static bool send_chat_message(void* team_mgr, rage::rlGamerInfo* local_gamer_info, char* message, bool is_team);
 		static bool serialize_join_request_message(RemoteGamerInfoMsg* info, void* data, int size, int* bits_serialized);
-		static bool serialize_join_request_message_2(__int64 msg, void* buf, int size, int* bits_serialized);
+		static bool serialize_join_request_message_2(CMsgJoinRequest* msg, void* buf, int size, int* bits_serialized);
 		static const char* get_label_text(void* unk, const char* label);
+		static bool add_gamer_to_session(rage::netConnectionManager* mgr, std::uint32_t msg_id, int* req_id, RemoteGamerInfoMsg* info, int flags, void* a6);
 
 		// spoofing
 
@@ -230,6 +237,8 @@ namespace big
 
 		vmt_hook m_swapchain_hook;
 		vtable_hook m_sync_data_reader_hook;
+
+		call_hook m_error_packet_memmove_hook;
 
 		WNDPROC m_og_wndproc = nullptr;
 

@@ -116,15 +116,18 @@ namespace big
 					if (admin_rids.contains(rockstar_id))
 						g_reactions.rockstar_admin.process(plyr);
 
-					auto has_spoofed_token = session::is_spoofed_host_token(host_token);
+					auto has_spoofed_token = session::is_spoofed_host_token(host_token, plyr->get_net_data()->m_peer_id);
 
 					if (has_spoofed_token == 1)
 					{
 						if (!is_blocked)
 							g_recent_spoofed_host_tokens[rockstar_id] = player_name;
+
 						g_reactions.spoofed_host_token.process(plyr);
+
 						kick = imhost;
-						if (imhost)
+
+						if (!is_friend && imhost)
 							LOG(WARNING) << "Spoofed token player joined even when you were host";
 					}
 					else if (has_spoofed_token == 2)
@@ -136,6 +139,8 @@ namespace big
 					if (plyr->get_net_data()->m_nat_type <= 1)
 						g_reactions.nat_type_0_1.process(plyr, nullptr);
 
+					if (g_player_service->did_player_send_modder_beacon(rockstar_id))
+						g_reactions.sent_modder_beacons.process(plyr);
 				}
 			});
 		}

@@ -1,3 +1,5 @@
+#include "core/data/script_block_options.hpp"
+#include "core/vars.hpp"
 #include "gui/components/components.hpp"
 #include "pointers.hpp"
 #include "util/scripts.hpp"
@@ -14,6 +16,7 @@ namespace big
 		{
 			static std::string search;
 			static bool idle = true, running = true, killed = true, paused = true, state_4 = true;
+			static script_types_options script_types;
 
 			if (g_pointers->m_gta.m_script_threads)
 			{
@@ -32,6 +35,16 @@ namespace big
 				ImGui::Checkbox("paused", &paused);
 				ImGui::SameLine();
 				ImGui::Checkbox("state_4", &state_4);
+
+				ImGui::Checkbox("interiors", &script_types.interiors);
+				ImGui::SameLine();
+				ImGui::Checkbox("stores", &script_types.stores);
+				ImGui::SameLine();
+				ImGui::Checkbox("lsc", &script_types.lsc);
+				ImGui::SameLine();
+				ImGui::Checkbox("ammunation", &script_types.ammunation);
+				ImGui::SameLine();
+				ImGui::Checkbox("gang_attacks", &script_types.gang_attacks);
 
 				ImGui::Spacing();
 
@@ -60,6 +73,17 @@ namespace big
 						if (script->m_context.m_state == rage::eThreadState::unk_4 && !state_4)
 							continue;
 
+						if (script_types.interiors && !script_block_options::interiors.contains(script->m_script_hash))
+							continue;
+						if (script_types.stores && !script_block_options::stores.contains(script->m_script_hash))
+							continue;
+						if (script_types.lsc && script_block_options::hash_lsc != script->m_script_hash)
+							continue;
+						if (script_types.ammunation && script_block_options::hash_ammunation != script->m_script_hash)
+							continue;
+						if (script_types.gang_attacks && script_block_options::hash_gang_attacks != script->m_script_hash)
+							continue;
+
 						ImGui::PushID(script->m_context.m_thread_id);
 
 						if (script->m_context.m_state == rage::eThreadState::killed)
@@ -73,11 +97,11 @@ namespace big
 							{
 								ImGui::SameLine();
 								ImGui::Text("Script Host: %s", host->get_name());
-								if (!net_handler->is_local_player_host())
+								if (!net_handler->is_local_player_host() && *g_pointers->m_gta.m_is_session_started && !is_maintransition_script_active)
 								{
 									ImGui::SameLine();
-									components::button("Take Control", [script] {
-										scripts::force_migration(script->m_script_hash);
+									components::button("Take Control", [net_handler] {
+										net_handler->send_host_migration_event(g_player_service->get_self()->get_net_game_player());
 									});
 								}
 							}

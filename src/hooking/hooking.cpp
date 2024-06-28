@@ -2,11 +2,15 @@
 
 #include "pointers.hpp"
 
+#include <player/CNonPhysicalPlayerData.hpp>
+#include <network/CNetGamePlayer.hpp>
+
 namespace big
 {
 	hooking::hooking() :
 	    m_swapchain_hook(*g_pointers->m_gta.m_swapchain, hooks::swapchain_num_funcs),
-	    m_sync_data_reader_hook(g_pointers->m_gta.m_sync_data_reader_vtable, 27)
+	    m_sync_data_reader_hook(g_pointers->m_gta.m_sync_data_reader_vtable, 27),
+	    m_error_packet_memmove_hook(g_pointers->m_gta.m_error_packet_memmove, hooks::error_packet_memmove)
 	{
 		m_swapchain_hook.hook(hooks::swapchain_present_index, &hooks::swapchain_present);
 		m_swapchain_hook.hook(hooks::swapchain_resizebuffers_index, &hooks::swapchain_resizebuffers);
@@ -80,6 +84,11 @@ namespace big
 		detour_hook_helper::add<hooks::send_session_detail_msg>("SSDM", g_pointers->m_gta.m_send_session_detail_msg);
 
 		detour_hook_helper::add<hooks::write_node_data>("WND", g_pointers->m_gta.m_write_node_data);
+  
+		detour_hook_helper::add<hooks::add_gamer_to_session>("AGTS", g_pointers->m_gta.m_add_gamer_to_session);
+
+		detour_hook_helper::add<hooks::create_pool_item>("CPI", g_pointers->m_gta.m_create_pool_item);
+
 		g_hooking = this;
 	}
 
@@ -97,6 +106,7 @@ namespace big
 	{
 		m_swapchain_hook.enable();
 		m_sync_data_reader_hook.enable();
+		m_error_packet_memmove_hook.enable();
 		m_og_wndproc = WNDPROC(SetWindowLongPtrW(g_pointers->m_hwnd, GWLP_WNDPROC, LONG_PTR(&hooks::wndproc)));
 
 		for (auto& detour_hook_helper : m_detour_hook_helpers)
@@ -119,6 +129,7 @@ namespace big
 		}
 
 		SetWindowLongPtrW(g_pointers->m_hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(m_og_wndproc));
+		m_error_packet_memmove_hook.disable();
 		m_sync_data_reader_hook.disable();
 		m_swapchain_hook.disable();
 

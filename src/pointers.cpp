@@ -470,6 +470,15 @@ namespace big
                 g_pointers->m_gta.m_host_token = ptr.add(3).rip().as<uint64_t*>();
             }
         },
+        // Peer ID
+        {
+            "PI",
+            "48 83 F8 FF 74 0D",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_peer_id = ptr.add(9).rip().as<uint64_t*>();
+            }
+        },
         // Profile Gamer Info
         {
             "PGI",
@@ -1032,6 +1041,51 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_send_session_detail_msg = ptr.add(0xE).rip().as<PVOID>();
+            }
+        },
+        // Get Peer By Security Id
+        {
+            "GPBSI",
+            "76 E0 8B 4C 24 30 E8",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_get_peer_by_security_id = ptr.add(7).rip().as<functions::get_peer_by_security_id>();
+            }
+        },
+        // Add Gamer To Session
+        {
+            "AGTS",
+            "7C E8 EB 23",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_add_gamer_to_session = ptr.add(0x23).rip().as<PVOID>();
+            }
+        },
+        // Object Ids Offset
+        {
+            "OIO",
+            "FF 50 50 48 83 C7 08",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_object_ids_offset = ptr.add(0xF).as<std::uint32_t*>();
+            }
+        },
+        // Error Packet Memmove
+        {
+            "EPM",
+            "49 8D 4C 24 60 44 8B C0 E8",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_error_packet_memmove = ptr.add(0x8).as<PVOID>();
+            }
+        },
+        // Create Pool Item
+        {
+            "CPI",
+            "18 83 F9 FF 75",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_create_pool_item = ptr.sub(0x6).as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end

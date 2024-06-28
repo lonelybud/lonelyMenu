@@ -10,6 +10,7 @@
 #include "gta/weapon_info_manager.hpp"
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
+#include "logger/logger.hpp"
 #include "script/scriptIdBase.hpp"
 #include "services/players/player_service.hpp"
 #include "util/math.hpp"
@@ -21,62 +22,6 @@
 
 namespace big
 {
-	static const std::unordered_set<rage::joaat_t> blocked_ref_hashes = {
-	    "Arena_Vehicle_Mod_Shop_Sounds"_J,
-	    "CELEBRATION_SOUNDSET"_J,
-	    "DLC_AW_Arena_Office_Planning_Wall_Sounds"_J,
-	    "DLC_AW_Arena_Spin_Wheel_Game_Frontend_Sounds"_J,
-	    "DLC_Biker_SYG_Sounds"_J,
-	    "DLC_BTL_SECURITY_VANS_RADAR_PING_SOUNDS"_J,
-	    "DLC_BTL_Target_Pursuit_Sounds"_J,
-	    "DLC_GR_Bunker_Door_Sounds"_J,
-	    "DLC_GR_CS2_Sounds"_J,
-	    "DLC_IO_Warehouse_Mod_Garage_Sounds"_J,
-	    "DLC_MPSUM2_HSW_Up_Sounds"_J,
-	    "DLC_sum20_Business_Battle_AC_Sounds"_J,
-	    "DLC_TG_Running_Back_Sounds"_J,
-	    "dlc_vw_table_games_frontend_sounds"_J,
-	    "dlc_xm_facility_entry_exit_sounds"_J,
-	    "Frontend"_J,
-	    "GTAO_Boss_Goons_FM_Soundset"_J,
-	    "GTAO_Exec_SecuroServ_Computer_Sounds"_J,
-	    "GTAO_Exec_SecuroServ_Warehouse_PC_Sounds"_J,
-	    "GTAO_Script_Doors_Faded_Screen_Sounds"_J,
-	    "GTAO_SMG_Hangar_Computer_Sounds"_J,
-	    "HUD_AMMO_SHOP_SOUNDSET"_J,
-	    "HUD_FRONTEND_CUSTOM_SOUNDSET"_J,
-	    "HUD_FRONTEND_DEFAULT_SOUNDSET"_J,
-	    "HUD_FRONTEND_MP_SOUNDSET"_J,
-	    "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"_J,
-	    "HUD_FRONTEND_TATTOO_SHOP_SOUNDSET"_J,
-	    "HUD_FRONTEND_CLOTHESSHOP_SOUNDSET"_J,
-	    "HUD_FRONTEND_STANDARD_PICKUPS_NPC_SOUNDSET"_J,
-	    "HUD_FRONTEND_VEHICLE_PICKUPS_NPC_SOUNDSET"_J,
-	    "HUD_FRONTEND_WEAPONS_PICKUPS_NPC_SOUNDSET"_J,
-	    "HUD_FREEMODE_SOUNDSET"_J,
-	    "HUD_MINI_GAME_SOUNDSET"_J,
-	    "HUD_AWARDS"_J,
-	    "JA16_Super_Mod_Garage_Sounds"_J,
-	    "Low2_Super_Mod_Garage_Sounds"_J,
-	    "MissionFailedSounds"_J,
-	    "MP_CCTV_SOUNDSET"_J,
-	    "MP_LOBBY_SOUNDS"_J,
-	    "MP_MISSION_COUNTDOWN_SOUNDSET"_J,
-	    "Phone_SoundSet_Default"_J,
-	    "Phone_SoundSet_Glasses_Cam"_J,
-	    "Phone_SoundSet_Prologue"_J,
-	    "Phone_SoundSet_Franklin"_J,
-	    "Phone_SoundSet_Michael"_J,
-	    "Phone_SoundSet_Trevor"_J,
-	    "PLAYER_SWITCH_CUSTOM_SOUNDSET"_J,
-	    "RESPAWN_ONLINE_SOUNDSET"_J,
-	    "TATTOOIST_SOUNDS"_J,
-	    "WastedSounds"_J,
-	    "WEB_NAVIGATION_SOUNDS_PHONE"_J,
-	};
-	static const std::unordered_set<uint32_t> blocked_sound_hashes = {"Remote_Ring"_J, "COP_HELI_CAM_ZOOM"_J, "Object_Dropped_Remote"_J};
-	static const std::unordered_set<uint32_t> valid_script_hashes = {"am_mp_defunct_base"_J, "am_mp_orbital_cannon"_J, "fm_mission_controller_2020"_J, "fm_mission_controller"_J};
-
 	static void script_id_deserialize(CGameScriptId& id, rage::datBitBuffer& buffer)
 	{
 		id.m_hash      = buffer.Read<uint32_t>(32);
@@ -96,6 +41,125 @@ namespace big
 				return true;
 
 		return false;
+	}
+
+	void scan_explosion_event(CNetGamePlayer* player, rage::datBitBuffer* buffer, player_ptr plyr)
+	{
+		uint16_t f186;
+		uint16_t targetEntity;
+		uint16_t ownerNetId;
+		uint16_t f214;
+		eExplosionTag explosionType;
+		float damageScale;
+
+		float posX;
+		float posY;
+		float posZ;
+
+		bool f242;
+		uint16_t f104;
+		float cameraShake;
+
+		bool isAudible;
+		bool f189;
+		bool isInvisible;
+		bool f126;
+		bool addOwnedExplosion;
+
+		bool hasTargetEnt2;
+		uint16_t targetEnt2;
+
+		float unkX;
+		float unkY;
+		float unkZ;
+
+		bool f190;
+		bool f191;
+
+		uint32_t f164;
+
+		float posX224;
+		float posY224;
+		float posZ224;
+
+		bool f240;
+		uint16_t f218;
+		bool f216;
+
+		// clang-format off
+
+		f186 = buffer->Read<uint16_t>(16);
+		targetEntity = buffer->Read<uint16_t>(13);
+		ownerNetId  = buffer->Read<uint16_t>(13);
+		f214        = buffer->Read<uint16_t>(13);               // 1604+
+		explosionType = (eExplosionTag)buffer->ReadSigned<int>(8);// 1604+ bit size
+		damageScale = buffer->Read<int>(8) / 255.0f;
+
+		posX        = buffer->ReadSignedFloat(22, 27648.0f);
+		posY        = buffer->ReadSignedFloat(22, 27648.0f);
+		posZ        = buffer->ReadFloat(22, 4416.0f) - 1700.0f;
+
+		f242        = buffer->Read<bool>(1);
+		f104        = buffer->Read<uint16_t>(16);
+		cameraShake = buffer->Read<int>(8) / 127.0f;
+
+		isAudible   = buffer->Read<uint8_t>(1);
+		f189        = buffer->Read<uint8_t>(1);
+		isInvisible = buffer->Read<uint8_t>(1);
+		f126        = buffer->Read<uint8_t>(1);
+		addOwnedExplosion = buffer->Read<uint8_t>(1);
+		buffer->Read<uint8_t>(1);
+
+		hasTargetEnt2 = buffer->Read<bool>(1);// 1604+
+		targetEnt2 = buffer->Read<uint16_t>(13);
+
+		unkX        = buffer->ReadSignedFloat(16, 1.1f);
+		unkY        = buffer->ReadSignedFloat(16, 1.1f);
+		unkZ        = buffer->ReadSignedFloat(16, 1.1f);
+
+		f190     	= buffer->Read<uint8_t>(1);
+		f191        = buffer->Read<uint8_t>(1);
+		f164        = buffer->Read<uint32_t>(32);
+
+		if (f242)
+		{
+			posX224 = buffer->ReadSignedFloat(31, 27648.0f);
+			posY224 = buffer->ReadSignedFloat(31, 27648.0f);
+			posZ224 = buffer->ReadFloat(31, 4416.0f) - 1700.0f;
+		}
+		else
+		{
+			posX224 = 0;
+			posY224 = 0;
+			posZ224 = 0;
+		}
+
+		auto f168 = buffer->Read<uint32_t>(32);// >= 1868: f_168
+
+
+		f240 = buffer->Read<uint8_t>(1);
+		if (f240)
+		{
+			f218 = buffer->Read<uint16_t>(16);
+
+			if (f191)
+			{
+				f216 = buffer->Read<uint8_t>(8);
+			}
+		}
+
+		buffer->Seek(0);
+
+		auto object = g_pointers->m_gta.m_get_net_object(*g_pointers->m_gta.m_network_object_mgr, ownerNetId, true);
+		auto entity = object ? object->GetGameObject() : nullptr;
+
+		if (addOwnedExplosion && entity && entity->m_entity_type == 4 && reinterpret_cast<CPed*>(entity)->m_player_info
+			&& player->m_player_info->m_ped && player->m_player_info->m_ped->m_net_object
+			&& ownerNetId != player->m_player_info->m_ped->m_net_object->m_object_id)
+			// {} sent an EXPLOSION_EVENT with addOwnedExplosion enabled & wrong owner
+			g_reactions.blamed_explosion_detected.process(plyr, nullptr);
+
+		// clang-format on
 	}
 
 	bool scan_play_sound_event(player_ptr plyr, rage::datBitBuffer& buffer)
@@ -123,66 +187,79 @@ namespace big
 		bool has_script_hash = buffer.Read<bool>(1);
 		uint32_t script_hash = has_script_hash ? buffer.Read<uint32_t>(32) : 0;
 
-		if (blocked_ref_hashes.contains(ref_hash) || blocked_sound_hashes.contains(sound_hash))
-			return true;
+		static const std::unordered_set<uint32_t> blocked_ref_hashes = {"Arena_Vehicle_Mod_Shop_Sounds"_J, "CELEBRATION_SOUNDSET"_J, "DLC_AW_Arena_Office_Planning_Wall_Sounds"_J, "DLC_AW_Arena_Spin_Wheel_Game_Frontend_Sounds"_J, "DLC_Biker_SYG_Sounds"_J, "DLC_BTL_SECURITY_VANS_RADAR_PING_SOUNDS"_J, "DLC_BTL_Target_Pursuit_Sounds"_J, "DLC_GR_Bunker_Door_Sounds"_J, "DLC_GR_CS2_Sounds"_J, "DLC_IO_Warehouse_Mod_Garage_Sounds"_J, "DLC_MPSUM2_HSW_Up_Sounds"_J, "DLC_sum20_Business_Battle_AC_Sounds"_J, "DLC_TG_Running_Back_Sounds"_J, "dlc_vw_table_games_frontend_sounds"_J, "dlc_xm_facility_entry_exit_sounds"_J, "Frontend"_J, "GTAO_Boss_Goons_FM_Soundset"_J, "GTAO_Exec_SecuroServ_Computer_Sounds"_J, "GTAO_Exec_SecuroServ_Warehouse_PC_Sounds"_J, "GTAO_Script_Doors_Faded_Screen_Sounds"_J, "GTAO_SMG_Hangar_Computer_Sounds"_J, "HUD_AMMO_SHOP_SOUNDSET"_J, "HUD_FRONTEND_CUSTOM_SOUNDSET"_J, "HUD_FRONTEND_DEFAULT_SOUNDSET"_J, "HUD_FRONTEND_MP_SOUNDSET"_J, "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"_J, "HUD_FRONTEND_TATTOO_SHOP_SOUNDSET"_J, "HUD_FRONTEND_CLOTHESSHOP_SOUNDSET"_J, "HUD_FRONTEND_STANDARD_PICKUPS_NPC_SOUNDSET"_J, "HUD_FRONTEND_VEHICLE_PICKUPS_NPC_SOUNDSET"_J, "HUD_FRONTEND_WEAPONS_PICKUPS_NPC_SOUNDSET"_J, "HUD_FREEMODE_SOUNDSET"_J, "HUD_MINI_GAME_SOUNDSET"_J, "HUD_AWARDS"_J, "JA16_Super_Mod_Garage_Sounds"_J, "Low2_Super_Mod_Garage_Sounds"_J, "MissionFailedSounds"_J, "MP_CCTV_SOUNDSET"_J, "MP_LOBBY_SOUNDS"_J, "MP_MISSION_COUNTDOWN_SOUNDSET"_J, "Phone_SoundSet_Default"_J, "Phone_SoundSet_Glasses_Cam"_J, "Phone_SoundSet_Prologue"_J, "Phone_SoundSet_Franklin"_J, "Phone_SoundSet_Michael"_J, "Phone_SoundSet_Trevor"_J, "PLAYER_SWITCH_CUSTOM_SOUNDSET"_J, "RESPAWN_ONLINE_SOUNDSET"_J, "TATTOOIST_SOUNDS"_J, "WastedSounds"_J, "WEB_NAVIGATION_SOUNDS_PHONE"_J};
+		static const std::unordered_set<uint32_t> blocked_sound_hashes = {"Remote_Ring"_J, "COP_HELI_CAM_ZOOM"_J, "Object_Dropped_Remote"_J};
+		static const std::unordered_set<uint32_t> blocked_script_hashes = {"main_persistent"_J, "shop_controller"_J};
 
-		switch (sound_hash)
-		{
-		case "DLC_XM_Explosions_Orbital_Cannon"_J:
-		{
-			if (is_entity)
+		auto should_block = [&] {
+			if (blocked_ref_hashes.contains(ref_hash) || blocked_sound_hashes.contains(sound_hash)
+			    || blocked_script_hashes.contains(script_hash))
 				return true;
 
-			if (!scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[plyr->id()].OrbitalBitset.IsSet(eOrbitalBitset::kOrbitalCannonActive))
-				return true;
+			switch (sound_hash)
+			{
+			case "DLC_XM_Explosions_Orbital_Cannon"_J:
+			{
+				if (is_entity)
+					return true;
 
-			if (!valid_script_hashes.contains(script_hash))
-				return true;
+				if (!scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[plyr->id()].OrbitalBitset.IsSet(eOrbitalBitset::kOrbitalCannonActive))
+					return true;
 
-			break;
-		}
-		}
+				static const std::unordered_set<uint32_t> valid_script_hashes = {"am_mp_defunct_base"_J, "am_mp_orbital_cannon"_J, "fm_mission_controller_2020"_J, "fm_mission_controller"_J};
+				if (!valid_script_hashes.contains(script_hash))
+					return true;
 
-		switch (ref_hash)
-		{
-		case "GTAO_Biker_Modes_Soundset"_J:
-		case "DLC_Biker_Sell_Postman_Sounds"_J:
-		{
-			if (is_entity)
-				return true;
+				break;
+			}
+			}
 
-			if (script_hash != "gb_biker_contraband_sell"_J)
-				return true;
+			switch (ref_hash)
+			{
+			case "GTAO_Biker_Modes_Soundset"_J:
+			case "DLC_Biker_Sell_Postman_Sounds"_J:
+			{
+				if (is_entity)
+					return true;
 
-			break;
-		}
-		case "DLC_AW_General_Sounds"_J:
-		{
-			if (sound_hash != "Airhorn_Blast_Long"_J)
-				return true;
+				if (script_hash != "gb_biker_contraband_sell"_J)
+					return true;
 
-			if (script_hash != "gb_casino_heist"_J)
-				return true;
+				break;
+			}
+			case "DLC_AW_General_Sounds"_J:
+			{
+				if (sound_hash != "Airhorn_Blast_Long"_J)
+					return true;
 
-			if (!gta_util::find_script_thread("gb_casino_heist"_J))
-				return true;
+				if (script_hash != "gb_casino_heist"_J)
+					return true;
 
-			break;
-		}
-		case "GTAO_FM_Events_Soundset"_J:
-		{
-			if (!is_entity)
-				return true;
+				if (!gta_util::find_script_thread("gb_casino_heist"_J))
+					return true;
 
-			if (sound_hash != "Explosion_Countdown"_J)
-				return true;
+				break;
+			}
+			case "GTAO_FM_Events_Soundset"_J:
+			{
+				if (!is_entity)
+					return true;
 
-			break;
-		}
-		}
+				if (sound_hash != "Explosion_Countdown"_J)
+					return true;
+
+				break;
+			}
+			}
+
+			return false;
+		}();
+
+		if (should_block)
+			g_log.log_additional(std::format("NETWORK_PLAY_SOUND_EVENT from {} with is_entity: {}, ref_hash: {:X}, sound_hash: {:X}, sound_id: {}, script_hash: {:X}", plyr->m_name, is_entity ? "T" : "F", ref_hash, sound_hash, sound_id, script_hash));
 
 		buffer.Seek(0);
-		return false;
+		return should_block;
 	}
 
 	void hooks::received_event(rage::netEventMgr* event_manager, CNetGamePlayer* source_player, CNetGamePlayer* target_player, uint16_t event_id, int event_index, int event_handled_bitset, int buffer_size, rage::datBitBuffer* buffer)
@@ -250,6 +327,33 @@ namespace big
 					return send_ack_event();
 				}
 			}
+			else if (type == ScriptEntityChangeType::SetVehicleLockState)
+			{
+				if (g_local_player && g_local_player->m_vehicle && g_local_player->m_vehicle->m_net_object
+				    && g_local_player->m_vehicle->m_net_object->m_object_id == entity)
+				{
+					LOGF(WARNING, "Blocked SetVehicleLockState from {} on our local vehicle", plyr->m_name);
+					return send_ack_event();
+				}
+			}
+			else if (type == ScriptEntityChangeType::SetVehicleExclusiveDriver)
+			{
+				if (g_local_player && g_local_player->m_vehicle && g_local_player->m_vehicle->m_net_object
+				    && g_local_player->m_vehicle->m_net_object->m_object_id == entity)
+				{
+					LOGF(WARNING, "Blocked SetVehicleExclusiveDriver from {} on our local vehicle", plyr->m_name);
+					g_reactions.vehicle_kick.process(plyr);
+					return send_ack_event();
+				}
+			}
+			else if (type == ScriptEntityChangeType::SetPedFacialIdleAnimOverride)
+			{
+				if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id)
+				{
+					LOGF(WARNING, "Blocked SetPedFacialIdleAnimOverride from {} on our local player", plyr->m_name);
+					return send_ack_event();
+				}
+			}
 			else if (type > ScriptEntityChangeType::SetVehicleExclusiveDriver || type < ScriptEntityChangeType::BlockingOfNonTemporaryEvents)
 			{
 				g_reactions.crash32.process(plyr, tar_plyr);
@@ -265,10 +369,7 @@ namespace big
 			buffer->ReadDword(&scripted_game_event->m_args_size, 32);
 
 			if (scripted_game_event->m_args_size > sizeof(scripted_game_event->m_args))
-			{
-				g_reactions.crash42.process(plyr);
 				return send_ack_event();
-			}
 
 			buffer->ReadArray(&scripted_game_event->m_args, 8 * scripted_game_event->m_args_size);
 
@@ -325,7 +426,11 @@ namespace big
 		// player sending this event is a modder
 		case eNetworkEvents::REPORT_MYSELF_EVENT:
 		{
+			auto p1 = buffer->Read<int>(32);
+			auto p2 = buffer->Read<int>(32);
+			g_log.log_additional(std::format("Received REPORT_MYSELF_EVENT from {} with parameters ({}, {})", plyr->m_name, p1, p2));
 			g_reactions.anti_cheat_modder_detection.process(plyr);
+			buffer->Seek(0);
 			break;
 		}
 		case eNetworkEvents::REQUEST_CONTROL_EVENT:
@@ -368,21 +473,22 @@ namespace big
 
 			if (type == WorldStateDataType::Rope)
 			{
-				buffer->Read<int>(9);    // network rope id
-				buffer->Read<float>(19); // pos x
-				buffer->Read<float>(19); // pos y
-				buffer->Read<float>(19); // pos z
-				buffer->Read<float>(19); // rot x
-				buffer->Read<float>(19); // rot y
-				buffer->Read<float>(19); // rot z
-				buffer->Read<float>(16); // length
+				buffer->Read<int>(9);        // network rope id
+				buffer->ReadSigned<int>(19); // pos x
+				buffer->ReadSigned<int>(19); // pos y
+				buffer->Read<int>(19);       // pos z
+				buffer->ReadSigned<int>(19); // rot x
+				buffer->ReadSigned<int>(19); // rot y
+				buffer->Read<int>(19);       // rot z
+				float max_length     = buffer->ReadSignedFloat(16, 100.0f);
 				int type             = buffer->Read<int>(4);
-				float initial_length = buffer->Read<float>(16);
-				float min_length     = buffer->Read<float>(16);
+				float initial_length = buffer->ReadSignedFloat(16, 100.0f);
+				float min_length     = buffer->ReadSignedFloat(16, 100.0f);
 
-				if (type < 1 || initial_length < min_length) // https://docs.fivem.net/natives/?_0xE832D760399EB220
+				if (type == 0 || initial_length < min_length || max_length < min_length || max_length < 0.0f)
 				{
-					g_reactions.crash33.process(plyr, tar_plyr);
+					g_log.log_additional(std::format("{} sent a Rope that would crash the game. Script Hash: {:X}, Type: {}, Initial Length: {}, Min Length: {}, Max Length: {}", plyr->m_name, id.m_hash, type, initial_length, min_length, max_length));
+					g_reactions.crash33.process(plyr);
 					return send_ack_event();
 				}
 			}
@@ -512,6 +618,7 @@ namespace big
 			if (plyr->block_explosions)
 				return send_ack_event();
 
+			scan_explosion_event(source_player, buffer, plyr);
 			break;
 		}
 		case eNetworkEvents::WEAPON_DAMAGE_EVENT:

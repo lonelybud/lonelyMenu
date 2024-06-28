@@ -1,8 +1,10 @@
 #include "core/data/region_codes.hpp"
 #include "core/data/session.hpp"
 #include "hooking/hooking.hpp"
-#include "services/players/player_service.hpp"
 #include "logger/logger.hpp"
+#include "services/players/player_service.hpp"
+
+#include <network/CMsgJoinRequest.hpp>
 #include <network/CNetGamePlayerDataMsg.hpp>
 #include <network/RemoteGamerInfoMsg.hpp>
 
@@ -21,9 +23,9 @@ namespace big
 		return g_hooking->get_original<hooks::serialize_join_request_message>()(info, data, size, bits_serialized);
 	}
 
-	bool hooks::serialize_join_request_message_2(__int64 msg, void* buf, int size, int* bits_serialized)
+	bool hooks::serialize_join_request_message_2(CMsgJoinRequest* msg, void* buf, int size, int* bits_serialized)
 	{
-		auto& data = *(CNetGamePlayerDataMsg*)(msg + 0x128);
+		auto& data = msg->m_player_data_msg;
 
 		LOG(INFO) << "serialize_join_request_message 2: " << regions[data.m_region].name;
 

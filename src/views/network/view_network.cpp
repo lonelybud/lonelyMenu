@@ -136,32 +136,25 @@ namespace big
 
 		components::sub_title("Script Hosts");
 
-		static std::string freemode_sh_name, fmmc_launcher_sh_name, am_launcher_sh_name;
-
-		components::button("Identify all Script Hosts", [] {
-			scripts::get_host_name("freemode"_J, freemode_sh_name);
-			scripts::get_host_name("fmmc_launcher"_J, fmmc_launcher_sh_name);
-			scripts::get_host_name("am_launcher"_J, am_launcher_sh_name);
+		ImGui::Text("freemode : %s", scripts::get_host_name("freemode"_J));
+		ImGui::SameLine();
+		components::button("Force Host###host_freemode", [] {
+			scripts::force_script_host("freemode"_J);
 		});
-
-		ImGui::Text("freemode : %s", freemode_sh_name.c_str());
-		ImGui::Text("fmmc_launcher : %s", fmmc_launcher_sh_name.c_str());
-		ImGui::Text("am_launcher : %s", am_launcher_sh_name.c_str());
-
+		ImGui::Text("fmmc_launcher : %s", scripts::get_host_name("fmmc_launcher"_J));
+		ImGui::SameLine();
+		components::button("Force Host###host_fmmc", [] {
+			scripts::force_script_host("fmmc_launcher"_J);
+		});
+		ImGui::Text("am_launcher : %s", scripts::get_host_name("am_launcher"_J));
+		ImGui::SameLine();
+		components::button("Force Host###host_am_launcher", [] {
+			scripts::force_script_host("am_launcher"_J);
+		});
 		ImGui::Spacing();
-
-		if (ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host))
-			g_fiber_pool->queue_job([] {
-				scripts::force_migration("freemode"_J, g_session.force_freemode_host);
-			});
-		if (ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host))
-			g_fiber_pool->queue_job([] {
-				scripts::force_migration("fmmc_launcher"_J, g_session.force_fmmc_launcher_host);
-			});
-		if (ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host))
-			g_fiber_pool->queue_job([] {
-				scripts::force_migration("am_launcher"_J, g_session.force_am_launcher_host);
-			});
+		ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host);
+		ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host);
+		ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host);
 	}
 
 	static inline void render_host_list()

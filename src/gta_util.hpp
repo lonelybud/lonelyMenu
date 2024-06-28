@@ -5,6 +5,7 @@
 
 #include <network/CNetworkPlayerMgr.hpp>
 #include <network/Network.hpp>
+#include <network/netObjectIds.hpp>
 #include <ped/CPedFactory.hpp>
 #include <script/GtaThread.hpp>
 #include <script/scrProgramTable.hpp>
@@ -54,6 +55,14 @@ namespace big::gta_util
 	inline Network* get_network()
 	{
 		return *g_pointers->m_gta.m_network;
+	}
+
+	inline rage::netObjectIds* get_net_object_ids()
+	{
+		if (!*g_pointers->m_gta.m_network_object_mgr)
+			return nullptr;
+
+		return (rage::netObjectIds*)(((std::uintptr_t)*g_pointers->m_gta.m_network_object_mgr) + *g_pointers->m_gta.m_object_ids_offset); // TODO: map out CNetworkObjectMgr eventually
 	}
 
 	template<typename F, typename... Args>

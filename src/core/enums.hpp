@@ -359,9 +359,8 @@ namespace big
 		crash38,
 		crash39,
 		crash40,
-		crash42,
 		crash43,
-		player_ped_removal,
+		player_ped_remove,
 		invalid_weapon_type,
 		elegant_crash,
 		kick_vote,
@@ -429,7 +428,14 @@ namespace big
 		sound_spam_invite_rate_limit,
 		sound_spam_tse_rate_limit,
 		spoofed_host_token_2,
-		veh_prox_mig_node
+		veh_prox_mig_node,
+		sent_modder_beacons,
+		break_game,
+		delete_vehicle_cc,
+		delete_vehicle_cr,
+		player_ped_create,
+		player_ped_sync,
+		blame_explosion_detected
 	};
 
 	enum class reaction_karma

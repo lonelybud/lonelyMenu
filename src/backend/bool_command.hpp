@@ -26,12 +26,12 @@ namespace big
 			return m_toggle;
 		}
 
-		virtual void on_enable(){};
-		virtual void on_disable(){};
+		virtual void on_enable() {};
+		virtual void on_disable() {};
 
 		virtual void refresh()
 		{
-			g_fiber_pool->queue_job([this] {
+			g_fiber_pool->execute_on_game_thread([this] {
 				m_toggle ? on_enable() : on_disable();
 			});
 		}

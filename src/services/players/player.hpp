@@ -1,6 +1,7 @@
 #pragma once
 #include "core/data/player.hpp"
 #include "core/data/reactions.hpp"
+#include "core/data/script_block_options.hpp"
 #include "core/enums.hpp"
 #include "rate_limiter.hpp"
 #include "util/timer.hpp"
@@ -109,6 +110,8 @@ namespace big
 		throttle<std::chrono::milliseconds, 1000> last_event_timer;
 		int last_event_count = 0;
 
+		bool received_object_id_request  = false;
+		bool received_object_id_response = false;
 
 		int kick_counts = 0;
 

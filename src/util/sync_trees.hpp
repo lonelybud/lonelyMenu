@@ -519,7 +519,7 @@ namespace big
 	public:
 		static const sync_node_id& find(eNetObjType obj_type, uintptr_t addr)
 		{
-			if (!is_initialized()) [[unlikely]]
+			if (!is_initialized())
 				init();
 
 			return finder.sync_trees_sync_node_addr_to_ids[(int)obj_type][addr];
@@ -527,7 +527,7 @@ namespace big
 
 		static const sync_node_id& find(uintptr_t addr)
 		{
-			if (!is_initialized()) [[unlikely]]
+			if (!is_initialized())
 				init();
 
 			return finder.global_node_identifier[addr];

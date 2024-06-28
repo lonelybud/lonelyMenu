@@ -57,11 +57,12 @@ namespace big
 		reaction crash38{reaction_type::crash_player, reaction_sub_type::crash38, "Invalid parachute object type Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash39{reaction_type::crash_player, reaction_sub_type::crash39, "Invalid parachute model Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction crash40{reaction_type::crash_player, reaction_sub_type::crash40, "Out of bounds instance id Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
-		reaction crash42{reaction_type::crash_player, reaction_sub_type::crash42, "Out of bounds tse args size Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction crash43{reaction_type::crash_player, reaction_sub_type::crash43, "Invalid vehicle parachute Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
-		reaction player_ped_removal{reaction_type::crash_player, reaction_sub_type::player_ped_removal, "Player ped removal", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
+		reaction player_ped_remove{reaction_type::crash_player, reaction_sub_type::player_ped_remove, "Player ped removal", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction invalid_weapon_type{reaction_type::crash_player, reaction_sub_type::invalid_weapon_type, "invalid weapon type", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction elegant_crash{reaction_type::crash_player, reaction_sub_type::elegant_crash, "Elegant Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
+		reaction player_ped_create{reaction_type::crash_player, reaction_sub_type::player_ped_create, "Player Create", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
+		reaction player_ped_sync{reaction_type::crash_player, reaction_sub_type::player_ped_sync, "Player Sync", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 
 		// normal, other
 		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", reaction_notif_type::normal, player_type::other};
@@ -73,6 +74,7 @@ namespace big
 		reaction nw_sound_spam_scanned{reaction_type::none, reaction_sub_type::nw_sound_spam_scanned, "Sound Spam (Netw. Scanned)", reaction_notif_type::normal, player_type::other};
 		reaction sound_spam_invite_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_invite_rate_limit, "Sound Spam (Invite Rate Limit)", reaction_notif_type::normal, player_type::other};
 		reaction sound_spam_tse_rate_limit{reaction_type::none, reaction_sub_type::sound_spam_tse_rate_limit, "Sound Spam (TSE Rate Limit)", reaction_notif_type::normal, player_type::other};
+		reaction blamed_explosion_detected{reaction_type::none, reaction_sub_type::blame_explosion_detected, "Blame Explosion", reaction_notif_type::normal, player_type::other};
 
 		// once, other
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", reaction_notif_type::once, player_type::other};
@@ -97,6 +99,7 @@ namespace big
 		reaction report_cash_spawn{reaction_type::none, reaction_sub_type::report_cash_spawn, "Cash Spawn", reaction_notif_type::once, player_type::modder};
 		reaction killed_ped_with_god{reaction_type::none, reaction_sub_type::killed_ped_with_god, "God Kill (Ped)", reaction_notif_type::once, player_type::modder};
 		reaction killed_ped_with_invis{reaction_type::none, reaction_sub_type::killed_ped_with_invis, "Invisible Kill (Ped)", reaction_notif_type::once, player_type::modder};
+		reaction sent_modder_beacons{reaction_type::none, reaction_sub_type::sent_modder_beacons, "Sent Modder Beacons", reaction_notif_type::once, player_type::modder};
 
 		// normal, modder
 		reaction killed_with_god{reaction_type::none, reaction_sub_type::killed_with_god, "God Kill", reaction_notif_type::normal, player_type::modder};
@@ -123,6 +126,9 @@ namespace big
 		reaction veh_prox_mig_node{reaction_type::none, reaction_sub_type::veh_prox_mig_node, "CVehProxMigDataNode", reaction_notif_type::normal, player_type::modder};
 		reaction request_control_event_prob{reaction_type::none, reaction_sub_type::request_control_event_prob, "Request Control Event (Prob)", reaction_notif_type::normal, player_type::modder};
 		reaction vehicle_kick_prob{reaction_type::none, reaction_sub_type::vehicle_kick_prob, "Vehicle Kick (Prob)", reaction_notif_type::normal, player_type::modder};
+		reaction break_game{reaction_type::none, reaction_sub_type::break_game, "Break Game", reaction_notif_type::normal, player_type::modder};
+		reaction delete_vehicle_cc{reaction_type::none, reaction_sub_type::delete_vehicle_cc, "Delete Vehicle (CC)", reaction_notif_type::normal, player_type::modder};
+		reaction delete_vehicle_cr{reaction_type::none, reaction_sub_type::delete_vehicle_cr, "Delete Vehicle (CR)", reaction_notif_type::normal, player_type::modder};
 
 		// normal, normal
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", reaction_notif_type::normal, player_type::normal};

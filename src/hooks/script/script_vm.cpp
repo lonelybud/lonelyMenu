@@ -17,7 +17,7 @@ namespace big
 		    m_program(program)
 		{
 			m_orig_bytecode = program->m_code_blocks;
-
+	
 			if (auto bytecode = g_script_patcher_service->get_script_bytecode(program->m_name_hash))
 				program->m_code_blocks = bytecode;
 

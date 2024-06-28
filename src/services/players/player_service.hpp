@@ -19,6 +19,8 @@ namespace big
 		// player_ptr m_dummy = std::make_shared<player>(nullptr, 0);
 		player_ptr m_selected_player;
 
+		std::unordered_set<std::uint64_t> m_players_sending_modder_beacons;
+
 	public:
 		player_service();
 		~player_service();
@@ -39,6 +41,8 @@ namespace big
 
 		void player_join(CNetGamePlayer* net_game_player, uint64_t host_token);
 		void player_leave(CNetGamePlayer* net_game_player, rock_id rockstar_id);
+		void mark_player_as_sending_modder_beacons(std::uint64_t rid);
+		bool did_player_send_modder_beacon(std::uint64_t rid);
 
 		players& players()
 		{

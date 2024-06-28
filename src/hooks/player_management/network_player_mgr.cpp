@@ -31,6 +31,7 @@ namespace big
 		g_session_t g_session_temp;
 		g_session_temp.host_token                 = g_session.host_token;
 		g_session_temp.orig_host_token            = g_session.orig_host_token;
+		g_session_temp.orig_peer_id               = g_session.orig_peer_id;
 		g_session_temp.nat_type                   = g_session.nat_type;
 		g_session_temp.multiplex_session          = g_session.multiplex_session;
 		g_session_temp.multiplex_count            = g_session.multiplex_count;
