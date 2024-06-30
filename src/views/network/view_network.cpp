@@ -47,6 +47,7 @@ namespace big
 
 		ImGui::Checkbox("Block Joins", &g_session.block_joins);
 		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
+		ImGui::Checkbox("Block Spoofed tokens", &g_session.block_spoofed_tokens);
 
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
 

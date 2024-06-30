@@ -127,8 +127,6 @@ namespace big
 		reaction request_control_event_prob{reaction_type::none, reaction_sub_type::request_control_event_prob, "Request Control Event (Prob)", reaction_notif_type::normal, player_type::modder};
 		reaction vehicle_kick_prob{reaction_type::none, reaction_sub_type::vehicle_kick_prob, "Vehicle Kick (Prob)", reaction_notif_type::normal, player_type::modder};
 		reaction break_game{reaction_type::none, reaction_sub_type::break_game, "Break Game", reaction_notif_type::normal, player_type::modder};
-		reaction delete_vehicle_cc{reaction_type::none, reaction_sub_type::delete_vehicle_cc, "Delete Vehicle (CC)", reaction_notif_type::normal, player_type::modder};
-		reaction delete_vehicle_cr{reaction_type::none, reaction_sub_type::delete_vehicle_cr, "Delete Vehicle (CR)", reaction_notif_type::normal, player_type::modder};
 
 		// normal, normal
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", reaction_notif_type::normal, player_type::normal};
@@ -146,5 +144,10 @@ namespace big
 		reaction nw_sound_spam_rate_limit{reaction_type::none, reaction_sub_type::nw_sound_spam_rate_limit, "Sound Spam (Netw. Rate Limit)", reaction_notif_type::normal, player_type::normal};
 		reaction cage{reaction_type::none, reaction_sub_type::cage, "Cage", reaction_notif_type::normal, player_type::normal};
 		reaction ptfx_spam{reaction_type::none, reaction_sub_type::ptfx_spam, "Ptfx Spam", reaction_notif_type::normal, player_type::normal};
+		reaction delete_vehicle_cc{reaction_type::none, reaction_sub_type::delete_vehicle_cc, "Delete Vehicle (CC)", reaction_notif_type::normal, player_type::normal};
+		reaction delete_vehicle_cr{reaction_type::none, reaction_sub_type::delete_vehicle_cr, "Delete Vehicle (CR)", reaction_notif_type::normal, player_type::normal};
+
+		// used in view::reaction_settings. It is dummy and useless
+		reaction _none{reaction_type::none, reaction_sub_type::none, "", reaction_notif_type::normal, player_type::normal};
 	} g_reactions{};
 }

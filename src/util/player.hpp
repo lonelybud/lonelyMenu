@@ -247,4 +247,14 @@ namespace big
 
 		return false;
 	}
+
+	inline std::string get_infraction_str(std::map<big::reaction*, int>& infractions)
+	{
+		std::string str = "infrac: ";
+
+		for (auto& pair : infractions)
+			str += std::string(pair.first->m_event_name) + ",";
+
+		return str;
+	}
 }

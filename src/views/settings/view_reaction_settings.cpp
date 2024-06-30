@@ -25,7 +25,7 @@ namespace big
 		if (components::input_text_with_hint("###event_name", "event name", event_name))
 			std::transform(event_name.begin(), event_name.end(), event_name.begin(), ::tolower);
 
-		for (reaction* i = &g_reactions.end_session_kick; i <= &g_reactions.give_weapon; ++i)
+		for (reaction* i = &g_reactions.end_session_kick; i < &g_reactions._none; ++i)
 			if (event_name.length())
 			{
 				std::string t = i->m_event_name;

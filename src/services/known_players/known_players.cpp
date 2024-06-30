@@ -1,6 +1,8 @@
 #pragma once
 #include "known_players.hpp"
+
 #include "logger/logger.hpp"
+#include "util/player.hpp"
 
 using json = nlohmann::json;
 
@@ -57,7 +59,7 @@ namespace big
 
 	void known_players_service::add(player_ptr player)
 	{
-		add(player->m_name, player->m_rockstar_id, "");
+		add(player->m_name, player->m_rockstar_id, get_infraction_str(player->infractions));
 	}
 
 	inline void known_players_service::remove(rock_id rockstar_id)

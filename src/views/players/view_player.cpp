@@ -499,6 +499,7 @@ namespace big
 			ImGui::Spacing();
 
 			components::player_command_button<"oomkick">(last_selected_player);
+			components::player_command_button<"breakgame">(last_selected_player);
 
 			ImGui::Spacing();
 

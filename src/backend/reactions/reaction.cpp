@@ -7,19 +7,10 @@
 #include "services/blocked_players/blocked_players.hpp"
 #include "services/gui/gui_service.hpp"
 #include "services/players/player_service.hpp"
+#include "util/player.hpp"
 
 namespace big
 {
-	inline std::string get_infraction_str(std::map<big::reaction*, int>& infractions)
-	{
-		std::string str = "infrac: ";
-
-		for (auto& pair : infractions)
-			str += std::string(pair.first->m_event_name) + ",";
-
-		return str;
-	}
-
 	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, reaction_notif_type notif_type, player_type plyr_type, reaction_karma karma_type, int attempts_before_log) :
 	    m_type(type),
 	    m_sub_type(sub_type),
@@ -70,19 +61,30 @@ namespace big
 			// then it will only log 5 times (each after 1 sec) and not 30 times.
 
 			bool should_log = false;
+
 			if (player->last_event_sub_type == m_sub_type)
 			{
-				if (player->last_event_count >= m_attempts_before_log)
-					should_log = player->last_event_timer.has_time_passed();
-
-				++player->last_event_count;
+				if (++player->last_event_count > m_attempts_before_log)
+				{
+					should_log               = player->last_event_timer.has_time_passed();
+					player->last_event_count = 0;
+				}
 			}
 			else
 			{
 				player->last_event_sub_type = m_sub_type;
 				player->last_event_timer.reset(1000);
-				player->last_event_count = 0;
-				should_log               = true;
+
+				if (m_attempts_before_log)
+				{
+					player->last_event_count = 1;
+					should_log               = false;
+				}
+				else
+				{
+					player->last_event_count = 0;
+					should_log               = true;
+				}
 			}
 
 			/************************************************************ log phase */

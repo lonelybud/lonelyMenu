@@ -24,6 +24,8 @@
 
 namespace big
 {
+	static player_ptr dummy_player = std::make_shared<player>(nullptr, 0);
+
 	static bool try_read_secondary_header(rage::datBitBuffer& buffer)
 	{
 		auto data = buffer.Read<std::uint32_t>(20);
@@ -142,30 +144,34 @@ namespace big
 		return false;
 	}
 
-	static bool should_block_script_control_request(rage::joaat_t hash, const char* text)
+	static const char* should_block_script_control_request(rage::joaat_t hash)
 	{
 		if (NETWORK::NETWORK_IS_ACTIVITY_SESSION() || NETWORK::NETWORK_IS_IN_TRANSITION() || NETWORK::NETWORK_IS_TRANSITION_BUSY())
-			return false;
+			return nullptr;
 
 		switch (hash)
 		{
 		case "freemode"_J:
 		{
-			text = "freemode";
-			return g_session.force_freemode_host;
+			if (g_session.force_freemode_host)
+				return "freemode";
+			break;
 		}
 		case "fmmc_launcher"_J:
 		{
-			text = "fmmc_launcher";
-			return g_session.force_fmmc_launcher_host;
+			if (g_session.force_fmmc_launcher_host)
+				return "fmmc_launcher";
+			break;
 		}
 		case "am_launcher"_J:
 		{
-			text = "am_launcher";
-			return g_session.force_am_launcher_host;
+			if (g_session.force_am_launcher_host)
+				return "am_launcher";
+			break;
 		}
-		default: return false;
 		}
+
+		return nullptr;
 	}
 
 	bool hooks::receive_net_message(void* a1, rage::netConnectionManager* net_cxn_mgr, rage::netEvent* event)
@@ -221,7 +227,7 @@ namespace big
 		    && gta_util::get_network()->m_transition_session_ptr->m_connection_identifier == event->m_connection_identifier)
 			session = gta_util::get_network()->m_transition_session_ptr;
 
-		player_ptr _player = nullptr, unkown_player = nullptr;
+		player_ptr _player = nullptr, unkown_player = dummy_player;
 		rock_id rockstar_id;
 
 		for (uint32_t i = 0; i < gta_util::get_network()->m_game_session_ptr->m_player_count; i++)
@@ -258,10 +264,7 @@ namespace big
 		auto peer = g_pointers->m_gta.m_get_peer_by_security_id(sec_id); // shouldn't be null in most cases, contains unspoofable data
 
 		auto plyr        = _player ? _player : unkown_player;
-		auto player_name = "";
-
-		if (plyr)
-			player_name = _player ? _player->m_name : (peer ? peer->m_info.name : unkown_player->m_name);
+		auto player_name = _player ? _player->m_name : (peer ? peer->m_info.name : unkown_player->m_name);
 
 		auto get_name_rid = [player_name, rockstar_id] {
 			return std::format("{} ({})", player_name, rockstar_id);
@@ -338,9 +341,9 @@ namespace big
 		{
 			CGameScriptId script;
 			script_id_deserialize(script, buffer);
-			const char* text = nullptr;
+			const char* text = should_block_script_control_request(script.m_hash);
 
-			if (_player && should_block_script_control_request(script.m_hash, text))
+			if (_player && text)
 			{
 				LOGF(WARNING, "MsgScriptHostRequest for {} denied to {}", text, get_name_rid());
 				return true;
@@ -591,21 +594,21 @@ namespace big
 		}
 		case rage::eNetMessage::MsgRequestKickFromHost:
 		{
-			LOGF(WARNING, "MsgRequestKickFromHost from {}", get_name_rid());
+			LOGF(WARNING, "Denied MsgRequestKickFromHost from {}", get_name_rid());
 			return true;
 		}
 		case rage::eNetMessage::MsgConfigRequest:
 		{
-			LOGF(WARNING, "MsgConfigRequest from {}", get_name_rid());
+			LOGF(WARNING, "Denied MsgConfigRequest from {}", get_name_rid());
 			return true;
 		}
 		case rage::eNetMessage::MsgScriptJoin:
 		{
 			CGameScriptId script;
 			script_id_deserialize(script, buffer);
-			const char* text = nullptr;
+			const char* text = should_block_script_control_request(script.m_hash);
 
-			if (_player && should_block_script_control_request(script.m_hash, text))
+			if (_player && text)
 			{
 				packet pkt;
 				pkt.write_message(rage::eNetMessage::MsgScriptJoinHostAck);
@@ -631,8 +634,8 @@ namespace big
 				// dumb modders
 				if (_player)
 					g_reactions.sent_modder_beacons.process(_player);
-				else if (peer)
-					g_player_service->mark_player_as_sending_modder_beacons(peer->m_info.handle.m_rockstar_id);
+				else
+					g_player_service->mark_player_as_sending_modder_beacons(rockstar_id);
 			}
 		}
 		}

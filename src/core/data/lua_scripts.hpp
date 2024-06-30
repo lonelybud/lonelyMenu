@@ -83,10 +83,7 @@ namespace big
 		{
 			std::string combination_retn = "";
 			for (int i = 0; i <= 2; i++)
-				if (i == 2)
-					combination_retn += std::to_string(lua_helper::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1));
-				else
-					combination_retn += std::to_string(lua_helper::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) + "-";
+				combination_retn += std::to_string(lua_helper::locals::get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) + "-";
 			return combination_retn;
 		}
 		inline int get_casino_target()
