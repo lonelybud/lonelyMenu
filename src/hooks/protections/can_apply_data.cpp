@@ -1524,15 +1524,14 @@ namespace big
 				{
 					const auto migration_node = (CVehicleProximityMigrationDataNode*)(node);
 
-					if (!g_local_player->m_vehicle || !g_local_player->m_vehicle->m_net_object
-					    || g_local_player->m_vehicle->m_net_object->m_object_id != object->m_object_id
-					    || !is_in_vehicle(g_local_player, g_local_player->m_vehicle))
+					if (!sender_plyr->is_friend()
+					    && (!g_local_player->m_vehicle || !g_local_player->m_vehicle->m_net_object
+					        || g_local_player->m_vehicle->m_net_object->m_object_id != object->m_object_id
+					        || !is_in_vehicle(g_local_player, g_local_player->m_vehicle))
+					    && is_local_player_an_occupant(migration_node)) // remote teleport
 					{
-						if (is_local_player_an_occupant(migration_node)) // remote teleport
-						{
-							g_reactions.veh_prox_mig_node.process(sender_plyr);
-							return true;
-						}
+						g_reactions.veh_prox_mig_node.process(sender_plyr);
+						return true;
 					}
 				}
 

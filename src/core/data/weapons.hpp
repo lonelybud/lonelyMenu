@@ -6,11 +6,13 @@ namespace big
 {
 	struct g_weapons_t
 	{
-		bool infinite_ammo    = false;
-		bool infinite_mag     = false;
-		bool rapid_fire       = false;
-		int rapid_fire_delay  = 500;
-		bool no_recoil_spread = false;
+		bool infinite_ammo          = false;
+		bool infinite_mag           = false;
+		bool rapid_fire             = false;
+		int rapid_fire_delay        = 500;
+		bool no_recoil_spread       = false;
+		bool ammo_special_type      = false;
+		eExplosionTag explosion_tag = eExplosionTag::DONTCARE;
 
 		struct aimbot
 		{

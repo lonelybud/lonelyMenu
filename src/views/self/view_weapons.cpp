@@ -1,3 +1,4 @@
+#include "core/data/bullet_impact_types.hpp"
 #include "core/data/weapons.hpp"
 #include "core/vars.hpp"
 #include "gta/weapons.hpp"
@@ -22,35 +23,6 @@ namespace big
 		}
 
 		return res;
-	}
-
-	static inline void render_misc()
-	{
-		components::command_checkbox<"aimbot">();
-		if (g_weapons.aimbot.enable)
-		{
-			ImGui::PushItemWidth(350);
-			ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
-			ImGui::PopItemWidth();
-			ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
-
-			static bool head = g_weapons.aimbot.bone == ePedBoneType::HEAD;
-			if (ImGui::Checkbox("Aimbot Head", &head))
-				g_weapons.aimbot.bone = head ? ePedBoneType::HEAD : ePedBoneType::ABDOMEN;
-		}
-		components::command_checkbox<"norecoilspread">();
-		ImGui::Spacing();
-
-		components::button("Give Parachute", [] {
-			WEAPON::GIVE_DELAYED_WEAPON_TO_PED(self::ped, GADGET_PARACHUTE, 0, true);
-		});
-		ImGui::SameLine();
-		components::button("Remove Current Weapon", [] {
-			Hash weaponHash;
-			WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weaponHash, 1);
-			if (weaponHash != "WEAPON_UNARMED"_J)
-				WEAPON::REMOVE_WEAPON_FROM_PED(self::ped, weaponHash);
-		});
 	}
 
 	static inline void render_ammunation()
@@ -140,32 +112,69 @@ namespace big
 				WEAPON::SET_PED_AMMO(self::ped, weapon.m_hash, ammo_in, 0);
 			}
 		});
+		ImGui::SameLine();
+		components::button("Give Parachute", [] {
+			WEAPON::GIVE_DELAYED_WEAPON_TO_PED(self::ped, GADGET_PARACHUTE, 0, true);
+		});
+		ImGui::SameLine();
+		components::button("Remove Current Weapon", [] {
+			Hash weaponHash;
+			WEAPON::GET_CURRENT_PED_WEAPON(self::ped, &weaponHash, 1);
+			if (weaponHash != "WEAPON_UNARMED"_J)
+				WEAPON::REMOVE_WEAPON_FROM_PED(self::ped, weaponHash);
+		});
 
 		ImGui::SeparatorText("Misc");
 
-		render_misc();
+		ImGui::BeginGroup();
+		{
+			components::command_checkbox<"aimbot">();
+			if (g_weapons.aimbot.enable)
+			{
+				ImGui::PushItemWidth(350);
+				ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
+				ImGui::PopItemWidth();
+				ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
+
+				static bool head = g_weapons.aimbot.bone == ePedBoneType::HEAD;
+				if (ImGui::Checkbox("Aimbot Head", &head))
+					g_weapons.aimbot.bone = head ? ePedBoneType::HEAD : ePedBoneType::ABDOMEN;
+			}
+			components::command_checkbox<"norecoilspread">();
+		}
+		ImGui::EndGroup();
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		{
+			components::command_checkbox<"modify_weapon_values">();
+			if (g_weapons.modify_weapon_values.enable)
+			{
+				ImGui::SetNextItemWidth(200);
+				ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
+			}
+			components::command_checkbox<"infammo">();
+			components::command_checkbox<"infclip">();
+			components::command_checkbox<"rapidfire">();
+			if (g_weapons.rapid_fire)
+			{
+				ImGui::SetNextItemWidth(200);
+				ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
+			}
+			components::command_checkbox<"ammo_special_type">();
+			if (g_weapons.ammo_special_type && ImGui::BeginCombo("Bullet Impact", BULLET_IMPACTS[g_weapons.explosion_tag]))
+			{
+				for (const auto& [type, name] : BULLET_IMPACTS)
+					if (ImGui::Selectable(name, type == g_weapons.explosion_tag))
+						g_weapons.explosion_tag = type;
+
+				ImGui::EndCombo();
+			}
+		}
+		ImGui::EndGroup();
 
 		ImGui::Spacing();
 
 		render_ammunation();
-
-		ImGui::Spacing();
-
-		components::command_checkbox<"modify_weapon_values">();
-		if (g_weapons.modify_weapon_values.enable)
-		{
-			ImGui::SetNextItemWidth(200);
-			ImGui::InputFloat("Time Between Shots", &g_weapons.modify_weapon_values.time_bw_shots);
-		}
-
-		components::command_checkbox<"infammo">();
-		components::command_checkbox<"infclip">();
-		components::command_checkbox<"rapidfire">();
-		if (g_weapons.rapid_fire)
-		{
-			ImGui::SetNextItemWidth(200);
-			ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
-		}
 
 		ImGui::Spacing();
 
