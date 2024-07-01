@@ -49,8 +49,6 @@ namespace big
 
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
-		memory::handle m_sound_overload_detour;
-
 		memory::handle m_crash_trigger;
 
 		memory::handle m_script_vm_patch_1;

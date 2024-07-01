@@ -42,32 +42,32 @@ namespace big::mobile
 	{
 		inline void request_avenger()
 		{
-			*scr_globals::freemode_global.at(938).as<int*>() = 1;
+			*scr_globals::freemode_global.at(953).as<int*>() = 1;
 		}
 
 		inline void request_kosatka()
 		{
-			*scr_globals::freemode_global.at(960).as<int*>() = 1;
+			*scr_globals::freemode_global.at(975).as<int*>() = 1;
 		}
 
 		inline void request_mobile_operations_center()
 		{
-			*scr_globals::freemode_global.at(930).as<int*>() = 1;
+			*scr_globals::freemode_global.at(945).as<int*>() = 1;
 		}
 
 		inline void request_terrorbyte()
 		{
-			*scr_globals::freemode_global.at(943).as<int*>() = 1;
+			*scr_globals::freemode_global.at(958).as<int*>() = 1;
 		}
 
 		inline void request_acidlab()
 		{
-			*scr_globals::freemode_global.at(944).as<int*>() = 1;
+			*scr_globals::freemode_global.at(959).as<int*>() = 1;
 		}
 
 		inline void request_acidlab_bike()
 		{
-			*scr_globals::freemode_global.at(994).as<int*>() = 1;
+			*scr_globals::freemode_global.at(1009).as<int*>() = 1;
 		}
 	}
 
@@ -75,12 +75,12 @@ namespace big::mobile
 	{
 		inline Vehicle get_personal_vehicle()
 		{
-			return *scr_globals::freemode_global.at(299).as<Vehicle*>();
+			return *scr_globals::freemode_global.at(301).as<Vehicle*>();
 		}
 
 		inline void summon_vehicle_by_index(int veh_idx)
 		{
-			if (*scr_globals::freemode_global.at(985).as<int*>() != -1)
+			if (*scr_globals::freemode_global.at(1000).as<int*>() != -1)
 			{
 				g_notification_service.push_warning("Vehicle", "Mechanic is not ready to deliver a vehicle right now.");
 				return;
@@ -94,14 +94,14 @@ namespace big::mobile
 
 			script::get_current()->yield(100ms);
 
-			*scr_globals::freemode_global.at(928).as<int*>() = 1; // tell freemode to spawn our vehicle
-			*scr_globals::freemode_global.at(988).as<int*>() = 0; // required
-			*scr_globals::freemode_global.at(985).as<int*>() = veh_idx;
+			*scr_globals::freemode_global.at(943).as<int*>() = 1; // tell freemode to spawn our vehicle
+			*scr_globals::freemode_global.at(1003).as<int*>() = 0; // required
+			*scr_globals::freemode_global.at(1000).as<int*>() = veh_idx;
 
 			script::get_current()->yield(100ms);
 
 			// blocking call till vehicle is delivered
-			int *address = scr_globals::freemode_global.at(985).as<int*>(), value = -1;
+			int *address = scr_globals::freemode_global.at(1000).as<int*>(), value = -1;
 			for (size_t i = 0; *address != value && i < 100; i++)
 				script::get_current()->yield(100ms);
 		}

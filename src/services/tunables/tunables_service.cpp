@@ -25,6 +25,8 @@ namespace big
 
 	void tunables_service::run_script()
 	{
+		return;
+
 		while (true)
 		{
 			script::get_current()->yield();

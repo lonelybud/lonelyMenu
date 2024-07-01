@@ -6,9 +6,6 @@
 #include "pointers.hpp"
 #include "util/vehicle.hpp"
 
-extern "C" void sound_overload_detour();
-uint64_t g_sound_overload_ret_addr;
-
 namespace big
 {
 	static void init()
@@ -19,12 +16,6 @@ namespace big
 
 		// Disable cheat activated netevent when creator warping
 		memory::byte_patch::make(g_pointers->m_gta.m_creator_warp_cheat_triggered_patch.as<uint8_t*>(), 0xEB)->apply();
-
-		// Setup inline hook for sound overload crash protection
-		g_sound_overload_ret_addr = g_pointers->m_gta.m_sound_overload_detour.add(13 + 15).as<decltype(g_sound_overload_ret_addr)>();
-		std::vector<byte> bytes = {0xFF, 0x25, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90}; // far jump opcode + a nop opcode
-		*(void**)(bytes.data() + 6) = sound_overload_detour;
-		memory::byte_patch::make(g_pointers->m_gta.m_sound_overload_detour.add(13).as<void*>(), bytes)->apply();
 
 		// Crash Trigger
 		memory::byte_patch::make(g_pointers->m_gta.m_crash_trigger.add(4).as<uint8_t*>(), 0x00)->apply();
