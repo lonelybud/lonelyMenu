@@ -446,7 +446,7 @@ namespace big
         // Send Chat Message
         {
             "SCM",
-            "48 83 EC 20 48 8B F1 48 8B CA 41 8A E9",
+            "48 81 EC 80 00 00 00 48 8B E9 48 8B CA 41",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_send_chat_message = ptr.sub(21).as<functions::send_chat_message>();
@@ -491,7 +491,7 @@ namespace big
         // Player Info Gamer Info
         {
             "PIGI",
-            "E8 ? ? ? ? 48 8D 4D 20 48 8B D0 E8 ? ? ? ? 41 8A CF",
+            "E8 ? ? ? ? 48 8D 4B 20 48 8B D0 E8 ? ? ? ? 41 8A CF",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_player_info_gamer_info = ptr.add(1).rip().add(3).rip().as<rage::rlGamerInfo*>();
@@ -572,10 +572,10 @@ namespace big
         // Handle Remove Gamer Command
         {
             "HRGC",
-            "48 85 D2 0F 84 0E 04",
+            "74 74 33 FF",
             [](memory::handle ptr)
             {
-                g_pointers->m_gta.m_handle_remove_gamer_cmd = ptr.as<functions::handle_remove_gamer_cmd>();
+                g_pointers->m_gta.m_handle_remove_gamer_cmd = ptr.sub(0x3B).as<functions::handle_remove_gamer_cmd>();
             }
         },
         // Serialize Take Off Ped Variation Task
@@ -842,15 +842,6 @@ namespace big
                 g_pointers->m_gta.m_creator_warp_cheat_triggered_patch = ptr;
             }
         },
-        // Sound Overload Detour
-        {
-            "SOD",
-            "66 45 3B C1 74 38",
-            [](memory::handle ptr)
-            {
-                g_pointers->m_gta.m_sound_overload_detour = ptr;
-            }
-        },
         // Crash Trigger
         {
             "CT",
@@ -1037,7 +1028,7 @@ namespace big
         // Send Session Detail Msg
         {
             "SSDM",
-            "4C 8D 85 F0 01 00 00 49 8B D5", // unstable
+            "4C 8D 85 ? ? 00 00 49 8B D5 49", // unstable
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_send_session_detail_msg = ptr.add(0xE).rip().as<PVOID>();

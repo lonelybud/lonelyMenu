@@ -89,7 +89,6 @@ namespace big
 		add_native_detour(NativeIndex::REGISTER_SCRIPT_VARIABLE, all_scripts::DO_NOTHING);
 		add_native_detour(NativeIndex::UNREGISTER_SCRIPT_VARIABLE, all_scripts::DO_NOTHING);
 		add_native_detour(NativeIndex::FORCE_CHECK_SCRIPT_VARIABLES, all_scripts::DO_NOTHING);
-		add_native_detour(NativeIndex::SC_PROFANITY_GET_STRING_STATUS, all_scripts::RETURN_FALSE); // bypass SC profanity checks
 
 		add_native_detour("shop_controller"_J, NativeIndex::IS_PED_SHOOTING, all_scripts::RETURN_FALSE); // prevent exploit reports
 		add_native_detour("shop_controller"_J, NativeIndex::SET_WARNING_MESSAGE_WITH_HEADER, shop_controller::SET_WARNING_MESSAGE_WITH_HEADER);
@@ -98,9 +97,9 @@ namespace big
 
 		add_native_detour("am_launcher"_J, NativeIndex::START_NEW_SCRIPT_WITH_ARGS, am_launcher::START_NEW_SCRIPT_WITH_ARGS);
 
-		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_INT_HASH, tunables::NETWORK_ACCESS_TUNABLE_INT_HASH);
-		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH, tunables::NETWORK_ACCESS_TUNABLE_BOOL_MODIFICATION_DETECTION_REGISTRATION_HASH);
-		add_native_detour("tuneables_processing"_J, NativeIndex::NETWORK_ACCESS_TUNABLE_FLOAT_HASH, tunables::NETWORK_ACCESS_TUNABLE_FLOAT_HASH);
+		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_INT, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_INT);
+		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_BOOL, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_BOOL);
+		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_FLOAT, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_FLOAT);
 
 		for (auto& entry : *g_pointers->m_gta.m_script_program_table)
 			if (entry.m_program)

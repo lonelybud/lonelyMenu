@@ -2,6 +2,7 @@
 #include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
 #include "fiber_pool.hpp"
+#include "gta_util.hpp"
 #include "script_mgr.hpp"
 #include "views/view.hpp"
 
@@ -14,32 +15,18 @@ namespace big
 		if (ImGui::Begin("menu_heading", nullptr, window_flags | ImGuiWindowFlags_NoScrollbar))
 		{
 			ImGui::Text("Welcome");
-			ImGui::SameLine();
-			ImGui::SetCursorPos(
-			    {g_gui_info.nav_window_width - ImGui::CalcTextSize("Unload").x - (window_padding.x * g_window.gui_scale),
-			        window_padding.y * g_window.gui_scale});
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.69f, 0.29f, 0.29f, 1.00f));
-			if (components::nav_button("Unload"))
+			// only show when offline
+			if (auto network = gta_util::get_network(); network && network->m_game_session_state == 0)
 			{
-				// allow to unload in the main title screen.
-				if (g_script_mgr.can_tick())
-				{
-					// empty the pool, we want the that job below run no matter what for clean up purposes.
-					g_fiber_pool->reset();
-					g_fiber_pool->queue_job([] {
-						for (auto& command : g_looped_commands)
-							if (command->is_enabled())
-								command->on_disable();
-
-						g_running = false;
-					});
-				}
-				else
-				{
+				ImGui::SameLine();
+				ImGui::SetCursorPos(
+				    {g_gui_info.nav_window_width - ImGui::CalcTextSize("Unload").x - (window_padding.x * g_window.gui_scale),
+				        window_padding.y * g_window.gui_scale});
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.69f, 0.29f, 0.29f, 1.00f));
+				if (components::nav_button("Unload"))
 					g_running = false;
-				}
+				ImGui::PopStyleColor();
 			}
-			ImGui::PopStyleColor();
 		}
 		ImGui::End();
 	}

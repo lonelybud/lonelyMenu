@@ -2,7 +2,6 @@
 #include "hooking/hooking.hpp"
 #include "logger/logger.hpp"
 #include "rage/rlMetric.hpp"
-#include "services/players/player_service.hpp"
 
 namespace big
 {
@@ -99,29 +98,20 @@ namespace big
 	{
 		char metric_json_buffer[256]{};
 		rage::json_serializer yim_serializer(metric_json_buffer, sizeof(metric_json_buffer));
-
 		metric->serialize(&yim_serializer);
-
 		auto metric_name          = metric->get_name();
 		auto is_unimp_bad_metrics = bad_metrics_unimp.contains(metric_name);
 
 		if (bad_metrics.contains(metric_name) || is_unimp_bad_metrics)
 		{
-			std::string data = yim_serializer.get_string();
-
 			// log important ones
 			if (!is_unimp_bad_metrics)
 			{
-				bool contains_your_sc = false;
-
-				if (!strcmp(metric_name, "DIG"))
-					contains_your_sc = data.find(std::to_string(g_player_service->get_self()->m_rockstar_id)) != std::string::npos;
-
-				LOG(WARNING) << "BAD METRIC: " << metric_name << " " << contains_your_sc;
+				LOG(WARNING) << "BAD METRIC: " << metric_name;
 
 				// log to file
 				std::ofstream log(g_file_manager.get_project_file("./bad_metric.log").get_path(), std::ios::app);
-				log << "BAD METRIC: " << metric_name << "; DATA: " << data << std::endl;
+				log << "BAD METRIC: " << metric_name << "; DATA: " << yim_serializer.get_string() << std::endl;
 				log.close();
 			}
 
@@ -135,9 +125,9 @@ namespace big
 				if (result.size() != data.size())
 					LOG(INFO) << "Removed YimMenu DLL from MM metric";
 				strncpy(reinterpret_cast<char*>(metric) + 0x18, result.c_str(), 0x900);
+				return g_hooking->get_original<prepare_metric_for_sending>()(serializer, unk, time, metric);
 			}
-			else
-				return true;
+			return true;
 		}
 
 		return g_hooking->get_original<prepare_metric_for_sending>()(serializer, unk, time, metric);
