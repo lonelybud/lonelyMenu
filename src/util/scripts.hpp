@@ -72,45 +72,45 @@ namespace big::scripts
 		return std::nullopt;
 	}
 
-	inline void force_script_host(rage::joaat_t hash)
-	{
-		if (*g_pointers->m_gta.m_is_session_started && !is_maintransition_script_active)
-		{
-			if (auto thread = gta_util::find_script_thread(hash); thread && thread->m_net_component)
-			{
-				auto net_component = reinterpret_cast<CGameScriptHandlerNetComponent*>(thread->m_net_component);
+	// inline void force_script_host(rage::joaat_t hash)
+	// {
+	// 	if (*g_pointers->m_gta.m_is_session_started && !is_maintransition_script_active)
+	// 	{
+	// 		if (auto thread = gta_util::find_script_thread(hash); thread && thread->m_net_component)
+	// 		{
+	// 			auto net_component = reinterpret_cast<CGameScriptHandlerNetComponent*>(thread->m_net_component);
 
-				if (net_component->is_local_player_host())
-					return g_notification_service.push_error("Force Script Host", "Already Host!");
+	// 			if (net_component->is_local_player_host())
+	// 				return g_notification_service.push_error("Force Script Host", "Already Host!");
 
-				int num_synced_arrays = 0;
+	// 			int num_synced_arrays = 0;
 
-				for (int i = 0; i < net_component->m_host_array_count; i++)
-					if ((g_pointers->m_gta.m_get_host_array_handler_by_index(net_component, i)->m_flags & 1) != 0)
-						num_synced_arrays++;
+	// 			for (int i = 0; i < net_component->m_host_array_count; i++)
+	// 				if ((g_pointers->m_gta.m_get_host_array_handler_by_index(net_component, i)->m_flags & 1) != 0)
+	// 					num_synced_arrays++;
 
-				if (num_synced_arrays == net_component->m_host_array_count)
-				{
-					net_component->do_host_migration(g_player_service->get_self()->get_net_game_player(), 0xFFFF, true);
+	// 			if (num_synced_arrays == net_component->m_host_array_count)
+	// 			{
+	// 				net_component->do_host_migration(g_player_service->get_self()->get_net_game_player(), 0xFFFF, true);
 
-					packet pack;
-					pack.write_message(rage::eNetMessage::MsgScriptVerifyHostAck);
-					net_component->m_script_handler->get_id()->serialize(&pack.m_buffer);
-					pack.write<bool>(true, 1);
-					pack.write<bool>(true, 1);
-					pack.write<std::uint16_t>(0xFFFF, 16);
+	// 				packet pack;
+	// 				pack.write_message(rage::eNetMessage::MsgScriptVerifyHostAck);
+	// 				net_component->m_script_handler->get_id()->serialize(&pack.m_buffer);
+	// 				pack.write<bool>(true, 1);
+	// 				pack.write<bool>(true, 1);
+	// 				pack.write<std::uint16_t>(0xFFFF, 16);
 
-					for (auto& player : g_player_service->players())
-						if (player.second->get_net_game_player())
-							pack.send(player.second->get_net_game_player()->m_msg_id);
+	// 				for (auto& player : g_player_service->players())
+	// 					if (player.second->get_net_game_player())
+	// 						pack.send(player.second->get_net_game_player()->m_msg_id);
 
-					return g_notification_service.push_success("Force Script Host", "Done!");
-				}
-			}
+	// 				return g_notification_service.push_success("Force Script Host", "Done!");
+	// 			}
+	// 		}
 
-			return g_notification_service.push_error("Force Script Host", "Arrays not synced");
-		}
+	// 		return g_notification_service.push_error("Force Script Host", "Arrays not synced");
+	// 	}
 
-		return g_notification_service.push_error("Force Script Host", "Not yet online?");
-	}
+	// 	return g_notification_service.push_error("Force Script Host", "Not yet online?");
+	// }
 }

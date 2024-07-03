@@ -1,3 +1,4 @@
+#include "core/data/desync_kick.hpp"
 #include "core/data/language_codes.hpp"
 #include "core/data/lua_scripts.hpp"
 #include "core/data/protections.hpp"
@@ -502,8 +503,10 @@ namespace big
 			components::player_command_button<"breakgame">(last_selected_player);
 
 			ImGui::Spacing();
-
-			components::player_command_button<"desync">(last_selected_player);
+			if (g_desync_kick_players.find(rockstar_id) == g_desync_kick_players.end())
+				components::player_command_button<"desync">(last_selected_player);
+			else if (components::button("Un-desync"))
+				g_desync_kick_players.erase(rockstar_id);
 
 			components::ver_space();
 

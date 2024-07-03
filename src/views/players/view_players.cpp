@@ -1,3 +1,4 @@
+#include "core/data/filter_player.hpp"
 #include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
 #include "core/vars.hpp"
@@ -115,16 +116,19 @@ namespace big
 				player_button(g_player_service->get_self());
 
 				for (const auto& [_, player] : g_player_service->players())
-					if (search_player_name.length())
+					if (!g_filter_players_reaction || player->infractions.contains(g_filter_players_reaction))
 					{
-						std::string lower_case_name = player->m_name;
-						std::transform(lower_case_name.begin(), lower_case_name.end(), lower_case_name.begin(), ::tolower);
+						if (search_player_name.length())
+						{
+							std::string lower_case_name = player->m_name;
+							std::transform(lower_case_name.begin(), lower_case_name.end(), lower_case_name.begin(), ::tolower);
 
-						if (lower_case_name.find(search_player_name) != std::string::npos)
+							if (lower_case_name.find(search_player_name) != std::string::npos)
+								player_button(player);
+						}
+						else
 							player_button(player);
 					}
-					else
-						player_button(player);
 
 				ImGui::EndListBox();
 			}

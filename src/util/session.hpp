@@ -93,9 +93,10 @@ namespace big::session
 		g_session.orig_host_token = g_session.host_token = *g_pointers->m_gta.m_host_token;
 		g_session.orig_peer_id                           = *g_pointers->m_gta.m_peer_id;
 
-		LOGF(VERBOSE, "Your host token is: {}", g_session.orig_host_token);
-		LOG(VERBOSE) << "Host token detected as spoofed?- "
-		             << is_spoofed_host_token(g_session.orig_host_token, g_session.orig_peer_id);
+		LOGF(VERBOSE,
+		    "Your host token is: {} ({})",
+		    g_session.orig_host_token,
+		    is_spoofed_host_token(g_session.orig_host_token, g_session.orig_peer_id));
 	}
 
 	inline void change_host_token()
@@ -103,11 +104,6 @@ namespace big::session
 		auto host_token = g_session.host_token;
 
 		LOG(VERBOSE) << "Last host token: " << *g_pointers->m_gta.m_host_token;
-
-		if (host_token == g_session.orig_host_token)
-			LOG(VERBOSE) << "Using original host token: " << host_token;
-		else
-			LOG(VERBOSE) << "Using custom host token: " << host_token;
 
 		// set_host_token
 
@@ -149,6 +145,10 @@ namespace big::session
 		if (g_local_player->m_player_info)
 			g_local_player->m_player_info->m_net_player_data.m_peer_id = *g_pointers->m_gta.m_peer_id;
 
-		LOG(VERBOSE) << "Host token detected as spoofed?- " << is_spoofed_host_token(host_token, *g_pointers->m_gta.m_peer_id);
+		LOGF(VERBOSE,
+		    "Using {} host token: {} ({})",
+		    host_token == g_session.orig_host_token ? "original" : "custom",
+		    host_token,
+		    is_spoofed_host_token(host_token, *g_pointers->m_gta.m_peer_id));
 	}
 }

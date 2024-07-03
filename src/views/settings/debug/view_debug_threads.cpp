@@ -97,7 +97,7 @@ namespace big
 							{
 								ImGui::SameLine();
 								ImGui::Text("Script Host: %s", host->get_name());
-								if (!net_handler->is_local_player_host() && *g_pointers->m_gta.m_is_session_started && !is_maintransition_script_active)
+								if (!net_handler->is_local_player_host())
 								{
 									ImGui::SameLine();
 									components::button("Take Control", [net_handler] {

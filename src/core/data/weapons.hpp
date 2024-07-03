@@ -20,6 +20,7 @@ namespace big
 			bool player                   = false;
 			ePedBoneType bone             = ePedBoneType::HEAD;
 			float max_dist_to_mid_of_scrn = 0.05f;
+			bool check_velocity           = false;
 		} aimbot{};
 
 		struct modify_weapon_values

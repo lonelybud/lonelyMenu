@@ -138,21 +138,11 @@ namespace big
 		components::sub_title("Script Hosts");
 
 		ImGui::Text("freemode : %s", scripts::get_host_name("freemode"_J));
-		ImGui::SameLine();
-		components::button("Force Host###host_freemode", [] {
-			scripts::force_script_host("freemode"_J);
-		});
 		ImGui::Text("fmmc_launcher : %s", scripts::get_host_name("fmmc_launcher"_J));
-		ImGui::SameLine();
-		components::button("Force Host###host_fmmc", [] {
-			scripts::force_script_host("fmmc_launcher"_J);
-		});
 		ImGui::Text("am_launcher : %s", scripts::get_host_name("am_launcher"_J));
-		ImGui::SameLine();
-		components::button("Force Host###host_am_launcher", [] {
-			scripts::force_script_host("am_launcher"_J);
-		});
+
 		ImGui::Spacing();
+
 		ImGui::Checkbox("Force freemode Host", &g_session.force_freemode_host);
 		ImGui::Checkbox("Force fmmc_launcher Host", &g_session.force_fmmc_launcher_host);
 		ImGui::Checkbox("Force am_launcher Host", &g_session.force_am_launcher_host);

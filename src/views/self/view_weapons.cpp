@@ -131,14 +131,15 @@ namespace big
 			components::command_checkbox<"aimbot">();
 			if (g_weapons.aimbot.enable)
 			{
-				ImGui::PushItemWidth(350);
+				ImGui::SetNextItemWidth(350);
 				ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");
-				ImGui::PopItemWidth();
 				ImGui::Checkbox("Aimbot Player", &g_weapons.aimbot.player);
 
 				static bool head = g_weapons.aimbot.bone == ePedBoneType::HEAD;
 				if (ImGui::Checkbox("Aimbot Head", &head))
 					g_weapons.aimbot.bone = head ? ePedBoneType::HEAD : ePedBoneType::ABDOMEN;
+
+				ImGui::Checkbox("Aimbot Velocity", &g_weapons.aimbot.check_velocity);
 			}
 			components::command_checkbox<"norecoilspread">();
 		}
@@ -161,13 +162,17 @@ namespace big
 				ImGui::InputInt("Rapid Fire Delay", &g_weapons.rapid_fire_delay);
 			}
 			components::command_checkbox<"ammo_special_type">();
-			if (g_weapons.ammo_special_type && ImGui::BeginCombo("Bullet Impact", BULLET_IMPACTS[g_weapons.explosion_tag]))
+			if (g_weapons.ammo_special_type)
 			{
-				for (const auto& [type, name] : BULLET_IMPACTS)
-					if (ImGui::Selectable(name, type == g_weapons.explosion_tag))
-						g_weapons.explosion_tag = type;
+				ImGui::SetNextItemWidth(300);
+				if (ImGui::BeginCombo("Bullet Impact", BULLET_IMPACTS[g_weapons.explosion_tag]))
+				{
+					for (const auto& [type, name] : BULLET_IMPACTS)
+						if (ImGui::Selectable(name, type == g_weapons.explosion_tag))
+							g_weapons.explosion_tag = type;
 
-				ImGui::EndCombo();
+					ImGui::EndCombo();
+				}
 			}
 		}
 		ImGui::EndGroup();

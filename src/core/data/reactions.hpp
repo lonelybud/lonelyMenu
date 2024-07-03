@@ -49,7 +49,6 @@ namespace big
 		reaction crash30{reaction_type::crash_player, reaction_sub_type::crash30, "Incorrect object type Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash31{reaction_type::crash_player, reaction_sub_type::crash31, "Vehicle temp action Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash32{reaction_type::crash_player, reaction_sub_type::crash32, "Invalid script entity change type Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
-		reaction crash33{reaction_type::crash_player, reaction_sub_type::crash33, "Rope Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash34{reaction_type::crash_player, reaction_sub_type::crash34, "Pop group override Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash35{reaction_type::crash_player, reaction_sub_type::crash35, "Invalid world state type Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::infraction_based};
 		reaction crash36{reaction_type::crash_player, reaction_sub_type::crash36, "Remove unarmed Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
@@ -63,6 +62,8 @@ namespace big
 		reaction elegant_crash{reaction_type::crash_player, reaction_sub_type::elegant_crash, "Elegant Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction player_ped_create{reaction_type::crash_player, reaction_sub_type::player_ped_create, "Player Create", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
 		reaction player_ped_sync{reaction_type::crash_player, reaction_sub_type::player_ped_sync, "Player Sync", reaction_notif_type::normal, player_type::modder, reaction_karma::kick_player};
+
+		reaction crash33{reaction_type::crash_player, reaction_sub_type::crash33, "Rope Crash", reaction_notif_type::normal, player_type::modder, reaction_karma::none};
 
 		// normal, other
 		reaction kick_vote{reaction_type::none, reaction_sub_type::kick_vote, "Kick Vote", reaction_notif_type::normal, player_type::other};
@@ -89,9 +90,6 @@ namespace big
 		reaction spoofed_data{reaction_type::none, reaction_sub_type::spoofed_data, "Spoofed data", reaction_notif_type::once, player_type::modder};
 		reaction invalid_player_model{reaction_type::none, reaction_sub_type::invalid_player_model, "Invalid player model", reaction_notif_type::once, player_type::modder};
 		reaction super_jump{reaction_type::none, reaction_sub_type::super_jump, "Had used Super jump", reaction_notif_type::once, player_type::modder};
-		reaction fake_deposit{reaction_type::none, reaction_sub_type::fake_deposit, "Fake Deposit", reaction_notif_type::once, player_type::modder};
-		reaction rotate_cam{reaction_type::none, reaction_sub_type::rotate_cam, "Rotated your Camera", reaction_notif_type::once, player_type::modder};
-		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", reaction_notif_type::once, player_type::modder};
 		reaction remove_weapon{reaction_type::none, reaction_sub_type::remove_weapon, "Remove Weapon", reaction_notif_type::once, player_type::modder};
 		reaction give_weapon{reaction_type::none, reaction_sub_type::give_weapon, "Give Weapon", reaction_notif_type::once, player_type::modder};
 		reaction trigger_business_raid{reaction_type::none, reaction_sub_type::trigger_business_raid, "Trigger Business Raid", reaction_notif_type::once, player_type::modder};
@@ -101,27 +99,31 @@ namespace big
 		reaction killed_ped_with_invis{reaction_type::none, reaction_sub_type::killed_ped_with_invis, "Invisible Kill (Ped)", reaction_notif_type::once, player_type::modder};
 		reaction sent_modder_beacons{reaction_type::none, reaction_sub_type::sent_modder_beacons, "Sent Modder Beacons", reaction_notif_type::once, player_type::modder};
 
+		reaction fake_deposit{reaction_type::none, reaction_sub_type::fake_deposit, "Fake Deposit", reaction_notif_type::once, player_type::modder};
+		reaction rotate_cam{reaction_type::none, reaction_sub_type::rotate_cam, "Rotated your Camera", reaction_notif_type::once, player_type::modder};
+		reaction transaction_error{reaction_type::none, reaction_sub_type::transaction_error, "Transaction Error", reaction_notif_type::once, player_type::modder};
+		reaction clear_wanted_level{reaction_type::none, reaction_sub_type::clear_wanted_level, "Clear Wanted Level", reaction_notif_type::once, player_type::modder};
+		reaction ceo_money{reaction_type::none, reaction_sub_type::ceo_money, "CEO Money", reaction_notif_type::once, player_type::modder};
+		reaction remote_off_radar{reaction_type::none, reaction_sub_type::remote_off_radar, "Give Remote Off Radar", reaction_notif_type::once, player_type::modder};
+		reaction give_collectible{reaction_type::none, reaction_sub_type::give_collectible, "Give Collectible", reaction_notif_type::once, player_type::modder};
+		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", reaction_notif_type::once, player_type::modder};
+
 		// normal, modder
 		reaction killed_with_god{reaction_type::none, reaction_sub_type::killed_with_god, "God Kill", reaction_notif_type::normal, player_type::modder};
 		reaction killed_with_invis{reaction_type::none, reaction_sub_type::killed_with_invis, "Invisible Kill", reaction_notif_type::normal, player_type::modder};
 		reaction killed_when_hidden{reaction_type::none, reaction_sub_type::killed_when_hidden, "Hidden Kill", reaction_notif_type::normal, player_type::modder};
 		reaction ceo_kick{reaction_type::none, reaction_sub_type::ceo_kick, "CEO Kick", reaction_notif_type::normal, player_type::modder};
-		reaction ceo_money{reaction_type::none, reaction_sub_type::ceo_money, "CEO Money", reaction_notif_type::normal, player_type::modder};
-		reaction clear_wanted_level{reaction_type::none, reaction_sub_type::clear_wanted_level, "Clear Wanted Level", reaction_notif_type::normal, player_type::modder};
 		reaction force_mission{reaction_type::none, reaction_sub_type::force_mission, "Force Mission", reaction_notif_type::normal, player_type::modder};
 		reaction force_teleport{reaction_type::none, reaction_sub_type::force_teleport, "Force Teleport", reaction_notif_type::normal, player_type::modder};
 		reaction kick_from_interior{reaction_type::none, reaction_sub_type::kick_from_interior, "Kick From Interior", reaction_notif_type::normal, player_type::modder};
 		reaction mc_teleport{reaction_type::none, reaction_sub_type::mc_teleport, "MC Teleport", reaction_notif_type::normal, player_type::modder};
 		reaction personal_vehicle_destroyed{reaction_type::none, reaction_sub_type::personal_vehicle_destroyed, "PV Destroyed", reaction_notif_type::normal, player_type::modder};
 		reaction destroy_personal_vehicle{reaction_type::none, reaction_sub_type::destroy_personal_vehicle, "Destroy PV", reaction_notif_type::normal, player_type::modder};
-		reaction give_collectible{reaction_type::none, reaction_sub_type::give_collectible, "Give Collectible", reaction_notif_type::normal, player_type::modder};
-		reaction remote_off_radar{reaction_type::none, reaction_sub_type::remote_off_radar, "Give Remote Off Radar", reaction_notif_type::normal, player_type::modder};
 		reaction send_to_cutscene{reaction_type::none, reaction_sub_type::send_to_cutscene, "Send To Cutscene", reaction_notif_type::normal, player_type::modder};
 		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", reaction_notif_type::normal, player_type::modder};
 		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", reaction_notif_type::normal, player_type::modder};
 		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", reaction_notif_type::normal, player_type::modder};
 		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", reaction_notif_type::normal, player_type::modder};
-		reaction remote_wanted_level{reaction_type::none, reaction_sub_type::remote_wanted_level, "Remote Wanted Level", reaction_notif_type::normal, player_type::modder};
 		reaction clear_ped_tasks{reaction_type::none, reaction_sub_type::clear_ped_tasks, "Clear Ped Tasks", reaction_notif_type::normal, player_type::modder};
 		reaction veh_prox_mig_node{reaction_type::none, reaction_sub_type::veh_prox_mig_node, "CVehProxMigDataNode", reaction_notif_type::normal, player_type::modder};
 		reaction request_control_event_prob{reaction_type::none, reaction_sub_type::request_control_event_prob, "Request Control Event (Prob)", reaction_notif_type::normal, player_type::modder};

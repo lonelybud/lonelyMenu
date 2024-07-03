@@ -87,33 +87,11 @@ namespace big
 			components::command_checkbox<"freecam">();
 			components::command_checkbox<"never_wanted">();
 
-			ImGui::Checkbox("Context Menu", &g_context_menu.enabled);
-			components::options_modal("Context Menu Modal", [] {
-				ImGui::Text("Allowed Entity Types:");
-				ImGui::CheckboxFlags("Object", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::OBJECT));
-				ImGui::SameLine();
-				ImGui::CheckboxFlags("Ped", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PED));
-				ImGui::SameLine();
-				ImGui::CheckboxFlags("Player", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PLAYER));
-				ImGui::SameLine();
-				ImGui::CheckboxFlags("Vehicle", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::VEHICLE));
-				ImGui::Spacing();
-				ImGui::Checkbox("Dead Entites", &g_context_menu.dead_entities);
-			});
-
-			static const char* ragdoll_button_text = "Disable Ragdoll";
-			components::button(ragdoll_button_text, [] {
-				if (PED::CAN_PED_RAGDOLL(self::ped))
-				{
-					PED::SET_PED_CAN_RAGDOLL(self::ped, FALSE);
-					ragdoll_button_text = "Enable Ragdoll";
-				}
-				else
-				{
-					PED::SET_PED_CAN_RAGDOLL(self::ped, TRUE);
-					ragdoll_button_text = "Disable Ragdoll";
-				}
-			});
+			static bool is_ragdoll_disabled = false;
+			if (ImGui::Checkbox("Disable Ragdoll", &is_ragdoll_disabled))
+				g_fiber_pool->queue_job([] {
+					PED::SET_PED_CAN_RAGDOLL(self::ped, !is_ragdoll_disabled);
+				});
 		}
 		ImGui::EndGroup();
 	}
@@ -127,5 +105,22 @@ namespace big
 		ImGui::SeparatorText("###self_checkboxs");
 
 		render_chkboxs();
+
+		ImGui::SeparatorText("Context Menu###cxtmenu");
+
+		ImGui::Checkbox("Enable", &g_context_menu.enabled);
+		if (g_context_menu.enabled)
+		{
+			ImGui::Text("Allowed Entity Types:");
+			ImGui::CheckboxFlags("Object", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::OBJECT));
+			ImGui::SameLine();
+			ImGui::CheckboxFlags("Ped", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PED));
+			ImGui::SameLine();
+			ImGui::CheckboxFlags("Player", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::PLAYER));
+			ImGui::SameLine();
+			ImGui::CheckboxFlags("Vehicle", reinterpret_cast<int*>(&g_context_menu.allowed_entity_types), static_cast<int>(ContextEntityType::VEHICLE));
+			ImGui::SameLine();
+			ImGui::Checkbox("Dead", &g_context_menu.dead_entities);
+		}
 	}
 }

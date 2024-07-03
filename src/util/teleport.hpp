@@ -1,8 +1,8 @@
 #pragma once
 #include "blip.hpp"
+#include "core/vars.hpp"
 #include "entity.hpp"
 #include "gta/enums.hpp"
-#include "core/vars.hpp"
 #include "services/notifications/notification_service.hpp"
 
 namespace big::teleport
@@ -28,9 +28,6 @@ namespace big::teleport
 		auto roll  = CAM::GET_GAMEPLAY_CAM_RELATIVE_HEADING();
 
 		PED::SET_PED_COORDS_KEEP_VEHICLE(self::ped, location.x, location.y, location.z + 1.f);
-
-		script::get_current()->yield();
-
 		ENTITY::SET_ENTITY_HEADING(ent, yaw);
 		CAM::SET_GAMEPLAY_CAM_RELATIVE_PITCH(pitch, 1.f);
 		CAM::SET_GAMEPLAY_CAM_RELATIVE_HEADING(roll);
@@ -73,18 +70,20 @@ namespace big::teleport
 
 	inline void into_vehicle(Vehicle veh)
 	{
-		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh))
+		if (!ENTITY::IS_ENTITY_A_VEHICLE(veh) || ENTITY::IS_ENTITY_DEAD(veh, 0))
 			return g_notification_service.push_warning("Teleport", "Invalid Vehicle");
 
 		for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(veh); i++)
 			if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i, TRUE))
 			{
-				if (to_coords(ENTITY::GET_ENTITY_COORDS(veh, 0)))
-				{
-					script::get_current()->yield();
-					if (VEHICLE::IS_VEHICLE_SEAT_FREE(veh, i, TRUE))
-						PED::SET_PED_INTO_VEHICLE(self::ped, veh, i);
-				}
+				auto loc = ENTITY::GET_ENTITY_COORDS(veh, 0);
+
+				if (!entity::load_ground_at_3dcoord(loc))
+					return g_notification_service.push_warning("Teleport", "Unable to load ground");
+
+				ENTITY::SET_ENTITY_COORDS(self::ped, loc.x, loc.y, loc.z, 0, 0, 0, 0);
+				script::get_current()->yield();
+				PED::SET_PED_INTO_VEHICLE(self::ped, veh, i);
 				return;
 			}
 

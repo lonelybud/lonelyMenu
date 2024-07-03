@@ -1,3 +1,4 @@
+#include "core/data/filter_player.hpp"
 #include "core/data/reactions.hpp"
 #include "views/view.hpp"
 
@@ -11,6 +12,10 @@ namespace big
 		ImGui::Checkbox("Notify", &reaction.notify);
 		ImGui::SameLine();
 		ImGui::Checkbox("Log", &reaction.log);
+		ImGui::SameLine();
+		bool is_filter_active = g_filter_players_reaction == &reaction;
+		if (ImGui::Checkbox("Filter", &is_filter_active))
+			g_filter_players_reaction = is_filter_active ? &reaction : nullptr;
 		ImGui::PopID();
 	}
 
@@ -18,7 +23,10 @@ namespace big
 	{
 		components::title("Reactions");
 
-		components::sub_title("Player protection related");
+		if (components::button("Clear filter"))
+			g_filter_players_reaction = nullptr;
+		
+		ImGui::Spacing();
 
 		static std::string event_name;
 		ImGui::SetNextItemWidth(200);

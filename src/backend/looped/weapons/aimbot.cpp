@@ -103,7 +103,8 @@ namespace big
 						velocity_reset = true;
 					}
 
-					bone_pos += get_velocity_diff(m_target);
+					if (g_weapons.aimbot.check_velocity)
+						bone_pos += get_velocity_diff(m_target);
 
 					auto final_rend_cam_coord = CAM::GET_FINAL_RENDERED_CAM_COORD();
 					Vector3 _bone_pos         = bone_pos;
