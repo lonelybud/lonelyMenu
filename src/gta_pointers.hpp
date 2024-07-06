@@ -47,6 +47,8 @@ namespace big
 	{
 		memory::handle m_is_matchmaking_session_valid;
 
+		memory::handle m_broadcast_patch;
+
 		memory::handle m_creator_warp_cheat_triggered_patch;
 
 		memory::handle m_crash_trigger;
@@ -131,6 +133,8 @@ namespace big
 
 		Network** m_network;
 
+		functions::join_session_by_info m_join_session_by_info;
+
 		functions::reset_network_complaints m_reset_network_complaints;
 
 		functions::fidevice_get_device m_fidevice_get_device;
@@ -170,6 +174,8 @@ namespace big
 
 		functions::get_connection_peer m_get_connection_peer;
 		functions::handle_remove_gamer_cmd m_handle_remove_gamer_cmd;
+
+		PVOID m_broadcast_net_array;
 
 		PVOID m_prepare_metric_for_sending;
 

@@ -128,6 +128,10 @@ namespace big
 		static void error_packet_memmove(void* dst, void* src, int size);
 		static void* create_pool_item(GenericPool* pool);
 
+		// toxic
+
+		static unsigned int broadcast_net_array(rage::netArrayHandlerBase* _this, CNetGamePlayer* target, rage::datBitBuffer* bit_buffer, uint16_t counter, uint32_t* elem_start, bool silent);
+
 		// misc
 
 		static int nt_query_virtual_memory(void* _this, HANDLE handle, PVOID base_addr, int info_class, MEMORY_BASIC_INFORMATION* info, int size, size_t* return_len);

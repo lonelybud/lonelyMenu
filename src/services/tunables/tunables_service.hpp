@@ -1,4 +1,5 @@
 #pragma once
+#include "logger/logger.hpp"
 #include "script_global.hpp"
 
 namespace big
@@ -32,6 +33,16 @@ namespace big
 			// LOG(WARNING) << "Tunable 0x" << hash << " not found.";
 
 			return nullptr;
+		}
+
+		// wrapper around get_tunable(), may not set the tunable immediately if the service isn't initialized yet
+		template<typename T>
+		inline void set_tunable(rage::joaat_t hash, T value)
+		{
+			if (auto tunable = get_tunable<T*>(hash))
+				*tunable = value;
+			else
+				LOG(WARNING) << "Tunable 0x" << hash << " not found.";
 		}
 
 		inline bool is_processing()

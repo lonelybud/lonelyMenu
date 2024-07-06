@@ -272,8 +272,7 @@ namespace big
 
 		if (error && msgType != rage::eNetMessage::MsgJoinResponse)
 		{
-			if (peer)
-				LOGF(WARNING, "Error packet that isn't MsgJoinResponse from {}", get_name_rid());
+			LOGF(WARNING, "Error packet that isn't MsgJoinResponse from {}", get_name_rid());
 			return true;
 		}
 

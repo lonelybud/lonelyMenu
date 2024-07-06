@@ -33,7 +33,5 @@ namespace big
 			else
 				self::veh = 0;
 		}
-
-		is_maintransition_script_active = SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0;
 	}
 }

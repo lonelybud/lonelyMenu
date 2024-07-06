@@ -501,6 +501,7 @@ namespace big
 
 			components::player_command_button<"oomkick">(last_selected_player);
 			components::player_command_button<"breakgame">(last_selected_player);
+			components::player_command_button<"endkick">(last_selected_player);
 
 			ImGui::Spacing();
 			if (g_desync_kick_players.find(rockstar_id) == g_desync_kick_players.end())

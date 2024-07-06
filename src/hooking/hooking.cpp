@@ -52,6 +52,8 @@ namespace big
 
 		detour_hook_helper::add<hooks::send_chat_message>("SCM", g_pointers->m_gta.m_send_chat_message);
 
+		detour_hook_helper::add<hooks::broadcast_net_array>("BNA", g_pointers->m_gta.m_broadcast_net_array);
+
 		detour_hook_helper::add<hooks::serialize_join_request_message>("SJRM", g_pointers->m_gta.m_serialize_join_request_message);
 		detour_hook_helper::add<hooks::serialize_join_request_message_2>("SJRM2", g_pointers->m_gta.m_serialize_join_request_message_2);
 

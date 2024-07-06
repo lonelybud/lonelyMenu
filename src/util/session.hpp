@@ -45,7 +45,7 @@ namespace big::session
 		*scr_globals::session4.as<int*>() = 1;
 		*scr_globals::session5.as<int*>() = 32;
 
-		if (!is_maintransition_script_active)
+		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 		{
 			*scr_globals::session6.as<int*>() = 1;
 			script::get_current()->yield(200ms);
@@ -54,6 +54,25 @@ namespace big::session
 
 		SCRIPT::SET_SCRIPT_WITH_NAME_HASH_AS_NO_LONGER_NEEDED("pausemenu_multiplayer"_J);
 		return true;
+	}
+
+	inline void join_session(const rage::rlSessionInfo& info)
+	{
+		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
+		{
+			g_notification_service.push_error("Rid Joiner", "Player switch in progress, wait a bit.");
+			return;
+		}
+
+		g_session.join_queued = true;
+		g_session.info        = info;
+		session::join_type({eSessionType::NEW_PUBLIC});
+		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
+		{
+			g_session.join_queued = false;
+			g_notification_service.push_error("Rid Joiner", "Unable to launch maintransition");
+		}
+		return;
 	}
 
 	inline void set_fm_event_index(int index)

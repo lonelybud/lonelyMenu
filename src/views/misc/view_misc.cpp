@@ -71,7 +71,7 @@ namespace big
 		ImGui::Checkbox("Notify friend killed", &g_misc.notify_friend_killed);
 
 		ImGui::Spacing();
-		
+
 		components::button("Start New Public", [] {
 			session::join_type(eSessionType::NEW_PUBLIC);
 		});
@@ -81,16 +81,17 @@ namespace big
 		});
 
 		ImGui::Spacing();
-		
+
+		components::button("Join Last Session", [] {
+			session::join_session(gta_util::get_network()->m_last_joined_session.m_session_info);
+		});
+
+		ImGui::Spacing();
+
 		static bool is_sex_change_allowed = false;
 		if (ImGui::Checkbox("Allow gender change", &is_sex_change_allowed))
 			g_fiber_pool->queue_job([] {
 				lua_scripts::allow_sex_change(is_sex_change_allowed);
-			});
-		static bool is_chang_app_cooldwn_enab = false;
-		if (ImGui::Checkbox("Disable Change Appearance Cooldown", &is_chang_app_cooldwn_enab))
-			g_fiber_pool->queue_job([] {
-				lua_scripts::change_appearance_cooldown(is_chang_app_cooldwn_enab);
 			});
 	}
 
@@ -219,15 +220,16 @@ namespace big
 	{
 		components::sub_title("Daily Collectables");
 
-		static std::string combination_retn;
-		components::button("Show Stash House safecodes", [] {
-			combination_retn = lua_scripts::get_stash_house_safecode();
+		components::button("Set Stash House safecode", [] {
+			lua_scripts::set_stash_house_safecode();
 		});
-		ImGui::SameLine();
-		ImGui::Text(combination_retn.c_str());
 
 		components::button("TP to G'cache object", [] {
 			lua_scripts::tp_to_g_cache_coords();
+		});
+
+		components::button("TP to Gunvan", [] {
+			lua_scripts::tp_to_gun_van();
 		});
 	}
 
@@ -257,7 +259,7 @@ namespace big
 		});
 		ImGui::SameLine();
 		components::button("BP Drill", [] {
-			lua_scripts::bypass_drill();
+			lua_scripts::casino_bypass_drill();
 		});
 	}
 
@@ -294,6 +296,10 @@ namespace big
 		ImGui::SameLine();
 		components::button("BP Plasma", [] {
 			lua_scripts::bypass_plasma_cutter();
+		});
+
+		components::button("BP voltlab##cayo", [] {
+			lua_scripts::bypass_voltlab();
 		});
 	}
 

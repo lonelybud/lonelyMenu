@@ -41,6 +41,8 @@ namespace big
 		g_session_temp.session_language           = g_session.session_language;
 		g_session_temp.spoof_session_player_count = g_session.spoof_session_player_count;
 		g_session_temp.session_player_count       = g_session.session_player_count;
+		g_session_temp.info                       = g_session.info;
+		g_session_temp.join_queued                = g_session.join_queued;
 		g_session                                 = g_session_temp;
 
 		g_esp_t g_esp_temp;

@@ -20,6 +20,15 @@ namespace big::scripts
 		return "?";
 	}
 
+	inline bool is_local_player_host(rage::joaat_t hash)
+	{
+		if (auto script = gta_util::find_script_thread(hash); script && script->m_net_component)
+			if (auto comp = (CGameScriptHandlerNetComponent*)script->m_net_component)
+				return comp->is_local_player_host();
+
+		return false;
+	}
+
 	inline CGameScriptHandlerNetComponent* get_script_handler_net_comp(rage::joaat_t hash)
 	{
 		if (auto script = gta_util::find_script_thread(hash); script && script->m_net_component)

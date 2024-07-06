@@ -22,14 +22,14 @@ namespace big::local_player
 
 	inline void remove_wanted()
 	{
-		// if (g_local_player && g_local_player->m_player_info->m_is_wanted)
-		// {
-		// 	g_local_player->m_player_info->m_wanted_level = 0;
-		// 	g_local_player->m_player_info->m_is_wanted    = false;
-		// }
+		if (g_local_player && g_local_player->m_player_info->m_is_wanted)
+		{
+			g_local_player->m_player_info->m_wanted_level = 0;
+			g_local_player->m_player_info->m_is_wanted    = false;
+		}
 
-		if (PLAYER::GET_PLAYER_WANTED_LEVEL(self::id))
-			PLAYER::CLEAR_PLAYER_WANTED_LEVEL(self::id);
+		// if (PLAYER::GET_PLAYER_WANTED_LEVEL(self::id))
+		// 	PLAYER::CLEAR_PLAYER_WANTED_LEVEL(self::id);
 	}
 
 	inline bool is_in_cutscene()

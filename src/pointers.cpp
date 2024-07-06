@@ -452,6 +452,15 @@ namespace big
                 g_pointers->m_gta.m_send_chat_message = ptr.sub(21).as<functions::send_chat_message>();
             }
         },
+        // Join Session By Info
+        {
+            "JSBI",
+            "E8 ? ? ? ? 0F B6 CB 84 C0 41 0F 44 CD",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_join_session_by_info = ptr.add(1).rip().as<functions::join_session_by_info>();
+            }
+        },
         // Script VM
         {
             "VM",
@@ -576,6 +585,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_handle_remove_gamer_cmd = ptr.sub(0x3B).as<functions::handle_remove_gamer_cmd>();
+            }
+        },
+        // Broadcast Net Array
+        {
+            "BNA",
+            "48 89 5C 24 ? 48 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 40 48 8B 05 ? ? ? ? 66 44 89 4C 24",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_broadcast_net_array = ptr.as<PVOID>();
             }
         },
         // Serialize Take Off Ped Variation Task
@@ -831,6 +849,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_is_matchmaking_session_valid = ptr;
+            }
+        },
+        // Broadcast Net Array Patch
+        {
+            "BP",
+            "74 73 FF 90 ? ? ? ? 8B D5 4C 8B 00 48 8B C8 41 FF 50 30",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_broadcast_patch = ptr;
             }
         },
         // Creator Warp Cheat Triggered Patch

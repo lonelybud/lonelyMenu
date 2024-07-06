@@ -17,7 +17,7 @@ namespace big
 		{
 			target_player = g_player_service->get_selected();
 
-			if (target_player && target_player->is_valid() && !is_maintransition_script_active)
+			if (target_player && target_player->is_valid() && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 			{
 				const auto target_ped = PLAYER::GET_PLAYER_PED_SCRIPT_INDEX(target_player->id());
 				NETWORK::NETWORK_SET_IN_SPECTATOR_MODE(TRUE, target_ped);

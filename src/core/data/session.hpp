@@ -3,6 +3,8 @@
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
+#include <rage/rlSessionInfo.hpp>
+
 namespace big
 {
 	class next_host_list
@@ -77,6 +79,9 @@ namespace big
 		int session_player_count        = 25;
 
 		bool sending_chat_msg = false;
+
+		bool join_queued = false;
+		rage::rlSessionInfo info;
 	};
 
 	inline g_session_t g_session{};

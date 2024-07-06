@@ -113,6 +113,8 @@ namespace big
 		bool received_object_id_request  = false;
 		bool received_object_id_response = false;
 
+		bool trigger_end_session_kick = false;
+
 		int kick_counts = 0;
 
 		int spectating_player = -1;

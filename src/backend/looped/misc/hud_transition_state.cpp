@@ -89,7 +89,7 @@ namespace big
 	{
 		const auto state = *scr_globals::transition_state.as<eTransitionState*>();
 
-		if (!is_maintransition_script_active)
+		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 			return;
 
 		// When freemode script loaded remove loading screen.

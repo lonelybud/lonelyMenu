@@ -59,11 +59,14 @@ namespace big
 		            "Self",
 		            view::self,
 		            {
-		                {tabs::WEAPONS, {"Weapons", view::weapons}},
 		                {tabs::OUTFIT_EDITOR, {"Outfit Editor", view::outfit_editor}},
 		                {tabs::ANIMATIONS, {"Animations", view::animations}},
 		            },
 		        },
+		    },
+		    {
+		        tabs::WEAPONS,
+		        {"Weapons", view::weapons},
 		    },
 		    {
 		        tabs::VEHICLE,
@@ -92,7 +95,7 @@ namespace big
 		                {tabs::BLOCKED_PLAYERS, {"Blocked Players", view::blocked_players}},
 		                {tabs::KNOWN_PLAYERS, {"Known Players", view::known_players}},
 		                {tabs::RECENT_SPOOFED_HOST_TOKENS, {"Spoofed Host Tokens", view::recent_spoofed_host_tokens}},
-						{tabs::PLAYER_LANGS, {"Players Language", view::players_lang}},
+		                {tabs::PLAYER_LANGS, {"Players Language", view::players_lang}},
 		                {tabs::CHAT, {"Chat", view::chat}},
 		            },
 		        },

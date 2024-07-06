@@ -80,7 +80,13 @@ namespace big
 					else
 						g_session.next_host_list.insert_plyr(id, host_token, player_name, false);
 
-					auto join_str = std::format("'{}'{}, slot #{}, RID: {}, tk: {}", player_name, is_host ? "(host)" : "", id, rockstar_id, host_token);
+					auto join_str = std::format("'{}'{}, slot #{}, RID: {}, tk: {}, nat: {}",
+					    player_name,
+					    is_host ? "(host)" : "",
+					    id,
+					    rockstar_id,
+					    host_token,
+					    plyr->get_net_data()->m_nat_type);
 
 					if (is_known)
 						plyr->is_known_player = true;
@@ -125,15 +131,18 @@ namespace big
 
 						g_reactions.spoofed_host_token.process(plyr);
 
-						kick = imhost;
+						if (g_session.block_spoofed_tokens)
+						{
+							kick = imhost;
 
-						if (!is_friend && imhost)
-							LOG(WARNING) << "Spoofed token player joined even when you were host";
+							if (!is_friend && imhost)
+								LOG(WARNING) << "Spoofed token player joined even when you were host";
+						}
 					}
 					else if (has_spoofed_token == 2)
 						g_reactions.spoofed_host_token_2.process(plyr);
 
-					if (!is_friend && kick && !is_maintransition_script_active)
+					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 
 					if (plyr->get_net_data()->m_nat_type <= 1)

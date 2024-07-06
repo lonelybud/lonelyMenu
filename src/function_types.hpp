@@ -112,6 +112,8 @@ namespace big::functions
 	using fipackfile_unmount       = bool (*)(const char* mount_point);
 	using fipackfile_close_archive = void (*)(rage::fiDevice* this_);
 
+	using join_session_by_info = bool (*)(Network* network, rage::rlSessionInfo* info, int unk, int flags, rage::rlGamerHandle* handles, int handlecount);
+
 	using write_join_response_data = bool (*)(CMsgJoinResponse* response, void* data, int size, uint32_t* size_used);
 
 	using queue_packet = bool (*)(rage::netConnectionManager* mgr, int msg_id, void* data, int size, int flags, void* unk);
@@ -141,5 +143,5 @@ namespace big::functions
 
 	using get_searchlight = void* (*)(CPed*);
 
-	using get_peer_by_security_id = rage::SecurityPeer*(*)(int id);
+	using get_peer_by_security_id = rage::SecurityPeer* (*)(int id);
 }
