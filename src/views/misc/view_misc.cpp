@@ -1,8 +1,6 @@
-#include "core/data/lua_scripts.hpp"
 #include "core/data/misc.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
-#include "fiber_pool.hpp"
 #include "util/entity.hpp"
 #include "util/mobile.hpp"
 #include "util/ped.hpp"
@@ -85,14 +83,6 @@ namespace big
 		components::button("Join Last Session", [] {
 			session::join_session(gta_util::get_network()->m_last_joined_session.m_session_info);
 		});
-
-		ImGui::Spacing();
-
-		static bool is_sex_change_allowed = false;
-		if (ImGui::Checkbox("Allow gender change", &is_sex_change_allowed))
-			g_fiber_pool->queue_job([] {
-				lua_scripts::allow_sex_change(is_sex_change_allowed);
-			});
 	}
 
 	static inline void service_vehicles()
@@ -175,10 +165,6 @@ namespace big
 				ImGui::Text("Nightclub popularity: %f", v.PropertyData.NightclubData.Popularity);
 				ImGui::Text("Nightclub Money: %d", v.PropertyData.NightclubData.SafeCashValue);
 				ImGui::Text("Arcade Money: %d", v.PropertyData.ArcadeData.SafeCashValue);
-
-				components::button("Increase NightClub Popularity", [] {
-					lua_scripts::increase_nightClub_popularity();
-				});
 			}
 	}
 
@@ -216,93 +202,6 @@ namespace big
 		});
 	}
 
-	static inline void daily_collectables()
-	{
-		components::sub_title("Daily Collectables");
-
-		components::button("Set Stash House safecode", [] {
-			lua_scripts::set_stash_house_safecode();
-		});
-
-		components::button("TP to G'cache object", [] {
-			lua_scripts::tp_to_g_cache_coords();
-		});
-
-		components::button("TP to Gunvan", [] {
-			lua_scripts::tp_to_gun_van();
-		});
-	}
-
-	static inline void casino_heist()
-	{
-		components::sub_title("Casino Heist");
-
-		static int casino_target = 0;
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Combo("Target###casino", &casino_target, lua_scripts::casino_targets, IM_ARRAYSIZE(lua_scripts::casino_targets)))
-			g_fiber_pool->queue_job([=] {
-				lua_scripts::set_casino_target(casino_target);
-			});
-		ImGui::SameLine();
-		components::button("Refresh##ctrefresh", [] {
-			casino_target = lua_scripts::get_casino_target();
-		});
-
-		components::command_checkbox<"casino_cart_item_auto_grab">();
-
-		components::button("BP Finger##casino", [] {
-			lua_scripts::bypass_fingerprint_casino();
-		});
-		ImGui::SameLine();
-		components::button("BP Keypad##casino", [] {
-			lua_scripts::bypass_keypad_casino();
-		});
-		ImGui::SameLine();
-		components::button("BP Drill", [] {
-			lua_scripts::casino_bypass_drill();
-		});
-	}
-
-	static inline void cayo_heist()
-	{
-		components::sub_title("Cayo Heist");
-
-		static int cayo_target = 0;
-		ImGui::SetNextItemWidth(200);
-		if (ImGui::Combo("Target###Cayo", &cayo_target, lua_scripts::cayo_targets, IM_ARRAYSIZE(lua_scripts::cayo_targets)))
-			g_fiber_pool->queue_job([=] {
-				lua_scripts::set_cayo_target(cayo_target);
-			});
-		ImGui::SameLine();
-		components::button("Refresh##ctrefresh", [] {
-			cayo_target = lua_scripts::get_cayo_target();
-		});
-
-		components::button("Log Cayo Details", [] {
-			lua_scripts::log_cayo_details();
-		});
-
-		components::button("Set second targ", [] {
-			lua_scripts::set_compound_and_island_targets();
-		});
-		ImGui::SameLine();
-		components::button("Scope second targ", [] {
-			lua_scripts::scope_compound_and_island_targets();
-		});
-
-		components::button("BP Finger##cayo", [] {
-			lua_scripts::bypass_fingerprint_cayo();
-		});
-		ImGui::SameLine();
-		components::button("BP Plasma", [] {
-			lua_scripts::bypass_plasma_cutter();
-		});
-
-		components::button("BP voltlab##cayo", [] {
-			lua_scripts::bypass_voltlab();
-		});
-	}
-
 	void view::misc()
 	{
 		ImGui::BeginGroup();
@@ -324,16 +223,6 @@ namespace big
 			properties();
 			components::ver_space();
 			_vehicles();
-		}
-		ImGui::EndGroup();
-		components::hor_space();
-		ImGui::BeginGroup();
-		{
-			daily_collectables();
-			components::ver_space();
-			casino_heist();
-			components::ver_space();
-			cayo_heist();
 		}
 		ImGui::EndGroup();
 	}

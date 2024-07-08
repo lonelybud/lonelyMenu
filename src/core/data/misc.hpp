@@ -10,7 +10,6 @@ namespace big
 			int hour{}, minute{}, second{};
 		} custom_time;
 
-		bool fm_mission_controller_cart_grab = false;
 		bool disable_clothing_validation     = false;
 		bool apply_outfit_hair               = false;
 		bool notify_friend_killed            = true;

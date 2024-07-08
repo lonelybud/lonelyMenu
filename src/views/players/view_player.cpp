@@ -1,6 +1,5 @@
 #include "core/data/desync_kick.hpp"
 #include "core/data/language_codes.hpp"
-#include "core/data/lua_scripts.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/region_codes.hpp"
 #include "core/data/self.hpp"
@@ -36,7 +35,6 @@ namespace big
 	static constexpr char ip_viewer_link[] = "https://iplogger.org/ip-tracker/?ip=";
 	static big::player_ptr last_selected_player;
 	static rock_id rockstar_id;
-	static bool open_gift_veh_model = false;
 
 	static inline const char* get_nat_type_str(int type)
 	{
@@ -434,11 +432,6 @@ namespace big
 					persist_car_service::load_vehicle(std::nullopt, ped);
 				}
 			});
-
-			components::ver_space();
-
-			if (components::button("** Gift Veh **"))
-				open_gift_veh_model = true;
 		}
 		ImGui::EndGroup();
 	}
@@ -621,30 +614,6 @@ namespace big
 				render_toxic();
 			}
 			ImGui::EndGroup();
-
-			if (open_gift_veh_model)
-				ImGui::OpenPopup("##gift_veh_model");
-			if (ImGui::BeginPopupModal("##gift_veh_model", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
-			{
-				ImGui::Text("Are you sure you want to gift veh");
-				ImGui::Spacing();
-				if (ImGui::Button("Yes"))
-				{
-					g_fiber_pool->queue_job([] {
-						lua_scripts::gift_veh(last_selected_player);
-					});
-
-					open_gift_veh_model = false;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("No"))
-				{
-					open_gift_veh_model = false;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
-			}
 		}
 	}
 }
