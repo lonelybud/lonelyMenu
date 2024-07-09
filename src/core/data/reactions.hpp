@@ -123,7 +123,8 @@ namespace big
 		reaction send_to_location{reaction_type::none, reaction_sub_type::send_to_location, "Send To Location", reaction_notif_type::normal, player_type::modder};
 		reaction teleport_to_warehouse{reaction_type::none, reaction_sub_type::teleport_to_warehouse, "Teleport to warehouse", reaction_notif_type::normal, player_type::modder};
 		reaction start_activity{reaction_type::none, reaction_sub_type::start_activity, "Start Activity", reaction_notif_type::normal, player_type::modder};
-		reaction start_script{reaction_type::none, reaction_sub_type::start_script, "Start Script", reaction_notif_type::normal, player_type::modder};
+		reaction start_script_begin{reaction_type::none, reaction_sub_type::start_script_begin, "Start Script Begin", reaction_notif_type::normal, player_type::modder};
+		reaction start_script_proceed{reaction_type::none, reaction_sub_type::start_script_proceed, "Start Script Proceed", reaction_notif_type::normal, player_type::modder};
 		reaction clear_ped_tasks{reaction_type::none, reaction_sub_type::clear_ped_tasks, "Clear Ped Tasks", reaction_notif_type::normal, player_type::modder};
 		reaction veh_prox_mig_node{reaction_type::none, reaction_sub_type::veh_prox_mig_node, "CVehProxMigDataNode", reaction_notif_type::normal, player_type::modder};
 		reaction request_control_event_prob{reaction_type::none, reaction_sub_type::request_control_event_prob, "Request Control Event (Prob)", reaction_notif_type::normal, player_type::modder};
@@ -134,7 +135,7 @@ namespace big
 		reaction gta_banner{reaction_type::none, reaction_sub_type::gta_banner, "GTA Banner", reaction_notif_type::normal, player_type::normal};
 		reaction spectate{reaction_type::none, reaction_sub_type::spectate, "Spectate", reaction_notif_type::normal, player_type::normal};
 		reaction spectate_others{reaction_type::none, reaction_sub_type::spectate_others, "Spectate Others", reaction_notif_type::normal, player_type::normal};
-		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", reaction_notif_type::normal, player_type::normal, reaction_karma::none, 3};
+		reaction remote_ragdoll{reaction_type::none, reaction_sub_type::remote_ragdoll, "Remote Ragdoll", reaction_notif_type::normal, player_type::normal};
 		reaction spectate_notification{reaction_type::none, reaction_sub_type::spectate_notification, "Spectate Notification", reaction_notif_type::normal, player_type::normal};
 		reaction killed_with_veh_god{reaction_type::none, reaction_sub_type::killed_with_veh_god, "Vehicle God Kill", reaction_notif_type::normal, player_type::normal};
 		reaction killed_with_orbital{reaction_type::none, reaction_sub_type::killed_with_orbital, "Orbital Kill", reaction_notif_type::normal, player_type::normal};

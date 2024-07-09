@@ -159,6 +159,18 @@ namespace big
 			// {} sent an EXPLOSION_EVENT with addOwnedExplosion enabled & wrong owner
 			g_reactions.blamed_explosion_detected.process(plyr, nullptr);
 
+		if (g_debug.log_explosion_event)
+			LOGF(WARNING,
+			    "Explosion Event: {} (Dist- {})",
+			    plyr->m_name,
+			    math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ}));
+
+		if(explosionType == EXP_TAG_SUBMARINE_BIG && damageScale > 9998.0f && isAudible == true && isInvisible == false && cameraShake > 9998.0f)
+			LOGF(WARNING,
+			    "Yim. Blame Exp.: {} (Dist- {})",
+			    plyr->m_name,
+			    math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ}));
+
 		// clang-format on
 	}
 
@@ -399,7 +411,8 @@ namespace big
 
 			if (g_local_player && g_local_player->m_net_object && g_local_player->m_net_object->m_object_id == net_id)
 			{
-				g_reactions.remote_ragdoll.process(plyr);
+				if (!PED::IS_PED_RUNNING_RAGDOLL_TASK(self::ped))
+					g_reactions.remote_ragdoll.process(plyr);
 				return send_ack_event();
 			}
 
@@ -609,12 +622,6 @@ namespace big
 		}
 		case eNetworkEvents::EXPLOSION_EVENT:
 		{
-			if (g_debug.log_explosion_event)
-				LOGF(WARNING,
-				    "Explosion Event: {} (Dist- {})",
-				    plyr->m_name,
-				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
-
 			if (plyr->block_explosions)
 				return send_ack_event();
 

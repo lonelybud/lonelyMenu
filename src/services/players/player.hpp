@@ -108,7 +108,6 @@ namespace big
 
 		reaction_sub_type last_event_sub_type = reaction_sub_type::none;
 		throttle<std::chrono::milliseconds, 1000> last_event_timer;
-		int last_event_count = 0;
 
 		bool received_object_id_request  = false;
 		bool received_object_id_response = false;

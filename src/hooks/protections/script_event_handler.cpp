@@ -1,5 +1,4 @@
 #include "backend/player_command.hpp"
-#include "core/data/bad_scripts.hpp"
 #include "core/data/debug.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
@@ -11,6 +10,7 @@
 #include "natives.hpp"
 #include "util/math.hpp"
 #include "util/player.hpp"
+#include "util/protection.hpp"
 
 #include <network/CNetGamePlayer.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
@@ -351,7 +351,7 @@ namespace big
 		case eRemoteEvent::InteriorControl:
 		{
 			int interior = (int)args[3];
-			if (interior < 0 || interior > 166) // the upper bound will change after an update
+			if (interior < 0 || interior > 171) // the upper bound will change after an update
 			{
 				g_reactions.null_function_kick.process(plyr);
 				return true;
@@ -393,7 +393,7 @@ namespace big
 				auto comp = (CGameScriptHandlerNetComponent*)script->m_net_component;
 				if (comp && comp->m_host && comp->m_host->m_net_game_player != player)
 				{
-					g_reactions.start_script.process(plyr);
+					g_reactions.start_script_proceed.process(plyr);
 					return true;
 				}
 			}
@@ -401,16 +401,16 @@ namespace big
 		}
 		case eRemoteEvent::StartScriptBegin:
 		{
-			auto script_id = args[3];
+			int64_t script_id = args[3];
 
-			LOGF(VERBOSE, "StartScriptBegin: {}, {}", script_id, plyr->m_name);
-			if (very_bad_script_ids.contains(script_id) || (!NETWORK::NETWORK_IS_ACTIVITY_SESSION() && bad_script_ids.contains(script_id)))
+			if (!protection::should_allow_script_launch(script_id))
 			{
-				// g_log.log_additional(std::format("StartScriptBegin: {}, {}", script_id, plyr->m_name));
-				g_reactions.start_script.process(plyr);
+				g_reactions.start_script_begin.process(plyr);
+				g_log.log_additional(std::format("Blocked StartScriptBegin: {}, {}", script_id, plyr->m_name));
 				return true;
 			}
 
+			LOGF(VERBOSE, "Allowed StartScriptBegin: {}, {}", script_id, plyr->m_name);
 			break;
 		}
 		}

@@ -4,6 +4,7 @@
 #include "fiber_pool.hpp"
 #include "gta/net_game_event.hpp"
 #include "hooking/hooking.hpp"
+#include "services/gta_data/gta_data_service.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 #include "util/entity.hpp"
@@ -12,6 +13,9 @@
 
 namespace big
 {
+	static player_ptr last_player_you_killed = nullptr;
+	static rage::sEntityDamagedData last_player_you_killed_damage_data;
+
 	rage::CEventNetwork* hooks::get_network_event_data(int64_t unk, rage::CEventNetwork* net_event)
 	{
 		switch (net_event->get_type())
@@ -31,6 +35,7 @@ namespace big
 			    damager && damager->m_entity_type == 4 && damager->m_player_info && damage_data.m_victim_destroyed)
 				if (auto victim = reinterpret_cast<CPed*>(g_pointers->m_gta.m_handle_to_ptr(damage_data.m_victim_index));
 				    victim && victim->m_entity_type == 4 && damager != victim)
+				{
 					if (auto player = g_player_service->get_by_host_token(damager->m_player_info->m_net_player_data.m_host_token))
 					{
 						player_ptr victim_player;
@@ -48,32 +53,35 @@ namespace big
 							return g_hooking->get_original<get_network_event_data>()(unk, net_event);
 
 						if (victim == g_local_player)
-							g_fiber_pool->queue_job([player, headshot = damage_data.m_is_headshot] {
-								std::string str = "You got Killed by: " + std::string(player->m_name);
+							g_fiber_pool->queue_job([player, damage_data] {
+								bool got_karmad = player == last_player_you_killed
+								    && last_player_you_killed_damage_data.m_damage == damage_data.m_damage
+								    && last_player_you_killed_damage_data.m_weapon_used == damage_data.m_weapon_used
+								    && last_player_you_killed_damage_data.m_is_headshot == damage_data.m_is_headshot
+								    && last_player_you_killed_damage_data.m_is_with_melee_weapon == damage_data.m_is_with_melee_weapon;
 
-								if (is_player_in_submarine(player->id()))
-									str += " (submarine)";
 
-								if (headshot)
-									str += " (headshot)";
-
-								LOG(WARNING) << str;
+								LOGF(WARNING,
+								    "Died: {}{}{}{} by {}",
+								    is_player_in_submarine(player->id()) ? "Submarine;" : "",
+								    damage_data.m_is_headshot ? "Headshot;" : "",
+								    got_karmad ? "Karma;" : "",
+								    g_gta_data_service->weapon_by_hash(damage_data.m_weapon_used).m_display_name,
+								    player->m_name);
 
 								if (g_local_player->m_vehicle
-								    && (!g_local_player->m_vehicle->m_driver || g_local_player->m_vehicle->m_driver == g_local_player))
+								    && (!g_local_player->m_vehicle->m_driver || g_local_player->m_vehicle->m_driver == g_local_player)
+								    && g_local_player->m_vehicle->m_door_lock_status != (int)eVehicleLockState::VEHICLELOCK_LOCKED
+								    && is_my_spawned_vehicle(g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle)) // this check avoids request control event on someones else spawned vehicle
+								)
 								{
-									auto veh = g_pointers->m_gta.m_ptr_to_handle(g_local_player->m_vehicle);
-
-									if (is_my_spawned_vehicle(veh)) // prevent request control event on someones else spawned vehicles
+									if (entity::take_control_of(g_local_player->m_vehicle))
 									{
-										if (entity::take_control_of(g_local_player->m_vehicle))
-										{
-											g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
-											g_notification_service.push_success("Vehicle Lock", "Success after you died", true);
-										}
-										else
-											g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
+										g_local_player->m_vehicle->m_door_lock_status = (int)eVehicleLockState::VEHICLELOCK_LOCKED;
+										g_notification_service.push_success("Vehicle Lock", "Success after you died", true);
 									}
+									else
+										g_notification_service.push_error("Vehicle Lock", "Failed after you died", true);
 								}
 
 								if (!player->is_friend())
@@ -110,6 +118,15 @@ namespace big
 						if (is_hidden_from_player_list(player) && victim_player)
 							g_reactions.killed_when_hidden.process(player, victim_player);
 					}
+					else if (damager == g_local_player && victim->m_player_info)
+					{
+						auto victim_player =
+						    g_player_service->get_by_host_token(victim->m_player_info->m_net_player_data.m_host_token);
+						victim_player->last_killed_by      = g_player_service->get_self();
+						last_player_you_killed             = victim_player;
+						last_player_you_killed_damage_data = damage_data;
+					}
+				}
 
 			break;
 		}

@@ -11,14 +11,13 @@
 
 namespace big
 {
-	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, reaction_notif_type notif_type, player_type plyr_type, reaction_karma karma_type, int attempts_before_log) :
+	reaction::reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, reaction_notif_type notif_type, player_type plyr_type, reaction_karma karma_type) :
 	    m_type(type),
 	    m_sub_type(sub_type),
 	    m_event_name(event_name),
 	    m_notif_type(notif_type),
 	    m_plyr_type(plyr_type),
-	    m_karma_type(karma_type),
-	    m_attempts_before_log(attempts_before_log)
+	    m_karma_type(karma_type)
 	{
 	}
 
@@ -63,28 +62,12 @@ namespace big
 			bool should_log = false;
 
 			if (player->last_event_sub_type == m_sub_type)
-			{
-				if (++player->last_event_count > m_attempts_before_log)
-				{
-					should_log               = player->last_event_timer.has_time_passed();
-					player->last_event_count = 0;
-				}
-			}
+				should_log = player->last_event_timer.has_time_passed();
 			else
 			{
 				player->last_event_sub_type = m_sub_type;
 				player->last_event_timer.reset(1000);
-
-				if (m_attempts_before_log)
-				{
-					player->last_event_count = 1;
-					should_log               = false;
-				}
-				else
-				{
-					player->last_event_count = 0;
-					should_log               = true;
-				}
+				should_log = true;
 			}
 
 			/************************************************************ log phase */
@@ -100,7 +83,7 @@ namespace big
 				else if (m_type == reaction_type::crash_player)
 					title = "Received Crash";
 
-				if (log && should_log)
+				if (log && should_log && !player->disable_logs)
 					LOG(WARNING) << title << ": " << str;
 				if (notify)
 					g_notification_service.push_warning(title, str);

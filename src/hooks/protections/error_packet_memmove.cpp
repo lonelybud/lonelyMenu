@@ -6,7 +6,10 @@ namespace big
 	void hooks::error_packet_memmove(void* dst, void* src, int size)
 	{
 		if (!src || !dst)
+		{
+			LOG(WARNING) << "error_packet_memmove: no src dst";
 			return;
+		}
 
 		// remote crash
 		if (size > 0x80)

@@ -52,6 +52,12 @@ namespace big
 		components::button("Copy Vehicle", [] {
 			persist_car_service::clone_ped_car(self::veh);
 		});
+		ImGui::SameLine();
+		components::button("Remove stickies", [] {
+			if (self::veh)
+				NETWORK::REMOVE_ALL_STICKY_BOMBS_FROM_ENTITY(self::veh, 0);
+		});
+
 
 		ImGui::Spacing();
 

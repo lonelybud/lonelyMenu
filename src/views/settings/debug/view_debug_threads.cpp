@@ -128,7 +128,8 @@ namespace big
 				}
 				ImGui::EndChild();
 			}
+
+			ImGui::EndTabItem();
 		}
-		ImGui::EndTabItem();
 	}
 }

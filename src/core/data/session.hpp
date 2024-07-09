@@ -76,7 +76,7 @@ namespace big
 		bool spoof_session_language     = false;
 		int session_language            = 0;
 		bool spoof_session_player_count = false;
-		int session_player_count        = 25;
+		int session_player_count        = 23;
 
 		bool sending_chat_msg = false;
 

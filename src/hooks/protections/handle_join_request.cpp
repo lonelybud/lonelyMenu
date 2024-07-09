@@ -19,11 +19,11 @@ namespace big
 		auto is_friend   = friends_service::is_friend(rockstar_id);
 		auto is_blocked  = g_blocked_players_service.is_blocked(rockstar_id);
 
-		auto block_join        = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
+		auto session_lock      = (g_session.block_joins && !is_friend) || (g_session.block_friend_joins && is_friend);
 		auto has_spoofed_token = g_session.block_spoofed_tokens && !is_friend
 		    && session::is_spoofed_host_token(player_info->m_host_token, player_info->m_peer_id) == 1;
 
-		if (block_join || is_blocked || has_spoofed_token)
+		if (session_lock || is_blocked || has_spoofed_token)
 		{
 			auto str = std::format("Join Request denied to Player: {} ({})", player_info->m_name, rockstar_id);
 
@@ -34,7 +34,7 @@ namespace big
 			if (is_blocked)
 			{
 				if (!g_blocked_players_service.blocked_players_list[rockstar_id].s)
-					g_notification_service.push_success("Join Blocked", str, true);
+					g_notification_service.push_warning("Join Blocked", str, true);
 			}
 			else if (has_spoofed_token)
 			{
@@ -45,7 +45,7 @@ namespace big
 				g_recent_spoofed_host_tokens[rockstar_id] = player_info->m_name;
 			}
 			else
-				LOG(WARNING) << str;
+				g_notification_service.push_warning("Session Lock", str, true);
 
 			return false;
 		}

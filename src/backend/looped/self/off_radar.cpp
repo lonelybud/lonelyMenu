@@ -1,4 +1,3 @@
-#include "backend/bool_command.hpp"
 #include "backend/looped_command.hpp"
 #include "core/data/self.hpp"
 #include "core/scr_globals.hpp"

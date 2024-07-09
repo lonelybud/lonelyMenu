@@ -141,17 +141,6 @@ namespace big
 		components::button("Toggle Radar", [] {
 			HUD::DISPLAY_RADAR(HUD::IS_RADAR_HIDDEN());
 		});
-		ImGui::SameLine();
-		components::button("Remove stickies", [] {
-			Entity entity = self::veh ? self::veh : self::ped;
-			NETWORK::REMOVE_ALL_STICKY_BOMBS_FROM_ENTITY(entity, 0);
-		});
-		ImGui::SameLine();
-		components::button("Get Wet", [] {
-			PED::SET_PED_WETNESS_HEIGHT(self::ped, 1);
-			PED::SET_PED_WETNESS_ENABLED_THIS_FRAME(self::ped);
-			NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
-		});
 	}
 
 	static inline void properties()

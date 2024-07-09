@@ -21,10 +21,6 @@ namespace big
 		components::button("Clean", [] {
 			auto ped = self::ped;
 
-			PED::CLEAR_PED_BLOOD_DAMAGE(ped);
-			PED::CLEAR_PED_ENV_DIRT(ped);
-			PED::CLEAR_PED_WETNESS(ped);
-
 			// https://forum.cfx.re/t/information-needed-to-clear-visible-player-damage-scars-etc/283216
 			// https://docs.fivem.net/natives/?_0x397C38AA7B4A5F83
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 0, "ALL");
@@ -34,6 +30,10 @@ namespace big
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 4, "ALL");
 			PED::CLEAR_PED_DAMAGE_DECAL_BY_ZONE(ped, 5, "ALL");
 
+			PED::CLEAR_PED_BLOOD_DAMAGE(ped);
+			PED::CLEAR_PED_ENV_DIRT(ped);
+			PED::CLEAR_PED_WETNESS(ped);
+			PED::CLEAR_PED_LAST_DAMAGE_BONE(ped);
 			NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
 		});
 		ImGui::SameLine();
@@ -63,7 +63,9 @@ namespace big
 		components::button("Die", [] {
 			ENTITY::SET_ENTITY_HEALTH(self::ped, 0, 0, 0);
 		});
+
 		ImGui::Spacing();
+
 		components::button("Toggle Max Wanted Level", [] {
 			auto is_zero = PLAYER::GET_MAX_WANTED_LEVEL() == 0;
 
@@ -73,6 +75,10 @@ namespace big
 				PLAYER::SET_MAX_WANTED_LEVEL(0);
 
 			g_notification_service.push_success("Max Wanted Level", is_zero ? "Set to 5" : "Set to 0");
+		});
+		ImGui::SameLine();
+		components::button("Ragdoll", [] {
+			PED::SET_PED_TO_RAGDOLL(self::ped, 2000, 2000, 0, 0, 0, 0);
 		});
 	}
 
