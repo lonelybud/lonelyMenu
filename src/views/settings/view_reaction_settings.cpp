@@ -23,6 +23,10 @@ namespace big
 	{
 		components::title("Reactions");
 
+		ImGui::Checkbox("Block Reactions", &g_block_reaction);
+
+		ImGui::Spacing();
+
 		if (components::button("Clear filter"))
 			g_filter_players_reaction = nullptr;
 		

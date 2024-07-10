@@ -96,6 +96,7 @@ namespace big
 		add_native_detour("freemode"_J, NativeIndex::IS_PLAYER_PLAYING, freemode::IS_PLAYER_PLAYING);
 		add_native_detour("maintransition"_J, NativeIndex::NETWORK_SESSION_HOST, network::NETWORK_SESSION_HOST);
 
+		add_native_detour("tuneables_processing"_J, NativeIndex::WAIT, tunables::WAIT);
 		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_INT, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_INT);
 		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_BOOL, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_BOOL);
 		add_native_detour("tuneables_processing"_J, NativeIndex::_NETWORK_GET_TUNABLES_REGISTRATION_FLOAT, tunables::_NETWORK_GET_TUNABLES_REGISTRATION_FLOAT);

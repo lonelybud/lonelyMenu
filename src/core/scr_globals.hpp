@@ -29,7 +29,7 @@ namespace big::scr_locals
 {
 	namespace am_hunt_the_beast
 	{
-		constexpr static auto broadcast_idx        = 607;  // (bParam0) != 0;
+		constexpr static auto broadcast_idx        = 604;  // (bParam0) != 0;
 		constexpr static auto player_broadcast_idx = 2588; // if (NETWORK::PARTICIPANT_ID_TO_INT() != -1)
 	}
 }

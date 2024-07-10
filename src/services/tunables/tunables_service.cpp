@@ -52,9 +52,9 @@ namespace big
 					memcpy(script_global(tunable_global_base).as<void*>(), m_tunables_backup.get(), m_num_tunables * 8);
 
 					// mark the end
-					m_tunables_backup.release();
 					m_running = false;
 					LOGF(INFO, "Tunables processing: ended! ({} tunables found)", m_tunables.size());
+					m_tunables_backup.release();
 					return;
 				}
 			}
@@ -70,6 +70,10 @@ namespace big
 					m_num_tunables = gta_util::find_script_program(tr_hash)->m_global_count - tunable_global_base;
 					LOGF(INFO, "Tunables processing: preparing! ({} tunables found)", m_num_tunables);
 
+					// backup original tunable memory state since it will be filled with junk values during processing phase
+					m_tunables_backup = std::make_unique<std::uint64_t[]>(m_num_tunables);
+					memcpy(m_tunables_backup.get(), script_global(tunable_global_base).as<void*>(), m_num_tunables * 8);
+
 					// start tunable script to start tunables processing phase
 					uint64_t args[] = {6, 27};
 					if (!SYSTEM::START_NEW_SCRIPT_WITH_NAME_HASH_AND_ARGS(tp_hash, (Any*)args, sizeof(args) / 8, globals::DEFAULT_STACK_SIZE))
@@ -77,10 +81,6 @@ namespace big
 						LOG(FATAL) << "Tunables processing: failed to start script!";
 						return;
 					}
-
-					// backup original tunable memory state since it will be filled with junk values during processing phase
-					m_tunables_backup = std::make_unique<std::uint64_t[]>(m_num_tunables);
-					memcpy(m_tunables_backup.get(), script_global(tunable_global_base).as<void*>(), m_num_tunables * 8);
 
 					// mark tunable processing in progress
 					m_running = true;

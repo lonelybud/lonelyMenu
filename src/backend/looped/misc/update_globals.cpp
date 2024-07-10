@@ -10,7 +10,7 @@ namespace big
 	{
 		auto network_player_mgr = gta_util::get_network_player_mgr();
 
-		if (!network_player_mgr || !network_player_mgr->m_local_net_player || network_player_mgr->m_local_net_player->m_player_id == -1)
+		if (!network_player_mgr->m_local_net_player || network_player_mgr->m_local_net_player->m_player_id == static_cast<uint8_t>(-1))
 			self::id = 0;
 		else
 			self::id = network_player_mgr->m_local_net_player->m_player_id;

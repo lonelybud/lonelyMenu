@@ -11,6 +11,14 @@ namespace big
 		// pick a value say "m_current_junk_val". Set this as key in temporary map and its map value as tunable hash.
 		// also return this value so that it gets saved in tunables memory region overriding existing value in there.
 
+		inline void WAIT(rage::scrNativeCallContext* src)
+		{
+			if (g_tunables_service && g_tunables_service->is_processing())
+				return; // speed things up
+
+			SYSTEM::WAIT(src->get_arg<int>(0));
+		}
+
 		inline void _NETWORK_GET_TUNABLES_REGISTRATION_INT(rage::scrNativeCallContext* src)
 		{
 			if (g_tunables_service->is_processing())

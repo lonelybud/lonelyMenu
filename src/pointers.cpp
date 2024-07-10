@@ -379,7 +379,7 @@ namespace big
         // Network
         {
             "N",
-            "48 8B 0D ? ? ? ? 48 8B D7 E8 ? ? ? ? 84 C0 75 17 48 8B 0D ? ? ? ? 48 8B D7",
+            "48 8B 0D ? ? ? ? 45 33 C9 48 8B D7",
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_network = ptr.add(3).rip().as<Network**>();

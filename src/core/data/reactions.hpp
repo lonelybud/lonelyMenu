@@ -153,4 +153,6 @@ namespace big
 		// used in view::reaction_settings. It is dummy and useless
 		reaction _none{reaction_type::none, reaction_sub_type::none, "", reaction_notif_type::normal, player_type::normal};
 	} g_reactions{};
+
+	inline bool g_block_reaction = false;
 }

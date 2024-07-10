@@ -355,7 +355,8 @@ namespace big
 				{
 					LOGF(WARNING, "Blocked SetVehicleExclusiveDriver from {} on our local vehicle", plyr->m_name);
 					g_reactions.vehicle_kick.process(plyr);
-					return send_ack_event();
+					if (g_block_reaction)
+						return send_ack_event();
 				}
 			}
 			else if (type == ScriptEntityChangeType::SetPedFacialIdleAnimOverride)
@@ -399,7 +400,8 @@ namespace big
 			    && g_local_player->m_net_object->m_object_id == net_id)
 			{
 				g_reactions.clear_ped_tasks.process(plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			buffer->Seek(0);
@@ -413,7 +415,8 @@ namespace big
 			{
 				if (!PED::IS_PED_RUNNING_RAGDOLL_TASK(self::ped))
 					g_reactions.remote_ragdoll.process(plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			buffer->Seek(0);
@@ -465,12 +468,14 @@ namespace big
 					if (val == 1)
 					{
 						g_reactions.request_control_event_prob.process(plyr);
-						return send_ack_event();
+						if (g_block_reaction)
+							return send_ack_event();
 					}
 					else if (val == 0)
 					{
 						g_reactions.request_control_event.process(plyr);
-						return send_ack_event();
+						if (g_block_reaction)
+							return send_ack_event();
 					}
 				}
 			}
@@ -674,7 +679,8 @@ namespace big
 			if (is_local_vehicle_net_id(net_id))
 			{
 				g_reactions.veh_spec_ability_event.process(plyr, tar_plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			buffer->Seek(0);
@@ -687,7 +693,8 @@ namespace big
 			if (is_local_vehicle_net_id(net_id))
 			{
 				g_reactions.break_door_event.process(plyr, tar_plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			buffer->Seek(0);
@@ -700,13 +707,15 @@ namespace big
 			if (!is_in_vehicle(plyr->get_ped(), g_local_player->m_vehicle))
 			{
 				g_reactions.change_radio_station.process(plyr, tar_plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			if (plyr->m_radio_station_change_rate_limit.process())
 			{
 				g_reactions.change_radio_station.process(plyr, tar_plyr);
-				return send_ack_event();
+				if (g_block_reaction)
+					return send_ack_event();
 			}
 
 			buffer->Seek(0);

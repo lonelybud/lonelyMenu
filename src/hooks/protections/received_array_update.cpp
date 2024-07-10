@@ -1,5 +1,6 @@
 #include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
+#include "core/vars.hpp"
 #include "gta/joaat.hpp"
 #include "gta/net_array.hpp"
 #include "gta/script_handler.hpp"
@@ -8,7 +9,7 @@
 #include "script_local.hpp"
 #include "services/players/player_service.hpp"
 #include "util/misc.hpp"
-#include "core/vars.hpp"
+
 #include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
@@ -53,7 +54,8 @@ namespace big
 				if (scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[sender->m_player_id].RemoteWantedLevelPlayer == self::id)
 					g_reactions.remote_wanted_level.process(plyr);
 
-			scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[sender->m_player_id].RemoteWantedLevelPlayer = -1; // reset locally
+			if (g_block_reaction)
+				scr_globals::globalplayer_bd.as<GlobalPlayerBD*>()->Entries[sender->m_player_id].RemoteWantedLevelPlayer = -1; // reset locally
 		}
 
 		if (array->m_array == scr_globals::gsbd.as<void*>() && *scr_globals::gsbd.as<eFreemodeState*>() == eFreemodeState::CLOSING)

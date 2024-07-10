@@ -1531,7 +1531,8 @@ namespace big
 					    && is_local_player_an_occupant(migration_node)) // remote teleport
 					{
 						g_reactions.veh_prox_mig_node.process(sender_plyr);
-						return true;
+						if (g_block_reaction)
+							return true;
 					}
 				}
 

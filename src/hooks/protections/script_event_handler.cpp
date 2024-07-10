@@ -57,7 +57,8 @@ namespace big
 			    && !is_in_vehicle(plyr->get_ped(), g_local_player->m_vehicle))
 			{
 				g_reactions.clear_wanted_level.process(plyr);
-				return true;
+				if (g_block_reaction)
+					return true;
 			}
 			break;
 		case eRemoteEvent::Crash: g_reactions.scripted_event_crash.process(plyr); return true;
@@ -139,7 +140,8 @@ namespace big
 					if (args[5 + i] == NETWORK::NETWORK_HASH_FROM_PLAYER_HANDLE(self::id))
 					{
 						g_reactions.mc_teleport.process(plyr);
-						return true;
+						if (g_block_reaction)
+							return true;
 					}
 				}
 			}
@@ -160,7 +162,8 @@ namespace big
 			if (!plyr->is_friend() && g_protections.script_events.remote_off_radar && !is_player_our_boss(player->m_player_id) && !player_is_driver(plyr))
 			{
 				g_reactions.remote_off_radar.process(plyr);
-				return true;
+				if (g_block_reaction)
+					return true;
 			}
 			break;
 		case eRemoteEvent::TSECommand:
@@ -272,7 +275,8 @@ namespace big
 				else if (!player_is_driver(plyr))
 				{
 					g_reactions.force_teleport.process(plyr);
-					return true;
+					if (g_block_reaction)
+						return true;
 				}
 				else
 					g_log.log_additional(std::format("Force Teleport 2: {}", plyr->m_name));
@@ -286,12 +290,14 @@ namespace big
 				if (val == 1)
 				{
 					g_reactions.vehicle_kick_prob.process(plyr);
-					return true;
+					if (g_block_reaction)
+						return true;
 				}
 				else if (val == 0)
 				{
 					g_reactions.vehicle_kick.process(plyr);
-					return true;
+					if (g_block_reaction)
+						return true;
 				}
 			}
 			break;
