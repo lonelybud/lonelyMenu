@@ -311,7 +311,7 @@ namespace big
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);
 				}
 
-				return true;
+				// return true;
 			}
 
 			if (g_session.log_chat_messages_to_textbox)

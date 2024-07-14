@@ -99,10 +99,10 @@ namespace big::session
 			return 1;
 
 		if ((peer_id >> 32) != (token >> 32))
-			return 1;
+			return 2;
 
 		if (token < 1000'000'000'000'000)
-			return 2;
+			return 3;
 
 		return 0;
 	}

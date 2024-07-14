@@ -124,12 +124,15 @@ namespace big
 
 					auto has_spoofed_token = session::is_spoofed_host_token(host_token, plyr->get_net_data()->m_peer_id);
 
-					if (has_spoofed_token == 1)
+					if (has_spoofed_token == 1 || has_spoofed_token == 2)
 					{
 						if (!is_blocked)
 							g_recent_spoofed_host_tokens[rockstar_id] = player_name;
 
-						g_reactions.spoofed_host_token.process(plyr);
+						if (has_spoofed_token == 1)
+							g_reactions.spoofed_host_token.process(plyr);
+						else
+							g_reactions.spoofed_host_token_2.process(plyr);
 
 						if (g_session.block_spoofed_tokens)
 						{
@@ -139,8 +142,8 @@ namespace big
 								LOG(WARNING) << "Spoofed token player joined even when you were host";
 						}
 					}
-					else if (has_spoofed_token == 2)
-						g_reactions.spoofed_host_token_2.process(plyr);
+					else if (has_spoofed_token == 3)
+						g_reactions.spoofed_host_token_3.process(plyr);
 
 					if (!is_friend && kick && SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) == 0)
 						dynamic_cast<player_command*>(command::get("breakup"_J))->call(plyr);

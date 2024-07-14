@@ -79,7 +79,7 @@ namespace big
 
 		// once, other
 		reaction rockstar_admin{reaction_type::none, reaction_sub_type::rockstar_admin, "Rockstar Admin", reaction_notif_type::once, player_type::other};
-		reaction spoofed_host_token_2{reaction_type::none, reaction_sub_type::spoofed_host_token_2, "Potentially Spoofed host token", reaction_notif_type::once, player_type::other};
+		reaction spoofed_host_token_3{reaction_type::none, reaction_sub_type::spoofed_host_token_3, "Spoofed host token (Guess)", reaction_notif_type::once, player_type::other};
 
 		// silent, other
 		reaction nat_type_0_1{reaction_type::none, reaction_sub_type::nat_type_0_1, "Nat type 0/1", reaction_notif_type::silent, player_type::other};
@@ -87,6 +87,7 @@ namespace big
 		// once, modder
 		reaction anti_cheat_modder_detection{reaction_type::none, reaction_sub_type::anti_cheat_modder_detection, "Detected modder by anti-cheat", reaction_notif_type::once, player_type::modder};
 		reaction spoofed_host_token{reaction_type::none, reaction_sub_type::spoofed_host_token, "Spoofed host token", reaction_notif_type::once, player_type::modder};
+		reaction spoofed_host_token_2{reaction_type::none, reaction_sub_type::spoofed_host_token_2, "Spoofed host token (Peer)", reaction_notif_type::once, player_type::modder};
 		reaction spoofed_data{reaction_type::none, reaction_sub_type::spoofed_data, "Spoofed data", reaction_notif_type::once, player_type::modder};
 		reaction invalid_player_model{reaction_type::none, reaction_sub_type::invalid_player_model, "Invalid player model", reaction_notif_type::once, player_type::modder};
 		reaction super_jump{reaction_type::none, reaction_sub_type::super_jump, "Had used Super jump", reaction_notif_type::once, player_type::modder};

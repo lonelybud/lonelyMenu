@@ -436,7 +436,8 @@ namespace big
 		delete_vehicle_cr,
 		player_ped_create,
 		player_ped_sync,
-		blame_explosion_detected
+		blame_explosion_detected,
+		spoofed_host_token_3
 	};
 
 	enum class reaction_karma

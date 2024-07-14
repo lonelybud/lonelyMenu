@@ -164,7 +164,7 @@ namespace big::chat
 			// if (diff.count() <= 2)
 			// 	return true;
 
-			return is_spam_interval_diff_there(msg, _player, diff, 2, 1);
+			return is_spam_interval_diff_there(msg, _player, diff, 4, 1);
 		}
 
 		return is_spam_interval_diff_there(msg, _player, diff, 10, 0);
