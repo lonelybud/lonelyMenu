@@ -58,9 +58,12 @@ namespace big
 			refresh_outfit_state();
 		});
 
+		// render all the components
 		ImGui::BeginGroup();
 		for (auto& item : components.items)
 		{
+			if (item.drawable_id_max <= 0)
+				ImGui::BeginDisabled();
 			ImGui::SetNextItemWidth(120);
 			if (ImGui::InputInt(std::format("{} [0,{}]##1", item.label, item.drawable_id_max).c_str(), &item.drawable_id))
 			{
@@ -70,14 +73,19 @@ namespace big
 					refresh_outfit_state();
 				});
 			}
+			if (item.drawable_id_max <= 0)
+				ImGui::EndDisabled();
 		}
 		ImGui::EndGroup();
 		ImGui::SameLine();
+		// render all the components textures
 		ImGui::BeginGroup();
 		for (auto& item : components.items)
 		{
+			if (item.texture_id_max <= 0)
+				ImGui::BeginDisabled();
 			ImGui::SetNextItemWidth(120);
-			if (ImGui::InputInt(std::format("{} {} [0,{}]##2", item.label, "TEX", item.texture_id_max).c_str(), &item.texture_id))
+			if (ImGui::InputInt(std::format("{} TEX [0,{}]##2", item.label, item.texture_id_max).c_str(), &item.texture_id))
 			{
 				outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
 				g_fiber_pool->queue_job([item] {
@@ -85,13 +93,18 @@ namespace big
 					refresh_outfit_state();
 				});
 			}
+			if (item.texture_id_max <= 0)
+				ImGui::EndDisabled();
 		}
 		ImGui::EndGroup();
 		ImGui::SameLine();
 		ImGui::BeginGroup();
 		{
+			// render all the props
 			for (auto& item : props.items)
 			{
+				if (item.drawable_id_max <= 0)
+					ImGui::BeginDisabled();
 				ImGui::SetNextItemWidth(120);
 				if (ImGui::InputInt(std::format("{} [0,{}]##3", item.label, item.drawable_id_max).c_str(), &item.drawable_id))
 				{
@@ -105,15 +118,19 @@ namespace big
 						refresh_outfit_state();
 					});
 				}
+				if (item.drawable_id_max <= 0)
+					ImGui::EndDisabled();
 			}
 
 			ImGui::Spacing();
 			ImGui::Spacing();
-
+			// render all the props textures
 			for (auto& item : props.items)
 			{
+				if (item.texture_id_max <= 0)
+					ImGui::BeginDisabled();
 				ImGui::SetNextItemWidth(120);
-				if (ImGui::InputInt(std::format("{} {} [0,{}]##4", item.label, "TEX", item.texture_id_max).c_str(), &item.texture_id))
+				if (ImGui::InputInt(std::format("{} TEX [0,{}]##4", item.label, item.texture_id_max).c_str(), &item.texture_id))
 				{
 					outfit::check_bounds_texture(&item); // The game does this on it's own but seems to crash if we call OOB values to fast.
 					g_fiber_pool->queue_job([item] {
@@ -121,6 +138,8 @@ namespace big
 						refresh_outfit_state();
 					});
 				}
+				if (item.texture_id_max <= 0)
+					ImGui::EndDisabled();
 			}
 		}
 		ImGui::EndGroup();

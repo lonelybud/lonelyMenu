@@ -1,4 +1,4 @@
-#include "core/data/debug.hpp"
+#include "core/data/misc.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/session.hpp"
@@ -159,7 +159,7 @@ namespace big
 			// {} sent an EXPLOSION_EVENT with addOwnedExplosion enabled & wrong owner
 			g_reactions.blamed_explosion_detected.process(plyr, nullptr);
 
-		if (g_debug.log_explosion_event)
+		if (g_misc.log_explosion_event)
 			LOGF(WARNING,
 			    "Explosion Event: {} (Dist- {})",
 			    plyr->m_name,
@@ -607,7 +607,7 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
-			if (g_debug.log_sound_event)
+			if (g_misc.log_sound_event)
 				LOG(WARNING) << "Sound Event (NETWORK_PLAY_SOUND_EVENT) from: " << plyr->m_name;
 
 			if (plyr->m_play_sound_rate_limit.process())
@@ -649,7 +649,7 @@ namespace big
 		}
 		case eNetworkEvents::NETWORK_PTFX_EVENT:
 		{
-			if (g_debug.log_ptfx_event)
+			if (g_misc.log_ptfx_event)
 				LOGF(WARNING,
 				    "PTFX Event: {} (Dist- {})",
 				    plyr->m_name,

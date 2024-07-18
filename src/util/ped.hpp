@@ -1,9 +1,9 @@
 #pragma once
+#include "core/vars.hpp"
 #include "entity.hpp"
 #include "natives.hpp"
 #include "services/ped_animations/ped_animations_service.hpp"
 #include "util/animations.hpp"
-#include "core/vars.hpp"
 
 namespace big::ped
 {
@@ -45,7 +45,10 @@ namespace big::ped
 		auto found = false;
 
 		if (!animations::all_anims.size())
+		{
 			animations::fetch_all_anims();
+			return;
+		}
 
 		for (auto& p : animations::all_anims)
 		{

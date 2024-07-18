@@ -1,6 +1,7 @@
 #include "base/CBaseModelInfo.hpp"
 #include "base/CObject.hpp"
 #include "core/data/debug.hpp"
+#include "core/data/misc.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/data/syncing_player.hpp"
@@ -1211,7 +1212,7 @@ namespace big
 
 				veh_creation_model = creation_node->m_model;
 
-				if (g_debug.log_vehicle_clones)
+				if (g_misc.log_vehicle_clones)
 				{
 					auto& vehs = g_gta_data_service->vehicles();
 					auto it    = vehs.find(creation_node->m_model);
@@ -1304,7 +1305,7 @@ namespace big
 					return true;
 				}
 
-				if (g_debug.log_ped_clones)
+				if (g_misc.log_ped_clones)
 				{
 					if (model_info::is_model_of_type(_model, eModelType::OnlineOnlyPed))
 						LOGF(VERBOSE, "ped: player clone ({})", sender_plyr->m_name);
@@ -1355,7 +1356,7 @@ namespace big
 					g_reactions.cage.process(sender_plyr);
 					return true;
 				}
-				if (g_debug.log_object_clones)
+				if (g_misc.log_object_clones)
 					LOG(VERBOSE) << "object: " << _model << " (" << sender_plyr->m_name << ")";
 
 				break;
@@ -1669,7 +1670,7 @@ namespace big
 					    std::format("crash26 {} {}", (int)m_syncing_object_type, get_task_type_string(task_node->m_task_type)));
 					return true;
 				}
-				if (g_debug.log_CVehicleTaskDataNode)
+				if (g_misc.log_CVehicleTaskDataNode)
 					LOG(VERBOSE) << "CVehicleTaskDataNode: " << get_task_type_string(task_node->m_task_type) << " ("
 					             << sender_plyr->m_name << ")";
 
@@ -1743,7 +1744,7 @@ namespace big
 			}
 			case sync_node_id("CPedHealthDataNode"):
 			{
-				if (g_debug.log_CPedHealthDataNode)
+				if (g_misc.log_CPedHealthDataNode)
 				{
 					const auto _node = (CPedHealthDataNode*)(node);
 					// https://github.com/YimMenu/YimMenu/blob/master/src/hooks/spoofing/write_node_data.cpp#L259-L276

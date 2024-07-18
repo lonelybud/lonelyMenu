@@ -52,47 +52,47 @@ namespace big
 			return false;
 	}
 
-	// static void script_id_deserialize(CGameScriptId& id, rage::datBitBuffer& buffer)
-	// {
-	// 	id.m_hash      = buffer.Read<uint32_t>(32);
-	// 	id.m_timestamp = buffer.Read<uint32_t>(32);
+	static void script_id_deserialize(CGameScriptId& id, rage::datBitBuffer& buffer)
+	{
+		id.m_hash      = buffer.Read<uint32_t>(32);
+		id.m_timestamp = buffer.Read<uint32_t>(32);
 
-	// 	if (buffer.Read<bool>(1))
-	// 		id.m_position_hash = buffer.Read<uint32_t>(32);
-	// 	else
-	// 		id.m_position_hash = 0;
+		if (buffer.Read<bool>(1))
+			id.m_position_hash = buffer.Read<uint32_t>(32);
+		else
+			id.m_position_hash = 0;
 
-	// 	if (buffer.Read<bool>(1))
-	// 		id.m_instance_id = buffer.Read<int32_t>(8);
-	// 	else
-	// 		id.m_instance_id = -1;
-	// }
+		if (buffer.Read<bool>(1))
+			id.m_instance_id = buffer.Read<int32_t>(8);
+		else
+			id.m_instance_id = -1;
+	}
 
-	// static void script_id_serialize(CGameScriptId& id, rage::datBitBuffer& buffer)
-	// {
-	// 	buffer.Write<uint32_t>(id.m_hash, 32);
-	// 	buffer.Write<uint32_t>(id.m_timestamp, 32);
+	static void script_id_serialize(CGameScriptId& id, rage::datBitBuffer& buffer)
+	{
+		buffer.Write<uint32_t>(id.m_hash, 32);
+		buffer.Write<uint32_t>(id.m_timestamp, 32);
 
-	// 	if (id.m_position_hash != 0)
-	// 	{
-	// 		buffer.Write<bool>(true, 1);
-	// 		buffer.Write<uint32_t>(id.m_position_hash, 32);
-	// 	}
-	// 	else
-	// 	{
-	// 		buffer.Write<bool>(false, 1);
-	// 	}
+		if (id.m_position_hash != 0)
+		{
+			buffer.Write<bool>(true, 1);
+			buffer.Write<uint32_t>(id.m_position_hash, 32);
+		}
+		else
+		{
+			buffer.Write<bool>(false, 1);
+		}
 
-	// 	if (id.m_instance_id != -1)
-	// 	{
-	// 		buffer.Write<bool>(true, 1);
-	// 		buffer.Write<int32_t>(id.m_instance_id, 8);
-	// 	}
-	// 	else
-	// 	{
-	// 		buffer.Write<bool>(false, 1);
-	// 	}
-	// }
+		if (id.m_instance_id != -1)
+		{
+			buffer.Write<bool>(true, 1);
+			buffer.Write<int32_t>(id.m_instance_id, 8);
+		}
+		else
+		{
+			buffer.Write<bool>(false, 1);
+		}
+	}
 
 	static void log_net_message(rage::eNetMessage message_type, rage::datBitBuffer& data_buffer, rage::netEvent* event, rage::SecurityPeer* sec_peer)
 	{
@@ -336,20 +336,20 @@ namespace big
 
 			break;
 		}
-		// case rage::eNetMessage::MsgScriptHostRequest:
-		// {
-		// 	CGameScriptId script;
-		// 	script_id_deserialize(script, buffer);
-		// 	const char* text = should_block_script_control_request(script.m_hash);
+		case rage::eNetMessage::MsgScriptHostRequest:
+		{
+			CGameScriptId script;
+			script_id_deserialize(script, buffer);
+			const char* text = should_block_script_control_request(script.m_hash);
 
-		// 	if (_player && text)
-		// 	{
-		// 		LOGF(WARNING, "MsgScriptHostRequest for {} denied to {}", text, get_name_rid());
-		// 		return true;
-		// 	}
+			if (_player && text)
+			{
+				LOGF(WARNING, "MsgScriptHostRequest for {} denied to {}", text, get_name_rid());
+				return true;
+			}
 
-		// 	break;
-		// }
+			break;
+		}
 		case rage::eNetMessage::MsgKickPlayer:
 		{
 			KickReason reason = buffer.Read<KickReason>(3);
@@ -601,29 +601,29 @@ namespace big
 			LOGF(WARNING, "Denied MsgConfigRequest from {}", get_name_rid());
 			return true;
 		}
-		// case rage::eNetMessage::MsgScriptJoin:
-		// {
-		// 	CGameScriptId script;
-		// 	script_id_deserialize(script, buffer);
-		// 	const char* text = should_block_script_control_request(script.m_hash);
+		case rage::eNetMessage::MsgScriptJoin:
+		{
+			CGameScriptId script;
+			script_id_deserialize(script, buffer);
+			const char* text = should_block_script_control_request(script.m_hash);
 
-		// 	if (_player && text)
-		// 	{
-		// 		packet pkt;
-		// 		pkt.write_message(rage::eNetMessage::MsgScriptJoinHostAck);
-		// 		script_id_serialize(script, pkt.m_buffer);
-		// 		pkt.write<int16_t>(-1, 16);
-		// 		pkt.write<int16_t>(-1, 16);
-		// 		pkt.write<bool>(false, 1);
-		// 		pkt.write<int>(2, 3);
-		// 		pkt.send(event->m_msg_id);
+			if (_player && text)
+			{
+				packet pkt;
+				pkt.write_message(rage::eNetMessage::MsgScriptJoinHostAck);
+				script_id_serialize(script, pkt.m_buffer);
+				pkt.write<int16_t>(-1, 16);
+				pkt.write<int16_t>(-1, 16);
+				pkt.write<bool>(false, 1);
+				pkt.write<int>(2, 3);
+				pkt.send(event->m_msg_id);
 
-		// 		LOGF(WARNING, "MsgScriptJoin for {} denied to {}", text, get_name_rid());
-		// 		return true;
-		// 	}
+				LOGF(WARNING, "MsgScriptJoin for {} denied to {}", text, get_name_rid());
+				return true;
+			}
 
-		// 	break;
-		// }
+			break;
+		}
 		default:
 		{
 			if ((int)msgType > 0x91)

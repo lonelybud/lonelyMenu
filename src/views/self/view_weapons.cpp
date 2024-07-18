@@ -128,8 +128,13 @@ namespace big
 
 		ImGui::BeginGroup();
 		{
+			ImGui::BeginDisabled(g_weapons.aimbot.enable_2);
 			components::command_checkbox<"aimbot">();
-			if (g_weapons.aimbot.enable)
+			ImGui::EndDisabled();
+			ImGui::BeginDisabled(g_weapons.aimbot.enable);
+			components::command_checkbox<"aimbot2">();
+			ImGui::EndDisabled();
+			if (g_weapons.aimbot.enable || g_weapons.aimbot.enable_2)
 			{
 				ImGui::SetNextItemWidth(350);
 				ImGui::SliderFloat("Aimbot Mid. Scr. Dist", &g_weapons.aimbot.max_dist_to_mid_of_scrn, 0.f, 1.f, "%.05f");

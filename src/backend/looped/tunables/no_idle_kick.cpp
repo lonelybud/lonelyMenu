@@ -9,25 +9,17 @@ namespace big
 	{
 		using looped_command::looped_command;
 
-		bool initialized               = false;
-		std::array<int*, 8> m_tunables = {nullptr};
+		bool initialized = false;
 		std::array<int, 8> m_restore;
+
+		const std::vector<Hash> m_tunable_hashes = {"IDLEKICK_WARNING1"_J, "IDLEKICK_WARNING2"_J, "IDLEKICK_WARNING3"_J, "IDLEKICK_KICK"_J, "ConstrainedKick_Warning1"_J, "ConstrainedKick_Warning2"_J, "ConstrainedKick_Warning3"_J, "ConstrainedKick_Kick"_J};
 
 		virtual void on_enable() override
 		{
-			m_tunables[0] = g_tunables_service->get_tunable<int*>("IDLEKICK_WARNING1"_J);
-			m_tunables[1] = g_tunables_service->get_tunable<int*>("IDLEKICK_WARNING2"_J);
-			m_tunables[2] = g_tunables_service->get_tunable<int*>("IDLEKICK_WARNING3"_J);
-			m_tunables[3] = g_tunables_service->get_tunable<int*>("IDLEKICK_KICK"_J);
-			m_tunables[4] = g_tunables_service->get_tunable<int*>("ConstrainedKick_Warning1"_J);
-			m_tunables[5] = g_tunables_service->get_tunable<int*>("ConstrainedKick_Warning2"_J);
-			m_tunables[6] = g_tunables_service->get_tunable<int*>("ConstrainedKick_Warning3"_J);
-			m_tunables[7] = g_tunables_service->get_tunable<int*>("ConstrainedKick_Kick"_J);
-
 			// create backup of tunables
 			for (int i = 0; i < m_restore.size(); ++i)
-				if (m_tunables[i])
-					m_restore[i] = *m_tunables[i];
+				if (auto tunable = g_tunables_service->get_tunable<int*>(m_tunable_hashes[i]))
+					m_restore[i] = *tunable;
 				else
 				{
 					initialized         = false;
@@ -43,8 +35,8 @@ namespace big
 		virtual void on_tick() override
 		{
 			if (initialized)
-				for (const auto& tunable : m_tunables)
-					*tunable = INT_MAX;
+				for (auto hash_iter : m_tunable_hashes)
+					*g_tunables_service->get_tunable<int*>(hash_iter) = INT_MAX;
 		}
 
 		virtual void on_disable() override
@@ -52,7 +44,7 @@ namespace big
 			if (initialized)
 			{
 				for (int i = 0; i < m_restore.size(); ++i)
-					*m_tunables[i] = m_restore[i];
+					*g_tunables_service->get_tunable<int*>(m_tunable_hashes[i]) = m_restore[i];
 
 				initialized = false;
 			}

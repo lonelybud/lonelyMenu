@@ -78,6 +78,8 @@ namespace big
 
 		detour_hook_helper::add<hooks::received_clone_remove>("RCR", g_pointers->m_gta.m_received_clone_remove);
 
+		detour_hook_helper::add<hooks::aimbot_cam_gameplay_director_update>("CGDU", g_pointers->m_gta.m_cam_gameplay_director_update);
+
 		detour_hook_helper::add<hooks::searchlight_crash>("SLC", g_pointers->m_gta.m_searchlight_crash);
 
 		detour_hook_helper::add<hooks::advertise_session>("AS", g_pointers->m_gta.m_advertise_session);

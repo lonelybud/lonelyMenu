@@ -127,6 +127,10 @@ namespace big
 		            [this] {
 			            LOG(VERBOSE) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
 		            }},
+		        {"RAGDOLL",
+		            [this] {
+						PED::SET_PED_TO_RAGDOLL(m_handle, 2000, 2000, 0, 0, 0, 0);
+		            }}
 		    }};
 
 		s_context_menu object_menu{ContextEntityType::OBJECT, 0, {}, {}};
@@ -149,10 +153,6 @@ namespace big
 			            }
 
 			            entity::delete_entity(m_handle);
-		            }},
-		        {"GET ANIMATION",
-		            [this] {
-			            ped::get_anim(m_handle);
 		            }},
 		    }};
 

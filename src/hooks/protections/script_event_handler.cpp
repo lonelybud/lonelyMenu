@@ -1,5 +1,6 @@
 #include "backend/player_command.hpp"
 #include "core/data/debug.hpp"
+#include "core/data/misc.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
@@ -179,7 +180,7 @@ namespace big
 
 			if (g_protections.script_events.sound_spam && static_cast<eRemoteEvent>(args[3]) == eRemoteEvent::TSECommandSound)
 			{
-				if (g_debug.log_sound_event)
+				if (g_misc.log_sound_event)
 					LOG(WARNING) << "Sound Event (TSECommand) from: " << plyr->m_name;
 
 				if (plyr->m_play_sound_rate_limit_tse.process())
@@ -247,7 +248,7 @@ namespace big
 		}
 		case eRemoteEvent::SoundSpam:
 		{
-			if (g_debug.log_sound_event)
+			if (g_misc.log_sound_event)
 				LOG(WARNING) << "Sound Event (invite) from: " << plyr->m_name;
 
 			if (g_protections.script_events.sound_spam)

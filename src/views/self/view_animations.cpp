@@ -1,9 +1,10 @@
+#include "core/vars.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "services/context_menu/context_menu_service.hpp"
 #include "services/ped_animations/ped_animations_service.hpp"
 #include "util/animations.hpp"
 #include "views/view.hpp"
-#include "core/vars.hpp"
 
 namespace big
 {
@@ -34,7 +35,7 @@ namespace big
 			if (ImGui::Button("Yes"))
 			{
 				g_ped_animation_service.delete_saved_animation(category, g_ped_animation_service.current_animation);
-				ped_animations                            = g_ped_animation_service.all_saved_animations[category];
+				ped_animations = g_ped_animation_service.all_saved_animations[category];
 
 				delete_modal = false;
 				ImGui::CloseCurrentPopup();
@@ -85,6 +86,17 @@ namespace big
 				ImGui::SameLine();
 				components::button("Reset##resetrot", [] {
 					rotation[0] = rotation[1] = rotation[2] = 0;
+				});
+
+				ImGui::Spacing();
+
+				components::button("Get Ped Anim", [] {
+					if (g_context_menu_service->m_handle)
+						ped::get_anim(g_context_menu_service->m_handle);
+				});
+				ImGui::SameLine();
+				components::button("Get Self Anim", [] {
+					ped::get_anim(self::ped);
 				});
 			}
 			ImGui::PopItemWidth();
@@ -218,7 +230,7 @@ namespace big
 						for (auto& p : g_ped_animation_service.all_saved_animations)
 							if (ImGui::Selectable(p.first.c_str(), p.first == category))
 							{
-								category       = p.first;
+								category = p.first;
 								refresh_ped_animations();
 							}
 

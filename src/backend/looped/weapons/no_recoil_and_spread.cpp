@@ -1,6 +1,7 @@
 #include "backend/looped_command.hpp"
 #include "core/data/weapons.hpp"
 #include "core/vars.hpp"
+#include "no_sway.hpp"
 
 namespace big
 {
@@ -10,7 +11,7 @@ namespace big
 
 		CWeaponInfo* p_modified_weapon = nullptr;
 
-		float og_bullet_speed           = 0;
+		// float og_bullet_speed           = 0;
 		float og_recoil_shake_amplitude = 0;
 		uint32_t og_recoil_hash         = 0;
 		uint32_t og_recoil_hash_fp      = 0;
@@ -20,13 +21,18 @@ namespace big
 
 		void reset_to_og()
 		{
-			p_modified_weapon->m_speed                          = og_bullet_speed;
+			// p_modified_weapon->m_speed                          = og_bullet_speed;
 			p_modified_weapon->m_recoil_shake_amplitude         = og_recoil_shake_amplitude;
 			p_modified_weapon->m_recoil_shake_hash              = og_recoil_hash;
 			p_modified_weapon->m_recoil_shake_hash_first_person = og_recoil_hash_fp;
 
 			p_modified_weapon->m_accuracy_spread            = og_accuracy_spread;
 			p_modified_weapon->m_accuracy_offset_shake_hash = og_accuracy_offset_hash;
+		}
+
+		virtual void on_enable() override
+		{
+			weapons::m_no_sway_patch->apply();
 		}
 
 		virtual void on_tick() override
@@ -40,7 +46,7 @@ namespace big
 				{
 					// Backup
 					{
-						og_bullet_speed           = p_modified_weapon->m_speed;
+						// og_bullet_speed           = p_modified_weapon->m_speed;
 						og_recoil_shake_amplitude = p_modified_weapon->m_recoil_shake_amplitude;
 						og_recoil_hash            = p_modified_weapon->m_recoil_shake_hash;
 						og_recoil_hash_fp         = p_modified_weapon->m_recoil_shake_hash_first_person;
@@ -51,7 +57,7 @@ namespace big
 
 					// Set to the good stuff
 					{
-						p_modified_weapon->m_speed                          = 9999999999.0f;
+						// p_modified_weapon->m_speed                          = 9999999999.0f;
 						p_modified_weapon->m_recoil_shake_amplitude         = 0;
 						p_modified_weapon->m_recoil_shake_hash              = 0;
 						p_modified_weapon->m_recoil_shake_hash_first_person = 0;
@@ -70,6 +76,8 @@ namespace big
 				reset_to_og();
 				p_modified_weapon = nullptr;
 			}
+
+			weapons::m_no_sway_patch->restore();
 		}
 	};
 

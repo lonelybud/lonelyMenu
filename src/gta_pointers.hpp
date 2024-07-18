@@ -133,7 +133,11 @@ namespace big
 
 		Network** m_network;
 
+		functions::start_get_session_by_gamer_handle m_start_get_session_by_gamer_handle;
 		functions::join_session_by_info m_join_session_by_info;
+
+		functions::invite_player_by_gamer_handle m_invite_player_by_gamer_handle;
+		functions::show_profile_by_gamer_handle m_show_profile_by_gamer_handle;
 
 		functions::reset_network_complaints m_reset_network_complaints;
 
@@ -235,6 +239,9 @@ namespace big
 
 		CWeaponInfoManager* m_weapon_info_manager;
 
+		uintptr_t* m_cam_gameplay_director;
+		functions::cam_gameplay_directory_update m_cam_gameplay_director_update;
+
 		PVOID m_searchlight_crash;
 		functions::get_searchlight m_get_searchlight;
 
@@ -256,6 +263,8 @@ namespace big
 		PVOID m_error_packet_memmove;
 
 		PVOID m_create_pool_item;
+
+		PVOID m_scope_sway_function;
 	};
 #pragma pack(pop)
 	static_assert(sizeof(gta_pointers) % 8 == 0, "Pointers are not properly aligned");

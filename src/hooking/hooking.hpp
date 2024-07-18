@@ -142,6 +142,7 @@ namespace big
 		static bool serialize_join_request_message_2(CMsgJoinRequest* msg, void* buf, int size, int* bits_serialized);
 		static const char* get_label_text(void* unk, const char* label);
 		static bool add_gamer_to_session(rage::netConnectionManager* mgr, std::uint32_t msg_id, int* req_id, RemoteGamerInfoMsg* info, int flags, void* a6);
+		static bool aimbot_cam_gameplay_director_update(uintptr_t this_);
 
 		// spoofing
 

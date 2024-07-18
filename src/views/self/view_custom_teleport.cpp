@@ -26,7 +26,7 @@ namespace big
 
 		if (ImGui::BeginPopupModal("##deletelocation", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove))
 		{
-			ImGui::Text("Are you sure you want to delete %s?", selected_telelocation->name);
+			ImGui::Text("Are you sure you want to delete %s?", selected_telelocation->name.c_str());
 			ImGui::Spacing();
 			if (ImGui::Button("Yes"))
 			{

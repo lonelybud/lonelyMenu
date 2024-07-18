@@ -112,7 +112,11 @@ namespace big::functions
 	using fipackfile_unmount       = bool (*)(const char* mount_point);
 	using fipackfile_close_archive = void (*)(rage::fiDevice* this_);
 
+	using start_get_session_by_gamer_handle = bool (*)(int profile_index, rage::rlGamerHandle* handles, int count, rage::rlSessionByGamerTaskResult* result, int unk, bool* success, rage::rlTaskStatus* state);
 	using join_session_by_info = bool (*)(Network* network, rage::rlSessionInfo* info, int unk, int flags, rage::rlGamerHandle* handles, int handlecount);
+
+	using invite_player_by_gamer_handle = bool (*)(Network* network, rage::rlGamerHandle* handles, int handlecount, const char* subject, const char* msg, rage::rlTaskStatus* state);
+	using show_profile_by_gamer_handle = void (*)(rage::rlGamerHandle* handle);
 
 	using write_join_response_data = bool (*)(CMsgJoinResponse* response, void* data, int size, uint32_t* size_used);
 
@@ -140,6 +144,8 @@ namespace big::functions
 	using get_ped_seat = CGetPedSeatReturnClass* (*)(PVOID seat_info, CPed* ped);
 
 	using received_clone_remove = void (*)(CNetworkObjectMgr*, CNetGamePlayer*, CNetGamePlayer*, int16_t, uint32_t);
+
+	using cam_gameplay_directory_update = bool (*)(uintptr_t this_);
 
 	using get_searchlight = void* (*)(CPed*);
 

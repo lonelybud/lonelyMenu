@@ -1,4 +1,5 @@
 #include "core/data/language_codes.hpp"
+#include "core/data/player.hpp"
 #include "core/data/region_codes.hpp"
 #include "core/data/session.hpp"
 #include "fiber_pool.hpp"
@@ -41,6 +42,42 @@ namespace big
 		}
 	}
 
+	static inline void render_session_switcher()
+	{
+		components::sub_title("Session Switcher");
+
+		components::button("Start New Public", [] {
+			session::join_type(eSessionType::NEW_PUBLIC);
+		});
+		ImGui::SameLine();
+		components::button("Leave Online", [] {
+			session::join_type(eSessionType::LEAVE_ONLINE);
+		});
+
+		ImGui::Spacing();
+
+		components::button("Join Last Session", [] {
+			session::join_session(gta_util::get_network()->m_last_joined_session.m_session_info);
+		});
+	}
+
+	static inline void render_remote_player()
+	{
+		components::sub_title("Remote Player");
+
+		static rock_id rid = 0;
+
+		ImGui::SetNextItemWidth(200);
+		ImGui::InputScalar("##inputrid", ImGuiDataType_U64, &rid);
+		components::button("Join RID", [] {
+			session::join_by_rockstar_id(rid);
+		});
+		ImGui::SameLine();
+		components::button("Invite", [] {
+			session::invite_by_rockstar_id(rid);
+		});
+	}
+
 	static inline void render_misc()
 	{
 		components::sub_title("Misc");
@@ -48,11 +85,7 @@ namespace big
 		ImGui::Checkbox("Block Joins", &g_session.block_joins);
 		ImGui::Checkbox("Block Friend Joins", &g_session.block_friend_joins);
 		ImGui::Checkbox("Block Spoofed tokens", &g_session.block_spoofed_tokens);
-
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
-
-		ImGui::Checkbox("Unhide Players From List", &g_session.unhide_players_from_player_list);
-
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
 	}
 
@@ -175,6 +208,10 @@ namespace big
 		components::hor_space();
 		ImGui::BeginGroup();
 		{
+			render_session_switcher();
+			ImGui::Spacing();
+			render_remote_player();
+			ImGui::Spacing();
 			render_hosting();
 		}
 		ImGui::EndGroup();

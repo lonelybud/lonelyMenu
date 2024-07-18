@@ -18,6 +18,7 @@
 #include "util/delete_entity.hpp"
 #include "util/player.hpp"
 #include "util/scripts.hpp"
+#include "util/session.hpp"
 #include "util/teleport.hpp"
 #include "util/vehicle.hpp"
 #include "views/view.hpp"
@@ -256,12 +257,19 @@ namespace big
 			components::sub_title("Info");
 
 			components::command_checkbox<"spectate">();
+
 			ImGui::Spacing();
+
 			extra_info_button();
 			ImGui::SameLine();
 			if (components::button("Copy Name & SC id##copyname"))
 				ImGui::SetClipboardText(std::format("{} {}", last_selected_player->m_name, rockstar_id).c_str());
+			ImGui::SameLine();
+			if (components::button("Profile"))
+				session::show_profile_by_rockstar_id(rockstar_id);
+
 			ImGui::Spacing();
+
 			components::button("Log connection stats", [] {
 				auto id = last_selected_player->id();
 				LOGF(VERBOSE, "Relay: {}, Latency: {}, Ping: {}, Packet Loss: {}", NETWORK::NETWORK_IS_CONNECTED_VIA_RELAY(id), NETWORK::NETWORK_GET_AVERAGE_LATENCY(id), NETWORK::NETWORK_GET_AVERAGE_PING(id), NETWORK::NETWORK_GET_AVERAGE_PACKET_LOSS(id));

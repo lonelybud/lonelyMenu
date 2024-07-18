@@ -1,6 +1,7 @@
 #include "core/data/misc.hpp"
 #include "core/enums.hpp"
 #include "core/scr_globals.hpp"
+#include "services/tunables/tunables_service.hpp"
 #include "util/entity.hpp"
 #include "util/mobile.hpp"
 #include "util/ped.hpp"
@@ -25,10 +26,9 @@ namespace big
 		}
 	}
 
-	static inline void game()
+	static inline void render_game()
 	{
 		components::sub_title("Game");
-
 
 		components::button("Add thunder", [] {
 			session::set_fm_event_index(9);
@@ -62,30 +62,30 @@ namespace big
 		});
 	}
 
-	static inline void others()
+	static inline void render_others()
 	{
 		components::sub_title("Others");
 
 		ImGui::Checkbox("Notify friend killed", &g_misc.notify_friend_killed);
-
-		ImGui::Spacing();
-
-		components::button("Start New Public", [] {
-			session::join_type(eSessionType::NEW_PUBLIC);
-		});
-		ImGui::SameLine();
-		components::button("Leave Online", [] {
-			session::join_type(eSessionType::LEAVE_ONLINE);
-		});
-
-		ImGui::Spacing();
-
-		components::button("Join Last Session", [] {
-			session::join_session(gta_util::get_network()->m_last_joined_session.m_session_info);
-		});
 	}
 
-	static inline void service_vehicles()
+	static inline void render_logs()
+	{
+		components::sub_title("Logs");
+
+		ImGui::Checkbox("Log Vehicle Clones", &g_misc.log_vehicle_clones);
+		ImGui::Checkbox("Log Ped Clones", &g_misc.log_ped_clones);
+		ImGui::Checkbox("Log Object Clones", &g_misc.log_object_clones);
+		ImGui::Spacing();
+		ImGui::Checkbox("Log Explosion Event", &g_misc.log_explosion_event);
+		ImGui::Checkbox("Log Ptfx Event", &g_misc.log_ptfx_event);
+		ImGui::Checkbox("Log Sound Event", &g_misc.log_sound_event);
+		ImGui::Spacing();
+		ImGui::Checkbox("Log CPedHealthDataNode", &g_misc.log_CPedHealthDataNode);
+		ImGui::Checkbox("Log CVehicleTaskDataNode", &g_misc.log_CVehicleTaskDataNode);
+	}
+
+	static inline void render_service_vehicles()
 	{
 		components::sub_title("Request Service Vehicles");
 
@@ -114,7 +114,7 @@ namespace big
 		});
 	}
 
-	static inline void _self()
+	static inline void render_self()
 	{
 		components::sub_title("Self");
 
@@ -143,7 +143,7 @@ namespace big
 		});
 	}
 
-	static inline void properties()
+	static inline void render_properties()
 	{
 		components::sub_title("Properties");
 
@@ -157,7 +157,7 @@ namespace big
 			}
 	}
 
-	static inline void _vehicles()
+	static inline void render_vehicles()
 	{
 		components::sub_title("Vehicles");
 
@@ -197,21 +197,27 @@ namespace big
 		{
 			render_time();
 			components::ver_space();
-			game();
+			render_game();
 			components::ver_space();
-			others();
-			components::ver_space();
-			service_vehicles();
+			render_service_vehicles();
 		}
 		ImGui::EndGroup();
 		components::hor_space();
 		ImGui::BeginGroup();
 		{
-			_self(); // name_self to avoid calling same
+			render_self();
 			components::ver_space();
-			properties();
+			render_properties();
 			components::ver_space();
-			_vehicles();
+			render_vehicles();
+		}
+		ImGui::EndGroup();
+		components::hor_space();
+		ImGui::BeginGroup();
+		{
+			render_others();
+			components::ver_space();
+			render_logs();
 		}
 		ImGui::EndGroup();
 	}

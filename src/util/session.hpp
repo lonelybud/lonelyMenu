@@ -5,6 +5,7 @@
 #include "gta_util.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
+#include "rage/rlSessionByGamerTaskResult.hpp"
 #include "script.hpp"
 #include "script_function.hpp"
 #include "util/misc.hpp"
@@ -73,6 +74,53 @@ namespace big::session
 			g_notification_service.push_error("Rid Joiner", "Unable to launch maintransition");
 		}
 		return;
+	}
+
+	inline void join_by_rockstar_id(uint64_t rid)
+	{
+		if (SCRIPT::GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH("maintransition"_J) != 0 || STREAMING::IS_PLAYER_SWITCH_IN_PROGRESS())
+		{
+			g_notification_service.push_error("Rid Joiner", "Player switch in progress, wait a bit.");
+			return;
+		}
+
+		rage::rlGamerHandle player_handle(rid);
+		rage::rlSessionByGamerTaskResult result;
+		bool success = false;
+		rage::rlTaskStatus state{};
+
+		if (g_pointers->m_gta.m_start_get_session_by_gamer_handle(0, &player_handle, 1, &result, 1, &success, &state))
+		{
+			while (state.status == 1)
+				script::get_current()->yield();
+
+			if (state.status == 3 && success)
+			{
+				join_session(result.m_session_info);
+				return;
+			}
+		}
+
+		g_notification_service.push_error("Rid Joiner", "Target player is offline?");
+	}
+
+	inline void invite_by_rockstar_id(uint64_t rid)
+	{
+		rage::rlGamerHandle player_handle(rid);
+
+		bool success = g_pointers->m_gta.m_invite_player_by_gamer_handle(*g_pointers->m_gta.m_network, &player_handle, 1, nullptr, nullptr, nullptr);
+
+		if (!success)
+			return g_notification_service.push_error("Player Invite", "they might be offline?");
+
+		g_notification_service.push_error("Player Invite", "Done!");
+	}
+
+	inline void show_profile_by_rockstar_id(uint64_t rid)
+	{
+		rage::rlGamerHandle player_handle(rid);
+
+		g_pointers->m_gta.m_show_profile_by_gamer_handle(&player_handle);
 	}
 
 	inline void set_fm_event_index(int index)

@@ -1,5 +1,6 @@
 #include "backend/looped_command.hpp"
 #include "core/data/weapons.hpp"
+#include "core/enums.hpp"
 #include "core/vars.hpp"
 #include "gta/enums.hpp"
 #include "natives.hpp"

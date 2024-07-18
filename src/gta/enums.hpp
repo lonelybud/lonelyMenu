@@ -2074,17 +2074,34 @@ enum ComponentId : int
 	AUXILIARY
 };
 
-enum eTraceFlags : uint32_t
+enum ShapeTestIncludeFlags : int
 {
-	IntersectNone               = 0,
-	IntersectWorld              = 1 << 0,
-	IntersectVehicle            = 1 << 1,
-	IntersectPedSimpleCollision = 1 << 2,
-	IntersectPed                = 1 << 3,
-	IntersectObject             = 1 << 4,
-	IntersectPickup             = 1 << 5,
-	IntersectGlass              = 1 << 6,
-	IntersectWater              = 1 << 7,
-	IntersectFoliage            = 1 << 8,
-	IntersectEverything         = eTraceFlags(-1),
+	ST_INCLUDE_MOVER   = 1,
+	ST_INCLUDE_VEHICLE = 2,
+	ST_INCLUDE_PED     = 4,
+	ST_INCLUDE_RAGDOLL = 8,
+	ST_INCLUDE_OBJECT  = 16,
+	ST_INCLUDE_PICKUP  = 32,
+	ST_INCLUDE_GLASS   = 64,
+	ST_INCLUDE_RIVER   = 128,
+	ST_INCLUDE_FOLIAGE = 256,
+	ST_INCLUDE_ALL     = 511,
+};
+
+enum ShapeTestOptionFlag : int
+{
+	ST_OPTION_IGNORE_GLASS       = (1 << 0),
+	ST_OPTION_IGNORE_TRANSPARENT = (1 << 1),
+	ST_OPTION_IGNORE_NOTHING     = (1 << 2),
+};
+
+enum PedRelationships : int
+{
+	Companion,
+	Like,
+	Nothing,
+	Dislike,
+	Wanted,
+	Hate,
+	Indifferent = 255
 };

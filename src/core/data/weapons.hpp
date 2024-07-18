@@ -17,6 +17,7 @@ namespace big
 		struct aimbot
 		{
 			bool enable                   = false;
+			bool enable_2                  = false;
 			bool player                   = false;
 			ePedBoneType bone             = ePedBoneType::HEAD;
 			float max_dist_to_mid_of_scrn = 0.05f;

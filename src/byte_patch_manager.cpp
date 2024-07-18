@@ -4,6 +4,7 @@
 #include "hooking/hooking.hpp"
 #include "memory/byte_patch.hpp"
 #include "pointers.hpp"
+#include "backend/looped/weapons/no_sway.hpp"
 #include "util/vehicle.hpp"
 
 namespace big
@@ -52,6 +53,9 @@ namespace big
 
 		// Always send the special ability event
 		memory::byte_patch::make(g_pointers->m_gta.m_activate_special_ability_patch, std::to_array({0xB0, 0x01, 0xC3}))->apply();
+		
+		// Removes swaying from the sniper's scope when scoped in.
+		weapons::m_no_sway_patch = memory::byte_patch::make(g_pointers->m_gta.m_scope_sway_function, std::vector{0xEB}).get();
 	}
 
 	byte_patch_manager::byte_patch_manager()
