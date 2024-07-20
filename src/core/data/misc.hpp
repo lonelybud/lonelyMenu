@@ -10,10 +10,11 @@ namespace big
 			int hour{}, minute{}, second{};
 		} custom_time;
 
-		bool disable_clothing_validation     = false;
-		bool apply_outfit_hair               = false;
-		bool notify_friend_killed            = true;
-		bool ped_ignore                      = false;
+		bool disable_clothing_validation = false;
+		bool apply_outfit_hair           = false;
+		bool notify_friend_killed        = true;
+		bool ped_ignore                  = false;
+		bool end_passive_time            = false;
 
 		bool log_explosion_event = false; // help identify blamed explosions
 		bool log_ptfx_event      = false; // help identify unusual ptfx events which are not catched by m_ptfx_ratelimit

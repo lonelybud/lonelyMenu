@@ -7,7 +7,10 @@
 #include "util/ped.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
+// #include "services/notifications/notification_service.hpp"
+// #include "gta_util.hpp"
 
+// #include "script/globals/GPBD_FM_3.hpp"
 #include <script/globals/GPBD_FM.hpp>
 
 namespace big
@@ -121,10 +124,18 @@ namespace big
 		components::button("Skip Cutscene", [] {
 			CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 		});
-		ImGui::SameLine();
-		components::button("Force passive", [] {
-			*scr_globals::passive.as<PBOOL>() = TRUE;
-		});
+
+		ImGui::Spacing();
+
+		// components::button("Force passive", [] {
+		// 	if (scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss != -1 || gta_util::find_script_thread("fm_mission_controller"_J) || gta_util::find_script_thread("fm_mission_controller_2020"_J))
+		// 	{
+		// 		g_notification_service.push_error("Passive", "Failed because you started mission or boss exists");
+		// 		return;
+		// 	}
+		// 	*scr_globals::passive.as<PBOOL>() = TRUE;
+		// });
+		components::command_checkbox<"endpassivetime">();
 
 		ImGui::Spacing();
 

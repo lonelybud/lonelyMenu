@@ -150,9 +150,6 @@ namespace big
 		reaction ptfx_spam{reaction_type::none, reaction_sub_type::ptfx_spam, "Ptfx Spam", reaction_notif_type::normal, player_type::normal};
 		reaction delete_vehicle_cc{reaction_type::none, reaction_sub_type::delete_vehicle_cc, "Delete Vehicle (CC)", reaction_notif_type::normal, player_type::normal};
 		reaction delete_vehicle_cr{reaction_type::none, reaction_sub_type::delete_vehicle_cr, "Delete Vehicle (CR)", reaction_notif_type::normal, player_type::normal};
-
-		// used in view::reaction_settings. It is dummy and useless
-		reaction _none{reaction_type::none, reaction_sub_type::none, "", reaction_notif_type::normal, player_type::normal};
 	} g_reactions{};
 
 	inline bool g_block_reaction = false;

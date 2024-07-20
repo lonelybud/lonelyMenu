@@ -23,6 +23,9 @@ namespace big::scr_globals
 	inline const script_global session6(2696130); // freemode -> if (NETWORK::NETWORK_IS_GAME_IN_PROGRESS() && !NETWORK::NETWORK_IS_ACTIVITY_SESSION())
 	inline const script_global passive(1574582); // if (((!PED::IS_PED_IN_ANY_VEHICLE(PLAYER::GET_PLAYER_PED(bVar1), false) || Global_
 	inline const script_global reset_clothing(104077); // freemode 75, &iLocal_.*, 2\);
+
+	inline const script_global passive_1(1964652); // related Global_1964652; VC_PASSIVE_COOLDOWN_KILL;
+	inline const script_global passive_2(2738934); // related Global_2738934.f_4512; VC_PASSIVE_COOLDOWN_REENABLE;
 }
 
 namespace big::scr_locals

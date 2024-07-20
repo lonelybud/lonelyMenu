@@ -39,15 +39,14 @@ namespace big
 				g_reactions.bounty.process(plyr);
 			break;
 		case eRemoteEvent::CeoKick:
-			if (player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
+			if (!is_player_our_boss(player->m_player_id))
 			{
 				g_reactions.ceo_kick.process(plyr);
 				return true;
 			}
 			break;
 		case eRemoteEvent::CeoMoney:
-			if (g_protections.script_events.ceo_money
-			    && player->m_player_id != scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss)
+			if (g_protections.script_events.ceo_money && !is_player_our_boss(player->m_player_id))
 			{
 				g_reactions.ceo_money.process(plyr);
 				return true;

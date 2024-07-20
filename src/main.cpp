@@ -175,13 +175,14 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    // crash the game if online
 			    if (*g_pointers->m_gta.m_is_session_started)
 			    {
-				    LOG(FATAL) << "Do not inject when online! Crashing ...";
+				    g_notification_service.push_error("Intialization Failed", "Do not inject when online! Crashing ...", true);
+				    std::this_thread::sleep_for(2000ms);
 				    exit(0);
 			    }
 
 			    while (!disable_anticheat_skeleton())
 			    {
-				    LOG(WARNING) << "Failed patching anticheat gameskeleton (injected too early?). Waiting 100ms and trying again";
+				    g_notification_service.push_error("Patching Failed", "Failed patching anticheat gameskeleton (injected too early?).", true);
 				    std::this_thread::sleep_for(100ms);
 			    }
 			    LOG(INFO) << "Disabled anticheat gameskeleton.";

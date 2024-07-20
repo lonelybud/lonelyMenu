@@ -29,7 +29,7 @@ namespace big
 
 		if (components::button("Clear filter"))
 			g_filter_players_reaction = nullptr;
-		
+
 		ImGui::Spacing();
 
 		static std::string event_name;
@@ -37,7 +37,10 @@ namespace big
 		if (components::input_text_with_hint("###event_name", "event name", event_name))
 			std::transform(event_name.begin(), event_name.end(), event_name.begin(), ::tolower);
 
-		for (reaction* i = &g_reactions.end_session_kick; i < &g_reactions._none; ++i)
+		auto start = reinterpret_cast<reaction*>(&g_reactions);
+		auto end = reinterpret_cast<reaction*>(reinterpret_cast<std::byte*>(start) + sizeof(g_reactions));
+
+		for (reaction* i = start; i < end; ++i)
 			if (event_name.length())
 			{
 				std::string t = i->m_event_name;
