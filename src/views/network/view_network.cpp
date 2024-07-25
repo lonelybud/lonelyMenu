@@ -123,11 +123,11 @@ namespace big
 		if (g_session.spoof_session_language)
 		{
 			ImGui::SetNextItemWidth(200.f);
-			if (ImGui::BeginCombo("##spoofedlanguage_select", languages[g_session.session_language].name))
+			if (ImGui::BeginCombo("##spoofedlanguage_select", languages.at(g_session.session_language).data()))
 			{
 				for (const auto& language : languages)
-					if (components::selectable(language.name, g_session.session_language == language.id))
-						g_session.session_language = language.id;
+					if (components::selectable(language.second, g_session.session_language == language.first))
+						g_session.session_language = language.first;
 				ImGui::EndCombo();
 			}
 		}

@@ -44,7 +44,7 @@ namespace big
 	{
 		std::vector<weaponloadout_weapon_json> weapons;
 
-		for (const auto& [name, weapon] : g_gta_data_service->weapons())
+		for (const auto& [name, weapon] : g_gta_data_service.weapons())
 		{
 			Hash weapon_hash = weapon.m_hash;
 			if (weapon_hash != WEAPON_UNARMED && WEAPON::HAS_PED_GOT_WEAPON(self::ped, weapon_hash, FALSE))

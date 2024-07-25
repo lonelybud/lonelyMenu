@@ -13,9 +13,9 @@ namespace big
 	static inline vehicle_map filter_vehicles(const std::string& search, int selected_class)
 	{
 		vehicle_map result;
-		string_vec& class_arr = g_gta_data_service->vehicle_classes();
+		string_vec& class_arr = g_gta_data_service.vehicle_classes();
 
-		for (auto& pair : g_gta_data_service->vehicles())
+		for (auto& pair : g_gta_data_service.vehicles())
 		{
 			const auto& vehicle = pair.second;
 
@@ -42,7 +42,7 @@ namespace big
 	void render_spawn_new_vehicle()
 	{
 		static int selected_class = -1;
-		string_vec& class_arr     = g_gta_data_service->vehicle_classes();
+		string_vec& class_arr     = g_gta_data_service.vehicle_classes();
 		static std::string search_veh_name;
 		static vehicle_map searched_vehicles;
 		static vehicle_item selected_veh;
@@ -83,7 +83,7 @@ namespace big
 		if (ImGui::BeginListBox("###vehicles", {300, 300}))
 		{
 			for (auto& pair :
-			    ((search_veh_name.length() > 0 || selected_class != -1) ? searched_vehicles : g_gta_data_service->vehicles()))
+			    ((search_veh_name.length() > 0 || selected_class != -1) ? searched_vehicles : g_gta_data_service.vehicles()))
 			{
 				const auto& vehicle = pair.second;
 

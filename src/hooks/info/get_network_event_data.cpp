@@ -9,7 +9,6 @@
 #include "services/players/player_service.hpp"
 #include "util/entity.hpp"
 #include "util/player.hpp"
-#include "util/vehicle.hpp"
 
 namespace big
 {
@@ -66,7 +65,7 @@ namespace big
 								    is_player_in_submarine(player->id()) ? "Submarine;" : "",
 								    damage_data.m_is_headshot ? "Headshot;" : "",
 								    got_karmad ? "Karma;" : "",
-								    g_gta_data_service->weapon_by_hash(damage_data.m_weapon_used).m_display_name,
+								    g_gta_data_service.weapon_by_hash(damage_data.m_weapon_used).m_display_name,
 								    player->m_name);
 
 								if (g_local_player->m_vehicle

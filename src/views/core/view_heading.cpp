@@ -1,9 +1,6 @@
-#include "backend/looped_command.hpp"
 #include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
-#include "fiber_pool.hpp"
 #include "gta_util.hpp"
-#include "script_mgr.hpp"
 #include "views/view.hpp"
 
 namespace big

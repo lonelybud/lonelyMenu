@@ -39,7 +39,7 @@ namespace big
 				if (search_weapon_name.length() > 0)
 				{
 					std::transform(search_weapon_name.begin(), search_weapon_name.end(), search_weapon_name.begin(), ::tolower);
-					searched_weapons = filter_weapons_map(g_gta_data_service->weapons(), search_weapon_name);
+					searched_weapons = filter_weapons_map(g_gta_data_service.weapons(), search_weapon_name);
 				}
 				else
 					searched_weapons.clear();
@@ -47,7 +47,7 @@ namespace big
 
 			if (ImGui::BeginListBox("###weaponsList", {300, 100}))
 			{
-				for (auto& weapon : (search_weapon_name.length() > 0 ? searched_weapons : g_gta_data_service->weapons()))
+				for (auto& weapon : (search_weapon_name.length() > 0 ? searched_weapons : g_gta_data_service.weapons()))
 					if (weapon.second.m_display_name != "NULL"
 					    && ImGui::Selectable(weapon.second.m_display_name.c_str(), weapon.second.m_hash == selected_weapon_hash))
 					{
@@ -105,7 +105,7 @@ namespace big
 	void view::weapons()
 	{
 		components::button("Fill Ammo", [] {
-			for (const auto& [_, weapon] : g_gta_data_service->weapons())
+			for (const auto& [_, weapon] : g_gta_data_service.weapons())
 			{
 				int ammo_in;
 				WEAPON::GET_MAX_AMMO(self::ped, weapon.m_hash, &ammo_in);

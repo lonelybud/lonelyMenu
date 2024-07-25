@@ -1,8 +1,6 @@
 #include "core/data/filter_player.hpp"
 #include "core/data/gui_info.hpp"
 #include "core/settings/window.hpp"
-#include "core/vars.hpp"
-#include "fiber_pool.hpp"
 #include "fonts/fonts.hpp"
 #include "natives.hpp"
 #include "pointers.hpp"
@@ -72,7 +70,7 @@ namespace big
 		ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, {0.0, 0.5});
 		ImGui::PushID(plyr->id());
 
-		if (ImGui::Button(plyr->id() == self::id ? "you" : plyr->m_name, {g_gui_info.plr_btn_width, 0.f}))
+		if (ImGui::Button(plyr == g_player_service->get_self() ? "you" : plyr->m_name, {g_gui_info.plr_btn_width, 0.f}))
 		{
 			g_player_service->set_selected(plyr);
 			g_gui_service->set_selected(tabs::PLAYER);

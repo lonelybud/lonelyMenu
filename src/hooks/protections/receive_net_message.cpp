@@ -13,7 +13,6 @@
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
 #include "packet.hpp"
-#include "script/scriptIdBase.hpp"
 #include "services/blocked_players/blocked_players.hpp"
 #include "services/custom_chat_buffer.hpp"
 #include "services/notifications/notification_service.hpp"

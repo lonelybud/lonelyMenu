@@ -26,7 +26,7 @@ namespace big
 			attributes->m_param_values[4] = g_session.session_region_type;
 
 		if (g_session.spoof_session_language)
-			attributes->m_param_values[3] = g_session.session_language;
+			attributes->m_param_values[3] = (uint32_t)g_session.session_language;
 
 		if (g_session.spoof_session_player_count)
 			attributes->m_param_values[2] = g_session.session_player_count;

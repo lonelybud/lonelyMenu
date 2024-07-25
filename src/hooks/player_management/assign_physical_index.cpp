@@ -13,7 +13,6 @@
 #include "util/player.hpp"
 #include "util/session.hpp"
 
-#include <script/globals/GlobalPlayerBD.hpp>
 
 namespace big
 {

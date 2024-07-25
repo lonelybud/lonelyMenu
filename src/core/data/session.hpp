@@ -1,5 +1,6 @@
 #pragma once
 #include "fiber_pool.hpp"
+#include "gta/enums.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
 
@@ -61,10 +62,10 @@ namespace big
 		bool force_fmmc_launcher_host = false;
 		bool force_am_launcher_host   = false;
 
-		bool log_chat_messages_to_textbox    = true;
-		bool decloak_players                 = false;
-		bool auto_kick_chat_spammers         = false;
-		int nat_type                         = 4;
+		bool log_chat_messages_to_textbox = true;
+		bool decloak_players              = false;
+		bool auto_kick_chat_spammers      = false;
+		int nat_type                      = 4;
 
 		int num_vote_kicks = 0;
 
@@ -73,7 +74,7 @@ namespace big
 		bool spoof_session_region_type  = false;
 		int session_region_type         = 0;
 		bool spoof_session_language     = false;
-		int session_language            = 0;
+		eGameLanguage session_language  = eGameLanguage::ENGLISH;
 		bool spoof_session_player_count = false;
 		int session_player_count        = 23;
 

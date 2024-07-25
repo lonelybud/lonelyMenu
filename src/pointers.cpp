@@ -1,7 +1,6 @@
 #include "pointers.hpp"
 
 #include "gta_pointers_layout_info.hpp"
-#include "memory/all.hpp"
 
 namespace big
 {
@@ -1158,6 +1157,15 @@ namespace big
             [](memory::handle ptr)
             {
                 g_pointers->m_gta.m_scope_sway_function = ptr.as<PVOID>();
+            }
+        },
+        // Report Myself Sender
+        {
+            "RPS",
+            "E8 ? ? ? ? 33 C0 87 83 90 02 00 00",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_report_myself_sender = ptr.add(1).rip().as<PVOID>();
             }
         }
         >(); // don't leave a trailing comma at the end

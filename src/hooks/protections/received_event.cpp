@@ -11,7 +11,6 @@
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
 #include "logger/logger.hpp"
-#include "script/scriptIdBase.hpp"
 #include "services/players/player_service.hpp"
 #include "util/math.hpp"
 #include "util/player.hpp"
@@ -309,17 +308,6 @@ namespace big
 				g_reactions.kick_vote.process(plyr);
 				++g_session.num_vote_kicks;
 			}
-			buffer->Seek(0);
-			break;
-		}
-		case eNetworkEvents::NETWORK_INCREMENT_STAT_EVENT:
-		{
-			const auto increment_stat_event = std::make_unique<CNetworkIncrementStatEvent>();
-			buffer->ReadDword(&increment_stat_event->m_stat, 0x20);
-			buffer->ReadDword(&increment_stat_event->m_amount, 0x20);
-			if (hooks::increment_stat_event(increment_stat_event.get(), source_player))
-				return send_ack_event();
-
 			buffer->Seek(0);
 			break;
 		}

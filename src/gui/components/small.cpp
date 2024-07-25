@@ -1,5 +1,4 @@
 #include "core/settings/window.hpp"
-#include "fonts/fonts.hpp"
 #include "gui/components/components.hpp"
 
 namespace big

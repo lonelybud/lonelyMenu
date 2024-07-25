@@ -1,7 +1,5 @@
 #include "script_local.hpp"
 
-#include "pointers.hpp"
-
 namespace big
 {
 	script_local::script_local(rage::scrThread* thread, std::size_t index) :

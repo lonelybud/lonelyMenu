@@ -1,5 +1,4 @@
 #include "file.hpp"
-
 #include "file_manager.hpp"
 
 namespace big

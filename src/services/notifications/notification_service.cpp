@@ -1,17 +1,8 @@
 #include "notification_service.hpp"
 #include "logger/logger.hpp"
-#include "core/settings/menu.hpp"
-#include "widgets/imgui_hotkey.hpp"
 
 namespace big
 {
-	bool notification_service::initialise()
-	{
-		push("Welcome", std::format("Loaded YimMenu. Press {} to open", ImGui::key_names[g_menu.menu_toggle]));
-
-		return true;
-	}
-
 	void notification_service::push(const std::string& title, const std::string& message, bool log)
 	{
 		push({title, message, NotificationType::INFO});

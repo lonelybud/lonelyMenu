@@ -1,5 +1,4 @@
 #include "script_global.hpp"
-
 #include "pointers.hpp"
 
 namespace big

@@ -1,9 +1,9 @@
 #include "core/data/session.hpp"
-#include "gui.hpp"
 #include "services/custom_chat_buffer.hpp"
-#include "services/players/player_service.hpp"
 #include "util/chat.hpp"
 #include "views/view.hpp"
+
+#include <imgui.h>
 
 namespace big
 {

@@ -12,8 +12,6 @@ namespace big
 		notification_service() = default;
 		virtual ~notification_service() = default;
 
-		bool initialise();
-
 		void push(const std::string& title, const std::string& message, bool log = false);
 		void push_warning(const std::string& title, const std::string& message, bool log = false);
 		void push_error(const std::string& title, const std::string& message, bool log = false);

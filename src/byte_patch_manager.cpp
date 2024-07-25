@@ -1,7 +1,6 @@
 #include "byte_patch_manager.hpp"
 
 #include "gta/net_array.hpp"
-#include "hooking/hooking.hpp"
 #include "memory/byte_patch.hpp"
 #include "pointers.hpp"
 #include "backend/looped/weapons/no_sway.hpp"
@@ -56,6 +55,8 @@ namespace big
 		
 		// Removes swaying from the sniper's scope when scoped in.
 		weapons::m_no_sway_patch = memory::byte_patch::make(g_pointers->m_gta.m_scope_sway_function, std::vector{0xEB}).get();
+
+		memory::byte_patch::make(g_pointers->m_gta.m_report_myself_sender, std::vector{0xC3})->apply();
 	}
 
 	byte_patch_manager::byte_patch_manager()

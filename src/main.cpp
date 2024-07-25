@@ -21,6 +21,8 @@
 #include "thread_pool.hpp"
 #include "util/logger.hpp"
 #include "version.hpp"
+#include "core/settings/menu.hpp"
+#include "widgets/imgui_hotkey.hpp"
 
 namespace big
 {
@@ -201,15 +203,17 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    auto hooking_instance = std::make_unique<hooking>();
 			    LOG(INFO) << "Hooking initialized.";
 
+				g_gta_data_service.init();
 			    auto context_menu_service_instance   = std::make_unique<context_menu_service>();
 			    auto mobile_service_instance         = std::make_unique<mobile_service>();
 			    auto player_service_instance         = std::make_unique<player_service>();
-			    auto gta_data_service_instance       = std::make_unique<gta_data_service>();
 			    auto gui_service_instance            = std::make_unique<gui_service>();
 			    auto script_patcher_service_instance = std::make_unique<script_patcher_service>();
 			    auto tunables_service_instance       = std::make_unique<tunables_service>();
 			    auto matchmaking_service_instance    = std::make_unique<matchmaking_service>();
 			    LOG(INFO) << "Registered service instances...";
+
+				g_notification_service.push("Welcome", std::format("Loaded YimMenu. Press {} to open", ImGui::key_names[g_menu.menu_toggle]));
 
 			    g_script_mgr.add_script(std::make_unique<script>(&gui::script_func, "GUI", false));
 			    g_script_mgr.add_script(std::make_unique<script>(&backend::loop, "Backend Loop", false));
@@ -251,8 +255,6 @@ BOOL APIENTRY DllMain(HMODULE hmod, DWORD reason, PVOID)
 			    LOG(INFO) << "Script Patcher Service reset.";
 			    gui_service_instance.reset();
 			    LOG(INFO) << "Gui Service reset.";
-			    gta_data_service_instance.reset();
-			    LOG(INFO) << "GTA Data Service reset.";
 			    player_service_instance.reset();
 			    LOG(INFO) << "Player Service reset.";
 

@@ -1,11 +1,9 @@
-#include "backend/player_command.hpp"
 #include "core/data/debug.hpp"
 #include "core/data/misc.hpp"
 #include "core/data/protections.hpp"
 #include "core/data/reactions.hpp"
 #include "core/scr_globals.hpp"
 #include "gta/net_game_event.hpp"
-#include "gta/script_handler.hpp"
 #include "gta_util.hpp"
 #include "hooking/hooking.hpp"
 #include "natives.hpp"
@@ -16,6 +14,7 @@
 #include <network/CNetGamePlayer.hpp>
 #include <script/globals/GPBD_FM_3.hpp>
 #include <script/globals/GlobalPlayerBD.hpp>
+#include <script/CGameScriptHandlerNetComponent.hpp>
 
 namespace big
 {

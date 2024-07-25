@@ -103,7 +103,8 @@ namespace big
 				    ImGui::BeginGroup();
 				    {
 					    if (boss_goon.Language >= 0 && boss_goon.Language < 13)
-						    ImGui::Text("Language: %s", languages[boss_goon.Language].name);
+						    ImGui::Text("Language: %s", languages.at((eGameLanguage)boss_goon.Language).data());
+
 					    ImGui::Text("Money In Wallet: %llu", wallet);
 					    ImGui::Text("Money In Bank: %llu", money - wallet);
 					    ImGui::Text("Total Money: %llu", money);
@@ -216,7 +217,7 @@ namespace big
 								    if (CVehicleModelInfo* vehicle_model_info = static_cast<CVehicleModelInfo*>(vehicle->m_model_info))
 									    ImGui::Text("Vehicle: %s",
 									        vehicle::get_vehicle_model_name(
-									            g_gta_data_service->vehicles()[vehicle_model_info->m_hash])
+									            g_gta_data_service.vehicles()[vehicle_model_info->m_hash])
 									            .c_str());
 
 								    if (vehicle->m_damage_bits & (uint32_t)eEntityProofs::GOD)

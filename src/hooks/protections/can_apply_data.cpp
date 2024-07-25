@@ -28,7 +28,6 @@
 #include "netsync/nodes/ped/CPedCreationDataNode.hpp"
 #include "netsync/nodes/ped/CPedGameStateDataNode.hpp"
 #include "netsync/nodes/ped/CPedHealthDataNode.hpp"
-#include "netsync/nodes/ped/CPedInventoryDataNode.hpp"
 #include "netsync/nodes/ped/CPedMovementDataNode.hpp"
 #include "netsync/nodes/ped/CPedMovementGroupDataNode.hpp"
 #include "netsync/nodes/ped/CPedOrientationDataNode.hpp"
@@ -198,7 +197,7 @@ namespace big
 
 		if (info->m_model_type == eModelType::Vehicle)
 		{
-			for (auto& [hash, data] : g_gta_data_service->vehicles())
+			for (auto& [hash, data] : g_gta_data_service.vehicles())
 				if (hash == model)
 				{
 					model_str = data.m_name;
@@ -207,7 +206,7 @@ namespace big
 		}
 		else if (info->m_model_type == eModelType::Ped || info->m_model_type == eModelType::OnlineOnlyPed)
 		{
-			for (auto& [hash, data] : g_gta_data_service->peds())
+			for (auto& [hash, data] : g_gta_data_service.peds())
 				if (hash == model)
 				{
 					model_str = data.m_name;
@@ -1214,7 +1213,7 @@ namespace big
 
 				if (g_misc.log_vehicle_clones)
 				{
-					auto& vehs = g_gta_data_service->vehicles();
+					auto& vehs = g_gta_data_service.vehicles();
 					auto it    = vehs.find(creation_node->m_model);
 					LOG(VERBOSE) << "veh: " << (it != vehs.end() ? vehicle::get_vehicle_model_name(it->second) : "?") << " ("
 					             << sender_plyr->m_name << ")";
@@ -1311,7 +1310,7 @@ namespace big
 						LOGF(VERBOSE, "ped: player clone ({})", sender_plyr->m_name);
 					else if (model_info::is_model_of_type(_model, eModelType::Ped))
 					{
-						auto& peds = g_gta_data_service->peds();
+						auto& peds = g_gta_data_service.peds();
 						auto it    = peds.find(creation_node->m_model);
 						LOGF(VERBOSE,
 						    "ped: {}, {} ({})",

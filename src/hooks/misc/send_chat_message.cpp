@@ -3,7 +3,6 @@
 #include "services/custom_chat_buffer.hpp"
 #include "services/notifications/notification_service.hpp"
 #include "services/players/player_service.hpp"
-#include "util/chat.hpp"
 
 namespace big
 {
