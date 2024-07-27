@@ -34,7 +34,7 @@ namespace big
 			PED::CLEAR_PED_ENV_DIRT(ped);
 			PED::CLEAR_PED_WETNESS(ped);
 			PED::CLEAR_PED_LAST_DAMAGE_BONE(ped);
-			NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
+			// NETWORK::NETWORK_FORCE_LOCAL_PLAYER_SCAR_SYNC();
 		});
 		ImGui::SameLine();
 		components::button("Fill Inventory", [] {

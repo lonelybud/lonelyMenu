@@ -6,8 +6,8 @@
 #include "gui.hpp"
 #include "natives.hpp"
 #include "script.hpp"
+// #include "util/math.hpp"
 #include "util/timer.hpp"
-#include "util/math.hpp"
 
 namespace big
 {
@@ -67,9 +67,9 @@ namespace big
 						reset_timer();
 					else if (timer.has_time_passed())
 					{
-						auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
-						auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
-						Vector3 end           = camera_position + camera_direction * 2000.0;
+						// auto camera_direction = math::rotation_to_direction(CAM::GET_GAMEPLAY_CAM_ROT(0));
+						// auto camera_position  = CAM::GET_GAMEPLAY_CAM_COORD() + camera_direction;
+						// Vector3 end           = camera_position + camera_direction * 2000.0;
 
 						if (weapon_hash == "WEAPON_FLAREGUN"_J)
 						{
@@ -78,7 +78,10 @@ namespace big
 								current_weapon_tint = 0;
 						}
 
-						PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
+						// PED::SET_PED_SHOOTS_AT_COORD(self::ped, end.x, end.y, end.z, 0);
+
+						// https://github.com/Illegal-Services/v_ped_stuff/blob/main/ePedResetFlags.json
+						PED::SET_PED_RESET_FLAG(self::ped, 65, TRUE);
 						WEAPON::REFILL_AMMO_INSTANTLY(self::ped);
 					}
 				}

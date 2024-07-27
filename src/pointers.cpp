@@ -667,6 +667,24 @@ namespace big
                 g_pointers->m_gta.m_task_ambient_clips = ptr.as<PVOID>();
             }
         },
+        // Encode Session Info
+        {
+            "ESI",
+            "E8 ? ? ? ? C6 83 94 01 00 00 01",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_encode_session_info = ptr.add(1).rip().as<functions::encode_session_info>();
+            }
+        },
+        // Decode Session Info
+        {
+            "DSI",
+            "E8 ? ? ? ? 84 C0 74 16 48 8B 4B 60",
+            [](memory::handle ptr)
+            {
+                g_pointers->m_gta.m_decode_session_info = ptr.add(1).rip().as<functions::decode_session_info>();
+            }
+        },
         // Queue Dependency
         {
             "QD",

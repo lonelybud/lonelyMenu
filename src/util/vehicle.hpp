@@ -3,7 +3,6 @@
 #include "entity.hpp"
 #include "gta/enums.hpp"
 #include "gta/vehicle_values.hpp"
-#include "logger/logger.hpp"
 #include "natives.hpp"
 #include "services/gta_data/vehicle_item.hpp"
 #include "services/notifications/notification_service.hpp"
@@ -59,36 +58,7 @@ namespace big::vehicle
 	}
 	std::string get_vehicle_model_name(Vehicle veh);
 
-	inline bool clear_all_peds(Vehicle vehicle)
-	{
-		if (auto passengers = VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(vehicle, 1, 0))
-		{
-			// npcs
-			for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(vehicle); ++i)
-			{
-				auto ped = VEHICLE::GET_PED_IN_VEHICLE_SEAT(vehicle, i, 0);
-				if (PED::IS_PED_A_PLAYER(ped))
-					return false;
-				else if (entity::take_control_of(ped))
-					TASK::CLEAR_PED_TASKS_IMMEDIATELY(ped);
-				else
-					return false;
-			}
-
-			// wait for passengers to leave
-			for (int i = 0; i < 10; ++i)
-			{
-				if (VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(vehicle, 1, 0) != 0)
-					script::get_current()->yield(150ms);
-				else
-					return true;
-			}
-
-			return false;
-		}
-
-		return true;
-	}
+	bool clear_all_peds(Vehicle vehicle);
 
 	inline void lockUnlockVehicle(Entity veh, eVehicleLockState current_state = eVehicleLockState::VEHICLELOCK_NONE)
 	{

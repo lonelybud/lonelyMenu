@@ -58,6 +58,10 @@ namespace big
 		{
 			g_session.next_host_list.insert_plyr(id, host_token, net_player_data->m_name, true);
 			LOG(INFO) << "You joined the session.";
+
+			char buf[0x100]{};
+			g_pointers->m_gta.m_encode_session_info(&gta_util::get_network()->m_last_joined_session.m_session_info, buf, 0xA9, nullptr);
+			LOG(INFO) << "Session Info: " << buf;
 		}
 		else
 		{

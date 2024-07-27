@@ -59,6 +59,21 @@ namespace big
 		components::button("Join Last Session", [] {
 			session::join_session(gta_util::get_network()->m_last_joined_session.m_session_info);
 		});
+
+		ImGui::Spacing();
+
+		static char base64[500]{};
+
+		ImGui::SetNextItemWidth(200);
+		components::input_text_with_hint("##sessioninfoinput", "Session Info", base64, sizeof(base64));
+		ImGui::SameLine();
+		components::button("Join Session", [] {
+			rage::rlSessionInfo info;
+			if (g_pointers->m_gta.m_decode_session_info(&info, base64, nullptr))
+				session::join_session(info);
+			else
+				g_notification_service.push_error("Join session", "Invalid info");
+		});
 	}
 
 	static inline void render_remote_player()

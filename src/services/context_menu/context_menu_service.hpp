@@ -86,7 +86,7 @@ namespace big
 		            }},
 		        {"IS PV",
 		            [this] {
-			            LOG(VERBOSE) << "Is Player Vehicle: " << is_player_veh(m_handle);
+			            LOG(VERBOSE) << "Is Player Vehicle: " << check_if_player_veh(m_handle);
 		            }},
 		    }};
 
@@ -130,7 +130,7 @@ namespace big
 		        {"RAGDOLL",
 		            [this] {
 						PED::SET_PED_TO_RAGDOLL(m_handle, 2000, 2000, 0, 0, 0, 0);
-		            }}
+		            }},
 		    }};
 
 		s_context_menu object_menu{ContextEntityType::OBJECT, 0, {}, {}};
@@ -153,6 +153,11 @@ namespace big
 			            }
 
 			            entity::delete_entity(m_handle);
+		            }},
+		        {"FORCE DELETE",
+		            [this] {
+			            if (auto ptr = g_pointers->m_gta.m_handle_to_ptr(m_handle); ptr && ptr->m_net_object)
+				            entity::force_remove_network_entity(ptr);
 		            }},
 		    }};
 

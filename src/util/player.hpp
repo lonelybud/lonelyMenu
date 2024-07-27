@@ -13,7 +13,7 @@
 
 namespace big
 {
-	inline bool is_player_veh(Vehicle veh)
+	inline bool check_if_player_veh(Vehicle veh)
 	{
 		return DECORATOR::DECOR_GET_INT(veh, "MPBitset") || DECORATOR::DECOR_GET_INT(veh, "Player_Vehicle");
 	}
@@ -75,11 +75,13 @@ namespace big
 		// driver is present
 		if (driver)
 		{
+			auto is_player_veh = check_if_player_veh(self::veh);
+
 			// i am the driver
 			if (driver == g_local_player)
 			{
 				// not someone's pv
-				if (unrelated_checks && !is_player_veh(self::veh))
+				if (unrelated_checks && !is_player_veh)
 				{
 					g_log.log_additional(
 					    std::format("player_is_driver: I am driver of clone but {} wants control", target_plyr->m_name));
@@ -94,7 +96,7 @@ namespace big
 			if (driver != target_plyr->get_ped())
 			{
 				// not someone's pv
-				if (unrelated_checks && !is_player_veh(self::veh))
+				if (unrelated_checks && !is_player_veh)
 				{
 					g_log.log_additional(
 					    std::format("player_is_driver: Someone is driver of clone but {} wants control", target_plyr->m_name));
@@ -105,8 +107,9 @@ namespace big
 				if (driver->m_player_info
 				    && g_player_service->get_by_host_token(driver->m_player_info->m_net_player_data.m_host_token))
 				{
-					g_log.log_additional(
-					    std::format("player_is_driver: Someone is driver of pv but {} wants control", target_plyr->m_name));
+					g_log.log_additional(std::format("player_is_driver: Someone is driver of {} but {} wants control",
+					    is_player_veh ? "pv" : "",
+					    target_plyr->m_name));
 					return 0;
 				}
 			}

@@ -191,6 +191,9 @@ namespace big
 		PVOID m_serialize_take_off_ped_variation_task;
 		PVOID m_serialize_parachute_task;
 
+		functions::encode_session_info m_encode_session_info;
+		functions::decode_session_info m_decode_session_info;
+
 		functions::send_packet m_send_packet;
 
 		PVOID m_fragment_physics_crash_2;
