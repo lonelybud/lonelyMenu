@@ -11,7 +11,7 @@ namespace big
 {
 	static auto tp_hash                       = "tuneables_processing"_J;
 	static auto tr_hash                       = "tunables_registration"_J;
-	static constexpr auto tunable_global_base = 0x40000;
+	static constexpr auto tunable_global_base = 0x40001;
 
 	tunables_service::tunables_service()
 	{
