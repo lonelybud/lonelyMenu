@@ -13,8 +13,13 @@ namespace big
 		ImGui::Hotkey("Toggle Key", &g_menu.menu_toggle);
 
 		components::sub_title("UI Scale");
-		if (ImGui::SliderFloat("##gui-scale", &g_window.gui_scale, 0.75f, 1.5f, "%.2f"))
+		static float scale_value = g_window.gui_scale;
+		ImGui::SliderFloat("##gui-scale", &scale_value, 0.75f, 1.5f, "%.2f");
+		if (ImGui::IsItemDeactivatedAfterEdit())
+		{
+			g_window.gui_scale = scale_value;
 			g_renderer.rescale(g_window.gui_scale);
+		}
 
 		components::sub_title("UI Colors");
 		static ImVec4 col_gui = ImGui::ColorConvertU32ToFloat4(g_window.background_color);

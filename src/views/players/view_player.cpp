@@ -521,7 +521,8 @@ namespace big
 				if (auto c_veh = last_selected_player->get_current_vehicle())
 				{
 					auto veh = g_pointers->m_gta.m_ptr_to_handle(c_veh);
-					entity::delete_entity(veh);
+					if (vehicle::clear_all_peds(veh))
+						entity::delete_entity(veh);
 				}
 			});
 

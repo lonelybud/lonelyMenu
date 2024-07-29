@@ -1,16 +1,11 @@
 #include "core/data/misc.hpp"
-#include "core/enums.hpp"
-#include "core/scr_globals.hpp"
-#include "services/tunables/tunables_service.hpp"
+#include "gta/enums.hpp"
 #include "util/entity.hpp"
 #include "util/mobile.hpp"
 #include "util/ped.hpp"
 #include "util/session.hpp"
 #include "views/view.hpp"
-// #include "services/notifications/notification_service.hpp"
-// #include "gta_util.hpp"
 
-// #include "script/globals/GPBD_FM_3.hpp"
 #include <script/globals/GPBD_FM.hpp>
 
 namespace big
@@ -52,7 +47,7 @@ namespace big
 		components::button("Kill All Enemies", [] {
 			for (auto ped : entity::get_entities(false, true))
 				if (!PED::IS_PED_A_PLAYER(ped))
-					if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == 4 || relation == 5 || relation == 3)
+					if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == Wanted || relation == Hate || relation == Dislike)
 						ped::kill_ped(ped);
 		});
 		ImGui::SameLine();
@@ -60,7 +55,7 @@ namespace big
 			if (g_local_player->m_player_info->m_is_wanted)
 				for (auto ped : entity::get_entities(false, true))
 					if (!PED::IS_PED_A_PLAYER(ped))
-						if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == 255)
+						if (auto relation = PED::GET_RELATIONSHIP_BETWEEN_PEDS(ped, self::ped); relation == Indifferent)
 							ped::kill_ped(ped);
 		});
 	}
@@ -126,15 +121,6 @@ namespace big
 		});
 
 		ImGui::Spacing();
-
-		// components::button("Force passive", [] {
-		// 	if (scr_globals::gpbd_fm_3.as<GPBD_FM_3*>()->Entries[self::id].BossGoon.Boss != -1 || gta_util::find_script_thread("fm_mission_controller"_J) || gta_util::find_script_thread("fm_mission_controller_2020"_J))
-		// 	{
-		// 		g_notification_service.push_error("Passive", "Failed because you started mission or boss exists");
-		// 		return;
-		// 	}
-		// 	*scr_globals::passive.as<PBOOL>() = TRUE;
-		// });
 		components::command_checkbox<"endpassivetime">();
 
 		ImGui::Spacing();

@@ -81,11 +81,13 @@ namespace big::entity
 			// 	return false;
 			// }
 
-			if (!vehicle::clear_all_peds(ent))
-			{
-				g_notification_service.push_error("Deletion failed", std::format("vehicle {} is not empty.", ent));
-				return false;
-			}
+			if (VEHICLE::GET_VEHICLE_NUMBER_OF_PASSENGERS(ent, 1, 0))
+				for (int i = -1; i < VEHICLE::GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS(ent); ++i)
+					if (auto ped = VEHICLE::GET_PED_IN_VEHICLE_SEAT(ent, i, 0); ped && PED::IS_PED_A_PLAYER(ped))
+					{
+						g_notification_service.push_error("Deletion failed", std::format("vehicle {} is not empty.", ent));
+						return false;
+					}
 		}
 
 		if (!take_control_of(ent))
