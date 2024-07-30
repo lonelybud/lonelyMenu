@@ -1215,8 +1215,7 @@ namespace big
 				{
 					auto& vehs = g_gta_data_service.vehicles();
 					auto it    = vehs.find(creation_node->m_model);
-					LOG(VERBOSE) << "veh: " << (it != vehs.end() ? vehicle::get_vehicle_model_name(it->second) : "?") << " ("
-					             << sender_plyr->m_name << ")";
+					g_dbg_vehicle_clones.process(sender_plyr, nullptr, (it != vehs.end() ? vehicle::get_vehicle_model_name(it->second) : "?"));
 				}
 
 				break;
@@ -1249,6 +1248,10 @@ namespace big
 						return true;
 					}
 				}
+
+				if (g_misc.log_pickup_clones)
+					g_dbg_pickup_clones.process(sender_plyr);
+
 				break;
 			}
 			case sync_node_id("CPhysicalAttachDataNode"):
@@ -1307,16 +1310,16 @@ namespace big
 				if (g_misc.log_ped_clones)
 				{
 					if (model_info::is_model_of_type(_model, eModelType::OnlineOnlyPed))
-						LOGF(VERBOSE, "ped: player clone ({})", sender_plyr->m_name);
+						g_dbg_ped_player_clones.process(sender_plyr);
 					else if (model_info::is_model_of_type(_model, eModelType::Ped))
 					{
 						auto& peds = g_gta_data_service.peds();
 						auto it    = peds.find(creation_node->m_model);
-						LOGF(VERBOSE,
-						    "ped: {}, {} ({})",
-						    it != peds.end() ? it->second.m_name : "?",
-						    it != peds.end() ? it->second.m_ped_type : "?",
-						    sender_plyr->m_name);
+						g_dbg_ped_clones.process(sender_plyr,
+						    nullptr,
+						    std::format("{}, {}",
+						        it != peds.end() ? it->second.m_name : "?",
+						        it != peds.end() ? it->second.m_ped_type : "?"));
 					}
 				}
 
@@ -1356,7 +1359,7 @@ namespace big
 					return true;
 				}
 				if (g_misc.log_object_clones)
-					LOG(VERBOSE) << "object: " << _model << " (" << sender_plyr->m_name << ")";
+					g_dbg_object_clones.process(sender_plyr, nullptr, std::to_string(_model));
 
 				break;
 			}
@@ -1670,8 +1673,7 @@ namespace big
 					return true;
 				}
 				if (g_misc.log_CVehicleTaskDataNode)
-					LOG(VERBOSE) << "CVehicleTaskDataNode: " << get_task_type_string(task_node->m_task_type) << " ("
-					             << sender_plyr->m_name << ")";
+					g_dbg_CVehicleTaskDataNode.process(sender_plyr, nullptr, get_task_type_string(task_node->m_task_type));
 
 				break;
 			}
@@ -1749,7 +1751,7 @@ namespace big
 					// https://github.com/YimMenu/YimMenu/blob/master/src/hooks/spoofing/write_node_data.cpp#L259-L276
 					if (_node->m_weapon_damage_hash == "WEAPON_EXPLOSION"_J && !_node->m_has_max_health && _node->m_hurt_started
 					    && _node->m_health == 0 && _node->m_weapon_damage_component == 5)
-						LOG(WARNING) << "CPedHealthDataNode from " << sender_plyr->m_name;
+						g_dbg_CPedHealthDataNode.process(sender_plyr);
 				}
 
 				break;

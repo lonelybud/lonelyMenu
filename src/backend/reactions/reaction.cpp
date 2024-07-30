@@ -21,7 +21,7 @@ namespace big
 	{
 	}
 
-	void reaction::process(player_ptr player, player_ptr target)
+	void reaction::process(player_ptr player, player_ptr target, std::string append_text)
 	{
 		if (player && player->is_valid())
 		{
@@ -74,7 +74,7 @@ namespace big
 
 			if (m_notif_type != reaction_notif_type::silent)
 			{
-				auto str = std::format("{} from '{}'", m_event_name, player->m_name);
+				auto str = std::format("{} from '{}' {}", m_event_name, player->m_name, append_text);
 				if (target)
 					str += std::format("to {}", target->m_name);
 				const char* title = "Event";

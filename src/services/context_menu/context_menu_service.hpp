@@ -123,10 +123,10 @@ namespace big
 			            else
 				            PED::REMOVE_PED_FROM_GROUP(m_handle);
 		            }},
-		        {"RELATION",
-		            [this] {
-			            LOG(VERBOSE) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
-		            }},
+		        // {"RELATION",
+		        //     [this] {
+			    //         LOG(VERBOSE) << PED::GET_RELATIONSHIP_BETWEEN_PEDS(m_handle, self::ped);
+		        //     }},
 		        {"RAGDOLL",
 		            [this] {
 						PED::SET_PED_TO_RAGDOLL(m_handle, 2000, 2000, 0, 0, 0, 0);

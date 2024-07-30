@@ -487,7 +487,19 @@ namespace big
 		player_ped_create,
 		player_ped_sync,
 		blame_explosion_detected,
-		spoofed_host_token_3
+		spoofed_host_token_3,
+
+		dbg_explosion_event,
+		dbg_ptfx_event,
+		dbg_yim_blame_exp,
+		dbg_sound_event,
+		dbg_vehicle_clones,
+		dbg_ped_player_clones,
+		dbg_ped_clones,
+		dbg_CPedHealthDataNode,
+		dbg_object_clones,
+		dbg_CVehicleTaskDataNode,
+		dbg_pickup_clones
 	};
 
 	enum class reaction_karma

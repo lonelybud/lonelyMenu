@@ -24,6 +24,7 @@ namespace big
 		bool log_CPedHealthDataNode   = false; // spam kill feed detection
 		bool log_object_clones        = false; // log object sync
 		bool log_CVehicleTaskDataNode = false; // help identify modders creating vehicles and assigning tasks to them
+		bool log_pickup_clones        = false; // log pickup sync
 	};
 
 	inline g_misc_t g_misc{};

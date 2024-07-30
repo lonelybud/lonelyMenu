@@ -21,6 +21,93 @@
 
 namespace big
 {
+	constexpr std::array<const char*, 84> explosion_strs = {
+		"GRENADE",
+		"GRENADELAUNCHER",
+		"STICKYBOMB",
+		"MOLOTOV",
+		"ROCKET",
+		"TANKSHELL",
+		"HI_OCTANE",
+		"CAR",
+		"PLANE",
+		"PETROL_PUMP",
+		"BIKE",
+		"DIR_STEAM",
+		"DIR_FLAME",
+		"DIR_WATER_HYDRANT",
+		"DIR_GAS_CANISTER",
+		"BOAT",
+		"SHIP_DESTROY",
+		"TRUCK",
+		"BULLET",
+		"SMOKEGRENADELAUNCHER",
+		"SMOKEGRENADE",
+		"BZGAS",
+		"FLARE",
+		"GAS_CANISTER",
+		"EXTINGUISHER",
+		"_0x988620B8",
+		"EXP_TAG_TRAIN",
+		"EXP_TAG_BARREL",
+		"EXP_TAG_PROPANE",
+		"EXP_TAG_BLIMP",
+		"EXP_TAG_DIR_FLAME_EXPLODE",
+		"EXP_TAG_TANKER",
+		"PLANE_ROCKET",
+		"EXP_TAG_VEHICLE_BULLET",
+		"EXP_TAG_GAS_TANK",
+		"EXP_TAG_BIRD_CRAP",
+		"EXP_TAG_RAILGUN",
+		"EXP_TAG_BLIMP2",
+		"EXP_TAG_FIREWORK",
+		"EXP_TAG_SNOWBALL",
+		"EXP_TAG_PROXMINE",
+		"EXP_TAG_VALKYRIE_CANNON",
+		"EXP_TAG_AIR_DEFENCE",
+		"EXP_TAG_PIPEBOMB",
+		"EXP_TAG_VEHICLEMINE",
+		"EXP_TAG_EXPLOSIVEAMMO",
+		"EXP_TAG_APCSHELL",
+		"EXP_TAG_BOMB_CLUSTER",
+		"EXP_TAG_BOMB_GAS",
+		"EXP_TAG_BOMB_INCENDIARY",
+		"EXP_TAG_BOMB_STANDARD",
+		"EXP_TAG_TORPEDO",
+		"EXP_TAG_TORPEDO_UNDERWATER",
+		"EXP_TAG_BOMBUSHKA_CANNON",
+		"EXP_TAG_BOMB_CLUSTER_SECONDARY",
+		"EXP_TAG_HUNTER_BARRAGE",
+		"EXP_TAG_HUNTER_CANNON",
+		"EXP_TAG_ROGUE_CANNON",
+		"EXP_TAG_MINE_UNDERWATER",
+		"EXP_TAG_ORBITAL_CANNON",
+		"EXP_TAG_BOMB_STANDARD_WIDE",
+		"EXP_TAG_EXPLOSIVEAMMO_SHOTGUN",
+		"EXP_TAG_OPPRESSOR2_CANNON",
+		"EXP_TAG_MORTAR_KINETIC",
+		"EXP_TAG_VEHICLEMINE_KINETIC",
+		"EXP_TAG_VEHICLEMINE_EMP",
+		"EXP_TAG_VEHICLEMINE_SPIKE",
+		"EXP_TAG_VEHICLEMINE_SLICK",
+		"EXP_TAG_VEHICLEMINE_TAR",
+		"EXP_TAG_SCRIPT_DRONE",
+		"EXP_TAG_RAYGUN",
+		"EXP_TAG_BURIEDMINE",
+		"EXP_TAG_SCRIPT_MISSILE",
+		"EXP_TAG_RCTANK_ROCKET",
+		"EXP_TAG_BOMB_WATER",
+		"EXP_TAG_BOMB_WATER_SECONDARY",
+		"_0xF728C4A9",
+		"_0xBAEC056F",
+		"EXP_TAG_FLASHGRENADE",
+		"EXP_TAG_STUNGRENADE",
+		"_0x763D3B3B",
+		"EXP_TAG_SCRIPT_MISSILE_LARGE",
+		"EXP_TAG_SUBMARINE_BIG",
+		"EXP_TAG_EMPLAUNCHER_EMP",
+	};
+
 	static void script_id_deserialize(CGameScriptId& id, rage::datBitBuffer& buffer)
 	{
 		id.m_hash      = buffer.Read<uint32_t>(32);
@@ -158,17 +245,19 @@ namespace big
 			// {} sent an EXPLOSION_EVENT with addOwnedExplosion enabled & wrong owner
 			g_reactions.blamed_explosion_detected.process(plyr, nullptr);
 
+		// note - camera shake stuff cam happen here as well without any damage
 		if (g_misc.log_explosion_event)
-			LOGF(WARNING,
-			    "Explosion Event: {} (Dist- {})",
-			    plyr->m_name,
-			    math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ}));
+			{
+				auto exp_type = (int)explosionType >=0 && (int)explosionType <= 83 ? explosion_strs[(int)explosionType] : "???";
+				g_dbg_explosion_event.process(
+					plyr, 
+					nullptr, 
+					std::format("(Dist- {}, {})", math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ}), exp_type)
+				);
+			}
 
 		if(explosionType == EXP_TAG_SUBMARINE_BIG && damageScale > 9998.0f && isAudible == true && isInvisible == false && cameraShake > 9998.0f)
-			LOGF(WARNING,
-			    "Yim. Blame Exp.: {} (Dist- {})",
-			    plyr->m_name,
-			    math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ}));
+			g_dbg_yim_blame_exp.process(plyr, nullptr, std::format("(Dist- {})", math::distance_between_vectors(*plyr->get_ped()->get_position(), {posX, posY, posZ})));
 
 		// clang-format on
 	}
@@ -596,7 +685,7 @@ namespace big
 		case eNetworkEvents::NETWORK_PLAY_SOUND_EVENT:
 		{
 			if (g_misc.log_sound_event)
-				LOG(WARNING) << "Sound Event (NETWORK_PLAY_SOUND_EVENT) from: " << plyr->m_name;
+				g_dbg_sound_event.process(plyr, nullptr, "(NETWORK_PLAY_SOUND_EVENT)");
 
 			if (plyr->m_play_sound_rate_limit.process())
 			{
@@ -619,6 +708,10 @@ namespace big
 				return send_ack_event();
 
 			scan_explosion_event(source_player, buffer, plyr);
+
+			if (g_local_player->m_player_info->m_game_state == eGameState::Died)
+				return send_ack_event();
+
 			break;
 		}
 		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
@@ -638,10 +731,10 @@ namespace big
 		case eNetworkEvents::NETWORK_PTFX_EVENT:
 		{
 			if (g_misc.log_ptfx_event)
-				LOGF(WARNING,
-				    "PTFX Event: {} (Dist- {})",
-				    plyr->m_name,
-				    math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position()));
+				g_dbg_ptfx_event.process(plyr,
+				    nullptr,
+				    std::format("(Dist- {})",
+				        math::distance_between_vectors(*plyr->get_ped()->get_position(), *g_local_player->get_position())));
 
 			if (plyr->block_ptfx)
 				return send_ack_event();

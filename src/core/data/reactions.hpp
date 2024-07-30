@@ -152,5 +152,18 @@ namespace big
 		reaction delete_vehicle_cr{reaction_type::none, reaction_sub_type::delete_vehicle_cr, "Delete Vehicle (CR)", reaction_notif_type::normal, player_type::normal};
 	} g_reactions{};
 
+	// debug reactions
+	inline reaction g_dbg_explosion_event{reaction_type::none, reaction_sub_type::dbg_explosion_event, "Explosion Event", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_ptfx_event{reaction_type::none, reaction_sub_type::dbg_ptfx_event, "PTFX Event", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_yim_blame_exp{reaction_type::none, reaction_sub_type::dbg_yim_blame_exp, "Yim. Blame Exp.", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_sound_event{reaction_type::none, reaction_sub_type::dbg_sound_event, "Sound Event", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_vehicle_clones{reaction_type::none, reaction_sub_type::dbg_vehicle_clones, "", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_ped_clones{reaction_type::none, reaction_sub_type::dbg_ped_clones, "", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_ped_player_clones{reaction_type::none, reaction_sub_type::dbg_ped_player_clones, "ped: player clone", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_CPedHealthDataNode{reaction_type::none, reaction_sub_type::dbg_CPedHealthDataNode, "CPedHealthDataNode", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_object_clones{reaction_type::none, reaction_sub_type::dbg_object_clones, "object", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_CVehicleTaskDataNode{reaction_type::none, reaction_sub_type::dbg_CVehicleTaskDataNode, "CVehicleTaskDataNode", reaction_notif_type::normal, player_type::normal};
+	inline reaction g_dbg_pickup_clones{reaction_type::none, reaction_sub_type::dbg_pickup_clones, "pickup", reaction_notif_type::normal, player_type::normal};
+
 	inline bool g_block_reaction = false;
 }

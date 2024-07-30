@@ -51,9 +51,9 @@ namespace big
 
 			components::sub_title("Log");
 			{
-				components::button("Is Activity Session?", [] {
-					LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
-				});
+				// components::button("Is Activity Session?", [] {
+				// 	LOG(VERBOSE) << "Is Activity Session?: " << NETWORK::NETWORK_IS_ACTIVITY_SESSION();
+				// });
 
 				ImGui::BeginGroup();
 				{

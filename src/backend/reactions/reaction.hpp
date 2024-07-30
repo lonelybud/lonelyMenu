@@ -19,6 +19,6 @@ namespace big
 		reaction_karma m_karma_type;
 
 		reaction(reaction_type type, reaction_sub_type sub_type, const char* event_name, reaction_notif_type notif_type, player_type plyr_type, reaction_karma karma_type = reaction_karma::none);
-		void process(player_ptr player, player_ptr target = nullptr);
+		void process(player_ptr player, player_ptr target = nullptr, std::string append_text = "");
 	};
 }
