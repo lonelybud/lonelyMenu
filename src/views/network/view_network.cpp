@@ -102,6 +102,7 @@ namespace big
 		ImGui::Checkbox("Block Spoofed tokens", &g_session.block_spoofed_tokens);
 		ImGui::Checkbox("Auto Kick Chat Spammers", &g_session.auto_kick_chat_spammers);
 		components::script_patch_checkbox("Reveal OTR Players", &g_session.decloak_players);
+		ImGui::Checkbox("Fast Join", &g_session.fast_join);
 	}
 
 	static inline void render_session_multiplexer()

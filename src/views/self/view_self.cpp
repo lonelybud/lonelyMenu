@@ -86,12 +86,25 @@ namespace big
 	{
 		ImGui::BeginGroup();
 		{
-			components::command_checkbox<"infoxy">();
 			components::command_checkbox<"godmode">();
-			components::command_checkbox<"otr">();
-			components::command_checkbox<"noidlekick">();
-			components::command_checkbox<"freecam">();
 			components::command_checkbox<"never_wanted">();
+			components::command_checkbox<"infoxy">();
+			components::command_checkbox<"noidlekick">();
+			components::command_checkbox<"endpassivetime">();
+			components::command_checkbox<"otr">();
+
+			ImGui::BeginDisabled(g_self.noclip);
+			components::command_checkbox<"freecam">();
+			ImGui::EndDisabled();
+			ImGui::BeginDisabled(g_self.free_cam);
+			components::command_checkbox<"noclip">();
+			ImGui::EndDisabled();
+			if (g_self.noclip)
+			{
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(200);
+				ImGui::SliderFloat("Speed Multiplier##noclip", &g_self.noclip_speed_multiplier, 1.f, 100.f);
+			}
 
 			static bool is_ragdoll_disabled = false;
 			if (ImGui::Checkbox("Disable Ragdoll", &is_ragdoll_disabled))

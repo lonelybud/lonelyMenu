@@ -30,5 +30,6 @@ namespace big
 	namespace scr_functions
 	{
 		inline script_function reset_session_data("RSD", "pausemenu_multiplayer"_J, "2D 02 7D 00 00", 0);
+		inline script_function set_freemode_session_active("SFSA", "freemode"_J, "2D 00 02 00 00 75 5D ? ? ? 50", 0);
 	}
 }

@@ -61,6 +61,7 @@ namespace big
 		bool force_freemode_host      = false;
 		bool force_fmmc_launcher_host = false;
 		bool force_am_launcher_host   = false;
+		bool fast_join                = false;
 
 		bool log_chat_messages_to_textbox = true;
 		bool decloak_players              = false;

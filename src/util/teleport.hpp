@@ -89,4 +89,17 @@ namespace big::teleport
 
 		g_notification_service.push_warning("Teleport", "No seat available");
 	}
+
+	inline bool to_highlighted_blip()
+	{
+		auto blip = blip::get_selected_blip();
+		
+		if (blip == nullptr)
+		{
+			g_notification_service.push_warning("Teleport", "Nothing Selected");
+			return false;
+		}
+
+		return to_coords(blip->m_position);
+	}
 }

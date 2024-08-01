@@ -51,7 +51,7 @@ namespace big
 						ped::kill_ped(ped);
 		});
 		ImGui::SameLine();
-		components::button("Kill Police", [] {
+		components::button("Kill General Peds/Police", [] {
 			if (g_local_player->m_player_info->m_is_wanted)
 				for (auto ped : entity::get_entities(false, true))
 					if (!PED::IS_PED_A_PLAYER(ped))
@@ -119,9 +119,6 @@ namespace big
 		components::button("Skip Cutscene", [] {
 			CUTSCENE::STOP_CUTSCENE_IMMEDIATELY();
 		});
-
-		ImGui::Spacing();
-		components::command_checkbox<"endpassivetime">();
 
 		ImGui::Spacing();
 

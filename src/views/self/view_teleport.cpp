@@ -22,6 +22,10 @@ namespace big
 				components::button("Objective TP", [] {
 					teleport::to_objective();
 				});
+				ImGui::SameLine();
+				components::button("Selected Blip TP", [] {
+					teleport::to_highlighted_blip();
+				});
 			}
 			components::ver_space();
 			components::ver_space();

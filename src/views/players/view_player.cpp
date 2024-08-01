@@ -363,7 +363,7 @@ namespace big
 					for (int i = 0; i < 1500; i++)
 						if (auto blip = blips[i].m_pBlip;
 						    blip && blip->m_message && !strcmp(blip->m_message, last_selected_player->m_name))
-							return HUD::SET_NEW_WAYPOINT(blip->m_x, blip->m_y);
+							return HUD::SET_NEW_WAYPOINT(blip->m_position.x, blip->m_position.y);
 
 					return g_notification_service.push_error("Failed", "Player in interior. Try open map and try again.");
 				}

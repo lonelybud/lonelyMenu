@@ -708,10 +708,6 @@ namespace big
 				return send_ack_event();
 
 			scan_explosion_event(source_player, buffer, plyr);
-
-			if (g_local_player->m_player_info->m_game_state == eGameState::Died)
-				return send_ack_event();
-
 			break;
 		}
 		case eNetworkEvents::WEAPON_DAMAGE_EVENT:
